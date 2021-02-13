@@ -5,30 +5,24 @@ author: Lucas Delsol
 homepage: vrouter.dev
 
 environment:
-  sdk: ">=2.12.0-0 <3.0.0"
+  sdk: ">=2.0.0 <3.0.0"
   flutter: ">=1.17.0"
 
 dependencies:
   flutter:
     sdk: flutter
-  simple_url_handler: ^0.0.1-nullsafety.2
-  path_to_regexp: 0.4.0-nullsafety.0
-  url_strategy: ^0.2.0-nullsafety.0
-  js: ^0.6.3-nullsafety.3
-  logger: ^1.0.0-nullsafety.0
-  url_launcher: ^6.0.0-nullsafety.6
-
-  # Modified version of move_to_background to support null safety
-  # Once the official version supports null-safety, we should switch back to it
-  move_to_background:
-    git:
-      url: https://github.com/lulupointu/move_to_background
-      ref: master
+  simple_url_handler: ^0.0.2
+  path_to_regexp: ^0.3.0
+  url_strategy: ^0.1.1
+  js: ^0.6.2
+  logger: ^0.9.4
+  url_launcher: ^5.7.10
+  move_to_background: ^1.0.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  pedantic: ^1.10.0
+  pedantic: ^1.9.2
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
