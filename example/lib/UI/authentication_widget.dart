@@ -1,6 +1,5 @@
-import 'package:complete_app/logic/routing.dart';
-import 'package:complete_app/vrouter/main.dart';
 import 'package:flutter/material.dart';
+import 'package:vrouter/vrouter.dart';
 
 class MyAuthenticationWidget extends StatelessWidget {
 

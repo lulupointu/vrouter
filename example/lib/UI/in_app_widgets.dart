@@ -1,7 +1,5 @@
-import 'dart:convert';
-
-import 'package:complete_app/vrouter/main.dart';
 import 'package:flutter/material.dart';
+import 'package:vrouter/vrouter.dart';
 
 class MyScaffold extends StatelessWidget {
   @override
@@ -96,7 +94,7 @@ class SettingWidget extends StatefulWidget {
 
 class _SettingWidgetState extends State<SettingWidget> {
   int count = 0;
-  ScrollController? _scrollController;
+  ScrollController _scrollController;
 
   @override
   Widget build(BuildContext context) {
