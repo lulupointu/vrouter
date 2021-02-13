@@ -4,7 +4,7 @@ part of 'main.dart';
 class InvalidUrlException implements Exception {
   final String url;
 
-  InvalidUrlException({required this.url});
+  InvalidUrlException({@required this.url});
 
   @override
   String toString() =>

@@ -3,6 +3,7 @@ library web_helpers;
 
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:js/js.dart';
 import 'dart:html' as html;
 
@@ -25,18 +26,18 @@ class BrowserHelpers {
   }
 
   /// Gets the current history state if any, null otherwise
-  static String? getHistoryState() {
+  static String getHistoryState() {
     return (html.window.history.state != null) ? html.window.history.state['state'] : null;
   }
 
   /// We use a custom state entry called 'serialCount'
   /// This is used by this plugin to keep track of where we are
   /// in the browser history
-  static int? getHistorySerialCount() {
+  static int getHistorySerialCount() {
     if (html.window.history.state == null) {
       return null;
     }
-    int? newSerialCount;
+    int newSerialCount;
     try {
       newSerialCount = int.parse(
           jsonDecode(html.window.history.state['state'] ?? '{}')['serialCount'] ?? '');
@@ -50,7 +51,7 @@ class BrowserHelpers {
   ///
   /// Note that this is the url of the browser, which might not be always
   /// in sync with [VRouterData.url]
-  static String getPathAndQuery({required VRouterModes routerMode}) {
+  static String getPathAndQuery({@required VRouterModes routerMode}) {
     return (routerMode == VRouterModes.hash)
         ? html.window.location.hash.substring(1)
         : ((html.window.location.pathname ?? '') +
@@ -72,7 +73,7 @@ class BrowserHelpers {
   /// Pushes a url which is from another website
   /// 
   /// If [openNewTab] is true, this url in opened in a new tab
-  static Future<void> pushExternal(String url, {required bool openNewTab}) async {
+  static Future<void> pushExternal(String url, {@required bool openNewTab}) async {
     final targetUrl = url.startsWith('http') ? url : 'http://$url';
     if (openNewTab) {
       html.window.open(targetUrl, '_blank');
@@ -83,7 +84,7 @@ class BrowserHelpers {
 
   /// This replace the current url by the given one
   /// Meaning that while the url changes, no new history entry is created
-  static void pushReplacement(String url, {required VRouterModes routerMode}) =>
+  static void pushReplacement(String url, {@required VRouterModes routerMode}) =>
       (routerMode == VRouterModes.hash)
           ? html.window.location.replace('/#$url')
           : html.window.location.replace(url);

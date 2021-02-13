@@ -10,7 +10,7 @@ class VRoute extends StatefulWidget {
   /// The history state that we got back from the browser
   /// If the user navigate using a browser history entry (e.g. browser back button),
   /// and you previously saved a history state, this will have the stored value
-  final String? initialHistorySate;
+  final String initialHistorySate;
 
   /// The list of [VPage] of the current route (in a nested structure)
   final List<VPage> pages;
@@ -25,11 +25,11 @@ class VRoute extends StatefulWidget {
   final GlobalKey<_VRouteState> key;
 
   VRoute({
-    required this.pathParameters,
-    required this.queryParameters,
-    required this.pages,
-    required GlobalKey<NavigatorState> routerNavigatorKey,
-    required HeroController routerHeroController,
+    @required this.pathParameters,
+    @required this.queryParameters,
+    @required this.pages,
+    @required GlobalKey<NavigatorState> routerNavigatorKey,
+    @required HeroController routerHeroController,
     this.initialHistorySate,
   })  : _routerNavigatorKey = routerNavigatorKey,
         _routerHeroController = routerHeroController,
@@ -41,7 +41,7 @@ class VRoute extends StatefulWidget {
 
 class _VRouteState extends State<VRoute> {
   /// See [VRouteData.historyState]
-  String? historyState;
+  String historyState;
 
   _VRouteState({@required this.historyState});
 
@@ -99,7 +99,7 @@ class VRouteData extends InheritedWidget {
   ///      version of the historyState
   ///   * [VRouteElementData.historyState] if you want to use a local
   ///      version of the historyState
-  final String? historyState;
+  final String historyState;
 
   /// This replaces the current history state of this [VRouteData] with given one
   final void Function(String newState) replaceHistoryState;
@@ -118,12 +118,12 @@ class VRouteData extends InheritedWidget {
   final Map<String, String> queryParameters;
 
   const VRouteData({
-    Key? key,
-    required Widget child,
-    required this.historyState,
-    required this.replaceHistoryState,
-    required this.pathParameters,
-    required this.queryParameters,
+    Key key,
+    @required Widget child,
+    @required this.historyState,
+    @required this.replaceHistoryState,
+    @required this.pathParameters,
+    @required this.queryParameters,
   }) : super(key: key, child: child);
 
   static VRouteData of(BuildContext context) {
@@ -151,8 +151,8 @@ class _VRoutePath {
   /// The path of the route, as a regExp
   /// This can be used to get the parameters of a given url with the
   /// path_to_regexp package
-  final RegExp? pathRegExp;
-  final String? path;
+  final RegExp pathRegExp;
+  final String path;
 
   /// List of the name of all parameters of the route
   /// This is used to get the parameters of a given url with the
@@ -161,7 +161,7 @@ class _VRoutePath {
 
   /// The name of the route is the name of the last [VRouteElement]
   /// of the list of VRouteElements corresponding to this route
-  final String? name;
+  final String name;
 
   /// The list (ordered) of the [VRouteElement]s composing this route
   final List<VRouteElement> vRouteElements;
@@ -170,7 +170,7 @@ class _VRoutePath {
     this.name,
     this.pathRegExp,
     this.path,
-    required this.parameters,
-    required this.vRouteElements,
+    @required this.parameters,
+    @required this.vRouteElements,
   });
 }

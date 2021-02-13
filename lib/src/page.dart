@@ -12,7 +12,7 @@ class VPage<T> extends MaterialPage<T> {
 
   /// The name of this page
   @override
-  final String? name;
+  final String name;
 
   /// The key of this page
   @override
@@ -20,11 +20,11 @@ class VPage<T> extends MaterialPage<T> {
 
   /// The duration of the transition which happens when this page
   /// is put in the widget tree
-  final Duration? transitionDuration;
+  final Duration transitionDuration;
 
   /// The duration of the transition which happens when this page
   /// is removed from the widget tree
-  final Duration? reverseTransitionDuration;
+  final Duration reverseTransitionDuration;
 
   /// A function to build the transition to or from this route
   ///
@@ -39,12 +39,12 @@ class VPage<T> extends MaterialPage<T> {
   /// If the one of the [VRouter] is also null, the default transition is
   /// the one of a [MaterialPage]
   final Widget Function(
-      Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
+      Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
   buildTransition;
 
   VPage({
-    required this.key,
-    required this.child,
+    @required this.key,
+    @required this.child,
     this.name,
     this.buildTransition,
     this.transitionDuration,
@@ -59,7 +59,7 @@ class VPage<T> extends MaterialPage<T> {
         page: this,
         customTransition: (_, Animation<double> animation,
             Animation<double> secondaryAnimation, Widget child) =>
-            buildTransition!(
+            buildTransition(
               animation,
               secondaryAnimation,
               child,
@@ -84,10 +84,10 @@ class VPageRoute<T> extends PageRoute<T> {
       Animation<double> secondaryAnimation, Widget child) customTransition;
 
   VPageRoute({
-    required VPage<T> page,
-    required this.customTransition,
-    Duration? transitionDuration,
-    Duration? reverseTransitionDuration,
+    @required VPage<T> page,
+    @required this.customTransition,
+    Duration transitionDuration,
+    Duration reverseTransitionDuration,
   })  : transitionDuration = transitionDuration ?? Duration(milliseconds: 300),
         reverseTransitionDuration =
             reverseTransitionDuration ?? (transitionDuration ?? Duration(milliseconds: 300)),

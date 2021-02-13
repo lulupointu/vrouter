@@ -33,7 +33,7 @@ class VNavigationGuard extends StatefulWidget {
   ///   * [VRouter.beforeLeave] for global level beforeLeave
   ///   * [VRouteElement.beforeLeave] for route level beforeLeave
   final Future<bool> Function(
-      BuildContext context, String? from, String to, void Function(String state) saveHistoryState)?
+      BuildContext context, String from, String to, void Function(String state) saveHistoryState)
   beforeLeave;
 
   /// Called when the url changes and this [VNavigationGuard] was NOT part
@@ -48,7 +48,7 @@ class VNavigationGuard extends StatefulWidget {
   /// Also see:
   ///   * [VRouter.afterEnter] for global level afterEnter
   ///   * [VRouteElement.afterEnter] for route level afterEnter
-  final void Function(BuildContext context, String? from, String to)? afterEnter;
+  final void Function(BuildContext context, String from, String to) afterEnter;
 
   /// Called when the url changes and this [VNavigationGuard] was already part
   /// of the previous route.
@@ -58,7 +58,7 @@ class VNavigationGuard extends StatefulWidget {
   ///
   /// Note that you should consider the navigation cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
-  final void Function(BuildContext context, String? from, String to)? afterUpdate;
+  final void Function(BuildContext context, String from, String to) afterUpdate;
 
   /// Called when a pop event occurs.
   /// A pop event can be called programmatically (with
@@ -74,7 +74,7 @@ class VNavigationGuard extends StatefulWidget {
   ///   * [VRouter.onPop] for global level onPop
   ///   * [VRouteElement.onPop] for route level onPop
   ///   * [VRouterState._defaultPop] for the default onPop
-  final Future<bool> Function(BuildContext context)? onPop;
+  final Future<bool> Function(BuildContext context) onPop;
 
   /// Called when a system pop event occurs. This happens on android
   /// when the system back button is pressed
@@ -87,16 +87,16 @@ class VNavigationGuard extends StatefulWidget {
   /// Also see:
   ///   * [VRouter.onSystemPop] for global level onSystemPop
   ///   * [VRouteElement.onSystemPop] for route level onSystemPop
-  final Future<bool> Function(BuildContext context)? onSystemPop;
+  final Future<bool> Function(BuildContext context) onSystemPop;
 
   const VNavigationGuard({
-    Key? key,
+    Key key,
     this.afterEnter,
     this.beforeLeave,
     this.afterUpdate,
     this.onPop,
     this.onSystemPop,
-    required this.child,
+    @required this.child,
   }) : super(key: key);
 
   @override
@@ -110,8 +110,8 @@ class _VNavigationGuardState extends State<VNavigationGuard> {
         .dispatch(context);
     super.initState();
     if (widget.afterEnter != null) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
-        widget.afterEnter!(context, VRouterData.of(context).previousUrl, VRouterData.of(context).url!);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        widget.afterEnter(context, VRouterData.of(context).previousUrl, VRouterData.of(context).url);
       });
     }
   }
@@ -138,5 +138,5 @@ class VNavigationGuardMessage extends Notification {
   final VNavigationGuard vNavigationGuard;
   final BuildContext localContext;
 
-  VNavigationGuardMessage({required this.vNavigationGuard, required this.localContext});
+  VNavigationGuardMessage({@required this.vNavigationGuard, @required this.localContext});
 }
