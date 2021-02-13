@@ -5,14 +5,15 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:logger/logger.dart';
-import 'package:move_to_background/move_to_background.dart';
-// import 'package:move_to_background/move_to_background.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:simple_url_handler/simple_url_handler.dart';
 import 'package:url_strategy/url_strategy.dart';
+// import 'move_to_background.dart';
 import 'fake_web_helpers.dart' if (dart.library.js) 'web_helpers.dart';
+import 'dart:io' if (dart.library.js) 'dart:html';
 
 
 part 'exceptions.dart';

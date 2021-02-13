@@ -1570,8 +1570,8 @@ class VRouterState extends State<VRouter> {
 
     // If we didn't find any route, we are at the bottom of the stack
     // So if we are on mobile we move the app to the background
-    if (!kIsWeb) {
-      MoveToBackground.moveTaskToBack();
+    if (Platform.isAndroid) {
+      SystemNavigator.pop();
     }
   }
 

@@ -1,6 +1,6 @@
 name: vrouter
 description: A new Flutter package project.
-version: 0.0.1
+version: 1.0.0-nullsafety.0
 author: Lucas Delsol
 homepage: vrouter.dev
 
@@ -11,19 +11,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  simple_url_handler: ^0.0.1-nullsafety.2
+  simple_url_handler: ^1.0.0-nullsafety.0
   path_to_regexp: 0.4.0-nullsafety.0
   url_strategy: ^0.2.0-nullsafety.0
   js: ^0.6.3-nullsafety.3
   logger: ^1.0.0-nullsafety.0
   url_launcher: ^6.0.0-nullsafety.6
-
-  # Modified version of move_to_background to support null safety
-  # Once the official version supports null-safety, we should switch back to it
-  move_to_background:
-    git:
-      url: https://github.com/lulupointu/move_to_background
-      ref: master
 
 dev_dependencies:
   flutter_test:
