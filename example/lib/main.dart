@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 
-import 'UI/authentication_widget.dart';
-import 'UI/in_app_widgets.dart';
-
 void main() {
   runApp(
     VRouter(
@@ -40,8 +37,7 @@ void main() {
           subroutes: [
             VChild(
               path: '/settings',
-              name: 'settings',
-              widget: SettingWidget(),
+              widget: InfoWidget(),
 
               // Custom transition
               buildTransition: (animation, ___, child) {
@@ -122,6 +118,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
             // This FAB is shared and shows hero animations working with no issues
             FloatingActionButton(
+              heroTag: 'FAB',
               onPressed: () => setState(() => (_formKey.currentState.validate())
                   ? VRouterData.of(context).push('/profile/$name')
                   : null),
@@ -142,23 +139,26 @@ class MyScaffold extends StatelessWidget {
         title: Text('You are connected'),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        currentIndex: (VRouteElementData.of(context).vChildName == 'settings') ? 1 : 0,
+        // We check the vChild name to known where we are
+        currentIndex: (VRouteElementData.of(context).vChildName == 'profile') ? 0 : 1,
         items: [
           BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: 'Settings'),
+          BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'Info'),
         ],
         onTap: (int index) {
-          if (index == 0) {
+          if (index == 0 && VRouteElementData.of(context).vChildName != 'profile') {
             // We use the name to navigate
             // We can specify the username in a map
             // Since we are on settings, the username is stored in the VRouter history state
-            print('VRouterData.of(context).historyState: ${VRouterData.of(context).historyState}');
+            print(
+                'VRouterData.of(context).historyState: ${VRouterData.of(context).historyState}');
             VRouterData.of(context).pushNamed('profile',
                 pathParameters: {'username': VRouterData.of(context).historyState});
-          } else {
+          } else if (index == 1 && VRouteElementData.of(context).vChildName == 'profile') {
             // We push the settings and store the username in the VRouter history state
             // We can access this username via the global path parameters (stored in VRoute)
-            print('VRouteData.of(context).pathParameters[\'username\']: ${VRouteData.of(context).pathParameters['username']}');
+            print(
+                'VRouteData.of(context).pathParameters[\'username\']: ${VRouteData.of(context).pathParameters['username']}');
             VRouterData.of(context).push('/settings',
                 routerState: VRouteData.of(context).pathParameters['username']);
           }
@@ -168,6 +168,7 @@ class MyScaffold extends StatelessWidget {
 
       // This FAB is shared with login and shows hero animations working with no issues
       floatingActionButton: FloatingActionButton(
+        heroTag: 'FAB',
         onPressed: () => VRouterData.of(context).push('/login'),
         child: Icon(Icons.logout),
       ),
@@ -185,11 +186,14 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 
   @override
   Widget build(BuildContext context) {
-    print('VRouteData.of(context).pathParameters[\'username\']: ${VRouteData.of(context).pathParameters['username']}');
-    print("VRouteElementData.of(context).pathParameters['username']: ${VRouteElementData.of(context).pathParameters['username']}");
+    // VNavigationGuard allows you to react to navigation events locally
     return VNavigationGuard(
+      // When entering or updating the route, we try to get the count from the local history state
+      // This history state will be NOT null if the user presses the back button for example
       afterEnter: (context, __, ___) => getCountFromState(context),
       afterUpdate: (context, __, ___) => getCountFromState(context),
+
+      // Before leaving we save the count local history state
       beforeLeave: (context, __, ___, saveHistoryState) async {
         saveHistoryState('$count');
         return true; // We return true because we still want the redirect to happen
@@ -239,6 +243,32 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           ? 0
           : int.tryParse(VRouteElementData.of(context).historyState ?? '0');
     });
+  }
+}
+
+class InfoWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              // We can access this username via the history state (stored in VRouter)
+              'Here are you empty info, ${VRouterData.of(context).historyState ?? 'stranger'}',
+              style: textStyle.copyWith(fontSize: textStyle.fontSize + 2),
+            ),
+            SizedBox(height: 50),
+            Text(
+              'As you could see, the custom animation played when you went here',
+              style: textStyle.copyWith(fontSize: textStyle.fontSize + 2),
+            ),
+          ],
+        ),
+      ),
+    );
   }
 }
 
