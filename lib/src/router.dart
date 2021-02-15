@@ -1571,9 +1571,7 @@ class VRouterState extends State<VRouter> {
 
     // If we didn't find any route, we are at the bottom of the stack
     // So if we are on mobile we move the app to the background
-    if (Platform.isAndroid) {
-      SystemNavigator.pop();
-    }
+    // TODO: use move_to_background when it moves to null safety
   }
 
   /// See [VRouterData.replaceHistoryState]
