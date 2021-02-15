@@ -889,6 +889,7 @@ class VRouterState extends State<VRouter> {
       // If the previous match didn't fail, we get the remainingUrl be stripping of the
       // part of the url which matched
       if (match != null) {
+        localParameters = extract(vRouteElement.parameters, match);
         remainingUrl = remainingUrl.substring(match.end);
       }
     }
