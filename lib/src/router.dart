@@ -577,7 +577,7 @@ class VRouterState extends State<VRouter> {
             newSerialCount = int.parse(newState['serialCount'] ?? '');
             // ignore: empty_catches
           } on FormatException {}
-          ;
+
 
           // Update the app with the new url
           await _updateUrl(
@@ -796,7 +796,7 @@ class VRouterState extends State<VRouter> {
     // Update the vRoute
     vRoute = VRoute(
       pathParameters: pathParameters,
-      queryParameters: queryParameters as Map<String, String>,
+      queryParameters: queryParameters,
       pages: pages,
       routerNavigatorKey: _navigatorKey,
       routerHeroController: _heroController,
@@ -1542,7 +1542,7 @@ class VRouterState extends State<VRouter> {
       // We keep the queryParameters
       final newUrl = Uri(
               path: newPath,
-              queryParameters: (vRoute?.queryParameters.isNotEmpty ?? false)
+              queryParameters: (vRoute?.queryParameters?.isNotEmpty ?? false)
                   ? vRoute.queryParameters
                   : null)
           .toString();
