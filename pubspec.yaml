@@ -2,7 +2,7 @@ name: vrouter
 description: A new Flutter package project.
 version: 0.0.1
 author: Lucas Delsol
-homepage: vrouter.dev
+homepage: https://vrouter.dev
 
 environment:
   sdk: ">=2.3.0 <3.0.0"
