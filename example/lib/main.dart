@@ -15,18 +15,6 @@ void main() {
       },
       routes: [
         VStacked(
-          beforeLeave: (_, __, ___, ____) async {
-            print('VRoute beforeLeave');
-            return true;
-          },
-          beforeEnter: (_, __, ___) async {
-            print('VRoute beforeEnter');
-            return true;
-          },
-          afterEnter: (_, __, ___) {
-            print('VRoute afterEnter');
-            return;
-          },
           path: '/login',
           widget: LoginWidget(),
         ),
