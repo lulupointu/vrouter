@@ -1,5 +1,5 @@
 <p align="center" xmlns="http://www.w3.org/1999/html">
-<img src="https://raw.githubusercontent.com/lulupointu/vrouter_website/master/assets/v_logo.svg" alt="VRouter logo" height="50"/><span style="font-size:40px; color:#015292">Router</span>
+<img src="https://raw.githubusercontent.com/lulupointu/vrouter_website/master/assets/logo_whole.svg" alt="VRouter logo" height="200"/>
 </p>
 
 ---
