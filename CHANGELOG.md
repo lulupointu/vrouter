@@ -1,3 +1,7 @@
+## [0.0.8] - 16/02/2021
+
+* Fix error when pushing a url which does not start with '/'
+
 ## [0.0.7] - 16/02/2021
 
 * Correct wrong import
