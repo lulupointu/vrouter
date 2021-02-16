@@ -7,7 +7,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'move_to_background_fake.dart'
-    if (dart.library.js) 'package:move_to_background/move_to_background.dart';
+    if (dart.library.io) 'package:move_to_background/move_to_background.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:simple_url_handler/simple_url_handler.dart';
 import 'package:url_strategy/url_strategy.dart';
