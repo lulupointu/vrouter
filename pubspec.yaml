@@ -15,7 +15,6 @@ dependencies:
   path_to_regexp: 0.4.0-nullsafety.0
   url_strategy: ^0.2.0-nullsafety.0
   js: ^0.6.3-nullsafety.3
-  logger: ^1.0.0-nullsafety.0
   url_launcher: ^6.0.0-nullsafety.6
 
 dev_dependencies:

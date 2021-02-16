@@ -1046,10 +1046,11 @@ class VRouterState extends State<VRouter> {
 
     final newUri = Uri.parse(newUrl);
     final newPath = newUri.path;
-    if (newUri.queryParameters.isNotEmpty && queryParameters.isNotEmpty) {
-      logger.w(
-          'You used the queryParameters attribute but the url already contained queryParameters. The latter will be overwritten by the argument you gave');
-    } else if (queryParameters.isEmpty) {
+    assert(
+      !(newUri.queryParameters.isNotEmpty && queryParameters.isNotEmpty),
+      'You used the queryParameters attribute but the url already contained queryParameters. The latter will be overwritten by the argument you gave',
+    );
+    if (queryParameters.isEmpty) {
       queryParameters = newUri.queryParameters;
     }
 
@@ -1272,31 +1273,31 @@ class VRouterState extends State<VRouter> {
 
     final oldSerialCount = serialCount;
     if (shouldSaveHistoryState && path != null && historyStatesToSave.isNotEmpty) {
-      if (!kIsWeb) {
-        logger.w(
-            'Tried to store the state $historyStatesToSave while not on the web. State saving/restoration only work on the web.\n'
-            'You can safely ignore this message if you just want this functionality on the web.');
-      } else {
-        ///   The historyStates got in beforeLeave are stored   ///
-        // If we come from the browser, chances are we already left the page
-        // So we need to:
-        //    1. Go back to where we were
-        //    2. Save the historyState
-        //    3. And go back again to the place
-        if (kIsWeb && fromBrowser && oldSerialCount != newSerialCount) {
-          ignoreNextBrowserCalls = true;
-          BrowserHelpers.browserGo(oldSerialCount - newSerialCount!);
-          await BrowserHelpers.onBrowserPopState.firstWhere(
-              (element) => BrowserHelpers.getHistorySerialCount() == oldSerialCount);
-        }
-        serialCount = newSerialCount ?? serialCount + 1;
-        BrowserHelpers.replaceHistoryState(jsonEncode(historyStatesToSave));
-        if (kIsWeb && fromBrowser && oldSerialCount != newSerialCount) {
-          BrowserHelpers.browserGo(newSerialCount! - oldSerialCount);
-          await BrowserHelpers.onBrowserPopState.firstWhere(
-              (element) => BrowserHelpers.getHistorySerialCount() == newSerialCount);
-          ignoreNextBrowserCalls = false;
-        }
+      assert(
+        kIsWeb,
+        'Tried to store the state $historyStatesToSave while not on the web. State saving/restoration only work on the web.\n'
+        'You can safely ignore this message if you just want this functionality on the web.',
+      );
+
+      ///   The historyStates got in beforeLeave are stored   ///
+      // If we come from the browser, chances are we already left the page
+      // So we need to:
+      //    1. Go back to where we were
+      //    2. Save the historyState
+      //    3. And go back again to the place
+      if (kIsWeb && fromBrowser && oldSerialCount != newSerialCount) {
+        ignoreNextBrowserCalls = true;
+        BrowserHelpers.browserGo(oldSerialCount - newSerialCount!);
+        await BrowserHelpers.onBrowserPopState
+            .firstWhere((element) => BrowserHelpers.getHistorySerialCount() == oldSerialCount);
+      }
+      serialCount = newSerialCount ?? serialCount + 1;
+      BrowserHelpers.replaceHistoryState(jsonEncode(historyStatesToSave));
+      if (kIsWeb && fromBrowser && oldSerialCount != newSerialCount) {
+        BrowserHelpers.browserGo(newSerialCount! - oldSerialCount);
+        await BrowserHelpers.onBrowserPopState
+            .firstWhere((element) => BrowserHelpers.getHistorySerialCount() == newSerialCount);
+        ignoreNextBrowserCalls = false;
       }
     } else {
       serialCount = newSerialCount ?? serialCount + 1;
@@ -1931,7 +1932,6 @@ class VRouterData extends InheritedWidget {
   /// If any of the step return false, then the pop cycle stops
   void pop(BuildContext context) => _pop();
 
-
   /// Starts a systemPop cycle
   ///
   /// systemPop cycle:
@@ -1942,7 +1942,6 @@ class VRouterData extends InheritedWidget {
   ///
   /// If any of the step return false, then the pop cycle stops
   Future<void> systemPop(BuildContext context) => _systemPop();
-
 
   /// This replaces the current history state of [VRouterData] with given one
   void replaceHistoryState(String historyState) => _replaceHistoryState(historyState);
