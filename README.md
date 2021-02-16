@@ -126,26 +126,26 @@ path parameters. To use them you just need to insert
 VRouter configuration
 ```
 VRouter(
-      routes: [
-            VStacked(
-                  path: '/user/:id',
-                  widget: UserWidget(),
-            ),
-      ],
+  routes: [
+    VStacked(
+      path: '/user/:id',
+      widget: UserWidget(),
+    ),
+  ],
 )
 ```
 
 Access the path parameters in you widgets:
 ```
 class UserWidget extends StatelessWidget {
-      @override
-      Widget build(BuildContext context) {
-            // Use VRouteElement to access general information about the route
-            print('The current id is: ${VRouteData.of(context).pathParameters['id']}');
-            
-            // Use VRouteElementData to data which belong to this VRouteElement
-            return Text('User id is ${VRouteElementData.of(context).pathParameters['id']}');
-      }
+  @override
+  Widget build(BuildContext context) {
+    // Use VRouteElement to access general information about the route
+    print('The current id is: ${VRouteData.of(context).pathParameters['id']}');
+
+    // Use VRouteElementData to data which belong to this VRouteElement
+    return Text('User id is ${VRouteElementData.of(context).pathParameters['id']}');
+  }
 }
 ```
 
