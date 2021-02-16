@@ -1,3 +1,7 @@
+## [1.0.0-nullsafety.3] - 16/02/2021.
+
+* Fix error when pushing a url which does not start with '/'
+
 ## [1.0.0-nullsafety.2] - 16/02/2021.
 
 * Formatting with dartfmt
