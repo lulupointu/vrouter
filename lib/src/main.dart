@@ -12,7 +12,6 @@ import 'package:simple_url_handler/simple_url_handler.dart';
 import 'package:url_strategy/url_strategy.dart';
 // import 'move_to_background.dart';
 import 'fake_web_helpers.dart' if (dart.library.js) 'web_helpers.dart';
-import 'dart:io' if (dart.library.js) 'dart:html';
 
 
 part 'exceptions.dart';
