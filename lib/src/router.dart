@@ -595,7 +595,7 @@ class VRouterState extends State<VRouter> {
           state: jsonEncode({
             'serialCount': '$serialCount',
             '-2': _historyState,
-            '-1': vRoute.key.currentState?.historyState,
+            '-1': vRoute?.key?.currentState?.historyState,
             for (var pages in flattenPages)
               '${pages.child.depth}': pages.child.stateKey?.currentState?.historyState ??
                   pages.child.initialHistorySate,
