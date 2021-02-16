@@ -1,3 +1,7 @@
+## [0.0.7] - 16/02/2021
+
+* Correct wrong import
+
 ## [0.0.6] - 16/02/2021
 
 * Remove empty statements
