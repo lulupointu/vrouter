@@ -1,7 +1,6 @@
 name: vrouter
 description: A new Flutter package project.
 version: 0.0.1
-author: Lucas Delsol
 homepage: https://vrouter.dev
 
 environment:
@@ -15,7 +14,6 @@ dependencies:
   path_to_regexp: ^0.3.0
   url_strategy: ^0.1.1
   js: ^0.6.2
-  logger: ^0.9.4
   url_launcher: ^5.7.10
   move_to_background: ^1.0.1
 

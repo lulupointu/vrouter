@@ -6,7 +6,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:logger/logger.dart';
 import 'package:move_to_background/move_to_background.dart';
 // import 'package:move_to_background/move_to_background.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
@@ -23,9 +22,3 @@ part 'page.dart';
 part 'route.dart';
 part 'route_element.dart';
 part 'router.dart';
-
-var logger = Logger(
-  filter: null, // Use the default LogFilter (-> only log in debug mode)
-  printer: PrettyPrinter(), // Use the PrettyPrinter to format and print log
-  output: null, // Use the default LogOutput (-> send everything to console)
-);
