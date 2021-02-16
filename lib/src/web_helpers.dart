@@ -4,6 +4,7 @@ library web_helpers;
 import 'dart:convert';
 
 import 'package:js/js.dart';
+// ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
 
 import 'main.dart';
@@ -43,7 +44,7 @@ class BrowserHelpers {
           '');
       // ignore: empty_catches
     } on FormatException {}
-    ;
+
     return newSerialCount;
   }
 
