@@ -1,3 +1,8 @@
+## [1.0.0-nullsafety.2] - 16/02/2021.
+
+* Formatting with dartfmt
+* Remove unnecessary statements
+
 ## [1.0.0-nullsafety.1] - 16/02/2021.
 
 * Remove unnecessary statements
