@@ -1,8 +1,7 @@
 name: vrouter
 description: A new Flutter package project.
 version: 1.0.0-nullsafety.0
-author: Lucas Delsol
-homepage: vrouter.dev
+homepage: https://vrouter.dev
 
 environment:
   sdk: ">=2.12.0-0 <3.0.0"
@@ -12,7 +11,7 @@ dependencies:
   flutter:
     sdk: flutter
   simple_url_handler: ^1.0.0-nullsafety.0
-  path_to_regexp: 0.4.0-nullsafety.0
+  path_to_regexp: ^0.4.0-nullsafety.0
   url_strategy: ^0.2.0-nullsafety.0
   js: ^0.6.3-nullsafety.3
   url_launcher: ^6.0.0-nullsafety.6
