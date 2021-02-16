@@ -466,7 +466,8 @@ class VRouterHelper extends StatelessWidget {
 
 /// A routerDelegate which automatically creates a Navigator
 /// See the details of each attribute to see what they can be used for
-class VRouterDelegate<T extends Object> extends RouterDelegate<T> with ChangeNotifier {
+class VRouterDelegate<T extends Object> extends RouterDelegate<T>
+    with ChangeNotifier {
   final GlobalKey<NavigatorState>? navigatorKey;
   final List<NavigatorObserver>? observers;
   final Widget? child;
@@ -481,7 +482,7 @@ class VRouterDelegate<T extends Object> extends RouterDelegate<T> with ChangeNot
     this.observers,
     this.onPopPage,
     this.onSystemPopPage,
-  }) : assert (pages != null || child != null);
+  }) : assert(pages != null || child != null);
 
   @override
   Widget build(BuildContext context) {

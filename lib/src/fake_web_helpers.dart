@@ -6,7 +6,6 @@ import 'main.dart';
 /// Only one is implemented for mobile: pushExternal
 
 class BrowserHelpers {
-
   static void replaceHistoryState(String state) =>
       throw (Exception('replaceHistoryState should only be used on the web'));
 
@@ -16,10 +15,11 @@ class BrowserHelpers {
   static int? getHistorySerialCount() =>
       throw (Exception('getHistorySerialCount should only be used on the web'));
 
-  static String getPathAndQuery({required VRouterModes routerMode})  =>
+  static String getPathAndQuery({required VRouterModes routerMode}) =>
       throw (Exception('getHistorySerialCount should only be used on the web'));
 
-  static void browserGo(int delta) => throw (Exception('browserGo should only be used on the web'));
+  static void browserGo(int delta) =>
+      throw (Exception('browserGo should only be used on the web'));
 
   static Stream get onBrowserPopState =>
       throw (Exception('onBrowserPopState should only be used on the web'));
@@ -29,7 +29,8 @@ class BrowserHelpers {
 
   /// This uses the launch method from the [url_launcher] package to open a given link
   /// [openNewTab] does nothing here since we open a window anyway
-  static Future<void> pushExternal(String url, {required bool openNewTab}) async {
+  static Future<void> pushExternal(String url,
+      {required bool openNewTab}) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -39,5 +40,4 @@ class BrowserHelpers {
 
   static void pushReplacement(String url, {required VRouterModes routerMode}) =>
       throw (Exception('pushReplacement should only be used on the web'));
-
 }

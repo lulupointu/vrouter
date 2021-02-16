@@ -5,7 +5,6 @@ part of 'main.dart';
 /// This is a normal page except that it allows for
 /// custom transitions easily.
 class VPage<T> extends MaterialPage<T> {
-
   /// The child of this page
   @override
   final RouteElementWidget child;
@@ -38,9 +37,8 @@ class VPage<T> extends MaterialPage<T> {
   /// If this is null, the default transition is the one of the [VRouter]
   /// If the one of the [VRouter] is also null, the default transition is
   /// the one of a [MaterialPage]
-  final Widget Function(
-      Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
-  buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child)? buildTransition;
 
   VPage({
     required this.key,
@@ -58,12 +56,12 @@ class VPage<T> extends MaterialPage<T> {
       return VPageRoute<T>(
         page: this,
         customTransition: (_, Animation<double> animation,
-            Animation<double> secondaryAnimation, Widget child) =>
+                Animation<double> secondaryAnimation, Widget child) =>
             buildTransition!(
-              animation,
-              secondaryAnimation,
-              child,
-            ),
+          animation,
+          secondaryAnimation,
+          child,
+        ),
         transitionDuration: transitionDuration,
         reverseTransitionDuration: reverseTransitionDuration,
       );
@@ -89,8 +87,8 @@ class VPageRoute<T> extends PageRoute<T> {
     Duration? transitionDuration,
     Duration? reverseTransitionDuration,
   })  : transitionDuration = transitionDuration ?? Duration(milliseconds: 300),
-        reverseTransitionDuration =
-            reverseTransitionDuration ?? (transitionDuration ?? Duration(milliseconds: 300)),
+        reverseTransitionDuration = reverseTransitionDuration ??
+            (transitionDuration ?? Duration(milliseconds: 300)),
         super(settings: page) {
     assert(opaque);
   }
@@ -115,16 +113,18 @@ class VPageRoute<T> extends PageRoute<T> {
   @override
   bool canTransitionTo(TransitionRoute<dynamic> nextRoute) {
     // Don't perform outgoing animation if the next route is a fullscreen dialog.
-    return (nextRoute is MaterialRouteTransitionMixin && !nextRoute.fullscreenDialog) ||
-        (nextRoute is CupertinoRouteTransitionMixin && !nextRoute.fullscreenDialog);
+    return (nextRoute is MaterialRouteTransitionMixin &&
+            !nextRoute.fullscreenDialog) ||
+        (nextRoute is CupertinoRouteTransitionMixin &&
+            !nextRoute.fullscreenDialog);
   }
 
   @override
   Widget buildPage(
-      BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,
-      ) {
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
     return _page.child;
   }
 

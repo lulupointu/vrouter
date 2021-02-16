@@ -71,7 +71,8 @@ class _RouteElementWidgetState extends State<RouteElementWidget> {
       // This will be used to call its afterUpdate and beforeLeave in particular.
       onNotification: (VNavigationGuardMessage vNavigationGuardMessage) {
         vNavigationGuardMessages.removeWhere((message) =>
-            message.vNavigationGuard.key == vNavigationGuardMessage.vNavigationGuard.key);
+            message.vNavigationGuard.key ==
+            vNavigationGuardMessage.vNavigationGuard.key);
         WidgetsBinding.instance?.addPostFrameCallback((_) {
           setState(() {
             vNavigationGuardMessages.add(vNavigationGuardMessage);
@@ -96,7 +97,8 @@ class _RouteElementWidgetState extends State<RouteElementWidget> {
   void _replaceHistoryState(String newLocalState) {
     if (kIsWeb) {
       final allHistoryStates = BrowserHelpers.getHistoryState() ?? '{}';
-      final historyStateMap = Map<String, String?>.from(jsonDecode(allHistoryStates));
+      final historyStateMap =
+          Map<String, String?>.from(jsonDecode(allHistoryStates));
       historyStateMap['${widget.depth}'] = newLocalState;
       final newAllHistoryState = jsonEncode(historyStateMap);
       BrowserHelpers.replaceHistoryState(newAllHistoryState);

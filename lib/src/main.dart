@@ -13,7 +13,6 @@ import 'package:url_strategy/url_strategy.dart';
 // import 'move_to_background.dart';
 import 'fake_web_helpers.dart' if (dart.library.js) 'web_helpers.dart';
 
-
 part 'exceptions.dart';
 part 'route_element_widget.dart';
 part 'navigation_2_wrappers.dart';

@@ -48,7 +48,8 @@ void main() {
               },
             ),
             VChild(
-              path: '/profile/:username', // :username is a path parameter and can be any value
+              path:
+                  '/profile/:username', // :username is a path parameter and can be any value
               name: 'profile', // We also give a name for easier navigation
               widget: ProfileWidget(),
 
@@ -105,8 +106,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                           return (name == '')
                               ? 'Please enter your name'
                               : name.contains('/')
-                              ? 'Please don\'t put \'\\ in your name'
-                              : null;
+                                  ? 'Please don\'t put \'\\ in your name'
+                                  : null;
                         }),
                   ),
                 ),
@@ -140,21 +141,27 @@ class MyScaffold extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBar(
         // We check the vChild name to known where we are
-        currentIndex: (VRouteElementData.of(context).vChildName == 'profile') ? 0 : 1,
+        currentIndex:
+            (VRouteElementData.of(context).vChildName == 'profile') ? 0 : 1,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'Info'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline), label: 'Profile'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.info_outline), label: 'Info'),
         ],
         onTap: (int index) {
-          if (index == 0 && VRouteElementData.of(context).vChildName != 'profile') {
+          if (index == 0 &&
+              VRouteElementData.of(context).vChildName != 'profile') {
             // We use the name to navigate
             // We can specify the username in a map
             // Since we are on settings, the username is stored in the VRouter history state
             print(
                 'VRouterData.of(context).historyState: ${VRouterData.of(context).historyState}');
-            VRouterData.of(context).pushNamed('profile',
-                pathParameters: {'username': VRouterData.of(context).historyState});
-          } else if (index == 1 && VRouteElementData.of(context).vChildName == 'profile') {
+            VRouterData.of(context).pushNamed('profile', pathParameters: {
+              'username': VRouterData.of(context).historyState
+            });
+          } else if (index == 1 &&
+              VRouteElementData.of(context).vChildName == 'profile') {
             // We push the settings and store the username in the VRouter history state
             // We can access this username via the global path parameters (stored in VRoute)
             print(
@@ -217,7 +224,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     borderRadius: BorderRadius.circular(50),
                     color: Colors.blueAccent,
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                   child: Text(
                     'Your pressed this button $count times',
                     style: buttonTextStyle,
