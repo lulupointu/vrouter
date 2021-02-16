@@ -12,9 +12,7 @@ import 'main.dart';
 /// List of static methods to interact with the browser
 /// Only one is implemented for mobile: pushExternal
 
-
 class BrowserHelpers {
-
   /// This replace the current history state by the new given one
   ///
   /// Note that flutter uses a map in the browser history and that
@@ -27,7 +25,9 @@ class BrowserHelpers {
 
   /// Gets the current history state if any, null otherwise
   static String getHistoryState() {
-    return (html.window.history.state != null) ? html.window.history.state['state'] : null;
+    return (html.window.history.state != null)
+        ? html.window.history.state['state']
+        : null;
   }
 
   /// We use a custom state entry called 'serialCount'
@@ -39,10 +39,11 @@ class BrowserHelpers {
     }
     int newSerialCount;
     try {
-      newSerialCount = int.parse(
-          jsonDecode(html.window.history.state['state'] ?? '{}')['serialCount'] ?? '');
+      newSerialCount = int.parse(jsonDecode(
+              html.window.history.state['state'] ?? '{}')['serialCount'] ??
+          '');
       // ignore: empty_catches
-    } on FormatException {};
+    } on FormatException {}
     return newSerialCount;
   }
 
@@ -55,25 +56,28 @@ class BrowserHelpers {
     return (routerMode == VRouterModes.hash)
         ? html.window.location.hash.substring(1)
         : ((html.window.location.pathname ?? '') +
-        (html.window.location.search ?? '') +
-        html.window.location.hash);
+            (html.window.location.search ?? '') +
+            html.window.location.hash);
   }
 
   /// Allows us to tell the browser to navigate in the browser history
   static void browserGo(int delta) => html.window.history.go(delta);
 
   /// Fires an event when the url changes
-  static Stream<html.PopStateEvent> get onBrowserPopState => html.window.onPopState;
+  static Stream<html.PopStateEvent> get onBrowserPopState =>
+      html.window.onPopState;
 
   /// Fires an event when a page will be unloaded
   ///
   /// This mainly occurs when a user types a url in the browser on closes the browser
-  static Stream<html.Event> get onBrowserBeforeUnload => html.window.onBeforeUnload;
+  static Stream<html.Event> get onBrowserBeforeUnload =>
+      html.window.onBeforeUnload;
 
   /// Pushes a url which is from another website
-  /// 
+  ///
   /// If [openNewTab] is true, this url in opened in a new tab
-  static Future<void> pushExternal(String url, {@required bool openNewTab}) async {
+  static Future<void> pushExternal(String url,
+      {@required bool openNewTab}) async {
     final targetUrl = url.startsWith('http') ? url : 'http://$url';
     if (openNewTab) {
       html.window.open(targetUrl, '_blank');
@@ -84,7 +88,8 @@ class BrowserHelpers {
 
   /// This replace the current url by the given one
   /// Meaning that while the url changes, no new history entry is created
-  static void pushReplacement(String url, {@required VRouterModes routerMode}) =>
+  static void pushReplacement(String url,
+          {@required VRouterModes routerMode}) =>
       (routerMode == VRouterModes.hash)
           ? html.window.location.replace('/#$url')
           : html.window.location.replace(url);

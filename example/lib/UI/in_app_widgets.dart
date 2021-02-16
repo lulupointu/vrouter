@@ -14,13 +14,17 @@ class MyScaffold extends StatelessWidget {
           title: Text('You are connected'),
         ),
         bottomNavigationBar: BottomNavigationBar(
-          currentIndex: (VRouteElementData.of(context).vChildName == 'settings') ? 1 : 0,
+          currentIndex:
+              (VRouteElementData.of(context).vChildName == 'settings') ? 1 : 0,
           items: [
-            BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
-            BottomNavigationBarItem(icon: Icon(Icons.settings_outlined), label: 'Settings'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline), label: 'Profile'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.settings_outlined), label: 'Settings'),
           ],
           onTap: (int index) {
-            VRouterData.of(context).push((index == 0) ? '/profile' : '/settings');
+            VRouterData.of(context)
+                .push((index == 0) ? '/profile' : '/settings');
           },
         ),
         body: VRouteElementData.of(context).vChild,
@@ -58,9 +62,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                   setState(() {
                     count++;
                   });
-                  print('VRouteData.of(context).historyState: ${VRouteData
-                      .of(context)
-                      .historyState}');
+                  print(
+                      'VRouteData.of(context).historyState: ${VRouteData.of(context).historyState}');
                   VRouteData.of(context).replaceHistoryState('$count');
                   // print('PUSH');
                   // var state = window.history.state;

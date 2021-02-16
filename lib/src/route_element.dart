@@ -69,9 +69,8 @@ abstract class VRouteElement {
   ///
   /// Also see:
   ///   * [VRouter.buildTransition] for default transitions for all routes
-  Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
-      get buildTransition;
+  Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) get buildTransition;
 
   /// This is called before the url is updated but after all beforeLeave are called
   /// Note that it is only called if this [VRouteElement] is the last of the current route
@@ -83,7 +82,8 @@ abstract class VRouteElement {
   ///
   /// Also see:
   ///   * [VRouter.beforeEnter] for global level beforeEnter
-  Future<bool> Function(BuildContext context, String from, String to) get beforeEnter;
+  Future<bool> Function(BuildContext context, String from, String to)
+      get beforeEnter;
 
   /// This is called before the url is updated if this [VRouteElement] is the
   /// last of the current route
@@ -222,13 +222,13 @@ class VStacked extends VRouteElement {
 
   /// See [VRouteElement.buildTransition]
   @override
-  final Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
-      buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) buildTransition;
 
   /// See [VRouteElement.beforeEnter]
   @override
-  final Future<bool> Function(BuildContext context, String from, String to) beforeEnter;
+  final Future<bool> Function(BuildContext context, String from, String to)
+      beforeEnter;
 
   /// See [VRouteElement.beforeLeave]
   @override
@@ -273,19 +273,24 @@ class VStacked extends VRouteElement {
         aliasesRegExp = (aliases != null)
             ? [
                 for (var alias in aliases)
-                  pathToRegExp(alias.startsWith('/') ? alias.substring(1) : alias)
+                  pathToRegExp(
+                      alias.startsWith('/') ? alias.substring(1) : alias)
               ]
             : null,
         parameters = <String>[],
-        aliasesParameters = (aliases != null) ? List<List<String>>.filled(aliases.length, []) : null,
+        aliasesParameters = (aliases != null)
+            ? List<List<String>>.filled(aliases.length, [])
+            : null,
         navigatorKey = (subroutes != null &&
                 subroutes.isNotEmpty &&
-                subroutes.indexWhere((vChildClass) => vChildClass.isChild) != -1)
+                subroutes.indexWhere((vChildClass) => vChildClass.isChild) !=
+                    -1)
             ? GlobalKey<NavigatorState>()
             : null,
         heroController = (subroutes != null &&
                 subroutes.isNotEmpty &&
-                subroutes.indexWhere((vChildClass) => vChildClass.isChild) != -1)
+                subroutes.indexWhere((vChildClass) => vChildClass.isChild) !=
+                    -1)
             ? HeroController()
             : null,
         stateKey = GlobalKey<_RouteElementWidgetState>() {
@@ -314,11 +319,10 @@ class VStacked extends VRouteElement {
       pathToRegExp(localPath, parameters: parameters);
     }
     if (aliases != null) {
-      for (var i=0; i<aliases.length; i++) {
+      for (var i = 0; i < aliases.length; i++) {
         final alias = aliases[i];
         final localPath = alias[i].startsWith('/') ? alias.substring(1) : alias;
         pathToRegExp(localPath, parameters: aliasesParameters[i]);
-
       }
     }
   }
@@ -388,13 +392,13 @@ class VChild extends VRouteElement {
 
   /// See [VRouteElement.buildTransition]
   @override
-  final Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
-      buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) buildTransition;
 
   /// See [VRouteElement.beforeEnter]
   @override
-  final Future<bool> Function(BuildContext context, String from, String to) beforeEnter;
+  final Future<bool> Function(BuildContext context, String from, String to)
+      beforeEnter;
 
   /// See [VRouteElement.beforeLeave]
   @override
@@ -439,19 +443,24 @@ class VChild extends VRouteElement {
         aliasesRegExp = (aliases != null)
             ? [
                 for (var alias in aliases)
-                  pathToRegExp(alias.startsWith('/') ? alias.substring(1) : alias)
+                  pathToRegExp(
+                      alias.startsWith('/') ? alias.substring(1) : alias)
               ]
             : null,
         parameters = <String>[],
-        aliasesParameters = (aliases != null) ? List<List<String>>.filled(aliases.length, []) : null,
+        aliasesParameters = (aliases != null)
+            ? List<List<String>>.filled(aliases.length, [])
+            : null,
         navigatorKey = (subroutes != null &&
                 subroutes.isNotEmpty &&
-                subroutes.indexWhere((vChildClass) => vChildClass.isChild) != -1)
+                subroutes.indexWhere((vChildClass) => vChildClass.isChild) !=
+                    -1)
             ? GlobalKey<NavigatorState>()
             : null,
         heroController = (subroutes != null &&
                 subroutes.isNotEmpty &&
-                subroutes.indexWhere((vChildClass) => vChildClass.isChild) != -1)
+                subroutes.indexWhere((vChildClass) => vChildClass.isChild) !=
+                    -1)
             ? HeroController()
             : null,
         stateKey = GlobalKey<_RouteElementWidgetState>() {
@@ -480,11 +489,10 @@ class VChild extends VRouteElement {
       pathToRegExp(localPath, parameters: parameters);
     }
     if (aliases != null) {
-      for (var i=0; i<aliases.length; i++) {
+      for (var i = 0; i < aliases.length; i++) {
         final alias = aliases[i];
         final localPath = alias[i].startsWith('/') ? alias.substring(1) : alias;
         pathToRegExp(localPath, parameters: aliasesParameters[i]);
-
       }
     }
   }
@@ -522,7 +530,8 @@ class VChild extends VRouteElement {
 class VRouteRedirector extends VRouteElement {
   /// See [VRouteElement.beforeEnter]
   @override
-  final Future<bool> Function(BuildContext context, String from, String to) beforeEnter;
+  final Future<bool> Function(BuildContext context, String from, String to)
+      beforeEnter;
 
   /// See [VRouteElement.path]
   @override
@@ -549,17 +558,20 @@ class VRouteRedirector extends VRouteElement {
   VRouteRedirector({
     @required this.path,
     this.redirectTo,
-    Future<bool> Function(BuildContext context, String from, String to) beforeEnter,
+    Future<bool> Function(BuildContext context, String from, String to)
+        beforeEnter,
     this.name,
     this.aliases,
   })  : assert(redirectTo != null || beforeEnter != null),
         assert(redirectTo == null || beforeEnter == null,
             'You should specify redirectTo OR beforeEnter but not both'),
-        pathRegExp = pathToRegExp(path.startsWith('/') ? path.substring(1) : path),
+        pathRegExp =
+            pathToRegExp(path.startsWith('/') ? path.substring(1) : path),
         aliasesRegExp = (aliases != null)
             ? [
                 for (var alias in aliases)
-                  pathToRegExp(alias.startsWith('/') ? alias.substring(1) : alias)
+                  pathToRegExp(
+                      alias.startsWith('/') ? alias.substring(1) : alias)
               ]
             : null,
         beforeEnter = beforeEnter ??
@@ -591,7 +603,8 @@ class VRouteRedirector extends VRouteElement {
 
   /// Not implemented, this class is only for redirection
   @override
-  void Function(BuildContext context, String from, String to) get afterEnter => null;
+  void Function(BuildContext context, String from, String to) get afterEnter =>
+      null;
 
   /// Not implemented, this class is only for redirection
   @override
@@ -604,8 +617,9 @@ class VRouteRedirector extends VRouteElement {
   /// Not implemented, this class is only for redirection
   @override
   Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
-      get buildTransition => null;
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child) get buildTransition => null;
 
   /// Not implemented, this class is only for redirection
   @override

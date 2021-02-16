@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 
 class MyAuthenticationWidget extends StatelessWidget {
-
   MyAuthenticationWidget() : super();
 
   @override

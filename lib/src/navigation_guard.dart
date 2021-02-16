@@ -5,7 +5,6 @@ part of 'main.dart';
 /// Any [VNavigationGuard] is associated to the [VRouteElement] above it
 /// in the route tree.
 class VNavigationGuard extends StatefulWidget {
-
   /// The child of this widget
   final Widget child;
 
@@ -32,9 +31,8 @@ class VNavigationGuard extends StatefulWidget {
   /// Also see:
   ///   * [VRouter.beforeLeave] for global level beforeLeave
   ///   * [VRouteElement.beforeLeave] for route level beforeLeave
-  final Future<bool> Function(
-      BuildContext context, String from, String to, void Function(String state) saveHistoryState)
-  beforeLeave;
+  final Future<bool> Function(BuildContext context, String from, String to,
+      void Function(String state) saveHistoryState) beforeLeave;
 
   /// Called when the url changes and this [VNavigationGuard] was NOT part
   /// of the previous route.
@@ -111,7 +109,8 @@ class _VNavigationGuardState extends State<VNavigationGuard> {
     super.initState();
     if (widget.afterEnter != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        widget.afterEnter(context, VRouterData.of(context).previousUrl, VRouterData.of(context).url);
+        widget.afterEnter(context, VRouterData.of(context).previousUrl,
+            VRouterData.of(context).url);
       });
     }
   }
@@ -138,5 +137,6 @@ class VNavigationGuardMessage extends Notification {
   final VNavigationGuard vNavigationGuard;
   final BuildContext localContext;
 
-  VNavigationGuardMessage({@required this.vNavigationGuard, @required this.localContext});
+  VNavigationGuardMessage(
+      {@required this.vNavigationGuard, @required this.localContext});
 }
