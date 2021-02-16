@@ -1838,7 +1838,7 @@ class VRouterData extends InheritedWidget {
             "The current url is null but you are trying to access a path which does not start with'/'.");
       }
       final currentPath = Uri.parse(url!).path;
-      newUrl = currentPath + newUrl;
+      newUrl = currentPath + '/$newUrl';
     }
 
     _updateUrl(newUrl,
@@ -1904,7 +1904,7 @@ class VRouterData extends InheritedWidget {
             "The current url is null but you are trying to access a path which does not start with'/'.");
       }
       final currentPath = Uri.parse(url!).path;
-      newUrl = currentPath + newUrl;
+      newUrl = currentPath + '/$newUrl';
     }
 
     // Update the url, setting isReplacement to true
