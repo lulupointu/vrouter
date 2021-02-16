@@ -590,7 +590,6 @@ class VRouterState extends State<VRouter> {
             newSerialCount = int.parse(newState['serialCount'] ?? '');
             // ignore: empty_catches
           } on FormatException {}
-          ;
 
           // Update the app with the new url
           await _updateUrl(
