@@ -1,3 +1,7 @@
+## [0.0.6] - 16/02/2021
+
+* Remove empty statements
+
 ## [0.0.5] - 16/02/2021
 
 * Remove dart:io import to enable web support badge
