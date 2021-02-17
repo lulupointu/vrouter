@@ -1,3 +1,9 @@
+## [1.0.0-nullsafety.4] - 16/02/2021.
+
+* add vRouteData in beforeLeave and beforeEnter
+* fix error when replacing path parameters in pushNamed
+* fix error with pushReplace on the web
+
 ## [1.0.0-nullsafety.3] - 16/02/2021.
 
 * Fix error when pushing a url which does not start with '/'

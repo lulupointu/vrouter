@@ -15,6 +15,9 @@ class VNavigationGuard extends StatefulWidget {
   /// [context] can be used to access the [VRouteElementData] associated
   /// to this [VNavigationGuard]
   ///
+  /// Use [newVRouteData] if you want information on the new route but be
+  /// careful, on the web newVRouteData is null when a user types a url manually
+  ///
   /// [saveHistoryState] can be used to save a history state before leaving
   /// This history state will be restored if the user uses the back button
   /// You will find the saved history state in the [VRouteElementData] using
@@ -32,7 +35,7 @@ class VNavigationGuard extends StatefulWidget {
   ///   * [VRouter.beforeLeave] for global level beforeLeave
   ///   * [VRouteElement.beforeLeave] for route level beforeLeave
   final Future<bool> Function(BuildContext context, String? from, String to,
-      void Function(String state) saveHistoryState)? beforeLeave;
+      VRouteData? newVRouteData, void Function(String state) saveHistoryState)? beforeLeave;
 
   /// Called when the url changes and this [VNavigationGuard] was NOT part
   /// of the previous route.
@@ -46,8 +49,7 @@ class VNavigationGuard extends StatefulWidget {
   /// Also see:
   ///   * [VRouter.afterEnter] for global level afterEnter
   ///   * [VRouteElement.afterEnter] for route level afterEnter
-  final void Function(BuildContext context, String? from, String to)?
-      afterEnter;
+  final void Function(BuildContext context, String? from, String to)? afterEnter;
 
   /// Called when the url changes and this [VNavigationGuard] was already part
   /// of the previous route.
@@ -57,8 +59,7 @@ class VNavigationGuard extends StatefulWidget {
   ///
   /// Note that you should consider the navigation cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
-  final void Function(BuildContext context, String? from, String to)?
-      afterUpdate;
+  final void Function(BuildContext context, String? from, String to)? afterUpdate;
 
   /// Called when a pop event occurs.
   /// A pop event can be called programmatically (with
@@ -106,13 +107,12 @@ class VNavigationGuard extends StatefulWidget {
 class _VNavigationGuardState extends State<VNavigationGuard> {
   @override
   void initState() {
-    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context)
-        .dispatch(context);
+    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context).dispatch(context);
     super.initState();
     if (widget.afterEnter != null) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
-        widget.afterEnter!(context, VRouterData.of(context).previousUrl,
-            VRouterData.of(context).url!);
+        widget.afterEnter!(
+            context, VRouterData.of(context).previousUrl, VRouterData.of(context).url!);
       });
     }
   }
@@ -122,8 +122,7 @@ class _VNavigationGuardState extends State<VNavigationGuard> {
   // are necessary when changes to VNavigationGuard are made
   @override
   void reassemble() {
-    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context)
-        .dispatch(context);
+    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context).dispatch(context);
     super.reassemble();
   }
 
@@ -139,6 +138,5 @@ class VNavigationGuardMessage extends Notification {
   final VNavigationGuard vNavigationGuard;
   final BuildContext localContext;
 
-  VNavigationGuardMessage(
-      {required this.vNavigationGuard, required this.localContext});
+  VNavigationGuardMessage({required this.vNavigationGuard, required this.localContext});
 }
