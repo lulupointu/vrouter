@@ -564,7 +564,7 @@ class VRouteRedirector extends VRouteElement {
   VRouteRedirector({
     @required this.path,
     this.redirectTo,
-    Future<bool> Function(BuildContext context, String from, String to) beforeEnter,
+    Future<bool> Function(BuildContext context, String from, String to, VRouteData newVRouteData) beforeEnter,
     this.name,
     this.aliases,
   })  : assert(redirectTo != null || beforeEnter != null),
