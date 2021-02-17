@@ -15,6 +15,9 @@ class VNavigationGuard extends StatefulWidget {
   /// [context] can be used to access the [VRouteElementData] associated
   /// to this [VNavigationGuard]
   ///
+  /// Use [newVRouteData] if you want information on the new route but be
+  /// careful, on the web newVRouteData is null when a user types a url manually
+  ///
   /// [saveHistoryState] can be used to save a history state before leaving
   /// This history state will be restored if the user uses the back button
   /// You will find the saved history state in the [VRouteElementData] using

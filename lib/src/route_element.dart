@@ -74,6 +74,7 @@ abstract class VRouteElement {
       get buildTransition;
 
   /// This is called before the url is updated but after all beforeLeave are called
+  /// Use [newVRouteData] if you want information on the new route
   /// Note that it is only called if this [VRouteElement] is the last of the current route
   ///
   /// Return false if you don't want to redirect
@@ -89,7 +90,8 @@ abstract class VRouteElement {
 
   /// This is called before the url is updated if this [VRouteElement] is the
   /// last of the current route
-  ///
+  /// Use [newVRouteData] if you want information on the new route but be
+  /// careful, on the web newVRouteData is null when a user types a url manually
   /// Return false if you don't want to redirect
   ///
   /// [saveHistoryState] can be used to save a history state before leaving

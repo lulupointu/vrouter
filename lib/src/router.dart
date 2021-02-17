@@ -58,6 +58,7 @@ class VRouter extends StatefulWidget {
   ) beforeLeave;
 
   /// This is called before the url is updated but after all beforeLeave are called
+  /// Use [newVRouteData] if you want information on the new route
   /// Return false if you don't want to redirect
   ///
   /// Note that you should consider the navigation cycle to
