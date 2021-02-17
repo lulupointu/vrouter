@@ -707,8 +707,7 @@ class VRouterState extends State<VRouter> {
         // Get the _VRoutePath from the path
 
         // Get the global path
-        final globalPath =
-        (childRoute.path.startsWith('/'))
+        final globalPath = (childRoute.path.startsWith('/'))
             ? childRoute.path
             : parentPath + '/${childRoute.path}';
 
@@ -1093,7 +1092,8 @@ class VRouterState extends State<VRouter> {
 
     // Extract the path parameters from the url
     final match = newVRoutePathOfPath?.pathRegExp?.matchAsPrefix(newPath);
-    final newPathParameters = (match != null) ? extract(newVRoutePathOfPath.parameters, match) : <String, String>{};
+    final newPathParameters =
+        (match != null) ? extract(newVRoutePathOfPath.parameters, match) : <String, String>{};
 
     // Get the new VRouterData
     final newVRouteData = VRouteData(
@@ -1289,7 +1289,6 @@ class VRouterState extends State<VRouter> {
         await BrowserHelpers.onBrowserPopState
             .firstWhere((element) => BrowserHelpers.getHistorySerialCount() == oldSerialCount);
       }
-      serialCount = newSerialCount ?? serialCount + 1;
       BrowserHelpers.replaceHistoryState(jsonEncode(historyStatesToSave));
       if (kIsWeb && fromBrowser && oldSerialCount != newSerialCount) {
         BrowserHelpers.browserGo(newSerialCount - oldSerialCount);
@@ -1297,8 +1296,6 @@ class VRouterState extends State<VRouter> {
             .firstWhere((element) => BrowserHelpers.getHistorySerialCount() == newSerialCount);
         ignoreNextBrowserCalls = false;
       }
-    } else {
-      serialCount = newSerialCount ?? serialCount + 1;
     }
 
     /// Leave if the url is external
@@ -1337,6 +1334,7 @@ class VRouterState extends State<VRouter> {
         BrowserHelpers.replaceHistoryState(jsonEncode(newState));
         ignoreNextBrowserCalls = false;
       }
+      serialCount = newSerialCount ?? serialCount + 1;
       setState(() {});
     }
 
@@ -1672,8 +1670,8 @@ class VRouterState extends State<VRouter> {
 
     ///   3. beforeLeave in the VRouter
     if (widget.beforeLeave != null) {
-      final shouldUpdate =
-          await widget.beforeLeave(_vRouterInformationContext, _url, '', null, saveHistoryState);
+      final shouldUpdate = await widget.beforeLeave(
+          _vRouterInformationContext, _url, '', null, saveHistoryState);
       if (objectToSave != null) {
         historyStatesToSave['-2'] = objectToSave;
         objectToSave = null;
