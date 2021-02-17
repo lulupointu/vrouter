@@ -747,7 +747,7 @@ class VRouterState extends State<VRouter> {
 
           for (var alias in childRoute.aliases!) {
             // Get the global path
-            final globalPath = (alias.startsWith('/')) ? alias : parentPath + alias;
+            final globalPath = (alias.startsWith('/')) ? alias : parentPath + '/$alias';
 
             // Get the pathRegExp and the new parameters
             var newGlobalParameters = <String>[];
