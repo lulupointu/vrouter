@@ -1092,8 +1092,8 @@ class VRouterState extends State<VRouter> {
     }
 
     // Extract the path parameters from the url
-    final match = newVRoutePathOfPath.pathRegExp.matchAsPrefix(newPath);
-    final newPathParameters = extract(newVRoutePathOfPath.parameters, match);
+    final match = newVRoutePathOfPath?.pathRegExp?.matchAsPrefix(newPath);
+    final newPathParameters = (match != null) ? extract(newVRoutePathOfPath.parameters, match) : <String, String>{};
 
     // Get the new VRouterData
     final newVRouteData = VRouteData(
