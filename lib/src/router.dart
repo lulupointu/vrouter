@@ -1153,7 +1153,7 @@ class VRouterState extends State<VRouter> {
         // So we have to navigate back to the old url (stored in _url)
         // Note: in future version it would be better to delete the last url of the browser
         //        but it is not yet possible
-        if (kIsWeb && fromBrowser && serialCount != newSerialCount) {
+        if (kIsWeb && fromBrowser && BrowserHelpers.getHistorySerialCount() != serialCount) {
           ignoreNextBrowserCalls = true;
           BrowserHelpers.browserGo(serialCount - newSerialCount);
           await BrowserHelpers.onBrowserPopState
@@ -1186,7 +1186,7 @@ class VRouterState extends State<VRouter> {
           // So we have to navigate back to the old url (stored in _url)
           // Note: in future version it would be better to delete the last url of the browser
           //        but it is not yet possible
-          if (kIsWeb && fromBrowser && serialCount != newSerialCount) {
+          if (kIsWeb && fromBrowser && BrowserHelpers.getHistorySerialCount() != serialCount) {
             ignoreNextBrowserCalls = true;
             BrowserHelpers.browserGo(serialCount - newSerialCount);
             await BrowserHelpers.onBrowserPopState.firstWhere(
@@ -1211,7 +1211,7 @@ class VRouterState extends State<VRouter> {
           // So we have to navigate back to the old url (stored in _url)
           // Note: in future version it would be better to delete the last url of the browser
           //        but it is not yet possible
-          if (kIsWeb && fromBrowser && serialCount != newSerialCount) {
+          if (kIsWeb && fromBrowser && BrowserHelpers.getHistorySerialCount() != serialCount) {
             ignoreNextBrowserCalls = true;
             BrowserHelpers.browserGo(serialCount - newSerialCount);
             await BrowserHelpers.onBrowserPopState.firstWhere(
@@ -1233,7 +1233,7 @@ class VRouterState extends State<VRouter> {
           // So we have to navigate back to the old url (stored in _url)
           // Note: in future version it would be better to delete the last url of the browser
           //        but it is not yet possible
-          if (kIsWeb && fromBrowser && serialCount != newSerialCount) {
+          if (kIsWeb && fromBrowser && BrowserHelpers.getHistorySerialCount() != serialCount) {
             ignoreNextBrowserCalls = true;
             BrowserHelpers.browserGo(serialCount - newSerialCount);
             await BrowserHelpers.onBrowserPopState.firstWhere(
@@ -1256,7 +1256,7 @@ class VRouterState extends State<VRouter> {
           // So we have to navigate back to the old url (stored in _url)
           // Note: in future version it would be better to delete the last url of the browser
           //        but it is not yet possible
-          if (kIsWeb && fromBrowser && serialCount != newSerialCount) {
+          if (kIsWeb && fromBrowser && BrowserHelpers.getHistorySerialCount() != serialCount) {
             ignoreNextBrowserCalls = true;
             BrowserHelpers.browserGo(serialCount - newSerialCount);
             await BrowserHelpers.onBrowserPopState.firstWhere(
@@ -1632,7 +1632,7 @@ class VRouterState extends State<VRouter> {
       // So we have to navigate back to the old url (stored in _url)
       // Note: in future version it would be better to delete the last url of the browser
       //        but it is not yet possible
-      if (serialCount != newSerialCount) {
+      if (BrowserHelpers.getHistorySerialCount() != serialCount) {
         ignoreNextBrowserCalls = true;
         BrowserHelpers.browserGo(serialCount - newSerialCount);
         await BrowserHelpers.onBrowserPopState
@@ -1658,7 +1658,7 @@ class VRouterState extends State<VRouter> {
         // So we have to navigate back to the old url (stored in _url)
         // Note: in future version it would be better to delete the last url of the browser
         //        but it is not yet possible
-        if (serialCount != newSerialCount) {
+        if (BrowserHelpers.getHistorySerialCount() != serialCount) {
           ignoreNextBrowserCalls = true;
           BrowserHelpers.browserGo(serialCount - newSerialCount);
           await BrowserHelpers.onBrowserPopState
@@ -1682,7 +1682,7 @@ class VRouterState extends State<VRouter> {
         // So we have to navigate back to the old url (stored in _url)
         // Note: in future version it would be better to delete the last url of the browser
         //        but it is not yet possible
-        if (serialCount != newSerialCount) {
+        if (BrowserHelpers.getHistorySerialCount() != serialCount) {
           // unawaited(_restoreBrowserUrl());
           ignoreNextBrowserCalls = true;
           BrowserHelpers.browserGo(serialCount - newSerialCount);
