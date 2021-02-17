@@ -31,7 +31,7 @@ class VNavigationGuard extends StatefulWidget {
   /// Also see:
   ///   * [VRouter.beforeLeave] for global level beforeLeave
   ///   * [VRouteElement.beforeLeave] for route level beforeLeave
-  final Future<bool> Function(BuildContext context, String from, String to,
+  final Future<bool> Function(BuildContext context, String from, String to, VRouteData newVRouteData,
       void Function(String state) saveHistoryState) beforeLeave;
 
   /// Called when the url changes and this [VNavigationGuard] was NOT part
