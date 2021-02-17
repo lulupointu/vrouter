@@ -838,13 +838,7 @@ class VRouterState extends State<VRouter> {
         .path;
 
     // Inject the given path parameters into the new path
-    for (var key in pathParameters.keys) {
-      if (key.startsWith(':')) {
-        newPath = newPath.replaceAll(key, pathParameters[key]);
-      } else {
-        newPath = newPath.replaceAll(':$key', pathParameters[key]);
-      }
-    }
+    newPath = pathToFunction(newPath)(pathParameters);
 
     // Update the url with the found and completed path
     _updateUrl(newPath,
