@@ -1039,6 +1039,10 @@ class VRouterState extends State<VRouter> {
     if (queryParameters.isEmpty) {
       queryParameters = newUri.queryParameters;
     }
+    // Decode queryParameters
+    queryParameters = queryParameters.map(
+      (key, value) => MapEntry(key, Uri.decodeComponent(value)),
+    );
 
     // Add the queryParameters to the url if needed
     if (queryParameters.isNotEmpty) {
@@ -1099,8 +1103,10 @@ class VRouterState extends State<VRouter> {
 
     // Extract the path parameters from the url
     final match = newVRoutePathOfPath?.pathRegExp?.matchAsPrefix(newPath);
-    final newPathParameters =
+    var newPathParameters =
         (match != null) ? extract(newVRoutePathOfPath.parameters, match) : <String, String>{};
+    // Decode path parameters
+    newPathParameters = newPathParameters.map((key, value) => MapEntry(key, Uri.decodeComponent(value)));
 
     var shouldSaveHistoryState = false;
     var historyStatesToSave = {
@@ -1175,7 +1181,9 @@ class VRouterState extends State<VRouter> {
         // So we have to navigate back to the old url (stored in _url)
         // Note: in future version it would be better to delete the last url of the browser
         //        but it is not yet possible
-        if (kIsWeb && fromBrowser && (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
+        if (kIsWeb &&
+            fromBrowser &&
+            (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
           ignoreNextBrowserCalls = true;
           BrowserHelpers.browserGo(serialCount - newSerialCount);
           await BrowserHelpers.onBrowserPopState
@@ -1208,7 +1216,9 @@ class VRouterState extends State<VRouter> {
           // So we have to navigate back to the old url (stored in _url)
           // Note: in future version it would be better to delete the last url of the browser
           //        but it is not yet possible
-          if (kIsWeb && fromBrowser && (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
+          if (kIsWeb &&
+              fromBrowser &&
+              (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
             ignoreNextBrowserCalls = true;
             BrowserHelpers.browserGo(serialCount - newSerialCount);
             await BrowserHelpers.onBrowserPopState.firstWhere(
@@ -1233,7 +1243,9 @@ class VRouterState extends State<VRouter> {
           // So we have to navigate back to the old url (stored in _url)
           // Note: in future version it would be better to delete the last url of the browser
           //        but it is not yet possible
-          if (kIsWeb && fromBrowser && (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
+          if (kIsWeb &&
+              fromBrowser &&
+              (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
             ignoreNextBrowserCalls = true;
             BrowserHelpers.browserGo(serialCount - newSerialCount);
             await BrowserHelpers.onBrowserPopState.firstWhere(
@@ -1255,7 +1267,9 @@ class VRouterState extends State<VRouter> {
           // So we have to navigate back to the old url (stored in _url)
           // Note: in future version it would be better to delete the last url of the browser
           //        but it is not yet possible
-          if (kIsWeb && fromBrowser && (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
+          if (kIsWeb &&
+              fromBrowser &&
+              (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
             ignoreNextBrowserCalls = true;
             BrowserHelpers.browserGo(serialCount - newSerialCount);
             await BrowserHelpers.onBrowserPopState.firstWhere(
@@ -1280,10 +1294,13 @@ class VRouterState extends State<VRouter> {
           // So we have to navigate back to the old url (stored in _url)
           // Note: in future version it would be better to delete the last url of the browser
           //        but it is not yet possible
-          if (kIsWeb && fromBrowser && (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
+          if (kIsWeb &&
+              fromBrowser &&
+              (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
             ignoreNextBrowserCalls = true;
             print('ignoreNextBrowserCalls = true');
-            print('BrowserHelpers.getHistorySerialCount(): ${BrowserHelpers.getHistorySerialCount()}');
+            print(
+                'BrowserHelpers.getHistorySerialCount(): ${BrowserHelpers.getHistorySerialCount()}');
             print('serialCount: $serialCount');
             print('newSerialCount: $newSerialCount');
             BrowserHelpers.browserGo(serialCount - newSerialCount);
