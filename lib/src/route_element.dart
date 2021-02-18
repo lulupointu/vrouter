@@ -275,12 +275,12 @@ class VStacked extends VRouteElement {
     this.onPop,
     this.onSystemPop,
   })  : pathRegExp = (path != null)
-            ? pathToRegExp(path.startsWith('/') ? path.substring(1) : path)
+            ? pathToRegExp(path.startsWith('/') ? path.substring(1) : path, prefix: true)
             : null,
         aliasesRegExp = (aliases != null)
             ? [
                 for (var alias in aliases)
-                  pathToRegExp(alias.startsWith('/') ? alias.substring(1) : alias)
+                  pathToRegExp(alias.startsWith('/') ? alias.substring(1) : alias, prefix: true)
               ]
             : null,
         parameters = <String>[],
@@ -441,12 +441,12 @@ class VChild extends VRouteElement {
     this.onPop,
     this.onSystemPop,
   })  : pathRegExp = (path != null)
-            ? pathToRegExp(path.startsWith('/') ? path.substring(1) : path)
+            ? pathToRegExp(path.startsWith('/') ? path.substring(1) : path, prefix: true)
             : null,
         aliasesRegExp = (aliases != null)
             ? [
                 for (var alias in aliases)
-                  pathToRegExp(alias.startsWith('/') ? alias.substring(1) : alias)
+                  pathToRegExp(alias.startsWith('/') ? alias.substring(1) : alias, prefix: true)
               ]
             : null,
         parameters = <String>[],
@@ -562,11 +562,11 @@ class VRouteRedirector extends VRouteElement {
   })  : assert(redirectTo != null || beforeEnter != null),
         assert(redirectTo == null || beforeEnter == null,
             'You should specify redirectTo OR beforeEnter but not both'),
-        pathRegExp = pathToRegExp(path.startsWith('/') ? path.substring(1) : path),
+        pathRegExp = pathToRegExp(path.startsWith('/') ? path.substring(1) : path, prefix: true),
         aliasesRegExp = (aliases != null)
             ? [
                 for (var alias in aliases)
-                  pathToRegExp(alias.startsWith('/') ? alias.substring(1) : alias)
+                  pathToRegExp(alias.startsWith('/') ? alias.substring(1) : alias, prefix: true)
               ]
             : null,
         beforeEnter =
