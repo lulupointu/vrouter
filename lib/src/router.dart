@@ -887,13 +887,11 @@ class VRouterState extends State<VRouter> {
       // This is null if a deeper-nester VRouteElement has a path
       // which starts with '/' (which means that this pathRegExp is not part
       // of the url)
-      final match = vRouteElement.pathRegExp.matchAsPrefix(remainingUrl);
+      final match = vRouteElement.pathRegExp.matchAsPrefix(Uri.decodeComponent(remainingUrl));
 
       // If the previous match didn't fail, we get the remainingUrl be stripping of the
       // part of the url which matched
       if (match != null) {
-        print('Match: ${match.pattern.toString()}');
-        print('vRouteElement.parameters: ${vRouteElement.parameters}');
         localParameters = extract(vRouteElement.parameters, match);
         remainingUrl = remainingUrl.substring(match.end);
       }
@@ -1051,8 +1049,6 @@ class VRouterState extends State<VRouter> {
       newUrl = Uri(path: newPath, queryParameters: queryParameters).toString();
     }
 
-    print('newUrl: $newUrl');
-
     // Get only the path from the url
     final path = (_url != null) ? Uri.parse(_url).path : null;
 
@@ -1108,7 +1104,8 @@ class VRouterState extends State<VRouter> {
     var newPathParameters =
         (match != null) ? extract(newVRoutePathOfPath.parameters, match) : <String, String>{};
     // Decode path parameters
-    newPathParameters = newPathParameters.map((key, value) => MapEntry(key, Uri.decodeComponent(value)));
+    newPathParameters =
+        newPathParameters.map((key, value) => MapEntry(key, Uri.decodeComponent(value)));
 
     var shouldSaveHistoryState = false;
     var historyStatesToSave = {
@@ -1284,13 +1281,12 @@ class VRouterState extends State<VRouter> {
       }
 
       ///   5. beforeEnter in the nest-most [VRouteElement] of the new route
-      print('5. beforeEnter in the nest-most [VRouteElement] of the new route');
 
       // Call the nest-most VRouteClass of the new route
       // Check the local beforeEnter
       if (newVRoutePathOfPath.vRouteElements.last.beforeEnter != null) {
         await newVRoutePathOfPath.vRouteElements.last.beforeEnter(vRedirector);
-        print('vRedirector._shouldUpdate: ${vRedirector._shouldUpdate}');
+
         if (!vRedirector._shouldUpdate) {
           // If the url change comes from the browser, chances are the url is already changed
           // So we have to navigate back to the old url (stored in _url)
@@ -1300,18 +1296,11 @@ class VRouterState extends State<VRouter> {
               fromBrowser &&
               (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
             ignoreNextBrowserCalls = true;
-            print('ignoreNextBrowserCalls = true');
-            print(
-                'BrowserHelpers.getHistorySerialCount(): ${BrowserHelpers.getHistorySerialCount()}');
-            print('serialCount: $serialCount');
-            print('newSerialCount: $newSerialCount');
             BrowserHelpers.browserGo(serialCount - newSerialCount);
             await BrowserHelpers.onBrowserPopState.firstWhere(
                 (element) => BrowserHelpers.getHistorySerialCount() == serialCount);
             ignoreNextBrowserCalls = false;
-            print('ignoreNextBrowserCalls = false');
           }
-          print('vRedirector.redirectFunction: ${vRedirector._redirectFunction}');
           if (vRedirector._redirectFunction != null) vRedirector._redirectFunction();
           return;
         }
