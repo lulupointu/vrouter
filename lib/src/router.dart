@@ -39,9 +39,14 @@ class VRouter extends StatefulWidget {
   final VRouterModes mode;
 
   /// Called when a url changes, before the url is updated
-  /// Use [newVRouteData] if you want information on the new route but be
-  /// careful, on the web newVRouteData is null when a user types a url manually
-  /// Return false if you don't want to redirect
+  /// Use [vRedirector] if you want to redirect.
+  /// DO NOT use VRouterData methods to redirect.
+  /// [vRedirector] also has information about the route you leave and the route you go to
+  ///
+  /// [saveHistoryState] can be used to save a history state before leaving
+  /// This history state will be restored if the user uses the back button
+  /// You will find the saved history state in the [VRouteElementData] using
+  /// [VRouterData.of(context).historyState]
   ///
   /// Note that you should consider the navigation cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
@@ -49,20 +54,24 @@ class VRouter extends StatefulWidget {
   /// Also see:
   ///   * [VRouteElement.beforeLeave] for route level beforeLeave
   ///   * [VNavigationGuard.beforeLeave] for widget level beforeLeave
+  ///   * [VRedirector] to known how to redirect and have access to route information
   final Future<void> Function(
     VRedirector vRedirector,
     void Function(String historyState) saveHistoryState,
   ) beforeLeave;
 
   /// This is called before the url is updated but after all beforeLeave are called
-  /// Use [newVRouteData] if you want information on the new route
-  /// Return false if you don't want to redirect
+  ///
+  /// Use [vRedirector] if you want to redirect.
+  /// DO NOT use VRouterData methods to redirect.
+  /// [vRedirector] also has information about the route you leave and the route you go to
   ///
   /// Note that you should consider the navigation cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
   ///
   /// Also see:
   ///   * [VRouteElement.beforeEnter] for route level beforeEnter
+  ///   * [VRedirector] to known how to redirect and have access to route information
   final Future<void> Function(VRedirector vRedirector) beforeEnter;
 
   /// This is called after the url and the historyState is updated
@@ -1173,7 +1182,7 @@ class VRouterState extends State<VRouter> {
               .firstWhere((element) => BrowserHelpers.getHistorySerialCount() == serialCount);
           ignoreNextBrowserCalls = false;
         }
-        if (vRedirector.redirectFunction != null) vRedirector.redirectFunction();
+        if (vRedirector._redirectFunction != null) vRedirector._redirectFunction();
         return;
       }
 
@@ -1206,7 +1215,7 @@ class VRouterState extends State<VRouter> {
                 (element) => BrowserHelpers.getHistorySerialCount() == serialCount);
             ignoreNextBrowserCalls = false;
           }
-          if (vRedirector.redirectFunction != null) vRedirector.redirectFunction();
+          if (vRedirector._redirectFunction != null) vRedirector._redirectFunction();
           return;
         }
       }
@@ -1231,7 +1240,7 @@ class VRouterState extends State<VRouter> {
                 (element) => BrowserHelpers.getHistorySerialCount() == serialCount);
             ignoreNextBrowserCalls = false;
           }
-          if (vRedirector.redirectFunction != null) vRedirector.redirectFunction();
+          if (vRedirector._redirectFunction != null) vRedirector._redirectFunction();
           return;
         }
       }
@@ -1253,7 +1262,7 @@ class VRouterState extends State<VRouter> {
                 (element) => BrowserHelpers.getHistorySerialCount() == serialCount);
             ignoreNextBrowserCalls = false;
           }
-          if (vRedirector.redirectFunction != null) vRedirector.redirectFunction();
+          if (vRedirector._redirectFunction != null) vRedirector._redirectFunction();
           return;
         }
       }
@@ -1283,8 +1292,8 @@ class VRouterState extends State<VRouter> {
             ignoreNextBrowserCalls = false;
             print('ignoreNextBrowserCalls = false');
           }
-          print('vRedirector.redirectFunction: ${vRedirector.redirectFunction}');
-          if (vRedirector.redirectFunction != null) vRedirector.redirectFunction();
+          print('vRedirector.redirectFunction: ${vRedirector._redirectFunction}');
+          if (vRedirector._redirectFunction != null) vRedirector._redirectFunction();
           return;
         }
       }
