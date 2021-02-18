@@ -12,8 +12,12 @@ class VNavigationGuard extends StatefulWidget {
   /// associated to this [VNavigationGuard] is in the previous route
   /// but not in the new one
   ///
-  /// [context] can be used to access the [VRouteElementData] associated
-  /// to this [VNavigationGuard]
+  /// Use [vRedirector] if you want to redirect.
+  /// DO NOT use VRouterData methods to redirect.
+  /// [vRedirector] also has information about the route you leave and the route you go to
+  ///
+  /// Use [newVRouteData] if you want information on the new route but be
+  /// careful, on the web newVRouteData is null when a user types a url manually
   ///
   /// Use [newVRouteData] if you want information on the new route but be
   /// careful, on the web newVRouteData is null when a user types a url manually
@@ -26,16 +30,17 @@ class VNavigationGuard extends StatefulWidget {
   /// multiple VNavigationGuards associated to the same [VRouteElement], only one
   /// should use [saveHistoryState].
   ///
-  /// return false if you want to stop the navigation from happening
-  ///
   /// Note that you should consider the navigation cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
   ///
   /// Also see:
   ///   * [VRouter.beforeLeave] for global level beforeLeave
   ///   * [VRouteElement.beforeLeave] for route level beforeLeave
-  final Future<bool> Function(BuildContext context, String? from, String to,
-      VRouteData? newVRouteData, void Function(String state) saveHistoryState)? beforeLeave;
+  ///   * [VRedirector] to known how to redirect and have access to route information
+  final Future<void> Function(
+    VRedirector? vRedirector,
+    void Function(String state) saveHistoryState,
+  )? beforeLeave;
 
   /// Called when the url changes and this [VNavigationGuard] was NOT part
   /// of the previous route.

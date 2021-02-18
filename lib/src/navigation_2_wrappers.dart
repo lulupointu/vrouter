@@ -12,7 +12,6 @@ class VMaterialApp<T extends Object> extends StatelessWidget {
   const VMaterialApp({
     Key? key,
     required this.child,
-    this.scaffoldMessengerKey,
     this.backButtonDispatcher,
     this.builder,
     this.title = '',
@@ -36,7 +35,6 @@ class VMaterialApp<T extends Object> extends StatelessWidget {
     this.debugShowCheckedModeBanner = true,
     this.shortcuts,
     this.actions,
-    this.restorationScopeId,
   }) : super(key: key);
 
   @override
@@ -44,10 +42,9 @@ class VMaterialApp<T extends Object> extends StatelessWidget {
     return MaterialApp.router(
       routerDelegate: VRouterDelegate<T>(child: child),
       routeInformationParser: SimpleRouteInformationParser(),
-      scaffoldMessengerKey: scaffoldMessengerKey,
       backButtonDispatcher: backButtonDispatcher,
       builder: builder,
-      title: title,
+      title: title ?? '',
       onGenerateTitle: onGenerateTitle,
       color: color,
       theme: theme,
@@ -59,26 +56,17 @@ class VMaterialApp<T extends Object> extends StatelessWidget {
       localizationsDelegates: localizationsDelegates,
       localeListResolutionCallback: localeListResolutionCallback,
       localeResolutionCallback: localeResolutionCallback,
-      supportedLocales: supportedLocales,
-      debugShowMaterialGrid: debugShowMaterialGrid,
-      showPerformanceOverlay: showPerformanceOverlay,
-      checkerboardRasterCacheImages: checkerboardRasterCacheImages,
-      checkerboardOffscreenLayers: checkerboardOffscreenLayers,
-      showSemanticsDebugger: showSemanticsDebugger,
-      debugShowCheckedModeBanner: debugShowCheckedModeBanner,
+      supportedLocales: supportedLocales ?? const <Locale>[Locale('en', 'US')],
+      debugShowMaterialGrid: debugShowMaterialGrid ?? false,
+      showPerformanceOverlay: showPerformanceOverlay ?? false,
+      checkerboardRasterCacheImages: checkerboardRasterCacheImages ?? false,
+      checkerboardOffscreenLayers: checkerboardOffscreenLayers ?? false,
+      showSemanticsDebugger: showSemanticsDebugger ?? false,
+      debugShowCheckedModeBanner: debugShowCheckedModeBanner ?? true,
       shortcuts: shortcuts,
       actions: actions,
-      restorationScopeId: restorationScopeId,
     );
   }
-
-  /// A key to use when building the [ScaffoldMessenger].
-  ///
-  /// If a [scaffoldMessengerKey] is specified, the [ScaffoldMessenger] can be
-  /// directly manipulated without first obtaining it from a [BuildContext] via
-  /// [ScaffoldMessenger.of]: from the [scaffoldMessengerKey], use the
-  /// [GlobalKey.currentState] getter.
-  final GlobalKey<ScaffoldMessengerState>? scaffoldMessengerKey;
 
   /// {@macro flutter.widgets.widgetsApp.backButtonDispatcher}
   final BackButtonDispatcher? backButtonDispatcher;
@@ -93,7 +81,7 @@ class VMaterialApp<T extends Object> extends StatelessWidget {
   /// {@macro flutter.widgets.widgetsApp.title}
   ///
   /// This value is passed unmodified to [WidgetsApp.title].
-  final String title;
+  final String? title;
 
   /// {@macro flutter.widgets.widgetsApp.onGenerateTitle}
   ///
@@ -317,27 +305,27 @@ class VMaterialApp<T extends Object> extends StatelessWidget {
   ///    which provides material localizations for many languages.
   ///  * The Flutter Internationalization Tutorial,
   ///    <https://flutter.dev/tutorials/internationalization/>.
-  final Iterable<Locale> supportedLocales;
+  final Iterable<Locale>? supportedLocales;
 
   /// Turns on a performance overlay.
   ///
   /// See also:
   ///
   ///  * <https://flutter.dev/debugging/#performanceoverlay>
-  final bool showPerformanceOverlay;
+  final bool? showPerformanceOverlay;
 
   /// Turns on checkerboarding of raster cache images.
-  final bool checkerboardRasterCacheImages;
+  final bool? checkerboardRasterCacheImages;
 
   /// Turns on checkerboarding of layers rendered to offscreen bitmaps.
-  final bool checkerboardOffscreenLayers;
+  final bool? checkerboardOffscreenLayers;
 
   /// Turns on an overlay that shows the accessibility information
   /// reported by the framework.
-  final bool showSemanticsDebugger;
+  final bool? showSemanticsDebugger;
 
   /// {@macro flutter.widgets.widgetsApp.debugShowCheckedModeBanner}
-  final bool debugShowCheckedModeBanner;
+  final bool? debugShowCheckedModeBanner;
 
   /// {@macro flutter.widgets.widgetsApp.shortcuts}
   /// {@tool snippet}
@@ -357,7 +345,7 @@ class VMaterialApp<T extends Object> extends StatelessWidget {
   ///       LogicalKeySet(LogicalKeyboardKey.select): const ActivateIntent(),
   ///     },
   ///     color: const Color(0xFFFF0000),
-  ///     builder: (BuildContext context, Widget? child) {
+  ///     builder: (BuildContext context, Widget child) {
   ///       return const Placeholder();
   ///     },
   ///   );
@@ -390,7 +378,7 @@ class VMaterialApp<T extends Object> extends StatelessWidget {
   ///       ),
   ///     },
   ///     color: const Color(0xFFFF0000),
-  ///     builder: (BuildContext context, Widget? child) {
+  ///     builder: (BuildContext context, Widget child) {
   ///       return const Placeholder();
   ///     },
   ///   );
@@ -400,9 +388,6 @@ class VMaterialApp<T extends Object> extends StatelessWidget {
   /// {@macro flutter.widgets.widgetsApp.actions.seeAlso}
   final Map<Type, Action<Intent>>? actions;
 
-  /// {@macro flutter.widgets.widgetsApp.restorationScopeId}
-  final String? restorationScopeId;
-
   /// Turns on a [GridPaper] overlay that paints a baseline grid
   /// Material apps.
   ///
@@ -411,7 +396,7 @@ class VMaterialApp<T extends Object> extends StatelessWidget {
   /// See also:
   ///
   ///  * <https://material.io/design/layout/spacing-methods.html>
-  final bool debugShowMaterialGrid;
+  final bool? debugShowMaterialGrid;
 }
 
 /// This is a helper to create a router in which we nest

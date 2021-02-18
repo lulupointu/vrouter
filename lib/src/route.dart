@@ -43,7 +43,7 @@ class _VRouteState extends State<VRoute> {
   /// See [VRouteData.historyState]
   String? historyState;
 
-  _VRouteState({@required this.historyState});
+  _VRouteState({required this.historyState});
 
   @override
   Widget build(BuildContext context) {

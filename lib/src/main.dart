@@ -21,3 +21,4 @@ part 'page.dart';
 part 'route.dart';
 part 'route_element.dart';
 part 'router.dart';
+part 'redirector.dart';

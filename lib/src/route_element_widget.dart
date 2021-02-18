@@ -46,7 +46,9 @@ class RouteElementWidget extends StatefulWidget {
     this.name,
     this.stateKey,
     this.initialHistorySate,
-  }) : super(key: stateKey);
+  }) : 
+  assert(child != null || childBuilder != null),
+  super(key: stateKey);
 
   @override
   _RouteElementWidgetState createState() =>

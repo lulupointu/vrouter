@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'main.dart';
@@ -38,6 +39,7 @@ class BrowserHelpers {
     }
   }
 
-  static void pushReplacement(String url, {required VRouterModes routerMode}) =>
+  static void pushReplacement(String url,
+          {required VRouterModes routerMode}) =>
       throw (Exception('pushReplacement should only be used on the web'));
 }

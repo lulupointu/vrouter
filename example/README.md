@@ -1,6 +1,12 @@
+<<<<<<< HEAD
 # vrouter_example
 
 Demonstrates how to use the vrouter plugin.
+=======
+# example
+
+A new Flutter project.
+>>>>>>> f33432a55f633757c8dcd9cae5f1ace258a527eb
 
 ## Getting Started
 

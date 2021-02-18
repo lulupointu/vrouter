@@ -236,5 +236,9 @@ In every before.. function, you can return false to stop the navigation.
 
 ## Much more
 
+<<<<<<< HEAD
 There is so much more that this package can do, check out the example
+=======
+Their is so much more that this package can do, check out the example
+>>>>>>> f33432a55f633757c8dcd9cae5f1ace258a527eb
 or have a look at the **[vrouter.dev](https://vrouter.dev)** website
