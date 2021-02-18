@@ -570,7 +570,7 @@ class VRouteRedirector extends VRouteElement {
               ]
             : null,
         beforeEnter =
-            beforeEnter ?? ((vRedirector) async => vRedirector.pushReplacement(redirectTo));
+            beforeEnter ?? ((vRedirector) async => vRedirector.push(redirectTo));
 
   /// Not implemented, this class is only for redirection
   @override
