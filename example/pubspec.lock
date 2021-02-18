@@ -72,13 +72,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
-  logger:
-    dependency: transitive
-    description:
-      name: logger
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "0.9.4"
   matcher:
     dependency: transitive
     description:
@@ -241,12 +234,10 @@ packages:
   vrouter:
     dependency: "direct main"
     description:
-      path: "."
-      ref: main
-      resolved-ref: e4eb97aaa97ad15250b99267eaf75bbfced78580
-      url: "https://github.com/lulupointu/vrouter.git"
-    source: git
-    version: "0.0.1"
+      path: ".."
+      relative: true
+    source: path
+    version: "0.0.9"
 sdks:
   dart: ">=2.12.0-0.0 <3.0.0"
   flutter: ">=1.22.0"

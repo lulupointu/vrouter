@@ -9,6 +9,7 @@ export 'src/main.dart'
         VRouteElement,
         VStacked,
         VChild,
+        VRedirector,
         VRouteRedirector,
         VRouteElementData,
         VRouterModes,

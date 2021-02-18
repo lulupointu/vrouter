@@ -84,9 +84,7 @@ abstract class VRouteElement {
   ///
   /// Also see:
   ///   * [VRouter.beforeEnter] for global level beforeEnter
-  Future<bool> Function(
-          BuildContext context, String from, String to, VRouteData newVRouteData)
-      get beforeEnter;
+  Future<void> Function(VRedirector vRedirector) get beforeEnter;
 
   /// This is called before the url is updated if this [VRouteElement] is the
   /// last of the current route
@@ -105,12 +103,10 @@ abstract class VRouteElement {
   /// Also see:
   ///   * [VRouter.beforeLeave] for global level beforeLeave
   ///   * [VNavigationGuard.beforeLeave] for widget level beforeLeave
-  Future<bool> Function(
-      BuildContext context,
-      String from,
-      String to,
-      VRouteData newVRouteData,
-      void Function(String state) saveHistoryState) get beforeLeave;
+  Future<void> Function(
+    VRedirector vRedirector,
+    void Function(String state) saveHistoryState,
+  ) get beforeLeave;
 
   /// This is called after the url and the state is updated if this [VRouteElement]
   /// is the last of the current route
@@ -236,17 +232,12 @@ class VStacked extends VRouteElement {
 
   /// See [VRouteElement.beforeEnter]
   @override
-  final Future<bool> Function(
-    BuildContext context,
-    String from,
-    String to,
-    VRouteData newVRouteData,
-  ) beforeEnter;
+  final Future<void> Function(VRedirector vRedirector) beforeEnter;
 
   /// See [VRouteElement.beforeLeave]
   @override
-  final Future<bool> Function(BuildContext context, String from, String to,
-      VRouteData newVRouteData, void Function(String state) saveHistoryState) beforeLeave;
+  final Future<void> Function(
+      VRedirector vRedirector, void Function(String state) saveHistoryState) beforeLeave;
 
   /// See [VRouteElement.afterEnter]
   @override
@@ -407,13 +398,12 @@ class VChild extends VRouteElement {
 
   /// See [VRouteElement.beforeEnter]
   @override
-  final Future<bool> Function(
-      BuildContext context, String from, String to, VRouteData newVRouteData) beforeEnter;
+  final Future<void> Function(VRedirector vRedirector) beforeEnter;
 
   /// See [VRouteElement.beforeLeave]
   @override
-  final Future<bool> Function(BuildContext context, String from, String to,
-      VRouteData newVRouteData, void Function(String state) saveHistoryState) beforeLeave;
+  final Future<void> Function(
+      VRedirector vRedirector, void Function(String state) saveHistoryState) beforeLeave;
 
   /// See [VRouteElement.afterEnter]
   @override
@@ -536,8 +526,7 @@ class VChild extends VRouteElement {
 class VRouteRedirector extends VRouteElement {
   /// See [VRouteElement.beforeEnter]
   @override
-  final Future<bool> Function(
-      BuildContext context, String from, String to, VRouteData newVRouteData) beforeEnter;
+  final Future<void> Function(VRedirector vRedirector) beforeEnter;
 
   /// See [VRouteElement.path]
   @override
@@ -564,7 +553,7 @@ class VRouteRedirector extends VRouteElement {
   VRouteRedirector({
     @required this.path,
     this.redirectTo,
-    Future<bool> Function(BuildContext context, String from, String to, VRouteData newVRouteData) beforeEnter,
+    Future<void> Function(VRedirector vRedirector) beforeEnter,
     this.name,
     this.aliases,
   })  : assert(redirectTo != null || beforeEnter != null),
@@ -577,11 +566,8 @@ class VRouteRedirector extends VRouteElement {
                   pathToRegExp(alias.startsWith('/') ? alias.substring(1) : alias)
               ]
             : null,
-        beforeEnter = beforeEnter ??
-            ((context, __, ___, ____) async {
-              VRouterData.of(context).pushReplacement(redirectTo);
-              return false;
-            });
+        beforeEnter =
+            beforeEnter ?? ((vRedirector) async => vRedirector.pushReplacement(redirectTo));
 
   /// Not implemented, this class is only for redirection
   @override
@@ -601,8 +587,8 @@ class VRouteRedirector extends VRouteElement {
 
   /// Not implemented, this class is only for redirection
   @override
-  Future<bool> Function(BuildContext context, String from, String to, VRouteData newVRouteData,
-      void Function(String state) saveHistoryState) get beforeLeave => null;
+  Future<bool> Function(VRedirector vRedirector, void Function(String state) saveHistoryState)
+      get beforeLeave => null;
 
   /// Not implemented, this class is only for redirection
   @override

@@ -34,8 +34,10 @@ class VNavigationGuard extends StatefulWidget {
   /// Also see:
   ///   * [VRouter.beforeLeave] for global level beforeLeave
   ///   * [VRouteElement.beforeLeave] for route level beforeLeave
-  final Future<bool> Function(BuildContext context, String from, String to, VRouteData newVRouteData,
-      void Function(String state) saveHistoryState) beforeLeave;
+  final Future<void> Function(
+    VRedirector vRedirector,
+    void Function(String state) saveHistoryState,
+  ) beforeLeave;
 
   /// Called when the url changes and this [VNavigationGuard] was NOT part
   /// of the previous route.
@@ -107,13 +109,12 @@ class VNavigationGuard extends StatefulWidget {
 class _VNavigationGuardState extends State<VNavigationGuard> {
   @override
   void initState() {
-    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context)
-        .dispatch(context);
+    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context).dispatch(context);
     super.initState();
     if (widget.afterEnter != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        widget.afterEnter(context, VRouterData.of(context).previousUrl,
-            VRouterData.of(context).url);
+        widget.afterEnter(
+            context, VRouterData.of(context).previousUrl, VRouterData.of(context).url);
       });
     }
   }
@@ -123,8 +124,7 @@ class _VNavigationGuardState extends State<VNavigationGuard> {
   // are necessary when changes to VNavigationGuard are made
   @override
   void reassemble() {
-    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context)
-        .dispatch(context);
+    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context).dispatch(context);
     super.reassemble();
   }
 
@@ -140,6 +140,5 @@ class VNavigationGuardMessage extends Notification {
   final VNavigationGuard vNavigationGuard;
   final BuildContext localContext;
 
-  VNavigationGuardMessage(
-      {@required this.vNavigationGuard, @required this.localContext});
+  VNavigationGuardMessage({@required this.vNavigationGuard, @required this.localContext});
 }

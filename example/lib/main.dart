@@ -189,7 +189,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       afterUpdate: (context, __, ___) => getCountFromState(context),
 
       // Before leaving we save the count local history state
-      beforeLeave: (context, __, ___, saveHistoryState) async {
+      beforeLeave: (_, saveHistoryState) async {
         saveHistoryState('$count');
         return true; // We return true because we still want the redirect to happen
       },

@@ -49,11 +49,8 @@ class VRouter extends StatefulWidget {
   /// Also see:
   ///   * [VRouteElement.beforeLeave] for route level beforeLeave
   ///   * [VNavigationGuard.beforeLeave] for widget level beforeLeave
-  final Future<bool> Function(
-    BuildContext context,
-    String from,
-    String to,
-    VRouteData newVRouteData,
+  final Future<void> Function(
+    VRedirector vRedirector,
     void Function(String historyState) saveHistoryState,
   ) beforeLeave;
 
@@ -66,8 +63,7 @@ class VRouter extends StatefulWidget {
   ///
   /// Also see:
   ///   * [VRouteElement.beforeEnter] for route level beforeEnter
-  final Future<bool> Function(
-      BuildContext context, String from, String to, VRouteData newVRouteData) beforeEnter;
+  final Future<void> Function(VRedirector vRedirector) beforeEnter;
 
   /// This is called after the url and the historyState is updated
   /// You can't prevent the navigation anymore
@@ -546,8 +542,8 @@ class VRouterState extends State<VRouter> {
 
   @override
   void initState() {
-    // When the app starts, the serial count is 0
-    serialCount = 0;
+    // When the app starts, get the serialCount. Default to 0.
+    serialCount = (kIsWeb) ? (BrowserHelpers.getHistorySerialCount() ?? 0) : 0;
 
     // Setup the url strategy
     if (widget.mode == VRouterModes.history) {
@@ -1040,6 +1036,8 @@ class VRouterState extends State<VRouter> {
       newUrl = Uri(path: newPath, queryParameters: queryParameters).toString();
     }
 
+    print('newUrl: $newUrl');
+
     // Get only the path from the url
     final path = (_url != null) ? Uri.parse(_url).path : null;
 
@@ -1095,18 +1093,6 @@ class VRouterState extends State<VRouter> {
     final newPathParameters =
         (match != null) ? extract(newVRoutePathOfPath.parameters, match) : <String, String>{};
 
-    // Get the new VRouterData
-    final newVRouteData = VRouteData(
-      child: Container(),
-      historyState: newState['-2'],
-      replaceHistoryState: (String _) =>
-          throw 'replaceHistoryState cannot be called using this object.\n'
-              'If you want to save the state of the current route: Use saveHistoryState.\n'
-              'If you want to change the history state of the new route: call VRouterData.replaceHistoryState in afterEnter or afterUpdate.',
-      pathParameters: newPathParameters,
-      queryParameters: queryParameters,
-    );
-
     var shouldSaveHistoryState = false;
     var historyStatesToSave = {
       'serialCount': '$serialCount',
@@ -1125,22 +1111,48 @@ class VRouterState extends State<VRouter> {
       objectToSave = historyState;
     }
 
+    // Instantiate VRedirector
+    final vRedirector = VRedirector(
+      context: _vRouterInformationContext,
+      from: _url,
+      to: newUrl,
+      previousVRouteData: VRouteData(
+        child: Container(),
+        historyState: vRoute?.key?.currentState?.historyState,
+        replaceHistoryState: (String _) =>
+            throw 'replaceHistoryState cannot be called using this object.\n'
+                'If you want to save the state of the current route: Use saveHistoryState.\n'
+                'If you want to change the history state of the new route: call VRouterData.replaceHistoryState in afterEnter or afterUpdate.',
+        pathParameters: vRoute?.pathParameters ?? {},
+        queryParameters: vRoute?.queryParameters ?? {},
+      ),
+      newVRouteData: VRouteData(
+        child: Container(),
+        historyState: newState['-2'],
+        replaceHistoryState: (String _) =>
+            throw 'replaceHistoryState cannot be called using this object.\n'
+                'If you want to save the state of the current route: Use saveHistoryState.\n'
+                'If you want to change the history state of the new route: call VRouterData.replaceHistoryState in afterEnter or afterUpdate.',
+        pathParameters: newPathParameters,
+        queryParameters: queryParameters,
+      ),
+    );
+
     if (_url != null) {
       ///   1. beforeLeave in all deactivated VNavigationGuard
-      var shouldUpdate = true;
       for (var deactivatedPage in deactivatedPages) {
         final vNavigationGuardMessages =
             deactivatedPage.child.stateKey?.currentState?.vNavigationGuardMessages ?? [];
         for (var vNavigationGuardMessage in vNavigationGuardMessages) {
           if (vNavigationGuardMessage.vNavigationGuard.beforeLeave != null) {
-            shouldUpdate = await vNavigationGuardMessage.vNavigationGuard
-                .beforeLeave(context, _url, newUrl, newVRouteData, saveHistoryState);
-            if (!shouldUpdate) {
+            await vNavigationGuardMessage.vNavigationGuard
+                .beforeLeave(vRedirector, saveHistoryState);
+            if (!vRedirector._shouldUpdate) {
               break;
             }
           }
         }
-        if (!shouldUpdate) {
+        if (!vRedirector._shouldUpdate) {
           break;
         } else if (objectToSave != null &&
             historyStatesToSave['${deactivatedPage.child.depth}'] != objectToSave) {
@@ -1149,18 +1161,19 @@ class VRouterState extends State<VRouter> {
           shouldSaveHistoryState = true;
         }
       }
-      if (!shouldUpdate) {
+      if (!vRedirector._shouldUpdate) {
         // If the url change comes from the browser, chances are the url is already changed
         // So we have to navigate back to the old url (stored in _url)
         // Note: in future version it would be better to delete the last url of the browser
         //        but it is not yet possible
-        if (kIsWeb && fromBrowser && BrowserHelpers.getHistorySerialCount() != serialCount) {
+        if (kIsWeb && fromBrowser && (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
           ignoreNextBrowserCalls = true;
           BrowserHelpers.browserGo(serialCount - newSerialCount);
           await BrowserHelpers.onBrowserPopState
               .firstWhere((element) => BrowserHelpers.getHistorySerialCount() == serialCount);
           ignoreNextBrowserCalls = false;
         }
+        if (vRedirector.redirectFunction != null) vRedirector.redirectFunction();
         return;
       }
 
@@ -1175,50 +1188,50 @@ class VRouterState extends State<VRouter> {
       // Call the nest-most VRouteClass of the current route
       final vRouteElement = vRoutePathOfPath.vRouteElements.last;
       if (vRouteElement.beforeLeave != null) {
-        shouldUpdate = await vRouteElement.beforeLeave(
-            context, _url, newUrl, newVRouteData, saveHistoryState);
+        await vRouteElement.beforeLeave(vRedirector, saveHistoryState);
         if (objectToSave != null && historyStatesToSave['-1'] != objectToSave) {
           historyStatesToSave['-1'] = objectToSave;
           objectToSave = null;
           shouldSaveHistoryState = true;
         }
-        if (!shouldUpdate) {
+        if (!vRedirector._shouldUpdate) {
           // If the url change comes from the browser, chances are the url is already changed
           // So we have to navigate back to the old url (stored in _url)
           // Note: in future version it would be better to delete the last url of the browser
           //        but it is not yet possible
-          if (kIsWeb && fromBrowser && BrowserHelpers.getHistorySerialCount() != serialCount) {
+          if (kIsWeb && fromBrowser && (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
             ignoreNextBrowserCalls = true;
             BrowserHelpers.browserGo(serialCount - newSerialCount);
             await BrowserHelpers.onBrowserPopState.firstWhere(
                 (element) => BrowserHelpers.getHistorySerialCount() == serialCount);
             ignoreNextBrowserCalls = false;
           }
+          if (vRedirector.redirectFunction != null) vRedirector.redirectFunction();
           return;
         }
       }
 
       ///   3. beforeLeave in the VRouter
       if (widget.beforeLeave != null) {
-        final shouldUpdate = await widget.beforeLeave(
-            _vRouterInformationContext, _url, newUrl, newVRouteData, saveHistoryState);
+        await widget.beforeLeave(vRedirector, saveHistoryState);
         if (objectToSave != null && historyStatesToSave['-2'] != objectToSave) {
           historyStatesToSave['-2'] = objectToSave;
           objectToSave = null;
           shouldSaveHistoryState = true;
         }
-        if (!shouldUpdate) {
+        if (!vRedirector._shouldUpdate) {
           // If the url change comes from the browser, chances are the url is already changed
           // So we have to navigate back to the old url (stored in _url)
           // Note: in future version it would be better to delete the last url of the browser
           //        but it is not yet possible
-          if (kIsWeb && fromBrowser && BrowserHelpers.getHistorySerialCount() != serialCount) {
+          if (kIsWeb && fromBrowser && (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
             ignoreNextBrowserCalls = true;
             BrowserHelpers.browserGo(serialCount - newSerialCount);
             await BrowserHelpers.onBrowserPopState.firstWhere(
                 (element) => BrowserHelpers.getHistorySerialCount() == serialCount);
             ignoreNextBrowserCalls = false;
           }
+          if (vRedirector.redirectFunction != null) vRedirector.redirectFunction();
           return;
         }
       }
@@ -1227,43 +1240,51 @@ class VRouterState extends State<VRouter> {
     if (!isUrlExternal) {
       ///   4. beforeEnter in the VRouter
       if (widget.beforeEnter != null) {
-        final shouldUpdate =
-            await widget.beforeEnter(_vRouterInformationContext, _url, newUrl, newVRouteData);
-        if (!shouldUpdate) {
+        await widget.beforeEnter(vRedirector);
+        if (!vRedirector._shouldUpdate) {
           // If the url change comes from the browser, chances are the url is already changed
           // So we have to navigate back to the old url (stored in _url)
           // Note: in future version it would be better to delete the last url of the browser
           //        but it is not yet possible
-          if (kIsWeb && fromBrowser && BrowserHelpers.getHistorySerialCount() != serialCount) {
+          if (kIsWeb && fromBrowser && (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
             ignoreNextBrowserCalls = true;
             BrowserHelpers.browserGo(serialCount - newSerialCount);
             await BrowserHelpers.onBrowserPopState.firstWhere(
                 (element) => BrowserHelpers.getHistorySerialCount() == serialCount);
             ignoreNextBrowserCalls = false;
           }
+          if (vRedirector.redirectFunction != null) vRedirector.redirectFunction();
           return;
         }
       }
 
       ///   5. beforeEnter in the nest-most [VRouteElement] of the new route
+      print('5. beforeEnter in the nest-most [VRouteElement] of the new route');
 
       // Call the nest-most VRouteClass of the new route
       // Check the local beforeEnter
       if (newVRoutePathOfPath.vRouteElements.last.beforeEnter != null) {
-        final shouldUpdate = await newVRoutePathOfPath.vRouteElements.last
-            .beforeEnter(_vRouterInformationContext, _url, newUrl, newVRouteData);
-        if (!shouldUpdate) {
+        await newVRoutePathOfPath.vRouteElements.last.beforeEnter(vRedirector);
+        print('vRedirector._shouldUpdate: ${vRedirector._shouldUpdate}');
+        if (!vRedirector._shouldUpdate) {
           // If the url change comes from the browser, chances are the url is already changed
           // So we have to navigate back to the old url (stored in _url)
           // Note: in future version it would be better to delete the last url of the browser
           //        but it is not yet possible
-          if (kIsWeb && fromBrowser && BrowserHelpers.getHistorySerialCount() != serialCount) {
+          if (kIsWeb && fromBrowser && (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
             ignoreNextBrowserCalls = true;
+            print('ignoreNextBrowserCalls = true');
+            print('BrowserHelpers.getHistorySerialCount(): ${BrowserHelpers.getHistorySerialCount()}');
+            print('serialCount: $serialCount');
+            print('newSerialCount: $newSerialCount');
             BrowserHelpers.browserGo(serialCount - newSerialCount);
             await BrowserHelpers.onBrowserPopState.firstWhere(
                 (element) => BrowserHelpers.getHistorySerialCount() == serialCount);
             ignoreNextBrowserCalls = false;
+            print('ignoreNextBrowserCalls = false');
           }
+          print('vRedirector.redirectFunction: ${vRedirector.redirectFunction}');
+          if (vRedirector.redirectFunction != null) vRedirector.redirectFunction();
           return;
         }
       }
@@ -1333,8 +1354,9 @@ class VRouterState extends State<VRouter> {
         }
         BrowserHelpers.replaceHistoryState(jsonEncode(newState));
         ignoreNextBrowserCalls = false;
+      } else {
+        serialCount = newSerialCount ?? serialCount + 1;
       }
-      serialCount = newSerialCount ?? serialCount + 1;
       setState(() {});
     }
 
@@ -1597,6 +1619,8 @@ class VRouterState extends State<VRouter> {
     final newSerialCount = serialCount + 1;
     final path = Uri.parse(_url).path;
 
+    var shouldSaveHistoryState = true;
+
     var historyStatesToSave = <String, String>{};
     String objectToSave;
     void saveHistoryState(String historyState) {
@@ -1607,38 +1631,19 @@ class VRouterState extends State<VRouter> {
     }
 
     ///   1. beforeLeave in all deactivated vRouteElement
-    var shouldUpdate = true;
     for (var deactivatedPage in flattenPages) {
       final vNavigationMessages =
           deactivatedPage.child.stateKey?.currentState?.vNavigationGuardMessages ?? [];
       for (var vNavigationMessage in vNavigationMessages) {
         if (vNavigationMessage.vNavigationGuard.beforeLeave != null) {
-          shouldUpdate = await vNavigationMessage.vNavigationGuard
-              .beforeLeave(context, _url, '', null, saveHistoryState);
-          if (!shouldUpdate) {
-            break;
-          } else {
-            if (objectToSave != null) {
-              historyStatesToSave['${deactivatedPage.child.depth}'] = objectToSave;
-              objectToSave = null;
-            }
+          await vNavigationMessage.vNavigationGuard.beforeLeave(null, saveHistoryState);
+          if (objectToSave != null) {
+            historyStatesToSave['${deactivatedPage.child.depth}'] = objectToSave;
+            objectToSave = null;
+            shouldSaveHistoryState = true;
           }
         }
       }
-    }
-    if (!shouldUpdate) {
-      // If the url change comes from the browser, chances are the url is already changed
-      // So we have to navigate back to the old url (stored in _url)
-      // Note: in future version it would be better to delete the last url of the browser
-      //        but it is not yet possible
-      if (BrowserHelpers.getHistorySerialCount() != serialCount) {
-        ignoreNextBrowserCalls = true;
-        BrowserHelpers.browserGo(serialCount - newSerialCount);
-        await BrowserHelpers.onBrowserPopState
-            .firstWhere((element) => BrowserHelpers.getHistorySerialCount() == serialCount);
-        ignoreNextBrowserCalls = false;
-      }
-      return;
     }
 
     ///   2. beforeLeave in the nest-most [VRouteElement] of the current route
@@ -1650,50 +1655,26 @@ class VRouterState extends State<VRouter> {
     // Call the nest-most VRouteClass of the current route
     final vRouteElement = vRoutePathOfPath.vRouteElements.last;
     if (vRouteElement.beforeLeave != null) {
-      shouldUpdate =
-          await vRouteElement.beforeLeave(context, _url, '', null, saveHistoryState);
-      if (!shouldUpdate) {
-        // If the url change comes from the browser, chances are the url is already changed
-        // So we have to navigate back to the old url (stored in _url)
-        // Note: in future version it would be better to delete the last url of the browser
-        //        but it is not yet possible
-        if (BrowserHelpers.getHistorySerialCount() != serialCount) {
-          ignoreNextBrowserCalls = true;
-          BrowserHelpers.browserGo(serialCount - newSerialCount);
-          await BrowserHelpers.onBrowserPopState
-              .firstWhere((element) => BrowserHelpers.getHistorySerialCount() == serialCount);
-          ignoreNextBrowserCalls = false;
-        }
-        return;
+      vRouteElement.beforeLeave(null, saveHistoryState);
+
+      if (objectToSave != null && historyStatesToSave['-1'] != objectToSave) {
+        historyStatesToSave['-1'] = objectToSave;
+        objectToSave = null;
+        shouldSaveHistoryState = true;
       }
     }
 
     ///   3. beforeLeave in the VRouter
     if (widget.beforeLeave != null) {
-      final shouldUpdate = await widget.beforeLeave(
-          _vRouterInformationContext, _url, '', null, saveHistoryState);
+      await widget.beforeLeave(null, saveHistoryState);
       if (objectToSave != null) {
         historyStatesToSave['-2'] = objectToSave;
         objectToSave = null;
-      }
-      if (!shouldUpdate) {
-        // If the url change comes from the browser, chances are the url is already changed
-        // So we have to navigate back to the old url (stored in _url)
-        // Note: in future version it would be better to delete the last url of the browser
-        //        but it is not yet possible
-        if (BrowserHelpers.getHistorySerialCount() != serialCount) {
-          // unawaited(_restoreBrowserUrl());
-          ignoreNextBrowserCalls = true;
-          BrowserHelpers.browserGo(serialCount - newSerialCount);
-          await BrowserHelpers.onBrowserPopState
-              .firstWhere((element) => BrowserHelpers.getHistorySerialCount() == serialCount);
-          ignoreNextBrowserCalls = false;
-        }
-        return;
+        shouldSaveHistoryState = true;
       }
     }
 
-    if (historyStatesToSave.isNotEmpty) {
+    if (historyStatesToSave.isNotEmpty && shouldSaveHistoryState) {
       ///   The historyStates got in beforeLeave are stored   ///
       serialCount = newSerialCount;
       BrowserHelpers.replaceHistoryState(jsonEncode(historyStatesToSave));
