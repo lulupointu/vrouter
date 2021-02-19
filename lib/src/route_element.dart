@@ -40,9 +40,21 @@ abstract class VRouteElement {
   List<VRouteElement> get subroutes;
 
   /// The widget displayed in this route
+  ///
   /// See [isChild] to see how this widget
   /// will be accessible/displayed
   Widget get widget;
+
+  /// A builder for the widget displayed in this route
+  ///
+  /// You can use the given context to access path parameters,
+  /// query parameters, etc.
+  ///
+  /// See [isChild] to see how this widget
+  /// will be accessible/displayed
+  ///
+  /// Note that you can either define this or [widget] but not both
+  Widget Function(BuildContext context) get widgetBuilder;
 
   /// Whether this [VRouteElement] is going to be displayed as a
   /// child or not.
@@ -203,6 +215,10 @@ class VStacked extends VRouteElement {
   @override
   final Widget widget;
 
+  /// See [VRouteElement.widgetBuilder]
+  @override
+  final Widget Function(BuildContext context) widgetBuilder;
+
   /// See [VRouteElement.path]
   @override
   final String path;
@@ -260,7 +276,8 @@ class VStacked extends VRouteElement {
   bool get isChild => false;
 
   VStacked({
-    @required this.widget,
+    this.widget,
+    this.widgetBuilder,
     this.key,
     this.path,
     this.name,
@@ -297,6 +314,16 @@ class VStacked extends VRouteElement {
             ? HeroController()
             : null,
         stateKey = GlobalKey<_RouteElementWidgetState>() {
+    if (widget == null && widgetBuilder == null) {
+      throw ArgumentError(
+        'You must either provide a widget or a widgetBuilder but they can not both be null.',
+      );
+    }
+    if (widget != null && widgetBuilder != null) {
+      throw ArgumentError(
+        'You must either provide a widget OR a widgetBuilder but they can not both be specified.',
+      );
+    }
     if (path == null && aliases != null) {
       throw ArgumentError(
         'You can not have a null path with an alias. Either remove the alias or add a path.',
@@ -369,6 +396,10 @@ class VChild extends VRouteElement {
   @override
   final Widget widget;
 
+  /// See [VRouteElement.widgetBuilder]
+  @override
+  final Widget Function(BuildContext context) widgetBuilder;
+
   /// See [VRouteElement.path]
   @override
   final String path;
@@ -426,7 +457,8 @@ class VChild extends VRouteElement {
   bool get isChild => true;
 
   VChild({
-    @required this.widget,
+    this.widget,
+    this.widgetBuilder,
     this.key,
     this.path,
     this.name,
@@ -463,6 +495,16 @@ class VChild extends VRouteElement {
             ? HeroController()
             : null,
         stateKey = GlobalKey<_RouteElementWidgetState>() {
+    if (widget == null && widgetBuilder == null) {
+      throw ArgumentError(
+        'You must either provide a widget or a widgetBuilder but they can not both be null.',
+      );
+    }
+    if (widget != null && widgetBuilder != null) {
+      throw ArgumentError(
+        'You must either provide a widget OR a widgetBuilder but they can not both be specified.',
+      );
+    }
     if (path == null && aliases != null) {
       throw ArgumentError(
         'You can not have a null path with an alias. Either remove the alias or add a path.',
@@ -579,6 +621,10 @@ class VRouteRedirector extends VRouteElement {
   /// Not implemented, this class is only for redirection
   @override
   Widget get widget => Container();
+
+  /// Not implemented, this class is only for redirection
+  @override
+  Widget Function(BuildContext context) get widgetBuilder => null;
 
   /// Not implemented, this class is only for redirection
   @override

@@ -916,7 +916,7 @@ class VRouterState extends State<VRouter> {
             vRouteElement.reverseTransitionDuration ?? widget.reverseTransitionDuration,
         child: RouteElementWidget(
           stateKey: vRouteElement.stateKey,
-          child: vRouteElement.widget,
+          child: widget ?? Builder(builder: (context) => vRouteElement.widgetBuilder(context)),
           depth: index,
           pathParameters: localParameters,
           name: vRouteElement.name,
@@ -979,7 +979,7 @@ class VRouterState extends State<VRouter> {
             vRouteElement.reverseTransitionDuration ?? widget.reverseTransitionDuration,
         child: RouteElementWidget(
           stateKey: vRouteElement.stateKey,
-          child: vRouteElement.widget,
+          child: widget ?? Builder(builder: (context) => vRouteElement.widgetBuilder(context)),
           depth: index,
           pathParameters: localParameters,
           name: vRouteElement.name,

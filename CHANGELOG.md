@@ -1,4 +1,8 @@
-## [0.0.9] - 16/02/2021
+## [0.0.9] - 19/02/2021
+
+* add widgetBuilder for VStacked and VChild
+
+## [0.0.9] - 18/02/2021
 
 * add vRouteData in beforeLeave and beforeEnter
 * fix error when replacing path parameters in pushNamed
