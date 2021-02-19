@@ -1,4 +1,8 @@
-## [1.0.0-nullsafety.4] - 16/02/2021.
+## [1.0.0-nullsafety.4] - 19/02/2021.
+
+* Add widgetBuilder to VChild and VStack
+
+## [1.0.0-nullsafety.4] - 18/02/2021.
 
 * add vRouteData in beforeLeave and beforeEnter
 * fix error when replacing path parameters in pushNamed
