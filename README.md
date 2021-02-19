@@ -232,7 +232,8 @@ cycle to know in which order they happen:
 8. Call afterUpdate in all reused [VNavigationGuard]
 9. Call afterEnter in all initialized [VNavigationGuard]
 
-In every before.. function, you can return false to stop the navigation.
+In every before.. function, you can use the first argument to stop the  
+navigation using .stopNavigation()
 
 ## Much more
 
