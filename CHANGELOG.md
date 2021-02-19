@@ -1,4 +1,4 @@
-## [0.0.9] - 19/02/2021
+## [0.0.10] - 19/02/2021
 
 * add widgetBuilder for VStacked and VChild
 
