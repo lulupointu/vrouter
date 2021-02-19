@@ -8,7 +8,6 @@ part of 'main.dart';
 /// Note that you should use this object to redirect in beforeLeave and beforeEnter. Never
 /// use VRouterData to do so.
 class VRedirector {
-
   VRedirector({
     required BuildContext context,
     required this.from,
@@ -18,7 +17,7 @@ class VRedirector {
   }) : _context = context;
 
   /// If [_shouldUpdate] is set to false, the current url updating is stopped
-  /// 
+  ///
   /// You should NOT modify this, instead use [stopRedirection], or other methods
   /// such as [push], [pushNamed], ...
   bool _shouldUpdate = true;
@@ -26,7 +25,7 @@ class VRedirector {
 
   /// The url we are coming from
   final String? from;
-  
+
   /// The url we are going to
   final String? to;
 
@@ -79,8 +78,8 @@ class VRedirector {
     String? routerState,
   }) {
     stopRedirection();
-    _redirectFunction = () => VRouterData.of(_context)
-        .push(newUrl, queryParameters: queryParameters, routerState: routerState);
+    _redirectFunction = () => VRouterData.of(_context).push(newUrl,
+        queryParameters: queryParameters, routerState: routerState);
   }
 
   /// Prevent the current redirection and pushNamed a route instead
@@ -108,8 +107,8 @@ class VRedirector {
     String? routerState,
   }) {
     stopRedirection();
-    _redirectFunction = () => VRouterData.of(_context)
-        .pushReplacement(newUrl, queryParameters: queryParameters, routerState: routerState);
+    _redirectFunction = () => VRouterData.of(_context).pushReplacement(newUrl,
+        queryParameters: queryParameters, routerState: routerState);
   }
 
   /// Prevent the current redirection and pushReplacementNamed a route instead
@@ -135,8 +134,8 @@ class VRedirector {
   /// See [VRouterData.push] for more information on push
   void pushExternal(String newUrl, {bool openNewTab = false}) {
     stopRedirection();
-    _redirectFunction =
-        () => VRouterData.of(_context).pushExternal(newUrl, openNewTab: openNewTab);
+    _redirectFunction = () =>
+        VRouterData.of(_context).pushExternal(newUrl, openNewTab: openNewTab);
   }
 
   /// Prevent the current redirection and call pop instead

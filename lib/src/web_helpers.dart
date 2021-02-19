@@ -88,8 +88,7 @@ class BrowserHelpers {
 
   /// This replace the current url by the given one
   /// Meaning that while the url changes, no new history entry is created
-  static void pushReplacement(String url,
-          {required VRouterModes routerMode}) =>
+  static void pushReplacement(String url, {required VRouterModes routerMode}) =>
       (routerMode == VRouterModes.hash)
           ? html.window.location.replace('/#$url')
           : html.window.location.replace(url);

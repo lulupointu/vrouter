@@ -39,7 +39,6 @@ class BrowserHelpers {
     }
   }
 
-  static void pushReplacement(String url,
-          {required VRouterModes routerMode}) =>
+  static void pushReplacement(String url, {required VRouterModes routerMode}) =>
       throw (Exception('pushReplacement should only be used on the web'));
 }

@@ -54,7 +54,8 @@ class VNavigationGuard extends StatefulWidget {
   /// Also see:
   ///   * [VRouter.afterEnter] for global level afterEnter
   ///   * [VRouteElement.afterEnter] for route level afterEnter
-  final void Function(BuildContext context, String? from, String to)? afterEnter;
+  final void Function(BuildContext context, String? from, String to)?
+      afterEnter;
 
   /// Called when the url changes and this [VNavigationGuard] was already part
   /// of the previous route.
@@ -64,7 +65,8 @@ class VNavigationGuard extends StatefulWidget {
   ///
   /// Note that you should consider the navigation cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
-  final void Function(BuildContext context, String? from, String to)? afterUpdate;
+  final void Function(BuildContext context, String? from, String to)?
+      afterUpdate;
 
   /// Called when a pop event occurs.
   /// A pop event can be called programmatically (with
@@ -112,12 +114,13 @@ class VNavigationGuard extends StatefulWidget {
 class _VNavigationGuardState extends State<VNavigationGuard> {
   @override
   void initState() {
-    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context).dispatch(context);
+    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context)
+        .dispatch(context);
     super.initState();
     if (widget.afterEnter != null) {
       WidgetsBinding.instance?.addPostFrameCallback((_) {
-        widget.afterEnter!(
-            context, VRouterData.of(context).previousUrl, VRouterData.of(context).url!);
+        widget.afterEnter!(context, VRouterData.of(context).previousUrl,
+            VRouterData.of(context).url!);
       });
     }
   }
@@ -127,7 +130,8 @@ class _VNavigationGuardState extends State<VNavigationGuard> {
   // are necessary when changes to VNavigationGuard are made
   @override
   void reassemble() {
-    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context).dispatch(context);
+    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context)
+        .dispatch(context);
     super.reassemble();
   }
 
@@ -143,5 +147,6 @@ class VNavigationGuardMessage extends Notification {
   final VNavigationGuard vNavigationGuard;
   final BuildContext localContext;
 
-  VNavigationGuardMessage({required this.vNavigationGuard, required this.localContext});
+  VNavigationGuardMessage(
+      {required this.vNavigationGuard, required this.localContext});
 }
