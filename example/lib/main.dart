@@ -39,10 +39,7 @@ void main() {
               path:
                   '/profile/:username', // :username is a path parameter and can be any value
               name: 'profile', // We also give a name for easier navigation
-              widgetBuilder: (context) {
-                print("VRouteData.of(context).pathParameters['username']: ${VRouteData.of(context).pathParameters['username']}");
-                return ProfileWidget();
-              },
+              widget: ProfileWidget(),
               beforeEnter: (_) async => print('BEFORE ENTER PROFILE'),
 
               // The path '/profile' might also match this path
