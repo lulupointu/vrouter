@@ -846,16 +846,43 @@ class VRouterState extends State<VRouter> {
     Map<String, String> newState = const {},
     bool isReplacement = false,
   }) {
-    // Find the path corresponding to the name
-    var newPath = pathToRoutes
-        .firstWhere(
-            (_VRoutePath vRoutePathRegexp) => (vRoutePathRegexp.name == name),
-            orElse: () => throw Exception(
-                'Could not find [VRouteElement] with name $name'))
-        .path;
+    // Find the VRoutePath corresponding to the name
+    // Since each alias represent a VRoutePath, there might be several element in the list
+    var potentialRoutes = pathToRoutes
+        .where(
+            (_VRoutePath vRoutePathRegexp) => (vRoutePathRegexp.name == name))
+        .toList();
 
-    // Inject the given path parameters into the new path
-    newPath = pathToFunction(newPath)(pathParameters);
+    if (potentialRoutes.isEmpty) {
+      throw Exception('Could not find VRouteElement with name $name');
+    }
+
+    // Get the path from the list of potentialRoute
+    // To discriminate we find the one which pathParameters match the given pathParameters
+    var newPath = potentialRoutes.firstWhere(
+          (_VRoutePath vRoutePathRegexp) => (listEquals(
+          vRoutePathRegexp.parameters, pathParameters.keys.toList())),
+      orElse: () {
+        final potentialRoutesOrdered = List<_VRoutePath>.from(potentialRoutes)
+          ..sort((routeA, routeB) =>
+          routeA.parameters.length - routeB.parameters.length);
+        throw Exception(
+          'Could not find a path with the exact path parameters ${pathParameters.keys}.\n'
+              'To navigate to a route named "$name", you must give one of the following list of path parameters:\n${[
+            for (var potentialRoute in potentialRoutesOrdered)
+              '    - ${potentialRoute.parameters}'
+          ].join("\n")} ',
+        );
+      },
+    ).path;
+
+    // Encode the path parameters
+    final encodedPathParameters = pathParameters.map<String, String>(
+          (key, value) => MapEntry(key, Uri.encodeComponent(value)),
+    );
+
+    // Inject the encoded path parameters into the new path
+    newPath = pathToFunction(newPath)(encodedPathParameters);
 
     // Update the url with the found and completed path
     _updateUrl(newPath,

@@ -1,3 +1,8 @@
+## [1.0.0-nullsafety.7] - 21/02/2021.
+
+* Path parameters given in pushNamed are now encoded
+* pushNamed will now also search in aliases and pick the right path depending on the given pathParameters
+
 ## [1.0.0-nullsafety.6+1] - 20/02/2021.
 
 * Minor correction in the default pop event
