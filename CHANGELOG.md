@@ -1,3 +1,7 @@
+## [0.0.11+1] - 20/02/2021
+
+* Update README
+
 ## [0.0.11] - 20/02/2021
 
 * give a vRedirector when handling pop events
