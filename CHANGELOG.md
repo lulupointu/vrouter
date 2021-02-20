@@ -1,3 +1,8 @@
+## [0.0.12] - 20/02/2021
+
+* Path parameters given in pushNamed are now encoded
+* pushNamed will now also search in aliases and pick the right path depending on the given pathParameters
+
 ## [0.0.11+2] - 20/02/2021
 
 * Minor fix for pop events
