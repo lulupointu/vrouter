@@ -851,12 +851,17 @@ class VRouterState extends State<VRouter> {
     // To discriminate we find the one which pathParameters match the given pathParameters
     var newPath = potentialRoutes.firstWhere(
       (_VRoutePath vRoutePathRegexp) => (vRoutePathRegexp.parameters == pathParameters.keys),
-      orElse: () => throw Exception(
-        'Could not find a path with the exact path parameters ${pathParameters.keys}.\n'
-        'To navigate to a route named "$name", you must give one of the following list of path parameters:\n${[
-          for (var potentialRoute in potentialRoutes) '    - ${potentialRoute.parameters}'
-        ].join("\n")} ',
-      ),
+      orElse: () {
+        final potentialRoutesOrdered = List<_VRoutePath>.from(potentialRoutes)
+          ..sort((routeA, routeB) => routeA.parameters.length - routeB.parameters.length);
+        throw Exception(
+          'Could not find a path with the exact path parameters ${pathParameters.keys}.\n'
+          'To navigate to a route named "$name", you must give one of the following list of path parameters:\n${[
+            for (var potentialRoute in potentialRoutesOrdered)
+              '    - ${potentialRoute.parameters}'
+          ].join("\n")} ',
+        );
+      },
     ).path;
 
     // Encode the path parameters
