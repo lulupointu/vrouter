@@ -143,7 +143,7 @@ class VRedirector {
   /// See [VRouterData.pop] for more information on push
   void pop() {
     stopRedirection();
-    _redirectFunction = () => VRouterData.of(_context).pop(_context);
+    _redirectFunction = () => VRouterData.of(_context).pop();
   }
 
   /// Prevent the current redirection and call systemPop instead
@@ -151,6 +151,6 @@ class VRedirector {
   /// See [VRouterData.systemPop] for more information on push
   Future<void> systemPop() async {
     stopRedirection();
-    _redirectFunction = () => VRouterData.of(_context).systemPop(_context);
+    _redirectFunction = () => VRouterData.of(_context).systemPop();
   }
 }

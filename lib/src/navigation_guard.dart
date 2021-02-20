@@ -12,7 +12,7 @@ class VNavigationGuard extends StatefulWidget {
   /// associated to this [VNavigationGuard] is in the previous route
   /// but not in the new one
   ///
-  /// Use [vRedirector] if you want to redirect.
+  /// Use [vRedirector] if you want to redirect or stop the navigation.
   /// DO NOT use VRouterData methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
@@ -69,11 +69,14 @@ class VNavigationGuard extends StatefulWidget {
       afterUpdate;
 
   /// Called when a pop event occurs.
-  /// A pop event can be called programmatically (with
-  /// [VRouterData.of(context).pop()]) or by other widgets
-  /// such as the appBar back button
+  /// A pop event can be called programmatically (with [VRouterData.of(context).pop()])
+  /// or by other widgets such as the appBar back button
   ///
-  /// return false to stop the pop event
+  /// Use [vRedirector] if you want to redirect or stop the navigation.
+  /// DO NOT use VRouterData methods to redirect.
+  /// [vRedirector] also has information about the route you leave and the route you go to
+  ///
+  /// The route you go to is calculated based on [VRouterState._defaultPop]
   ///
   /// Note that you should consider the pop cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Pop%20Events/onPop]
@@ -82,12 +85,16 @@ class VNavigationGuard extends StatefulWidget {
   ///   * [VRouter.onPop] for global level onPop
   ///   * [VRouteElement.onPop] for route level onPop
   ///   * [VRouterState._defaultPop] for the default onPop
-  final Future<bool> Function(BuildContext context)? onPop;
+  final Future<void> Function(VRedirector vRedirector)? onPop;
 
-  /// Called when a system pop event occurs. This happens on android
-  /// when the system back button is pressed
+  /// Called when a system pop event occurs.
+  /// This happens on android when the system back button is pressed
   ///
-  /// return false to stop the pop event
+  /// Use [vRedirector] if you want to redirect or stop the navigation.
+  /// DO NOT use VRouterData methods to redirect.
+  /// [vRedirector] also has information about the route you leave and the route you go to
+  ///
+  /// The route you go to is calculated based on [VRouterState._defaultPop]
   ///
   /// Note that you should consider the systemPop cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Pop%20Events/onSystemPop]
@@ -95,7 +102,7 @@ class VNavigationGuard extends StatefulWidget {
   /// Also see:
   ///   * [VRouter.onSystemPop] for global level onSystemPop
   ///   * [VRouteElement.onSystemPop] for route level onSystemPop
-  final Future<bool> Function(BuildContext context)? onSystemPop;
+  final Future<void> Function(VRedirector vRedirector)? onSystemPop;
 
   const VNavigationGuard({
     Key? key,

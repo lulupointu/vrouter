@@ -40,6 +40,7 @@ abstract class VRouteElement {
   List<VRouteElement>? get subroutes;
 
   /// The widget displayed in this route
+  ///
   /// See [isChild] to see how this widget
   /// will be accessible/displayed
   Widget? get widget;
@@ -85,7 +86,7 @@ abstract class VRouteElement {
 
   /// This is called before the url is updated but after all beforeLeave are called
   ///
-  /// Use [vRedirector] if you want to redirect.
+  /// Use [vRedirector] if you want to redirect or stop the navigation.
   /// DO NOT use VRouterData methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
@@ -100,7 +101,7 @@ abstract class VRouteElement {
   /// This is called before the url is updated if this [VRouteElement] is the
   /// last of the current route
   ///
-  /// Use [vRedirector] if you want to redirect.
+  /// Use [vRedirector] if you want to redirect or stop the navigation.
   /// DO NOT use VRouterData methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
@@ -135,12 +136,16 @@ abstract class VRouteElement {
   void Function(BuildContext context, String? from, String to)? get afterEnter;
 
   /// This function is called after [VNavigationGuard.onPop] before [VRouter.onPop]
-  /// when a system pop event occurs and this [VRouteElement] is the last in the
+  /// when a pop event occurs and this [VRouteElement] is the last in the
   /// current route
-  /// You can use the context to call [VRouterData.of(context).push]
-  /// or [VRouterData.of(context).pushNamed], if you do return true.
+  /// A pop event can be called programmatically (with [VRouterData.of(context).pop()])
+  /// or by other widgets such as the appBar back button
   ///
-  /// Return true if you handled the event, false otherwise
+  /// Use [vRedirector] if you want to redirect or stop the navigation.
+  /// DO NOT use VRouterData methods to redirect.
+  /// [vRedirector] also has information about the route you leave and the route you go to
+  ///
+  /// The route you go to is calculated based on [VRouterState._defaultPop]
   ///
   /// Note that you should consider the pop cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Pop%20Events/onPop]
@@ -149,15 +154,19 @@ abstract class VRouteElement {
   ///   * [VRouter.onPop] for global level onPop
   ///   * [VNavigationGuard.onPop] for widget level onPop
   ///   * [VRouterState._defaultPop] for the default onPop
-  Future<bool> Function(BuildContext context)? get onPop;
+  Future<void> Function(VRedirector vRedirector)? get onPop;
 
   /// This function is called after [VNavigationGuard.onSystemPop] before [VRouter.onSystemPop]
   /// when a system pop event occurs and this [VRouteElement] is the last in the
   /// current route
-  /// You can use the context to call [VRouterData.of(context).push]
-  /// or [VRouterData.of(context).pushNamed], if you do return true.
+  /// This happens on android when the system back button is pressed.
   ///
-  /// Return true if you handled the event, false otherwise
+  ///
+  /// Use [vRedirector] if you want to redirect or stop the navigation.
+  /// DO NOT use VRouterData methods to redirect.
+  /// [vRedirector] also has information about the route you leave and the route you go to
+  ///
+  /// The route you go to is calculated based on [VRouterState._defaultPop]
   ///
   /// Note that you should consider the systemPop cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Pop%20Events/onSystemPop]
@@ -165,7 +174,7 @@ abstract class VRouteElement {
   /// Also see:
   ///   * [VRouter.onSystemPop] for global level onSystemPop
   ///   * [VNavigationGuard.onSystemPop] for widget level onSystemPop
-  Future<bool> Function(BuildContext context)? get onSystemPop;
+  Future<void> Function(VRedirector vRedirector)? get onSystemPop;
 
   /// RegExp version of the path
   /// It is created automatically
@@ -262,11 +271,11 @@ class VStacked extends VRouteElement {
 
   /// See [VRouteElement.onPop]
   @override
-  final Future<bool> Function(BuildContext context)? onPop;
+  final Future<void> Function(VRedirector vRedirector)? onPop;
 
   /// See [VRouteElement.onSystemPop]
   @override
-  final Future<bool> Function(BuildContext context)? onSystemPop;
+  final Future<void> Function(VRedirector vRedirector)? onSystemPop;
 
   /// This is the only difference between [VStacked] and [VChild]
   /// setting [isChild] false has the consequences explained in [VRouter.isChild]
@@ -449,11 +458,11 @@ class VChild extends VRouteElement {
 
   /// See [VRouteElement.onPop]
   @override
-  final Future<bool> Function(BuildContext context)? onPop;
+  final Future<void> Function(VRedirector vRedirector)? onPop;
 
   /// See [VRouteElement.onSystemPop]
   @override
-  final Future<bool> Function(BuildContext context)? onSystemPop;
+  final Future<void> Function(VRedirector vRedirector)? onSystemPop;
 
   /// This is the only difference between [VChild] and [VStacked]
   /// setting [isChild] true has the consequences explained in [VRouteElement.isChild]
@@ -675,11 +684,11 @@ class VRouteRedirector extends VRouteElement {
 
   /// Not implemented, this class is only for redirection
   @override
-  Future<bool> Function(BuildContext context)? get onPop => null;
+  Future<void> Function(VRedirector vRedirector)? get onPop => null;
 
   /// Not implemented, this class is only for redirection
   @override
-  Future<bool> Function(BuildContext context)? get onSystemPop => null;
+  Future<void> Function(VRedirector vRedirector)? get onSystemPop => null;
 
   /// Not implemented, this class is only for redirection
   @override

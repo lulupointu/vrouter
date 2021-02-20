@@ -143,8 +143,6 @@ class MyScaffold extends StatelessWidget {
             // We use the name to navigate
             // We can specify the username in a map
             // Since we are on settings, the username is stored in the VRouter history state
-            print(
-                'VRouterData.of(context).historyState: ${VRouterData.of(context).historyState}');
             VRouterData.of(context).pushNamed('profile', pathParameters: {
               'username': VRouterData.of(context).historyState
             });
@@ -152,8 +150,6 @@ class MyScaffold extends StatelessWidget {
               VRouteElementData.of(context).vChildName == 'profile') {
             // We push the settings and store the username in the VRouter history state
             // We can access this username via the global path parameters (stored in VRoute)
-            print(
-                'VRouteData.of(context).pathParameters[\'username\']: ${VRouteData.of(context).pathParameters['username']}');
             VRouterData.of(context).push('/settings',
                 routerState: VRouteData.of(context).pathParameters['username']);
           }

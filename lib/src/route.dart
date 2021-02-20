@@ -151,8 +151,8 @@ class _VRoutePath {
   /// The path of the route, as a regExp
   /// This can be used to get the parameters of a given url with the
   /// path_to_regexp package
-  final RegExp? pathRegExp;
-  final String? path;
+  final RegExp pathRegExp;
+  final String path;
 
   /// List of the name of all parameters of the route
   /// This is used to get the parameters of a given url with the
@@ -168,8 +168,8 @@ class _VRoutePath {
 
   _VRoutePath({
     this.name,
-    this.pathRegExp,
-    this.path,
+    required this.pathRegExp,
+    required this.path,
     required this.parameters,
     required this.vRouteElements,
   });
