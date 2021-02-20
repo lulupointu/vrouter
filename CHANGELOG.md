@@ -1,3 +1,7 @@
+## [0.0.11+2] - 20/02/2021
+
+* Minor fix for pop events
+
 ## [0.0.11+1] - 20/02/2021
 
 * Update README
