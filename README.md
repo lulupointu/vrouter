@@ -196,7 +196,7 @@ But you can also handle a pop event by yourself
 VRouter(
   // Every pop event will call this
   onPop: (vRedirector) async {
-    return vRedirector.push('/other'); // You can use vRedirector to redirect
+    vRedirector.push('/other'); // You can use vRedirector to redirect
   },
   routes: [
     VStacked(
