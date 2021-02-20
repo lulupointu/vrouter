@@ -850,7 +850,7 @@ class VRouterState extends State<VRouter> {
     // Get the path from the list of potentialRoute
     // To discriminate we find the one which pathParameters match the given pathParameters
     var newPath = potentialRoutes.firstWhere(
-      (_VRoutePath vRoutePathRegexp) => (vRoutePathRegexp.parameters == pathParameters.keys),
+      (_VRoutePath vRoutePathRegexp) => (listEquals(vRoutePathRegexp.parameters, pathParameters.keys)),
       orElse: () {
         final potentialRoutesOrdered = List<_VRoutePath>.from(potentialRoutes)
           ..sort((routeA, routeB) => routeA.parameters.length - routeB.parameters.length);
