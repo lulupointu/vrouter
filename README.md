@@ -183,7 +183,8 @@ VRouter(
 
 ### Pop events
 
-Pop event are handled by default: The last VStack of the route is remove.
+Pop event are handled by default: The last VStack of the route which path  
+is not null is remove.
 
 <p align="center" xmlns="http://www.w3.org/1999/html">
 <img src="https://raw.githubusercontent.com/lulupointu/vrouter_website/master/assets/default_pop.png" alt="VRouter logo" height="200"/>
@@ -194,15 +195,15 @@ But you can also handle a pop event by yourself
 ```
 VRouter(
   // Every pop event will call this
-  onPop: (context) async {
-    return true;
+  onPop: (vRedirector) async {
+    return vRedirector.push('/other'); // You can use vRedirector to redirect
   },
   routes: [
     VStacked(
       path: 'profile',
       // popping the path path /login will call this
-      onPop: (context) async {
-        return false; // returning false stops the pop event
+      onPop: (vRedirector) async {
+        vRedirector.stopRedirection(); // You can use vRedirector to stop the redirection
       },
       widget: ProfileWidget(),
     ),
@@ -237,9 +238,5 @@ navigation using .stopNavigation()
 
 ## Much more
 
-<<<<<<< HEAD
-There is so much more that this package can do, check out the example
-=======
 Their is so much more that this package can do, check out the example
->>>>>>> f33432a55f633757c8dcd9cae5f1ace258a527eb
 or have a look at the **[vrouter.dev](https://vrouter.dev)** website
