@@ -1,6 +1,6 @@
 name: vrouter
 description: A Flutter package that makes navigation and routing easy on every platform.
-version: 0.0.10
+version: 0.0.11
 homepage: https://vrouter.dev
 
 environment:

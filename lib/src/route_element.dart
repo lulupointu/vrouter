@@ -81,13 +81,12 @@ abstract class VRouteElement {
   ///
   /// Also see:
   ///   * [VRouter.buildTransition] for default transitions for all routes
-  Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
-      get buildTransition;
+  Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) get buildTransition;
 
   /// This is called before the url is updated but after all beforeLeave are called
   ///
-  /// Use [vRedirector] if you want to redirect.
+  /// Use [vRedirector] if you want to redirect or stop the navigation.
   /// DO NOT use VRouterData methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
@@ -102,7 +101,7 @@ abstract class VRouteElement {
   /// This is called before the url is updated if this [VRouteElement] is the
   /// last of the current route
   ///
-  /// Use [vRedirector] if you want to redirect.
+  /// Use [vRedirector] if you want to redirect or stop the navigation.
   /// DO NOT use VRouterData methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
@@ -137,12 +136,16 @@ abstract class VRouteElement {
   void Function(BuildContext context, String from, String to) get afterEnter;
 
   /// This function is called after [VNavigationGuard.onPop] before [VRouter.onPop]
-  /// when a system pop event occurs and this [VRouteElement] is the last in the
+  /// when a pop event occurs and this [VRouteElement] is the last in the
   /// current route
-  /// You can use the context to call [VRouterData.of(context).push]
-  /// or [VRouterData.of(context).pushNamed], if you do return true.
+  /// A pop event can be called programmatically (with [VRouterData.of(context).pop()])
+  /// or by other widgets such as the appBar back button
   ///
-  /// Return true if you handled the event, false otherwise
+  /// Use [vRedirector] if you want to redirect or stop the navigation.
+  /// DO NOT use VRouterData methods to redirect.
+  /// [vRedirector] also has information about the route you leave and the route you go to
+  ///
+  /// The route you go to is calculated based on [VRouterState._defaultPop]
   ///
   /// Note that you should consider the pop cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Pop%20Events/onPop]
@@ -151,15 +154,19 @@ abstract class VRouteElement {
   ///   * [VRouter.onPop] for global level onPop
   ///   * [VNavigationGuard.onPop] for widget level onPop
   ///   * [VRouterState._defaultPop] for the default onPop
-  Future<bool> Function(BuildContext context) get onPop;
+  Future<void> Function(VRedirector vRedirector) get onPop;
 
   /// This function is called after [VNavigationGuard.onSystemPop] before [VRouter.onSystemPop]
   /// when a system pop event occurs and this [VRouteElement] is the last in the
   /// current route
-  /// You can use the context to call [VRouterData.of(context).push]
-  /// or [VRouterData.of(context).pushNamed], if you do return true.
+  /// This happens on android when the system back button is pressed.
   ///
-  /// Return true if you handled the event, false otherwise
+  ///
+  /// Use [vRedirector] if you want to redirect or stop the navigation.
+  /// DO NOT use VRouterData methods to redirect.
+  /// [vRedirector] also has information about the route you leave and the route you go to
+  ///
+  /// The route you go to is calculated based on [VRouterState._defaultPop]
   ///
   /// Note that you should consider the systemPop cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Pop%20Events/onSystemPop]
@@ -167,7 +174,7 @@ abstract class VRouteElement {
   /// Also see:
   ///   * [VRouter.onSystemPop] for global level onSystemPop
   ///   * [VNavigationGuard.onSystemPop] for widget level onSystemPop
-  Future<bool> Function(BuildContext context) get onSystemPop;
+  Future<void> Function(VRedirector vRedirector) get onSystemPop;
 
   /// RegExp version of the path
   /// It is created automatically
@@ -245,9 +252,8 @@ class VStacked extends VRouteElement {
 
   /// See [VRouteElement.buildTransition]
   @override
-  final Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
-      buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) buildTransition;
 
   /// See [VRouteElement.beforeEnter]
   @override
@@ -256,7 +262,8 @@ class VStacked extends VRouteElement {
   /// See [VRouteElement.beforeLeave]
   @override
   final Future<void> Function(
-      VRedirector vRedirector, void Function(String state) saveHistoryState) beforeLeave;
+          VRedirector vRedirector, void Function(String state) saveHistoryState)
+      beforeLeave;
 
   /// See [VRouteElement.afterEnter]
   @override
@@ -264,11 +271,11 @@ class VStacked extends VRouteElement {
 
   /// See [VRouteElement.onPop]
   @override
-  final Future<bool> Function(BuildContext context) onPop;
+  final Future<void> Function(VRedirector vRedirector) onPop;
 
   /// See [VRouteElement.onSystemPop]
   @override
-  final Future<bool> Function(BuildContext context) onSystemPop;
+  final Future<void> Function(VRedirector vRedirector) onSystemPop;
 
   /// This is the only difference between [VStacked] and [VChild]
   /// setting [isChild] false has the consequences explained in [VRouter.isChild]
@@ -292,25 +299,31 @@ class VStacked extends VRouteElement {
     this.onPop,
     this.onSystemPop,
   })  : pathRegExp = (path != null)
-            ? pathToRegExp(path.startsWith('/') ? path.substring(1) : path, prefix: true)
+            ? pathToRegExp(path.startsWith('/') ? path.substring(1) : path,
+                prefix: true)
             : null,
         aliasesRegExp = (aliases != null)
             ? [
                 for (var alias in aliases)
-                  pathToRegExp(alias.startsWith('/') ? alias.substring(1) : alias, prefix: true)
+                  pathToRegExp(
+                      alias.startsWith('/') ? alias.substring(1) : alias,
+                      prefix: true)
               ]
             : null,
         parameters = <String>[],
-        aliasesParameters =
-            (aliases != null) ? List<List<String>>.filled(aliases.length, []) : null,
+        aliasesParameters = (aliases != null)
+            ? List<List<String>>.filled(aliases.length, [])
+            : null,
         navigatorKey = (subroutes != null &&
                 subroutes.isNotEmpty &&
-                subroutes.indexWhere((vChildClass) => vChildClass.isChild) != -1)
+                subroutes.indexWhere((vChildClass) => vChildClass.isChild) !=
+                    -1)
             ? GlobalKey<NavigatorState>()
             : null,
         heroController = (subroutes != null &&
                 subroutes.isNotEmpty &&
-                subroutes.indexWhere((vChildClass) => vChildClass.isChild) != -1)
+                subroutes.indexWhere((vChildClass) => vChildClass.isChild) !=
+                    -1)
             ? HeroController()
             : null,
         stateKey = GlobalKey<_RouteElementWidgetState>() {
@@ -426,9 +439,8 @@ class VChild extends VRouteElement {
 
   /// See [VRouteElement.buildTransition]
   @override
-  final Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
-      buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child) buildTransition;
 
   /// See [VRouteElement.beforeEnter]
   @override
@@ -437,7 +449,8 @@ class VChild extends VRouteElement {
   /// See [VRouteElement.beforeLeave]
   @override
   final Future<void> Function(
-      VRedirector vRedirector, void Function(String state) saveHistoryState) beforeLeave;
+          VRedirector vRedirector, void Function(String state) saveHistoryState)
+      beforeLeave;
 
   /// See [VRouteElement.afterEnter]
   @override
@@ -445,11 +458,11 @@ class VChild extends VRouteElement {
 
   /// See [VRouteElement.onPop]
   @override
-  final Future<bool> Function(BuildContext context) onPop;
+  final Future<void> Function(VRedirector vRedirector) onPop;
 
   /// See [VRouteElement.onSystemPop]
   @override
-  final Future<bool> Function(BuildContext context) onSystemPop;
+  final Future<void> Function(VRedirector vRedirector) onSystemPop;
 
   /// This is the only difference between [VChild] and [VStacked]
   /// setting [isChild] true has the consequences explained in [VRouteElement.isChild]
@@ -473,25 +486,31 @@ class VChild extends VRouteElement {
     this.onPop,
     this.onSystemPop,
   })  : pathRegExp = (path != null)
-            ? pathToRegExp(path.startsWith('/') ? path.substring(1) : path, prefix: true)
+            ? pathToRegExp(path.startsWith('/') ? path.substring(1) : path,
+                prefix: true)
             : null,
         aliasesRegExp = (aliases != null)
             ? [
                 for (var alias in aliases)
-                  pathToRegExp(alias.startsWith('/') ? alias.substring(1) : alias, prefix: true)
+                  pathToRegExp(
+                      alias.startsWith('/') ? alias.substring(1) : alias,
+                      prefix: true)
               ]
             : null,
         parameters = <String>[],
-        aliasesParameters =
-            (aliases != null) ? List<List<String>>.filled(aliases.length, []) : null,
+        aliasesParameters = (aliases != null)
+            ? List<List<String>>.filled(aliases.length, [])
+            : null,
         navigatorKey = (subroutes != null &&
                 subroutes.isNotEmpty &&
-                subroutes.indexWhere((vChildClass) => vChildClass.isChild) != -1)
+                subroutes.indexWhere((vChildClass) => vChildClass.isChild) !=
+                    -1)
             ? GlobalKey<NavigatorState>()
             : null,
         heroController = (subroutes != null &&
                 subroutes.isNotEmpty &&
-                subroutes.indexWhere((vChildClass) => vChildClass.isChild) != -1)
+                subroutes.indexWhere((vChildClass) => vChildClass.isChild) !=
+                    -1)
             ? HeroController()
             : null,
         stateKey = GlobalKey<_RouteElementWidgetState>() {
@@ -604,15 +623,19 @@ class VRouteRedirector extends VRouteElement {
   })  : assert(redirectTo != null || beforeEnter != null),
         assert(redirectTo == null || beforeEnter == null,
             'You should specify redirectTo OR beforeEnter but not both'),
-        pathRegExp = pathToRegExp(path.startsWith('/') ? path.substring(1) : path, prefix: true),
+        pathRegExp = pathToRegExp(
+            path.startsWith('/') ? path.substring(1) : path,
+            prefix: true),
         aliasesRegExp = (aliases != null)
             ? [
                 for (var alias in aliases)
-                  pathToRegExp(alias.startsWith('/') ? alias.substring(1) : alias, prefix: true)
+                  pathToRegExp(
+                      alias.startsWith('/') ? alias.substring(1) : alias,
+                      prefix: true)
               ]
             : null,
-        beforeEnter =
-            beforeEnter ?? ((vRedirector) async => vRedirector.push(redirectTo));
+        beforeEnter = beforeEnter ??
+            ((vRedirector) async => vRedirector.push(redirectTo));
 
   /// Not implemented, this class is only for redirection
   @override
@@ -636,12 +659,14 @@ class VRouteRedirector extends VRouteElement {
 
   /// Not implemented, this class is only for redirection
   @override
-  Future<bool> Function(VRedirector vRedirector, void Function(String state) saveHistoryState)
+  Future<void> Function(
+          VRedirector vRedirector, void Function(String state) saveHistoryState)
       get beforeLeave => null;
 
   /// Not implemented, this class is only for redirection
   @override
-  void Function(BuildContext context, String from, String to) get afterEnter => null;
+  void Function(BuildContext context, String from, String to) get afterEnter =>
+      null;
 
   /// Not implemented, this class is only for redirection
   @override
@@ -654,16 +679,17 @@ class VRouteRedirector extends VRouteElement {
   /// Not implemented, this class is only for redirection
   @override
   Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)
-      get buildTransition => null;
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child) get buildTransition => null;
 
   /// Not implemented, this class is only for redirection
   @override
-  Future<bool> Function(BuildContext context) get onPop => null;
+  Future<void> Function(VRedirector vRedirector) get onPop => null;
 
   /// Not implemented, this class is only for redirection
   @override
-  Future<bool> Function(BuildContext context) get onSystemPop => null;
+  Future<void> Function(VRedirector vRedirector) get onSystemPop => null;
 
   /// Not implemented, this class is only for redirection
   @override
