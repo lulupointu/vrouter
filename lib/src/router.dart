@@ -1575,8 +1575,8 @@ class VRouterState extends State<VRouter> {
     await _pop();
   }
 
-  /// This finds new url when a pop event occurs by finding the closest [VRouteElement]
-  /// where [VRouteElement.isChild] is false and [VRouteElement.path] is not null
+  /// This finds new url when a pop event occurs by popping all [VRouteElement] of the current
+  /// route until a [VStacked] is popped.
   /// It returns a [VRedirector] with the newVRouteData corresponding to the found path.
   /// If no such [VRouteElement] is found, newVRouteData is null
   ///
@@ -1613,14 +1613,13 @@ class VRouterState extends State<VRouter> {
           .vRouteElements,
     );
 
-    // Remove the current page
-    vRouteElements.removeLast();
-
     // Find the vRouteElements where vRoute.isChild of the last element is false
-    while (vRouteElements.isNotEmpty &&
-        (vRouteElements.last.isChild || vRouteElements.last.path == null)) {
+    while (vRouteElements.isNotEmpty && vRouteElements.last.isChild) {
       vRouteElements.removeLast();
     }
+
+    // Remove the VStacked
+    vRouteElements.removeLast();
 
     // This VRouteData will be not null if we find a route to go to
     VRouteData? newVRouteData;

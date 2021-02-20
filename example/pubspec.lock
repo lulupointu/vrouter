@@ -106,7 +106,7 @@ packages:
       name: path_to_regexp
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.3.0"
+    version: "0.4.0-nullsafety.0"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -120,7 +120,7 @@ packages:
       name: simple_url_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.2"
+    version: "1.0.0-nullsafety.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -181,49 +181,49 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "5.7.10"
+    version: "6.0.0-nullsafety.7"
   url_launcher_linux:
     dependency: transitive
     description:
       name: url_launcher_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1+4"
+    version: "0.1.0-nullsafety.3"
   url_launcher_macos:
     dependency: transitive
     description:
       name: url_launcher_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1+9"
+    version: "0.1.0-nullsafety.2"
   url_launcher_platform_interface:
     dependency: transitive
     description:
       name: url_launcher_platform_interface
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.9"
+    version: "2.0.1"
   url_launcher_web:
     dependency: transitive
     description:
       name: url_launcher_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.5+3"
+    version: "2.0.0-nullsafety"
   url_launcher_windows:
     dependency: transitive
     description:
       name: url_launcher_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.0.1+3"
+    version: "0.1.0-nullsafety.2"
   url_strategy:
     dependency: transitive
     description:
       name: url_strategy
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.1"
+    version: "0.2.0-nullsafety.0"
   vector_math:
     dependency: transitive
     description:
@@ -236,10 +236,10 @@ packages:
     description:
       path: "."
       ref: null-safety
-      resolved-ref: "3a3c735ea01696033c2f3f2685d7ae8850014858"
+      resolved-ref: c1d67e585871fa38d29448dda11d9d6eac62a9f4
       url: "https://github.com/lulupointu/vrouter.git"
     source: git
-    version: "0.0.11"
+    version: "1.0.0-nullsafety.6"
 sdks:
-  dart: ">=2.12.0-0.0 <3.0.0"
+  dart: ">=2.12.0-259.9.beta <3.0.0"
   flutter: ">=1.22.0"

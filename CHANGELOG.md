@@ -1,3 +1,7 @@
+## [1.0.0-nullsafety.6+1] - 20/02/2021.
+
+* Minor correction in the default pop event
+
 ## [1.0.0-nullsafety.6] - 20/02/2021.
 
 * give a vRedirector when handling pop events
