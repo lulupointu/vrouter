@@ -860,15 +860,15 @@ class VRouterState extends State<VRouter> {
     // Get the path from the list of potentialRoute
     // To discriminate we find the one which pathParameters match the given pathParameters
     var newPath = potentialRoutes.firstWhere(
-          (_VRoutePath vRoutePathRegexp) => (listEquals(
+      (_VRoutePath vRoutePathRegexp) => (listEquals(
           vRoutePathRegexp.parameters, pathParameters.keys.toList())),
       orElse: () {
         final potentialRoutesOrdered = List<_VRoutePath>.from(potentialRoutes)
           ..sort((routeA, routeB) =>
-          routeA.parameters.length - routeB.parameters.length);
+              routeA.parameters.length - routeB.parameters.length);
         throw Exception(
           'Could not find a path with the exact path parameters ${pathParameters.keys}.\n'
-              'To navigate to a route named "$name", you must give one of the following list of path parameters:\n${[
+          'To navigate to a route named "$name", you must give one of the following list of path parameters:\n${[
             for (var potentialRoute in potentialRoutesOrdered)
               '    - ${potentialRoute.parameters}'
           ].join("\n")} ',
@@ -878,7 +878,7 @@ class VRouterState extends State<VRouter> {
 
     // Encode the path parameters
     final encodedPathParameters = pathParameters.map<String, String>(
-          (key, value) => MapEntry(key, Uri.encodeComponent(value)),
+      (key, value) => MapEntry(key, Uri.encodeComponent(value)),
     );
 
     // Inject the encoded path parameters into the new path
