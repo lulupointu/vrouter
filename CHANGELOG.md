@@ -1,3 +1,7 @@
+## [1.0.0-nullsafety.8] - 23/02/2021.
+
+* Fix Map type error (https://github.com/lulupointu/vrouter/issues/4)
+
 ## [1.0.0-nullsafety.7] - 21/02/2021.
 
 * Path parameters given in pushNamed are now encoded

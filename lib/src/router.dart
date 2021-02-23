@@ -1406,7 +1406,7 @@ class VRouterState extends State<VRouter> {
 
     ///   The state of the VRouter changes            ///
     // Add the new serial count to the state
-    newState.addAll({'serialCount': '$serialCount'});
+    newState.addAll(Map<String, String>.from({'serialCount': '$serialCount'}));
     final oldUrl = _url;
     final newRouterState = newState['-2'];
     if (_url != newUrl || newRouterState != _historyState) {
