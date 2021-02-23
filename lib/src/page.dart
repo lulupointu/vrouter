@@ -61,28 +61,28 @@ abstract class VPage<T> extends Page<T> {
     @required RouteElementWidget child,
     String name,
     Widget Function(Animation<double> animation,
-        Animation<double> secondaryAnimation, Widget child)
-    buildTransition,
+            Animation<double> secondaryAnimation, Widget child)
+        buildTransition,
     Duration transitionDuration,
     Duration reverseTransitionDuration,
   }) =>
       (!kIsWeb && Platform.isIOS)
           ? VCupertinoPage(
-        key: key,
-        child: child,
-        name: name,
-        buildTransition: buildTransition,
-        transitionDuration: transitionDuration,
-        reverseTransitionDuration: reverseTransitionDuration,
-      )
+              key: key,
+              child: child,
+              name: name,
+              buildTransition: buildTransition,
+              transitionDuration: transitionDuration,
+              reverseTransitionDuration: reverseTransitionDuration,
+            )
           : VMaterialPage(
-        key: key,
-        child: child,
-        name: name,
-        buildTransition: buildTransition,
-        transitionDuration: transitionDuration,
-        reverseTransitionDuration: reverseTransitionDuration,
-      );
+              key: key,
+              child: child,
+              name: name,
+              buildTransition: buildTransition,
+              transitionDuration: transitionDuration,
+              reverseTransitionDuration: reverseTransitionDuration,
+            );
 
 // @override
 // Route<T> createRoute(BuildContext context) {
@@ -163,12 +163,12 @@ class VMaterialPage<T> extends MaterialPage<T> implements VPage<T> {
       return VPageRoute<T>(
         page: this,
         customTransition: (_, Animation<double> animation,
-            Animation<double> secondaryAnimation, Widget child) =>
+                Animation<double> secondaryAnimation, Widget child) =>
             buildTransition(
-              animation,
-              secondaryAnimation,
-              child,
-            ),
+          animation,
+          secondaryAnimation,
+          child,
+        ),
         transitionDuration: transitionDuration,
         reverseTransitionDuration: reverseTransitionDuration,
       );
@@ -235,12 +235,12 @@ class VCupertinoPage<T> extends CupertinoPage<T> implements VPage<T> {
       return VPageRoute<T>(
         page: this,
         customTransition: (_, Animation<double> animation,
-            Animation<double> secondaryAnimation, Widget child) =>
+                Animation<double> secondaryAnimation, Widget child) =>
             buildTransition(
-              animation,
-              secondaryAnimation,
-              child,
-            ),
+          animation,
+          secondaryAnimation,
+          child,
+        ),
         transitionDuration: transitionDuration,
         reverseTransitionDuration: reverseTransitionDuration,
       );
@@ -293,17 +293,17 @@ class VPageRoute<T> extends PageRoute<T> {
   bool canTransitionTo(TransitionRoute<dynamic> nextRoute) {
     // Don't perform outgoing animation if the next route is a fullscreen dialog.
     return (nextRoute is MaterialRouteTransitionMixin &&
-        !nextRoute.fullscreenDialog) ||
+            !nextRoute.fullscreenDialog) ||
         (nextRoute is CupertinoRouteTransitionMixin &&
             !nextRoute.fullscreenDialog);
   }
 
   @override
   Widget buildPage(
-      BuildContext context,
-      Animation<double> animation,
-      Animation<double> secondaryAnimation,
-      ) {
+    BuildContext context,
+    Animation<double> animation,
+    Animation<double> secondaryAnimation,
+  ) {
     return _page.child;
   }
 
