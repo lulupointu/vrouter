@@ -6,46 +6,40 @@ void main() {
     VRouter(
       debugShowCheckedModeBanner: false, // VRouter acts as a MaterialApp
       mode: VRouterModes.history, // Remove the '#' from the url
-      buildTransition: (animation, ___, child) {
-        // We set a default transition to every route
-        return FadeTransition(
-          opacity: animation,
-          child: child,
-        );
-      },
       routes: [
         VStacked(
           path: '/login',
           widget: LoginWidget(),
-        ),
-
-        VStacked(
-          key: ValueKey('MyScaffold'),
-          widget: MyScaffold(),
           subroutes: [
-            VChild(
-              path: '/settings',
-              widget: InfoWidget(),
+            VStacked(
+              key: ValueKey('MyScaffold'),
+              widget: MyScaffold(),
+              subroutes: [
+                VChild(
+                  path: '/settings',
+                  widget: InfoWidget(),
 
-              // Custom transition
-              buildTransition: (animation, ___, child) {
-                return ScaleTransition(
-                  scale: animation,
-                  child: child,
-                );
-              },
-            ),
-            VChild(
-              path:
+                  // Custom transition
+                  buildTransition: (animation, ___, child) {
+                    return ScaleTransition(
+                      scale: animation,
+                      child: child,
+                    );
+                  },
+                ),
+                VChild(
+                  path:
                   '/profile/:username', // :username is a path parameter and can be any value
-              name: 'profile', // We also give a name for easier navigation
-              widget: ProfileWidget(),
+                  name: 'profile', // We also give a name for easier navigation
+                  widget: ProfileWidget(),
 
-              // The path '/profile' might also match this path
-              // In this case, we must handle the empty pathParameter
-              aliases: ['/profile'],
+                  // The path '/profile' might also match this path
+                  // In this case, we must handle the empty pathParameter
+                  aliases: ['/profile'],
+                ),
+              ],
             ),
-          ],
+          ]
         ),
 
         // This redirect every unknown routes to /login

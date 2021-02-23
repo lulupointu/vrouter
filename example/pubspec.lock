@@ -234,12 +234,10 @@ packages:
   vrouter:
     dependency: "direct main"
     description:
-      path: "."
-      ref: null-safety
-      resolved-ref: c1d67e585871fa38d29448dda11d9d6eac62a9f4
-      url: "https://github.com/lulupointu/vrouter.git"
-    source: git
-    version: "1.0.0-nullsafety.6"
+      path: ".."
+      relative: true
+    source: path
+    version: "1.0.0-nullsafety.8"
 sdks:
   dart: ">=2.12.0-259.9.beta <3.0.0"
   flutter: ">=1.22.0"
