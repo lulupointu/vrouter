@@ -1,7 +1,6 @@
 import 'dart:io' as io show Platform;
 
 class Platform extends io.Platform {
-
   /// Whether the operating system is a version of
   /// [Linux](https://en.wikipedia.org/wiki/Linux).
   ///

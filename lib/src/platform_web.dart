@@ -1,5 +1,4 @@
 class Platform {
-
   /// Whether the operating system is a version of
   /// [Linux](https://en.wikipedia.org/wiki/Linux).
   ///

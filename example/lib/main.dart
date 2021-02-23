@@ -14,42 +14,36 @@ void main() {
         );
       },
       routes: [
-        VStacked(
-          path: '/login',
-          widget: LoginWidget(),
-          subroutes: [
-            VStacked(
-              key: ValueKey('MyScaffold'),
-              widget: MyScaffold(),
-              subroutes: [
-                VChild(
-                  path: '/settings',
-                  widget: InfoWidget(),
+        VStacked(path: '/login', widget: LoginWidget(), subroutes: [
+          VStacked(
+            key: ValueKey('MyScaffold'),
+            widget: MyScaffold(),
+            subroutes: [
+              VChild(
+                path: '/settings',
+                widget: InfoWidget(),
 
-                  // Custom transition
-                  buildTransition: (animation, ___, child) {
-                    return ScaleTransition(
-                      scale: animation,
-                      child: child,
-                    );
-                  },
-                ),
-                VChild(
-                  path:
-                  '/profile/:username', // :username is a path parameter and can be any value
-                  name: 'profile', // We also give a name for easier navigation
-                  widget: ProfileWidget(),
+                // Custom transition
+                buildTransition: (animation, ___, child) {
+                  return ScaleTransition(
+                    scale: animation,
+                    child: child,
+                  );
+                },
+              ),
+              VChild(
+                path:
+                    '/profile/:username', // :username is a path parameter and can be any value
+                name: 'profile', // We also give a name for easier navigation
+                widget: ProfileWidget(),
 
-                  // The path '/profile' might also match this path
-                  // In this case, we must handle the empty pathParameter
-                  aliases: ['/profile'],
-                ),
-              ],
-            ),
-          ]
-        ),
-
-
+                // The path '/profile' might also match this path
+                // In this case, we must handle the empty pathParameter
+                aliases: ['/profile'],
+              ),
+            ],
+          ),
+        ]),
 
         // This redirect every unknown routes to /login
         VRouteRedirector(
