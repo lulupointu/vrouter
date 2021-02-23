@@ -24,13 +24,13 @@ dependencies:
   flutter:
     sdk: flutter
 
-#  vrouter:
-#    path: ../
-
   vrouter:
-    git:
-      url: https://github.com/lulupointu/vrouter.git
-      ref: main
+    path: ../
+
+#  vrouter:
+#    git:
+#      url: https://github.com/lulupointu/vrouter.git
+#      ref: main
 
 dev_dependencies:
   flutter_test:
