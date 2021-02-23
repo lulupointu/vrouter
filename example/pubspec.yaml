@@ -26,13 +26,13 @@ dependencies:
   move_to_background: any
 
 
-#  vrouter:
-#    path: ../
-
   vrouter:
-    git:
-      url: https://github.com/lulupointu/vrouter.git
-      ref: null-safety
+    path: ../
+
+#  vrouter:
+#    git:
+#      url: https://github.com/lulupointu/vrouter.git
+#      ref: null-safety
 
 dev_dependencies:
   flutter_test:

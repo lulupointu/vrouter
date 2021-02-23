@@ -1,3 +1,7 @@
+## [1.0.0-nullsafety.10] - 23/02/2021.
+
+* Enable CupertinoPage when on IOS (https://github.com/lulupointu/vrouter/issues/3)
+
 ## [1.0.0-nullsafety.9] - 23/02/2021.
 
 * Enable CupertinoPage when on IOS (https://github.com/lulupointu/vrouter/issues/3)
