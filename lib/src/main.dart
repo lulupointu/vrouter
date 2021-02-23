@@ -12,6 +12,7 @@ import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:simple_url_handler/simple_url_handler.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'fake_web_helpers.dart' if (dart.library.js) 'web_helpers.dart';
+import 'dart:io' show Platform;
 
 part 'exceptions.dart';
 part 'route_element_widget.dart';

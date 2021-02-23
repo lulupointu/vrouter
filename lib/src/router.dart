@@ -939,7 +939,7 @@ class VRouterState extends State<VRouter> {
       final lastPage = incompleteStack.removeLast();
       final lastVRouteElementWidget = lastPage.child;
       final flattenPagesPreviousLength = flattenPages.length;
-      final newVPage = VPage(
+      final newVPage = VPage.fromPlatform(
         key: vRouteElement.key ?? ValueKey(vRouteElement.path),
         name: vRouteElement.name ?? vRouteElement.path,
         buildTransition: vRouteElement.buildTransition ?? widget.buildTransition,
@@ -957,7 +957,7 @@ class VRouterState extends State<VRouter> {
         ),
       );
       incompleteStack.add(
-        VPage(
+        VPage.fromPlatform(
           key: lastPage.key,
           name: lastPage.name,
           buildTransition: lastPage.buildTransition,
@@ -1003,7 +1003,7 @@ class VRouterState extends State<VRouter> {
       return incompleteStack;
     } else {
       // If the next vRoute is not a child, just add it to the stack and make a recursive call
-      final newVPage = VPage(
+      final newVPage = VPage.fromPlatform(
         key: vRouteElement.key ?? ValueKey(vRouteElement.path),
         name: vRouteElement.name ?? vRouteElement.path,
         buildTransition: vRouteElement.buildTransition ?? widget.buildTransition,
