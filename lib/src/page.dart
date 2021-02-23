@@ -36,9 +36,8 @@ abstract class VPage<T> extends Page<T> {
   /// If this is null, the default transition is the one of the [VRouter]
   /// If the one of the [VRouter] is also null, the default transition is
   /// the one of a [MaterialPage]
-  final Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
-      buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child)? buildTransition;
 
   /// {@macro flutter.widgets.ModalRoute.maintainState}
   final bool maintainState;
@@ -61,8 +60,8 @@ abstract class VPage<T> extends Page<T> {
     required LocalKey key,
     required RouteElementWidget child,
     String? name,
-    Widget Function(
-            Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
+    Widget Function(Animation<double> animation,
+            Animation<double> secondaryAnimation, Widget child)?
         buildTransition,
     Duration? transitionDuration,
     Duration? reverseTransitionDuration,
@@ -145,9 +144,8 @@ class VMaterialPage<T> extends MaterialPage<T> implements VPage<T> {
   /// If this is null, the default transition is the one of the [VRouter]
   /// If the one of the [VRouter] is also null, the default transition is
   /// the one of a [MaterialPage]
-  final Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
-      buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child)? buildTransition;
 
   VMaterialPage({
     required this.key,
@@ -218,9 +216,8 @@ class VCupertinoPage<T> extends CupertinoPage<T> implements VPage<T> {
   /// If this is null, the default transition is the one of the [VRouter]
   /// If the one of the [VRouter] is also null, the default transition is
   /// the one of a [MaterialPage]
-  final Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
-      buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child)? buildTransition;
 
   VCupertinoPage({
     required this.key,
@@ -269,8 +266,8 @@ class VPageRoute<T> extends PageRoute<T> {
     Duration? transitionDuration,
     Duration? reverseTransitionDuration,
   })  : transitionDuration = transitionDuration ?? Duration(milliseconds: 300),
-        reverseTransitionDuration =
-            reverseTransitionDuration ?? (transitionDuration ?? Duration(milliseconds: 300)),
+        reverseTransitionDuration = reverseTransitionDuration ??
+            (transitionDuration ?? Duration(milliseconds: 300)),
         super(settings: page) {
     assert(opaque);
   }
@@ -295,8 +292,10 @@ class VPageRoute<T> extends PageRoute<T> {
   @override
   bool canTransitionTo(TransitionRoute<dynamic> nextRoute) {
     // Don't perform outgoing animation if the next route is a fullscreen dialog.
-    return (nextRoute is MaterialRouteTransitionMixin && !nextRoute.fullscreenDialog) ||
-        (nextRoute is CupertinoRouteTransitionMixin && !nextRoute.fullscreenDialog);
+    return (nextRoute is MaterialRouteTransitionMixin &&
+            !nextRoute.fullscreenDialog) ||
+        (nextRoute is CupertinoRouteTransitionMixin &&
+            !nextRoute.fullscreenDialog);
   }
 
   @override
