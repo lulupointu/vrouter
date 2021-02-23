@@ -1,3 +1,7 @@
+## [0.0.13] - 23/02/2021
+
+* Enable CupertinoPage when on IOS (https://github.com/lulupointu/vrouter/issues/3)
+
 ## [0.0.12] - 20/02/2021
 
 * Path parameters given in pushNamed are now encoded
