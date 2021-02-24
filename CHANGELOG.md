@@ -1,3 +1,7 @@
+## [0.0.13+2] - 23/02/2021
+
+* Update README
+
 ## [0.0.13+1] - 23/02/2021
 
 * Change import to display web badge on pub.dev

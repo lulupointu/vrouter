@@ -68,7 +68,20 @@ VRouter(
 
 ### VStacked
 
-VStacked are a VRouteElement which are stacked on top on the previous one
+VStacked is a VRouteElement which is stacked on the parent VRouteElement.
+For example:
+
+```
+VStacked(
+  path: '/login', widget: LoginWidget(),
+  subroutes: [
+    VStacked(path: '/home', widget: HomeWidget()),
+  ]
+)
+```
+
+Here the `HomeWidget` will be stacked on top of the `LoginWidget`.
+
 
 ### VChild
 
@@ -196,7 +209,7 @@ But you can also handle a pop event by yourself
 VRouter(
   // Every pop event will call this
   onPop: (vRedirector) async {
-    vRedirector.push('/other'); // You can use vRedirector to redirect
+    return vRedirector.push('/other'); // You can use vRedirector to redirect
   },
   routes: [
     VStacked(
@@ -238,5 +251,5 @@ navigation using .stopNavigation()
 
 ## Much more
 
-Their is so much more that this package can do, check out the example
+There is so much more that this package can do, check out the example
 or have a look at the **[vrouter.dev](https://vrouter.dev)** website
