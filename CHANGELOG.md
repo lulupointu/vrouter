@@ -1,3 +1,7 @@
+## [1.0.0-nullsafety.10+1] - 24/02/2021.
+
+* Update README
+
 ## [1.0.0-nullsafety.10] - 23/02/2021.
 
 * Change import to display web badge on pub.dev

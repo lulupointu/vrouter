@@ -68,7 +68,20 @@ VRouter(
 
 ### VStacked
 
-VStacked are a VRouteElement which are stacked on top on the previous one
+VStacked is a VRouteElement which is stacked on the parent VRouteElement.
+For example:
+
+```
+VStacked(
+  path: '/login', widget: LoginWidget(),
+  subroutes: [
+    VStacked(path: '/home', widget: HomeWidget()),
+  ]
+)
+```
+
+Here the `HomeWidget` will be stacked on top of the `LoginWidget`.
+
 
 ### VChild
 
