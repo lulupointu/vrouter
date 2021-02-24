@@ -251,5 +251,5 @@ navigation using .stopNavigation()
 
 ## Much more
 
-Their is so much more that this package can do, check out the example
+There is so much more that this package can do, check out the example
 or have a look at the **[vrouter.dev](https://vrouter.dev)** website
