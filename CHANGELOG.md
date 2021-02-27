@@ -1,3 +1,7 @@
+## [0.0.14] - 27/02/2021
+
+* Enable access to VRouterState to enable navigation without context
+
 ## [0.0.13+2] - 23/02/2021
 
 * Update README

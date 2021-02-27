@@ -58,13 +58,13 @@ class _VRouteState extends State<VRoute> {
         observers: [widget._routerHeroController],
         backButtonDispatcher: RootBackButtonDispatcher(),
         onPopPage: (_, __) {
-          VRouterData.of(context)._pop();
+          VRouterData.of(context).pop();
 
           // We always prevent popping because we handle it in VRouter
           return false;
         },
         onSystemPopPage: () async {
-          await VRouterData.of(context)._systemPop();
+          await VRouterData.of(context).systemPop();
           // We always prevent popping because we handle it in VRouter
           return true;
         },
