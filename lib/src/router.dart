@@ -573,7 +573,7 @@ class VRouterState extends State<VRouter> {
     // This allows us to call beforeLeave when the browser or the tab
     // is being closed for example
     if (kIsWeb) {
-      BrowserHelpers.onBrowserBeforeUnload.listen((e) => onBeforeUnload());
+      BrowserHelpers.onBrowserBeforeUnload.listen((e) => _onBeforeUnload());
     }
 
     super.initState();
@@ -624,29 +624,7 @@ class VRouterState extends State<VRouter> {
         );
       },
       child: VRouterData(
-        url: _url,
-        previousUrl: _previousUrl,
-        historyState: _historyState,
-        updateUrl: (
-          String url, {
-          Map<String, String> queryParameters = const {},
-          Map<String, String> newState = const {},
-          bool isUrlExternal = false,
-          bool isReplacement = false,
-          bool openNewTab = false,
-        }) =>
-            _updateUrl(
-          url,
-          queryParameters: queryParameters,
-          newState: newState,
-          isUrlExternal: isUrlExternal,
-          isReplacement: isReplacement,
-          openNewTab: openNewTab,
-        ),
-        updateUrlFromName: _updateUrlFromName,
-        pop: _pop,
-        systemPop: _systemPop,
-        replaceHistoryState: _replaceHistoryState,
+        state: this,
         child: Builder(
           builder: (context) {
             _vRouterInformationContext = context;
@@ -806,7 +784,7 @@ class VRouterState extends State<VRouter> {
   /// Updates every state variables of [VRouter]
   ///
   /// Note that this does not call setState
-  void updateStateVariables(
+  void _updateStateVariables(
     String newUrl,
     String newPath,
     _VRoutePath vRoutePath, {
@@ -1001,11 +979,11 @@ class VRouterState extends State<VRouter> {
                 historyState: historyState,
               ),
               onPopPage: (_, __) {
-                _pop();
+                pop();
                 return false;
               },
               onSystemPopPage: () async {
-                await _systemPop();
+                await systemPop();
                 return true;
               },
             ),
@@ -1410,7 +1388,7 @@ class VRouterState extends State<VRouter> {
     final oldUrl = _url;
     final newRouterState = newState['-2'];
     if (_url != newUrl || newRouterState != _historyState) {
-      updateStateVariables(
+      _updateStateVariables(
         newUrl,
         newPath,
         newVRoutePathOfPath!,
@@ -1474,7 +1452,6 @@ class VRouterState extends State<VRouter> {
     });
   }
 
-  /// See [VRouterData.pop]
   Future<void> _pop({
     VRedirector? vRedirector,
     Map<String, String> queryParameters = const {},
@@ -1539,67 +1516,6 @@ class VRouterState extends State<VRouter> {
       // so we close the app on mobile
       // TODO: call move_to_background once it's migrated to null-safety
     }
-  }
-
-  /// See [VRouterData.systemPop]
-  Future<void> _systemPop({
-    Map<String, String> queryParameters = const {},
-    String? newState,
-  }) async {
-    assert(_url != null);
-
-    // Instantiate VRedirector if null
-    // It might be not null if called from systemPop
-    final vRedirector = _defaultPop(queryParameters: queryParameters);
-
-    /// Call onSystemPop in all active VNavigationGuards
-    for (var page in flattenPages.reversed) {
-      final vNavigationMessages =
-          page.child.stateKey?.currentState?.vNavigationGuardMessages ?? [];
-      for (var vNavigationMessage in vNavigationMessages.reversed) {
-        if (vNavigationMessage.vNavigationGuard.onSystemPop != null) {
-          await vNavigationMessage.vNavigationGuard.onSystemPop!(vRedirector);
-          if (!vRedirector.shouldUpdate) {
-            return;
-          }
-        }
-      }
-    }
-
-    /// Call onSystemPop of the nested-most VRouteElement
-    // Get the current path
-    final path = Uri.parse(_url!).path;
-
-    // Get the current route
-    final vRoutePathLocals = pathToRoutes
-        .firstWhere(
-            (_VRoutePath vRoutePathRegexp) =>
-                vRoutePathRegexp.pathRegExp.hasMatch(path),
-            orElse: () => throw InvalidUrlException(url: path))
-        .vRouteElements;
-
-    // Find the VRouteClass which is the deepest possible
-    // having onSystemPopPage implemented
-    final vRouteElement = vRoutePathLocals.last;
-    if (vRouteElement.onSystemPop != null) {
-      // If we did find a VRouteClass, call onSystemPopPage
-      await vRouteElement.onSystemPop!(vRedirector);
-      if (!vRedirector.shouldUpdate) {
-        return;
-      }
-    }
-
-    /// Call VRouter onSystemPop
-    if (widget.onSystemPop != null) {
-      // Call VRouter.onSystemPopPage if implemented
-      await widget.onSystemPop!(vRedirector);
-      if (!vRedirector.shouldUpdate) {
-        return;
-      }
-    }
-
-    /// Call onPop, which start a onPop cycle
-    await _pop();
   }
 
   /// This finds new url when a pop event occurs by popping all [VRouteElement] of the current
@@ -1724,7 +1640,7 @@ class VRouterState extends State<VRouter> {
   }
 
   /// See [VRouterData.replaceHistoryState]
-  void _replaceHistoryState(String newRouterState) {
+  void replaceHistoryState(String newRouterState) {
     if (kIsWeb) {
       final historyState = BrowserHelpers.getHistoryState() ?? '{}';
       final historyStateMap =
@@ -1742,7 +1658,7 @@ class VRouterState extends State<VRouter> {
   /// Save the state if needed before the app gets unloaded
   /// Mind that this happens when the user enter a url manually in the
   /// browser so we can't prevent him from leaving the page
-  void onBeforeUnload() async {
+  void _onBeforeUnload() async {
     if (_url == null) return;
     final newSerialCount = serialCount + 1;
     final path = Uri.parse(_url!).path;
@@ -1812,73 +1728,166 @@ class VRouterState extends State<VRouter> {
       BrowserHelpers.replaceHistoryState(jsonEncode(historyStatesToSave));
     }
   }
+
+  /// See [VRouterData.pop]
+  Future<void> pop({
+    Map<String, String> queryParameters = const {},
+    String? newState,
+  }) async {
+    _pop(queryParameters: queryParameters, newState: newState);
+  }
+
+  /// See [VRouterData.systemPop]
+  Future<void> systemPop({
+    Map<String, String> queryParameters = const {},
+    String? newState,
+  }) async {
+    assert(_url != null);
+
+    // Instantiate VRedirector if null
+    // It might be not null if called from systemPop
+    final vRedirector = _defaultPop(queryParameters: queryParameters);
+
+    /// Call onSystemPop in all active VNavigationGuards
+    for (var page in flattenPages.reversed) {
+      final vNavigationMessages =
+          page.child.stateKey?.currentState?.vNavigationGuardMessages ?? [];
+      for (var vNavigationMessage in vNavigationMessages.reversed) {
+        if (vNavigationMessage.vNavigationGuard.onSystemPop != null) {
+          await vNavigationMessage.vNavigationGuard.onSystemPop!(vRedirector);
+          if (!vRedirector.shouldUpdate) {
+            return;
+          }
+        }
+      }
+    }
+
+    /// Call onSystemPop of the nested-most VRouteElement
+    // Get the current path
+    final path = Uri.parse(_url!).path;
+
+    // Get the current route
+    final vRoutePathLocals = pathToRoutes
+        .firstWhere(
+            (_VRoutePath vRoutePathRegexp) =>
+                vRoutePathRegexp.pathRegExp.hasMatch(path),
+            orElse: () => throw InvalidUrlException(url: path))
+        .vRouteElements;
+
+    // Find the VRouteClass which is the deepest possible
+    // having onSystemPopPage implemented
+    final vRouteElement = vRoutePathLocals.last;
+    if (vRouteElement.onSystemPop != null) {
+      // If we did find a VRouteClass, call onSystemPopPage
+      await vRouteElement.onSystemPop!(vRedirector);
+      if (!vRedirector.shouldUpdate) {
+        return;
+      }
+    }
+
+    /// Call VRouter onSystemPop
+    if (widget.onSystemPop != null) {
+      // Call VRouter.onSystemPopPage if implemented
+      await widget.onSystemPop!(vRedirector);
+      if (!vRedirector.shouldUpdate) {
+        return;
+      }
+    }
+
+    /// Call onPop, which start a onPop cycle
+    await _pop(vRedirector: vRedirector);
+  }
+
+  /// See [VRouterData.push]
+  void push(
+    String newUrl, {
+    Map<String, String> queryParameters = const {},
+    String? routerState,
+  }) {
+    if (!newUrl.startsWith('/')) {
+      if (_url == null) {
+        throw Exception(
+            "The current url is null but you are trying to access a path which does not start with '/'.");
+      }
+      final currentPath = Uri.parse(_url!).path;
+      newUrl = currentPath + '/$newUrl';
+    }
+
+    _updateUrl(newUrl,
+        queryParameters: queryParameters,
+        newState: (routerState != null) ? {'-2': routerState} : {});
+  }
+
+  /// See [VRouterData.pushNamed]
+  void pushNamed(
+    String name, {
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    String? routerState,
+  }) {
+    _updateUrlFromName(name,
+        pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        newState: (routerState != null) ? {'-2': routerState} : {});
+  }
+
+  /// See [VRouterData.pushReplacement]
+  void pushReplacement(
+    String newUrl, {
+    Map<String, String> queryParameters = const {},
+    String? routerState,
+  }) {
+    // If not on the web, this is the same as push
+    if (!kIsWeb) {
+      return push(newUrl,
+          queryParameters: queryParameters, routerState: routerState);
+    }
+
+    if (!newUrl.startsWith('/')) {
+      if (_url == null) {
+        throw Exception(
+            "The current url is null but you are trying to access a path which does not start with'/'.");
+      }
+      final currentPath = Uri.parse(_url!).path;
+      newUrl = currentPath + '/$newUrl';
+    }
+
+    // Update the url, setting isReplacement to true
+    _updateUrl(
+      newUrl,
+      queryParameters: queryParameters,
+      newState: (routerState != null) ? {'-2': routerState} : {},
+      isReplacement: true,
+    );
+  }
+
+  /// See [VRouterData.pushReplacementNamed]
+  void pushReplacementNamed(
+    String name, {
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    String? routerState,
+  }) {
+    _updateUrlFromName(name,
+        pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        newState: (routerState != null) ? {'-2': routerState} : {},
+        isReplacement: true);
+  }
+
+  /// See [VRouterData.pushExternal]
+  void pushExternal(String newUrl, {bool openNewTab = false}) =>
+      _updateUrl(newUrl, isUrlExternal: true, openNewTab: openNewTab);
 }
 
 class VRouterData extends InheritedWidget {
-  final void Function(
-    String newUrl, {
-    Map<String, String> queryParameters,
-    Map<String, String> newState,
-    bool isUrlExternal,
-    bool isReplacement,
-    bool openNewTab,
-  }) _updateUrl;
-  final void Function(
-    String name, {
-    Map<String, String> pathParameters,
-    Map<String, String> queryParameters,
-    Map<String, String> newState,
-    bool isReplacement,
-  }) _updateUrlFromName;
-  final Future<void> Function({
-    Map<String, String> queryParameters,
-    String? newState,
-  }) _pop;
-  final Future<void> Function({
-    Map<String, String> queryParameters,
-    String? newState,
-  }) _systemPop;
-  final void Function(String historyState) _replaceHistoryState;
+  final VRouterState _state;
 
   VRouterData({
     Key? key,
     required Widget child,
-    required this.url,
-    required this.previousUrl,
-    required this.historyState,
-    required void Function(
-      String newUrl, {
-      Map<String, String> queryParameters,
-      Map<String, String> newState,
-      bool isUrlExternal,
-      bool isReplacement,
-      bool openNewTab,
-    })
-        updateUrl,
-    required void Function(
-      String name, {
-      Map<String, String> pathParameters,
-      Map<String, String> queryParameters,
-      Map<String, String> newState,
-      bool isReplacement,
-    })
-        updateUrlFromName,
-    required Future<void> Function({
-      Map<String, String> queryParameters,
-      String? newState,
-    })
-        pop,
-    required Future<void> Function({
-      Map<String, String> queryParameters,
-      String? newState,
-    })
-        systemPop,
-    required void Function(String historyState) replaceHistoryState,
-  })   : _updateUrl = updateUrl,
-        _updateUrlFromName = updateUrlFromName,
-        _pop = pop,
-        _systemPop = systemPop,
-        _replaceHistoryState = replaceHistoryState,
+    required VRouterState state,
+  })   : _state = state,
         super(
           key: key,
           child: child,
@@ -1894,10 +1903,10 @@ class VRouterData extends InheritedWidget {
   /// Url currently synced with the state
   /// This url can differ from the once of the browser if
   /// the state has been yet been updated
-  final String? url;
+  String? get url => _state._url;
 
   /// Previous url that was synced with the state
-  final String? previousUrl;
+  String? get previousUrl => _state._previousUrl;
 
   /// This state is saved in the browser history. This means that if the user presses
   /// the back or forward button on the navigator, this historyState will be the same
@@ -1910,7 +1919,7 @@ class VRouterData extends InheritedWidget {
   ///      version of the historyState
   ///   * [VRouterData.historyState] if you want to use a router level
   ///      version of the historyState
-  final String? historyState;
+  String? get historyState => _state._historyState;
 
   /// Pushes the new route of the given url on top of the current one
   /// A path can be of one of two forms:
@@ -1929,20 +1938,9 @@ class VRouterData extends InheritedWidget {
     String newUrl, {
     Map<String, String> queryParameters = const {},
     String? routerState,
-  }) {
-    if (!newUrl.startsWith('/')) {
-      if (url == null) {
-        throw Exception(
-            "The current url is null but you are trying to access a path which does not start with '/'.");
-      }
-      final currentPath = Uri.parse(url!).path;
-      newUrl = currentPath + '/$newUrl';
-    }
-
-    _updateUrl(newUrl,
-        queryParameters: queryParameters,
-        newState: (routerState != null) ? {'-2': routerState} : {});
-  }
+  }) =>
+      _state.push(newUrl,
+          queryParameters: queryParameters, routerState: routerState);
 
   /// Updates the url given a [VRouteElement] name
   ///
@@ -1964,12 +1962,11 @@ class VRouterData extends InheritedWidget {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
     String? routerState,
-  }) {
-    _updateUrlFromName(name,
-        pathParameters: pathParameters,
-        queryParameters: queryParameters,
-        newState: (routerState != null) ? {'-2': routerState} : {});
-  }
+  }) =>
+      _state.pushNamed(name,
+          pathParameters: pathParameters,
+          queryParameters: queryParameters,
+          routerState: routerState);
 
   /// Replace the current one by the new route corresponding to the given url
   /// The difference with [push] is that this overwrites the current browser history entry
@@ -1990,30 +1987,9 @@ class VRouterData extends InheritedWidget {
     String newUrl, {
     Map<String, String> queryParameters = const {},
     String? routerState,
-  }) {
-    // If not on the web, this is the same as push
-    if (!kIsWeb) {
-      return push(newUrl,
+  }) =>
+      _state.pushReplacement(newUrl,
           queryParameters: queryParameters, routerState: routerState);
-    }
-
-    if (!newUrl.startsWith('/')) {
-      if (url == null) {
-        throw Exception(
-            "The current url is null but you are trying to access a path which does not start with'/'.");
-      }
-      final currentPath = Uri.parse(url!).path;
-      newUrl = currentPath + '/$newUrl';
-    }
-
-    // Update the url, setting isReplacement to true
-    _updateUrl(
-      newUrl,
-      queryParameters: queryParameters,
-      newState: (routerState != null) ? {'-2': routerState} : {},
-      isReplacement: true,
-    );
-  }
 
   /// Replace the url given a [VRouteElement] name
   /// The difference with [pushNamed] is that this overwrites the current browser history entry
@@ -2036,20 +2012,18 @@ class VRouterData extends InheritedWidget {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
     String? routerState,
-  }) {
-    _updateUrlFromName(name,
-        pathParameters: pathParameters,
-        queryParameters: queryParameters,
-        newState: (routerState != null) ? {'-2': routerState} : {},
-        isReplacement: true);
-  }
+  }) =>
+      _state.pushReplacementNamed(name,
+          pathParameters: pathParameters,
+          queryParameters: queryParameters,
+          routerState: routerState);
 
   /// Goes to an url which is not in the app
   ///
   /// On the web, you can set [openNewTab] to true to open this url
   /// in a new tab
   void pushExternal(String newUrl, {bool openNewTab = false}) =>
-      _updateUrl(newUrl, isUrlExternal: true, openNewTab: openNewTab);
+      _state.pushExternal(newUrl, openNewTab: openNewTab);
 
   /// Starts a pop cycle
   ///
@@ -2065,7 +2039,7 @@ class VRouterData extends InheritedWidget {
     Map<String, String> queryParameters = const {},
     String? routerState,
   }) =>
-      _pop(queryParameters: queryParameters, newState: routerState);
+      _state.pop(queryParameters: queryParameters, newState: routerState);
 
   /// Starts a systemPop cycle
   ///
@@ -2081,11 +2055,11 @@ class VRouterData extends InheritedWidget {
     Map<String, String> queryParameters = const {},
     String? routerState,
   }) =>
-      _systemPop(queryParameters: queryParameters, newState: routerState);
+      _state.systemPop(queryParameters: queryParameters, newState: routerState);
 
   /// This replaces the current history state of [VRouterData] with given one
   void replaceHistoryState(String historyState) =>
-      _replaceHistoryState(historyState);
+      _state.replaceHistoryState(historyState);
 
   static VRouterData of(BuildContext context) {
     final vRouterData =

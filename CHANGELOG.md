@@ -1,3 +1,7 @@
+## [1.0.0-nullsafety.11] - 27/02/2021.
+
+* Enable access to VRouterState to enable navigation without context
+
 ## [1.0.0-nullsafety.10+1] - 24/02/2021.
 
 * Update README
