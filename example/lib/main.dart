@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 
+final key = GlobalKey<VRouterState>();
+
 void main() {
   runApp(
     VRouter(
@@ -10,7 +12,12 @@ void main() {
         VStacked(path: '/login', widget: LoginWidget(), subroutes: [
           VStacked(
             key: ValueKey('MyScaffold'),
-            widget: MyScaffold(),
+            widgetBuilder: (_, vChild) => MyScaffold(vChild),
+            beforeEnter: (_) async => print('MyScaffold beforeEnter'),
+            beforeLeave: (_, __) async => print('MyScaffold beforeLeave'),
+            beforeUpdate: (_) async => print('MyScaffold beforeUpdate'),
+            afterUpdate: (_, __, ___) async => print('MyScaffold afterUpdate'),
+            afterEnter: (_, __, ___) async => print('MyScaffold afterEnter'),
             subroutes: [
               VChild(
                 path: '/settings',
@@ -30,6 +37,11 @@ void main() {
                 name: 'profile', // We also give a name for easier navigation
                 widget: ProfileWidget(),
 
+                beforeEnter: (_) async => print('ProfileWidget beforeEnter'),
+                beforeLeave: (_, __) async => print('ProfileWidget beforeLeave'),
+                beforeUpdate: (_) async => print('ProfileWidget beforeUpdate'),
+                afterUpdate: (_, __, ___) async => print('ProfileWidget afterUpdate'),
+                afterEnter: (_, __, ___) async => print('ProfileWidget afterEnter'),
                 // The path '/profile' might also match this path
                 // In this case, we must handle the empty pathParameter
                 aliases: ['/profile'],
@@ -48,6 +60,8 @@ void main() {
   );
 }
 
+
+
 class LoginWidget extends StatefulWidget {
   @override
   _LoginWidgetState createState() => _LoginWidgetState();
@@ -59,6 +73,7 @@ class _LoginWidgetState extends State<LoginWidget> {
 
   @override
   Widget build(BuildContext context) {
+
     return Material(
       child: Center(
         child: Column(
@@ -99,7 +114,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             FloatingActionButton(
               heroTag: 'FAB',
               onPressed: () => setState(() => (_formKey.currentState.validate())
-                  ? VRouterData.of(context).push('/profile/$name')
+                  ? context.vRouter.push('/profile/$name')
                   : null),
               child: Icon(Icons.login),
             )
@@ -111,47 +126,55 @@ class _LoginWidgetState extends State<LoginWidget> {
 }
 
 class MyScaffold extends StatelessWidget {
+  final Widget vChild;
+
+  const MyScaffold(this.vChild, {Key key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('You are connected'),
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        // We check the vChild name to known where we are
-        currentIndex:
-            (VRouteElementData.of(context).vChildName == 'profile') ? 0 : 1,
-        items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline), label: 'Profile'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.info_outline), label: 'Info'),
-        ],
-        onTap: (int index) {
-          if (index == 0 &&
-              VRouteElementData.of(context).vChildName != 'profile') {
-            // We use the name to navigate
-            // We can specify the username in a map
-            // Since we are on settings, the username is stored in the VRouter history state
-            VRouterData.of(context).pushNamed('profile', pathParameters: {
-              'username': VRouterData.of(context).historyState
-            });
-          } else if (index == 1 &&
-              VRouteElementData.of(context).vChildName == 'profile') {
-            // We push the settings and store the username in the VRouter history state
-            // We can access this username via the global path parameters (stored in VRoute)
-            VRouterData.of(context).push('/settings',
-                routerState: VRouteData.of(context).pathParameters['username']);
-          }
-        },
-      ),
-      body: VRouteElementData.of(context).vChild,
+    return VNavigationGuard(
+      beforeLeave: (_, __) async => print('ProfileWidget beforeLeave'),
+      beforeUpdate: (_) async => print('ProfileWidget beforeUpdate'),
+      afterUpdate: (_, __, ___) async => print('ProfileWidget afterUpdate'),
+      afterEnter: (_, __, ___) async => print('ProfileWidget afterEnter'),
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('You are connected'),
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          // We check the vChild name to known where we are
+          currentIndex:
+              (context.vRouteElementData.vChildName == 'profile') ? 0 : 1,
+          items: [
+            BottomNavigationBarItem(
+                icon: Icon(Icons.person_outline), label: 'Profile'),
+            BottomNavigationBarItem(
+                icon: Icon(Icons.info_outline), label: 'Info'),
+          ],
+          onTap: (int index) {
+            if (index == 0 && context.vRouteElementData.vChildName != 'profile') {
+              // We use the name to navigate
+              // We can specify the username in a map
+              // Since we are on settings, the username is stored in the VRouter history state
+              context.vRouter.pushNamed('profile',
+                  pathParameters: {'username': context.vRouterData.historyState});
+            } else if (index == 1 &&
+                VRouteElementData.of(context).vChildName == 'profile') {
+              // We push the settings and store the username in the VRouter history state
+              // We can access this username via the global path parameters (stored in VRoute)
+              context.vRouter.push('/settings',
+                  routerState: context.vRouterData.pathParameters['username']);
+            }
+          },
+        ),
+        body: vChild,
 
-      // This FAB is shared with login and shows hero animations working with no issues
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'FAB',
-        onPressed: () => VRouterData.of(context).push('/login'),
-        child: Icon(Icons.logout),
+        // This FAB is shared with login and shows hero animations working with no issues
+        floatingActionButton: FloatingActionButton(
+          heroTag: 'FAB',
+          onPressed: () => context.vRouter.push('/login'),
+          child: Icon(Icons.logout),
+        ),
       ),
     );
   }
@@ -256,3 +279,94 @@ class InfoWidget extends StatelessWidget {
 
 final textStyle = TextStyle(color: Colors.black, fontSize: 16);
 final buttonTextStyle = textStyle.copyWith(color: Colors.white);
+
+
+//
+// VRouter(
+//   subroute: VSwitcher(
+//     subroutes: [
+//       VPath(
+//         path: '/login',
+//         subroute: VWidget(
+//           widget: LoginPage(),
+//         ),
+//       ),
+//       VChildGetter(
+//         widgetBuilder: (vChild) => MyScaffold(vChild)
+//         subroute: VSwitcher(
+//           subroutes: [
+//             VPath(
+//               path: '/home',
+//               subroute: VWidget(
+//                 widget: HomePage(),
+//               ),
+//             ),
+//             VPath(
+//               path: '/settings',
+//               subroute: VWidget(
+//                 widget: SettingsPage(),
+//               ),
+//             ),
+//           ]
+//         ),
+//       ),
+//     ],
+//   ),
+// );
+//
+// VRouter(
+//   subroute: VStacker(
+//     subroutes: [
+//       VChildGetter(
+//         widgetBuilder: (vChild) => MyScaffold(vChild)
+//         subroute: VSwitcher(
+//           subroutes: [
+//             VPath(
+//               path: '/home',
+//               subroute: VWidget(
+//                 widget: HomePage(),
+//               ),
+//             ),
+//             VPath(
+//               path: '/settings',
+//               subroute: VWidget(
+//                 widget: SettingsPage(),
+//               ),
+//             ),
+//           ]
+//         ),
+//       ),
+//       VPath(
+//         path: '/comments/:id',
+//           subroute: VWidget(
+//           widget: LoginPage(),
+//         ),
+//       ),
+//     ],
+//   ),
+// );
+//
+//
+// void f() {
+//   VRouter(
+//     subroute: [
+//       VStacked(
+//         path: '/login',
+//         widget: LoginWidget(),
+//       ),
+//       VStacked(
+//         widgetBuilder: (vChild) => MyScaffold(vChild),
+//         subroutes: [
+//           VChild(
+//             path: '/home',
+//             widget: HomePage(),
+//           ),
+//           VChild(
+//             path: '/settings',
+//             widget: SettingsPage(),
+//           ),
+//         ]
+//       ),
+//     ],
+//   );
+// }

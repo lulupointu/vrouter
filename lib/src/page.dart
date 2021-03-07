@@ -6,7 +6,7 @@ part of 'main.dart';
 /// custom transitions easily.
 abstract class VPage<T> extends Page<T> {
   /// The child of this page
-  final RouteElementWidget child;
+  final VRouteElementWidget child;
 
   /// The name of this page
   @override
@@ -58,7 +58,7 @@ abstract class VPage<T> extends Page<T> {
 
   factory VPage.fromPlatform({
     required LocalKey key,
-    required RouteElementWidget child,
+    required VRouteElementWidget child,
     String? name,
     Widget Function(Animation<double> animation,
             Animation<double> secondaryAnimation, Widget child)?
@@ -114,7 +114,7 @@ abstract class VPage<T> extends Page<T> {
 class VMaterialPage<T> extends MaterialPage<T> implements VPage<T> {
   /// The child of this page
   @override
-  final RouteElementWidget child;
+  final VRouteElementWidget child;
 
   /// The name of this page
   @override
@@ -186,7 +186,7 @@ class VMaterialPage<T> extends MaterialPage<T> implements VPage<T> {
 class VCupertinoPage<T> extends CupertinoPage<T> implements VPage<T> {
   /// The child of this page
   @override
-  final RouteElementWidget child;
+  final VRouteElementWidget child;
 
   /// The name of this page
   @override

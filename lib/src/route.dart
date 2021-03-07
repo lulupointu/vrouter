@@ -1,5 +1,12 @@
 part of 'main.dart';
 
+@Deprecated("""Use VRouterData instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
 class VRoute extends StatefulWidget {
   /// See [VRouteData.pathParameters]
   final Map<String, String> pathParameters;
@@ -39,6 +46,7 @@ class VRoute extends StatefulWidget {
   _VRouteState createState() => _VRouteState(historyState: initialHistorySate);
 }
 
+@deprecated
 class _VRouteState extends State<VRoute> {
   /// See [VRouteData.historyState]
   String? historyState;
@@ -87,6 +95,13 @@ class _VRouteState extends State<VRoute> {
   }
 }
 
+@Deprecated("""Use VRouterData instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
 class VRouteData extends InheritedWidget {
   /// This state is saved in the browser history. This means that if the user presses
   /// the back or forward button on the navigator, this historyState will be the same
@@ -99,9 +114,23 @@ class VRouteData extends InheritedWidget {
   ///      version of the historyState
   ///   * [VRouteElementData.historyState] if you want to use a local
   ///      version of the historyState
+  @Deprecated("""Use VRouterData.historyState instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
   final String? historyState;
 
   /// This replaces the current history state of this [VRouteData] with given one
+  @Deprecated("""Use VRouterData.replaceHistoryState instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
   final void Function(String newState) replaceHistoryState;
 
   /// Maps all route parameters (i.e. parameters of the path
@@ -111,10 +140,24 @@ class VRouteData extends InheritedWidget {
   /// However every parameters is passed locally to VRouteElementWidgetData
   /// so you should find them there.
   /// See [VRouteElementData.pathParameters]
+  @Deprecated("""Use VRouterData.pathParameters instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
   final Map<String, String> pathParameters;
 
   /// Contains all query parameters (i.e. parameters after
   /// the "?" in the url) of the current url
+  @Deprecated("""Use VRouterData.queryParameters instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
   final Map<String, String> queryParameters;
 
   const VRouteData({

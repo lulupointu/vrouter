@@ -21,8 +21,9 @@ class VRouter extends StatefulWidget {
   /// Note that if this is not implemented, every route which does not implement
   /// its own buildTransition will be given a default transition: this of a
   /// [MaterialPage]
-  final Widget Function(Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child)? buildTransition;
+  final Widget Function(
+          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
+      buildTransition;
 
   /// The duration of [VRouter.buildTransition]
   final Duration? transitionDuration;
@@ -39,7 +40,7 @@ class VRouter extends StatefulWidget {
 
   /// Called when a url changes, before the url is updated
   /// Use [vRedirector] if you want to redirect or stop the navigation.
-  /// DO NOT use VRouterData methods to redirect.
+  /// DO NOT use VRouter methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
   /// [saveHistoryState] can be used to save a history state before leaving
@@ -62,7 +63,7 @@ class VRouter extends StatefulWidget {
   /// This is called before the url is updated but after all beforeLeave are called
   ///
   /// Use [vRedirector] if you want to redirect or stop the navigation.
-  /// DO NOT use VRouterData methods to redirect.
+  /// DO NOT use VRouter methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
   /// Note that you should consider the navigation cycle to
@@ -83,15 +84,14 @@ class VRouter extends StatefulWidget {
   /// Also see:
   ///   * [VRouteElement.afterEnter] for route level afterEnter
   ///   * [VNavigationGuard.afterEnter] for widget level afterEnter
-  final void Function(BuildContext context, String? from, String to)?
-      afterEnter;
+  final void Function(BuildContext context, String? from, String to)? afterEnter;
 
   /// Called after the [VRouteElement.onPopPage] when a pop event occurs
   /// A pop event can be called programmatically (with [VRouterData.of(context).pop()])
   /// or by other widgets such as the appBar back button
   ///
   /// Use [vRedirector] if you want to redirect or stop the navigation.
-  /// DO NOT use VRouterData methods to redirect.
+  /// DO NOT use VRouter methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
   /// The route you go to is calculated based on [VRouterState._defaultPop]
@@ -109,7 +109,7 @@ class VRouter extends StatefulWidget {
   /// This happens on android when the system back button is pressed.
   ///
   /// Use [vRedirector] if you want to redirect or stop the navigation.
-  /// DO NOT use VRouterData methods to redirect.
+  /// DO NOT use VRouter methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
   /// The route you go to is calculated based on [VRouterState._defaultPop]
@@ -121,6 +121,11 @@ class VRouter extends StatefulWidget {
   ///   * [VRouteElement.onSystemPop] for route level onSystemPop
   ///   * [VNavigationGuard.onSystemPop] for widget level onSystemPop
   final Future<void> Function(VRedirector vRedirector)? onSystemPop;
+
+  /// This allows you to change the initial url
+  ///
+  /// The default is '/'
+  final InitialUrl initialUrl;
 
   VRouter({
     Key? key,
@@ -134,6 +139,7 @@ class VRouter extends StatefulWidget {
     this.transitionDuration,
     this.reverseTransitionDuration,
     this.mode = VRouterModes.hash,
+    this.initialUrl = const InitialUrl(url: '/'),
     // Bellow are the MaterialApp parameters
     this.backButtonDispatcher,
     this.builder,
@@ -492,72 +498,79 @@ class VRouter extends StatefulWidget {
   ///
   ///  * <https://material.io/design/layout/spacing-methods.html>
   final bool? debugShowMaterialGrid;
+
+  static VRouterMethodsHolder of(BuildContext context) {
+    final vRouterMethodsHolder =
+        context.dependOnInheritedWidgetOfExactType<VRouterMethodsHolder>();
+    if (vRouterMethodsHolder == null) {
+      throw FlutterError(
+          'VRouter.of(context) was called with a context which does not contain a VRouter.\n'
+          'The context used to retrieve VRouter must be that of a widget that '
+          'is a descendant of a VRouter widget.');
+    }
+    return vRouterMethodsHolder;
+  }
 }
 
 class VRouterState extends State<VRouter> {
-  /// See [VRouterData.url]
-  String? _url;
-
-  /// See [VRouterData.previousUrl]
-  String? _previousUrl;
-
   /// Those are all the pages of the current route
   /// It is computed every time the url is updated
   /// This is mainly used to see which pages are deactivated
   /// vs which ones are reused when the url changes
-  List<VPage> flattenPages = [];
+  List<VPage> _flattenPages = [];
 
   /// This is a list which maps every possible path to the corresponding route
   /// by looking at every [VRouteElement] in [VRouter.routes]
   /// This is only computed once
-  late List<_VRoutePath> pathToRoutes;
+  late List<_VRoutePath> _pathToRoutes;
 
   /// This is a context which contains the VRouter.
   /// It is used is VRouter.beforeLeave for example.
   late BuildContext _vRouterInformationContext;
-
-  /// Represent the historyState of the router for the current
-  /// history entry.
-  /// It is used by the end user to store a global historyState
-  /// rather than storing them in [VRouteElementData]
-  ///
-  /// It can be changed by using [VRouterData.of(context).replaceHistoryState(newState)]
-  ///
-  /// Also see:
-  ///   * [VRouteData.historyState] if you want to use a route level
-  ///      version of the historyState
-  ///   * [VRouteElementData.historyState] if you want to use a local
-  ///      version of the historyState
-  String? _historyState;
 
   /// Designates the number of page we navigated since
   /// entering the app.
   /// If is only used in the web to know where we are when
   /// the user interacts with the browser instead of the app
   /// (e.g back button)
-  late int serialCount;
+  late int _serialCount;
 
   /// When set to true, urlToAppState will be ignored
   /// You must manually reset it to true otherwise it will
   /// be ignored forever.
-  bool ignoreNextBrowserCalls = false;
+  bool _ignoreNextBrowserCalls = false;
 
   /// Those are used in the root navigator
   /// They are here to prevent breaking animations
   final GlobalKey<NavigatorState> _navigatorKey;
   final HeroController _heroController;
 
-  /// The [VRoute] corresponding to the current url
-  VRoute? vRoute;
+  /// The [VRouterNode] corresponding to the topmost VRouterNode
+  VRouterNode? vRouterNode;
 
   VRouterState()
       : _navigatorKey = GlobalKey<NavigatorState>(),
         _heroController = HeroController();
 
+  /// See [VRouterData.url]
+  String? url;
+
+  /// See [VRouterData.previousUrl]
+  String? previousUrl;
+
+  /// See [VRouterData.historyState]
+  String? historyState;
+
+  /// See [VRouterData.pathParameters]
+  Map<String, String> pathParameters = <String, String>{};
+
+  /// See [VRouterData.queryParameters]
+  Map<String, String> queryParameters = <String, String>{};
+
   @override
   void initState() {
     // When the app starts, get the serialCount. Default to 0.
-    serialCount = (kIsWeb) ? (BrowserHelpers.getHistorySerialCount() ?? 0) : 0;
+    _serialCount = (kIsWeb) ? (BrowserHelpers.getHistorySerialCount() ?? 0) : 0;
 
     // Setup the url strategy
     if (widget.mode == VRouterModes.history) {
@@ -567,7 +580,7 @@ class VRouterState extends State<VRouter> {
     }
 
     // Compute every possible path
-    pathToRoutes = _getRoutesFlatten(childRoutes: widget.routes);
+    _pathToRoutes = _getRoutesFlatten(childRoutes: widget.routes);
 
     // If we are on the web, we listen to any unload event.
     // This allows us to call beforeLeave when the browser or the tab
@@ -582,14 +595,12 @@ class VRouterState extends State<VRouter> {
   @override
   Widget build(BuildContext context) {
     return SimpleUrlHandler(
-      urlToAppState:
-          (BuildContext context, RouteInformation routeInformation) async {
-        if (routeInformation.location != null && !ignoreNextBrowserCalls) {
+      urlToAppState: (BuildContext context, RouteInformation routeInformation) async {
+        if (routeInformation.location != null && !_ignoreNextBrowserCalls) {
           // Get the new state
           final newState = (kIsWeb)
-              ? Map<String, String?>.from(jsonDecode(
-                  (routeInformation.state as String?) ??
-                      (BrowserHelpers.getHistoryState() ?? '{}')))
+              ? Map<String, String?>.from(jsonDecode((routeInformation.state as String?) ??
+                  (BrowserHelpers.getHistoryState() ?? '{}')))
               : <String, String>{};
 
           // Get the new serial count
@@ -599,31 +610,39 @@ class VRouterState extends State<VRouter> {
             // ignore: empty_catches
           } on FormatException {}
 
+          // Check if this is the first route
+          if (newSerialCount == null || newSerialCount == 0) {
+            // If so, check is the url reported by the browser is the same as the initial url
+            // We check "routeInformation.location == '/'" to enable deep linking
+            if (routeInformation.location == '/' &&
+                routeInformation.location != widget.initialUrl.url) {
+              return;
+            }
+          }
+
           // Update the app with the new url
           await _updateUrl(
             routeInformation.location!,
             newState: newState,
             fromBrowser: true,
-            newSerialCount: newSerialCount ?? serialCount + 1,
+            newSerialCount: newSerialCount ?? _serialCount + 1,
           );
         }
         return null;
       },
       appStateToUrl: () {
         return RouteInformation(
-          location: _url ?? '/',
+          location: url ?? '/',
           state: jsonEncode({
-            'serialCount': '$serialCount',
-            '-2': _historyState,
-            '-1': vRoute?.key.currentState?.historyState,
-            for (var pages in flattenPages)
-              '${pages.child.depth}':
-                  pages.child.stateKey?.currentState?.historyState ??
-                      pages.child.initialHistorySate,
+            'serialCount': '$_serialCount',
+            '-1': vRouterNode?.historyState,
+            for (var pages in _flattenPages)
+              '${pages.child.depth}': pages.child.stateKey?.currentState?.historyState ??
+                  pages.child.initialHistorySate,
           }),
         );
       },
-      child: VRouterData(
+      child: VRouterMethodsHolder(
         state: this,
         child: Builder(
           builder: (context) {
@@ -633,7 +652,17 @@ class VRouterState extends State<VRouter> {
             // a CircularProgressIndicator.
             // Ideally this should never be needed, or replaced with a splash screen
             // Should we add the option ?
-            return vRoute ?? Center(child: CircularProgressIndicator());
+            return vRouterNode != null
+                ? VRouterData(
+                    child: vRouterNode!,
+                    state: this,
+                    url: url,
+                    previousUrl: previousUrl,
+                    historyState: historyState,
+                    pathParameters: pathParameters,
+                    queryParameters: queryParameters,
+                  )
+                : Center(child: CircularProgressIndicator());
           },
         ),
       ),
@@ -649,12 +678,10 @@ class VRouterState extends State<VRouter> {
       localizationsDelegates: widget.localizationsDelegates,
       localeListResolutionCallback: widget.localeListResolutionCallback,
       localeResolutionCallback: widget.localeResolutionCallback,
-      supportedLocales:
-          widget.supportedLocales ?? const <Locale>[Locale('en', 'US')],
+      supportedLocales: widget.supportedLocales ?? const <Locale>[Locale('en', 'US')],
       debugShowMaterialGrid: widget.debugShowMaterialGrid ?? false,
       showPerformanceOverlay: widget.showPerformanceOverlay ?? false,
-      checkerboardRasterCacheImages:
-          widget.checkerboardRasterCacheImages ?? false,
+      checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages ?? false,
       checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers ?? false,
       showSemanticsDebugger: widget.showSemanticsDebugger ?? false,
       debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner ?? true,
@@ -663,21 +690,20 @@ class VRouterState extends State<VRouter> {
     );
   }
 
-  /// A recursive function which is used to build [pathToRoutes]
+  /// A recursive function which is used to build [_pathToRoutes]
   List<_VRoutePath> _getRoutesFlatten({
     required List<VRouteElement> childRoutes,
     _VRoutePath? parentVRoutePath,
   }) {
     final routesFlatten = <_VRoutePath>[];
     final parentPath = parentVRoutePath?.path ?? '';
-    var parentVRouteElements = List<VRouteElement>.from(
-        parentVRoutePath?.vRouteElements ?? <VRouteElement>[]);
+    var parentVRouteElements =
+        List<VRouteElement>.from(parentVRoutePath?.vRouteElements ?? <VRouteElement>[]);
 
     // For each childRoutes
     for (var childRoute in childRoutes) {
       // Add the VRouteElement to the parent ones to from the VRouteElements list
-      final vRouteElements =
-          List<VRouteElement>.from([...parentVRouteElements, childRoute]);
+      final vRouteElements = List<VRouteElement>.from([...parentVRouteElements, childRoute]);
 
       // If the path is null, just get the route from the subroutes
       if (childRoute.path == null) {
@@ -707,8 +733,7 @@ class VRouterState extends State<VRouter> {
 
         // Get the pathRegExp and the new parameters
         var newGlobalParameters = <String>[];
-        final globalPathRegExp =
-            pathToRegExp(globalPath, parameters: newGlobalParameters);
+        final globalPathRegExp = pathToRegExp(globalPath, parameters: newGlobalParameters);
 
         // Instantiate the new vRoutePath
         final vRoutePath = _VRoutePath(
@@ -728,13 +753,11 @@ class VRouterState extends State<VRouter> {
 
           for (var alias in childRoute.aliases!) {
             // Get the global path
-            final globalPath =
-                (alias.startsWith('/')) ? alias : parentPath + '/$alias';
+            final globalPath = (alias.startsWith('/')) ? alias : parentPath + '/$alias';
 
             // Get the pathRegExp and the new parameters
             var newGlobalParameters = <String>[];
-            final globalPathRegExp =
-                pathToRegExp(globalPath, parameters: newGlobalParameters);
+            final globalPathRegExp = pathToRegExp(globalPath, parameters: newGlobalParameters);
 
             // Instantiate the new vRoutePath
             final vRoutePath = _VRoutePath(
@@ -796,27 +819,50 @@ class VRouterState extends State<VRouter> {
     Map<String, String> pathParameters = const {},
   }) {
     // Update the vRoute
-    vRoute = VRoute(
+    vRouterNode = VRouterNode(
       pathParameters: pathParameters,
       queryParameters: queryParameters,
       pages: pages,
-      routerNavigatorKey: _navigatorKey,
-      routerHeroController: _heroController,
-      initialHistorySate: routeHistoryState,
+      navigatorKey: _navigatorKey,
+      heroController: _heroController,
+      historyState: historyState,
+      systemPop: (
+              {Map<String, String> queryParameters = const <String, String>{},
+              String? routerState}) =>
+          systemPop(
+        queryParameters: queryParameters,
+        newState: routerState,
+      ),
+      pop: (
+              {Map<String, String> queryParameters = const <String, String>{},
+              String? routerState}) =>
+          pop(
+        queryParameters: queryParameters,
+        newState: routerState,
+      ),
+      state: this,
+      previousUrl: url,
+      url: newUrl,
     );
 
     // Update the url and the previousUrl
-    _previousUrl = _url;
-    _url = newUrl;
+    previousUrl = url;
+    url = newUrl;
 
-    // Update the router historyState
-    _historyState = historyState;
+    // Update the history state
+    this.historyState = historyState;
+
+    // Update the path parameters
+    this.pathParameters = pathParameters;
+
+    // Update the query parameters
+    this.queryParameters = queryParameters;
 
     // Update flattenPages
-    this.flattenPages = flattenPages;
+    this._flattenPages = flattenPages;
   }
 
-  /// See [VRouterData.pushNamed]
+  /// See [VRouterMethodsHolder.pushNamed]
   void _updateUrlFromName(
     String name, {
     Map<String, String> pathParameters = const {},
@@ -826,9 +872,8 @@ class VRouterState extends State<VRouter> {
   }) {
     // Find the VRoutePath corresponding to the name
     // Since each alias represent a VRoutePath, there might be several element in the list
-    var potentialRoutes = pathToRoutes
-        .where(
-            (_VRoutePath vRoutePathRegexp) => (vRoutePathRegexp.name == name))
+    var potentialRoutes = _pathToRoutes
+        .where((_VRoutePath vRoutePathRegexp) => (vRoutePathRegexp.name == name))
         .toList();
 
     if (potentialRoutes.isEmpty) {
@@ -838,12 +883,11 @@ class VRouterState extends State<VRouter> {
     // Get the path from the list of potentialRoute
     // To discriminate we find the one which pathParameters match the given pathParameters
     var newPath = potentialRoutes.firstWhere(
-      (_VRoutePath vRoutePathRegexp) => (listEquals(
-          vRoutePathRegexp.parameters, pathParameters.keys.toList())),
+      (_VRoutePath vRoutePathRegexp) =>
+          (listEquals(vRoutePathRegexp.parameters, pathParameters.keys.toList())),
       orElse: () {
         final potentialRoutesOrdered = List<_VRoutePath>.from(potentialRoutes)
-          ..sort((routeA, routeB) =>
-              routeA.parameters.length - routeB.parameters.length);
+          ..sort((routeA, routeB) => routeA.parameters.length - routeB.parameters.length);
         throw Exception(
           'Could not find a path with the exact path parameters ${pathParameters.keys}.\n'
           'To navigate to a route named "$name", you must give one of the following list of path parameters:\n${[
@@ -863,8 +907,7 @@ class VRouterState extends State<VRouter> {
     newPath = pathToFunction(newPath)(encodedPathParameters);
 
     // Update the url with the found and completed path
-    _updateUrl(newPath,
-        queryParameters: queryParameters, isReplacement: isReplacement);
+    _updateUrl(newPath, queryParameters: queryParameters, isReplacement: isReplacement);
   }
 
   /// Recursive function which builds a nested representation of the given route
@@ -902,17 +945,14 @@ class VRouterState extends State<VRouter> {
       var localPath = vRouteElement.path!;
 
       // First remove any / that would be in first position
-      if (remainingUrl.startsWith('/'))
-        remainingUrl = remainingUrl.replaceFirst('/', '');
-      if (localPath.startsWith('/'))
-        localPath = localPath.replaceFirst('/', '');
+      if (remainingUrl.startsWith('/')) remainingUrl = remainingUrl.replaceFirst('/', '');
+      if (localPath.startsWith('/')) localPath = localPath.replaceFirst('/', '');
 
       // We try to match the pathRegExp with the remainingUrl
       // This is null if a deeper-nester VRouteElement has a path
       // which starts with '/' (which means that this pathRegExp is not part
       // of the url)
-      final match = vRouteElement.pathRegExp!
-          .matchAsPrefix(Uri.decodeComponent(remainingUrl));
+      final match = vRouteElement.pathRegExp!.matchAsPrefix(Uri.decodeComponent(remainingUrl));
 
       // If the previous match didn't fail, we get the remainingUrl be stripping of the
       // part of the url which matched
@@ -935,20 +975,15 @@ class VRouterState extends State<VRouter> {
       final newVPage = VPage.fromPlatform(
         key: vRouteElement.key ?? ValueKey(vRouteElement.path),
         name: vRouteElement.name ?? vRouteElement.path,
-        buildTransition:
-            vRouteElement.buildTransition ?? widget.buildTransition,
-        transitionDuration:
-            vRouteElement.transitionDuration ?? widget.transitionDuration,
-        reverseTransitionDuration: vRouteElement.reverseTransitionDuration ??
-            widget.reverseTransitionDuration,
-        child: RouteElementWidget(
+        buildTransition: vRouteElement.buildTransition ?? widget.buildTransition,
+        transitionDuration: vRouteElement.transitionDuration ?? widget.transitionDuration,
+        reverseTransitionDuration:
+            vRouteElement.reverseTransitionDuration ?? widget.reverseTransitionDuration,
+        child: VRouteElementWidget(
+          vRouteElement: vRouteElement,
           stateKey: vRouteElement.stateKey,
-          child: vRouteElement.widget ??
-              Builder(
-                  builder: (context) => vRouteElement.widgetBuilder!(context)),
           depth: index,
           pathParameters: localParameters,
-          name: vRouteElement.name,
           initialHistorySate: historyState['$index'],
         ),
       );
@@ -959,11 +994,10 @@ class VRouterState extends State<VRouter> {
           buildTransition: lastPage.buildTransition,
           transitionDuration: lastPage.transitionDuration,
           reverseTransitionDuration: lastPage.reverseTransitionDuration,
-          child: RouteElementWidget(
+          child: VRouteElementWidget(
+            vRouteElement: lastVRouteElementWidget._vRouteElement,
             stateKey: lastVRouteElementWidget.stateKey,
-            child: lastVRouteElementWidget.child,
             depth: lastVRouteElementWidget.depth,
-            name: lastVRouteElementWidget.name,
             pathParameters: lastVRouteElementWidget.pathParameters,
             initialHistorySate: lastVRouteElementWidget.initialHistorySate,
             vChildName: vRouteElement.name,
@@ -991,7 +1025,7 @@ class VRouterState extends State<VRouter> {
         ),
       );
 
-      // Popuflatten pages
+      // Pop flatten pages
       // We use insert to flattenPagesPreviousLength to be sure that the order if which the
       // pages are inserted in flattenPages corresponds to the order in which VRouteElements
       // are nested
@@ -1002,20 +1036,15 @@ class VRouterState extends State<VRouter> {
       final newVPage = VPage.fromPlatform(
         key: vRouteElement.key ?? ValueKey(vRouteElement.path),
         name: vRouteElement.name ?? vRouteElement.path,
-        buildTransition:
-            vRouteElement.buildTransition ?? widget.buildTransition,
-        transitionDuration:
-            vRouteElement.transitionDuration ?? widget.transitionDuration,
-        reverseTransitionDuration: vRouteElement.reverseTransitionDuration ??
-            widget.reverseTransitionDuration,
-        child: RouteElementWidget(
+        buildTransition: vRouteElement.buildTransition ?? widget.buildTransition,
+        transitionDuration: vRouteElement.transitionDuration ?? widget.transitionDuration,
+        reverseTransitionDuration:
+            vRouteElement.reverseTransitionDuration ?? widget.reverseTransitionDuration,
+        child: VRouteElementWidget(
           stateKey: vRouteElement.stateKey,
-          child: vRouteElement.widget ??
-              Builder(
-                  builder: (context) => vRouteElement.widgetBuilder!(context)),
+          vRouteElement: vRouteElement,
           depth: index,
           pathParameters: localParameters,
-          name: vRouteElement.name,
           initialHistorySate: historyState['$index'],
         ),
       );
@@ -1035,17 +1064,21 @@ class VRouterState extends State<VRouter> {
 
   /// This should be the only way to change a url.
   /// Navigation cycle:
-  ///   1. beforeLeave in all deactivated [VNavigationGuard]
-  ///   2. beforeLeave in the nest-most [VRouteElement] of the current route
-  ///   3. beforeLeave in the [VRouter]
-  ///   4. beforeEnter in the [VRouter]
-  ///   5. beforeEnter in the nest-most [VRouteElement] of the new route
-  ///   The objects got in beforeLeave are stored   ///
-  ///   The state of the VRouter changes            ///
-  ///   6. afterEnter in the [VRouter]
-  ///   7. afterEnter in the nest-most [VRouteElement] of the new route
-  ///   8. afterUpdate in all reused [VNavigationGuard]
-  ///   9. afterEnter in all initialized [VNavigationGuard]
+  /// 1. Call beforeLeave in all deactivated [VNavigationGuard]
+  /// 2. Call beforeLeave in all deactivated [VRouteElement]
+  /// 3. Call beforeLeave in the [VRouter]
+  /// 4. Call beforeEnter in the [VRouter]
+  /// 5. Call beforeEnter in all initialized [VRouteElement] of the new route
+  /// 6. Call beforeUpdate in all reused [VRouteElement]
+  ///
+  /// ## The history state got in beforeLeave are stored
+  /// ## The state is updated
+  ///
+  /// 7. Call afterEnter in all initialized [VNavigationGuard]
+  /// 8. Call afterEnter all initialized [VRouteElement]
+  /// 9. Call afterEnter in the [VRouter]
+  /// 10. Call afterUpdate in all reused [VNavigationGuard]
+  /// 11. Call afterUpdate in all reused [VRouteElement]
   Future<void> _updateUrl(
     String newUrl, {
     Map<String, String?>? newState,
@@ -1083,29 +1116,40 @@ class VRouterState extends State<VRouter> {
     }
 
     // Get only the path from the url
-    final path = (_url != null) ? Uri.parse(_url!).path : null;
+    final path = (url != null) ? Uri.parse(url!).path : null;
 
+    var newPathParameters = <String, String>{};
     List<VPage> deactivatedPages;
-    _VRoutePath? newVRoutePathOfPath;
     List<VPage> reusedPages;
+    List<VPage> initializedPages;
+    _VRoutePath? newVRoutePathOfPath;
     List<VPage> newFlattenPages;
     List<VPage> newRouterPages;
     if (isUrlExternal) {
-      deactivatedPages = List.from(flattenPages);
+      deactivatedPages = List.from(_flattenPages);
       reusedPages = <VPage>[];
       newVRoutePathOfPath = null;
       newFlattenPages = <VPage>[];
       newRouterPages = <VPage>[];
+      initializedPages = <VPage>[];
     } else {
       // Get the new route
-      newVRoutePathOfPath = pathToRoutes.firstWhere(
-          (_VRoutePath vRoutePathRegexp) =>
-              vRoutePathRegexp.pathRegExp.hasMatch(newPath),
+      newVRoutePathOfPath = _pathToRoutes.firstWhere(
+          (_VRoutePath vRoutePathRegexp) => vRoutePathRegexp.pathRegExp.hasMatch(newPath),
           orElse: () => throw InvalidUrlException(url: newUrl));
 
       // This copy is necessary in order not to modify vRoutePath.vRoutePathLocals
       final localInformationOfPath =
           List<VRouteElement>.from(newVRoutePathOfPath.vRouteElements);
+
+      // Extract the path parameters from the url
+      final match = newVRoutePathOfPath.pathRegExp.matchAsPrefix(newPath);
+      newPathParameters = (match != null)
+          ? extract(newVRoutePathOfPath.parameters, match)
+          : <String, String>{};
+      // Decode path parameters
+      newPathParameters =
+          newPathParameters.map((key, value) => MapEntry(key, Uri.decodeComponent(value)));
 
       // Get the newRouterPages
       newFlattenPages = <VPage>[];
@@ -1120,8 +1164,8 @@ class VRouterState extends State<VRouter> {
       // Get deactivated and reused pages of the new route
       deactivatedPages = <VPage>[];
       reusedPages = <VPage>[];
-      if (flattenPages.isNotEmpty) {
-        for (var vPage in flattenPages.reversed) {
+      if (_flattenPages.isNotEmpty) {
+        for (var vPage in _flattenPages.reversed) {
           try {
             newFlattenPages.firstWhere((newPage) => (newPage.key == vPage.key));
             reusedPages.add(vPage);
@@ -1130,32 +1174,28 @@ class VRouterState extends State<VRouter> {
           }
         }
       }
+      initializedPages = newFlattenPages
+          .where(
+            (newPage) => _flattenPages.indexWhere((page) => page.key == newPage.key) == -1,
+          )
+          .toList();
     }
-
-    // Extract the path parameters from the url
-    final match = newVRoutePathOfPath?.pathRegExp.matchAsPrefix(newPath);
-    var newPathParameters = (match != null)
-        ? extract(newVRoutePathOfPath!.parameters, match)
-        : <String, String>{};
-    // Decode path parameters
-    newPathParameters = newPathParameters
-        .map((key, value) => MapEntry(key, Uri.decodeComponent(value)));
 
     var shouldSaveHistoryState = false;
     var historyStatesToSave = {
-      'serialCount': '$serialCount',
-      '-2': _historyState,
-      '-1': vRoute?.key.currentState?.historyState,
-      for (var pages in flattenPages)
+      'serialCount': '$_serialCount',
+      '-1': vRouterNode?.historyState,
+      for (var pages in _flattenPages)
         '${pages.child.depth}':
-            pages.child.stateKey?.currentState?.historyState ??
-                pages.child.initialHistorySate,
+            pages.child.stateKey?.currentState?.historyState ?? pages.child.initialHistorySate,
     };
     String? objectToSave;
     void saveHistoryState(String historyState) {
       if (objectToSave != null) {
-        throw Exception(
-            'You should only call saveHistoryState once.\nThis might be because you have multiple VNavigationGuard corresponding to the same VRouteElement, in that case only one of them should use saveHistoryState since the scope is the VRouteElement one.');
+        throw Exception("""You should only call saveHistoryState once.
+This might be because: 
+  - You try to use saveHistoryState in a VNavigationGuard AND its corresponding VRouteElement. Use it in one of them but not the two.
+  - You try to use saveHistoryState in multiple VNavigationGuard corresponding to the same VRouteElement. Use it in maximum one of them.""");
       }
       objectToSave = historyState;
     }
@@ -1163,21 +1203,21 @@ class VRouterState extends State<VRouter> {
     // Instantiate VRedirector
     final vRedirector = VRedirector(
       context: _vRouterInformationContext,
-      from: _url,
+      from: url,
       to: newUrl,
       previousVRouteData: VRouteData(
         child: Container(),
-        historyState: vRoute?.key.currentState?.historyState,
+        historyState: vRouterNode?.historyState,
         replaceHistoryState: (String _) =>
             throw 'replaceHistoryState cannot be called using this object.\n'
                 'If you want to save the state of the current route: Use saveHistoryState in beforeLeave.\n'
                 'If you want to change the history state of the new route: call VRouterData.replaceHistoryState in afterEnter or afterUpdate.',
-        pathParameters: vRoute?.pathParameters ?? {},
-        queryParameters: vRoute?.queryParameters ?? {},
+        pathParameters: vRouterNode?.pathParameters ?? {},
+        queryParameters: vRouterNode?.queryParameters ?? {},
       ),
       newVRouteData: VRouteData(
         child: Container(),
-        historyState: newState['-2'],
+        historyState: newState['-1'],
         replaceHistoryState: (String _) =>
             throw 'replaceHistoryState cannot be called using this object.\n'
                 'If you want to save the state of the current route: Use saveHistoryState in beforeLeave.\n'
@@ -1185,14 +1225,32 @@ class VRouterState extends State<VRouter> {
         pathParameters: newPathParameters,
         queryParameters: queryParameters,
       ),
+      previousVRouterData: VRouterData(
+        child: Container(),
+        historyState: vRouterNode?.historyState,
+        pathParameters: vRouterNode?.pathParameters ?? {},
+        queryParameters: vRouterNode?.queryParameters ?? {},
+        state: this,
+        url: url,
+        previousUrl: previousUrl,
+      ),
+      newVRouterData: VRouterData(
+        child: Container(),
+        historyState: newState['-1'],
+        pathParameters: newPathParameters,
+        queryParameters: queryParameters,
+        state: this,
+        url: newUrl,
+        previousUrl: url,
+      ),
     );
 
-    if (_url != null) {
-      ///   1. beforeLeave in all deactivated VNavigationGuard
+    if (url != null) {
+      ///   1. Call beforeLeave in all deactivated [VNavigationGuard]
+      ///   2. Call beforeLeave in all deactivated [VRouteElement]
       for (var deactivatedPage in deactivatedPages) {
-        final vNavigationGuardMessages = deactivatedPage
-                .child.stateKey?.currentState?.vNavigationGuardMessages ??
-            [];
+        final vNavigationGuardMessages =
+            deactivatedPage.child.stateKey?.currentState?.vNavigationGuardMessages ?? [];
         for (var vNavigationGuardMessage in vNavigationGuardMessages) {
           if (vNavigationGuardMessage.vNavigationGuard.beforeLeave != null) {
             await vNavigationGuardMessage.vNavigationGuard.beforeLeave!(
@@ -1202,11 +1260,15 @@ class VRouterState extends State<VRouter> {
             }
           }
         }
+        if (vRedirector._shouldUpdate) {
+          if (deactivatedPage.child._vRouteElement.beforeLeave != null) {
+            deactivatedPage.child._vRouteElement.beforeLeave!(vRedirector, saveHistoryState);
+          }
+        }
         if (!vRedirector._shouldUpdate) {
           break;
         } else if (objectToSave != null &&
-            historyStatesToSave['${deactivatedPage.child.depth}'] !=
-                objectToSave) {
+            historyStatesToSave['${deactivatedPage.child.depth}'] != objectToSave) {
           historyStatesToSave['${deactivatedPage.child.depth}'] = objectToSave;
           objectToSave = null;
           shouldSaveHistoryState = true;
@@ -1219,29 +1281,20 @@ class VRouterState extends State<VRouter> {
         //        but it is not yet possible
         if (kIsWeb &&
             fromBrowser &&
-            (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
-          ignoreNextBrowserCalls = true;
-          BrowserHelpers.browserGo(serialCount - newSerialCount!);
-          await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
-              BrowserHelpers.getHistorySerialCount() == serialCount);
-          ignoreNextBrowserCalls = false;
+            (BrowserHelpers.getHistorySerialCount() ?? 0) != _serialCount) {
+          _ignoreNextBrowserCalls = true;
+          BrowserHelpers.browserGo(_serialCount - newSerialCount!);
+          await BrowserHelpers.onBrowserPopState
+              .firstWhere((element) => BrowserHelpers.getHistorySerialCount() == _serialCount);
+          _ignoreNextBrowserCalls = false;
         }
         vRedirector._redirectFunction?.call();
         return;
       }
 
-      ///   2. beforeLeave in the nest-most [VRouteElement] of the current route
-      ///   saving the [VRoute] history state if needed
-      // Get the current route
-      final vRoutePathOfPath = pathToRoutes.firstWhere(
-          (_VRoutePath vRoutePathRegexp) =>
-              vRoutePathRegexp.pathRegExp.hasMatch(path!),
-          orElse: () => throw InvalidUrlException(url: path!));
-
-      // Call the nest-most VRouteClass of the current route
-      final vRouteElement = vRoutePathOfPath.vRouteElements.last;
-      if (vRouteElement.beforeLeave != null) {
-        await vRouteElement.beforeLeave!(vRedirector, saveHistoryState);
+      /// 3. Call beforeLeave in the [VRouter]
+      if (widget.beforeLeave != null) {
+        await widget.beforeLeave!(vRedirector, saveHistoryState);
         if (objectToSave != null && historyStatesToSave['-1'] != objectToSave) {
           historyStatesToSave['-1'] = objectToSave;
           objectToSave = null;
@@ -1254,39 +1307,12 @@ class VRouterState extends State<VRouter> {
           //        but it is not yet possible
           if (kIsWeb &&
               fromBrowser &&
-              (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
-            ignoreNextBrowserCalls = true;
-            BrowserHelpers.browserGo(serialCount - newSerialCount!);
-            await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
-                BrowserHelpers.getHistorySerialCount() == serialCount);
-            ignoreNextBrowserCalls = false;
-          }
-          vRedirector._redirectFunction?.call();
-          return;
-        }
-      }
-
-      ///   3. beforeLeave in the VRouter
-      if (widget.beforeLeave != null) {
-        await widget.beforeLeave!(vRedirector, saveHistoryState);
-        if (objectToSave != null && historyStatesToSave['-2'] != objectToSave) {
-          historyStatesToSave['-2'] = objectToSave;
-          objectToSave = null;
-          shouldSaveHistoryState = true;
-        }
-        if (!vRedirector._shouldUpdate) {
-          // If the url change comes from the browser, chances are the url is already changed
-          // So we have to navigate back to the old url (stored in _url)
-          // Note: in future version it would be better to delete the last url of the browser
-          //        but it is not yet possible
-          if (kIsWeb &&
-              fromBrowser &&
-              (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
-            ignoreNextBrowserCalls = true;
-            BrowserHelpers.browserGo(serialCount - newSerialCount!);
-            await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
-                BrowserHelpers.getHistorySerialCount() == serialCount);
-            ignoreNextBrowserCalls = false;
+              (BrowserHelpers.getHistorySerialCount() ?? 0) != _serialCount) {
+            _ignoreNextBrowserCalls = true;
+            BrowserHelpers.browserGo(_serialCount - newSerialCount!);
+            await BrowserHelpers.onBrowserPopState.firstWhere(
+                (element) => BrowserHelpers.getHistorySerialCount() == _serialCount);
+            _ignoreNextBrowserCalls = false;
           }
           vRedirector._redirectFunction?.call();
           return;
@@ -1295,7 +1321,7 @@ class VRouterState extends State<VRouter> {
     }
 
     if (!isUrlExternal) {
-      ///   4. beforeEnter in the VRouter
+      /// 4. Call beforeEnter in the [VRouter]
       if (widget.beforeEnter != null) {
         await widget.beforeEnter!(vRedirector);
         if (!vRedirector._shouldUpdate) {
@@ -1305,49 +1331,69 @@ class VRouterState extends State<VRouter> {
           //        but it is not yet possible
           if (kIsWeb &&
               fromBrowser &&
-              (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
-            ignoreNextBrowserCalls = true;
-            BrowserHelpers.browserGo(serialCount - newSerialCount!);
-            await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
-                BrowserHelpers.getHistorySerialCount() == serialCount);
-            ignoreNextBrowserCalls = false;
+              (BrowserHelpers.getHistorySerialCount() ?? 0) != _serialCount) {
+            _ignoreNextBrowserCalls = true;
+            BrowserHelpers.browserGo(_serialCount - newSerialCount!);
+            await BrowserHelpers.onBrowserPopState.firstWhere(
+                (element) => BrowserHelpers.getHistorySerialCount() == _serialCount);
+            _ignoreNextBrowserCalls = false;
           }
           vRedirector._redirectFunction?.call();
           return;
         }
       }
 
-      ///   5. beforeEnter in the nest-most [VRouteElement] of the new route
-
-      // Call the nest-most VRouteClass of the new route
-      // Check the local beforeEnter
-      if (newVRoutePathOfPath!.vRouteElements.last.beforeEnter != null) {
-        await newVRoutePathOfPath.vRouteElements.last.beforeEnter!(vRedirector);
-
-        if (!vRedirector._shouldUpdate) {
-          // If the url change comes from the browser, chances are the url is already changed
-          // So we have to navigate back to the old url (stored in _url)
-          // Note: in future version it would be better to delete the last url of the browser
-          //        but it is not yet possible
-          if (kIsWeb &&
-              fromBrowser &&
-              (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
-            ignoreNextBrowserCalls = true;
-            BrowserHelpers.browserGo(serialCount - newSerialCount!);
-            await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
-                BrowserHelpers.getHistorySerialCount() == serialCount);
-            ignoreNextBrowserCalls = false;
+      /// 5. Call beforeEnter in all initialized [VRouteElement] of the new route
+      for (var vPage in initializedPages) {
+        if (vPage.child._vRouteElement.beforeEnter != null) {
+          await vPage.child._vRouteElement.beforeEnter!(vRedirector);
+          if (!vRedirector._shouldUpdate) {
+            // If the url change comes from the browser, chances are the url is already changed
+            // So we have to navigate back to the old url (stored in _url)
+            // Note: in future version it would be better to delete the last url of the browser
+            //        but it is not yet possible
+            if (kIsWeb &&
+                fromBrowser &&
+                (BrowserHelpers.getHistorySerialCount() ?? 0) != _serialCount) {
+              _ignoreNextBrowserCalls = true;
+              BrowserHelpers.browserGo(_serialCount - newSerialCount!);
+              await BrowserHelpers.onBrowserPopState.firstWhere(
+                  (element) => BrowserHelpers.getHistorySerialCount() == _serialCount);
+              _ignoreNextBrowserCalls = false;
+            }
+            vRedirector._redirectFunction?.call();
+            return;
           }
-          vRedirector._redirectFunction?.call();
-          return;
+        }
+      }
+
+      /// 6. Call beforeUpdate in all reused [VRouteElement]
+      for (var vPage in reusedPages) {
+        if (vPage.child._vRouteElement.beforeUpdate != null) {
+          await vPage.child._vRouteElement.beforeUpdate!(vRedirector);
+          if (!vRedirector._shouldUpdate) {
+            // If the url change comes from the browser, chances are the url is already changed
+            // So we have to navigate back to the old url (stored in _url)
+            // Note: in future version it would be better to delete the last url of the browser
+            //        but it is not yet possible
+            if (kIsWeb &&
+                fromBrowser &&
+                (BrowserHelpers.getHistorySerialCount() ?? 0) != _serialCount) {
+              _ignoreNextBrowserCalls = true;
+              BrowserHelpers.browserGo(_serialCount - newSerialCount!);
+              await BrowserHelpers.onBrowserPopState.firstWhere(
+                      (element) => BrowserHelpers.getHistorySerialCount() == _serialCount);
+              _ignoreNextBrowserCalls = false;
+            }
+            vRedirector._redirectFunction?.call();
+            return;
+          }
         }
       }
     }
 
-    final oldSerialCount = serialCount;
-    if (shouldSaveHistoryState &&
-        path != null &&
-        historyStatesToSave.isNotEmpty) {
+    final oldSerialCount = _serialCount;
+    if (shouldSaveHistoryState && path != null && historyStatesToSave.isNotEmpty) {
       if (!kIsWeb) {
         print(
             ' WARNING: Tried to store the state $historyStatesToSave while not on the web. State saving/restoration only work on the web.\n'
@@ -1360,34 +1406,34 @@ class VRouterState extends State<VRouter> {
         //    2. Save the historyState
         //    3. And go back again to the place
         if (kIsWeb && fromBrowser && oldSerialCount != newSerialCount) {
-          ignoreNextBrowserCalls = true;
+          _ignoreNextBrowserCalls = true;
           BrowserHelpers.browserGo(oldSerialCount - newSerialCount!);
-          await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
-              BrowserHelpers.getHistorySerialCount() == oldSerialCount);
+          await BrowserHelpers.onBrowserPopState.firstWhere(
+              (element) => BrowserHelpers.getHistorySerialCount() == oldSerialCount);
         }
         BrowserHelpers.replaceHistoryState(jsonEncode(historyStatesToSave));
         if (kIsWeb && fromBrowser && oldSerialCount != newSerialCount) {
           BrowserHelpers.browserGo(newSerialCount! - oldSerialCount);
-          await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
-              BrowserHelpers.getHistorySerialCount() == newSerialCount);
-          ignoreNextBrowserCalls = false;
+          await BrowserHelpers.onBrowserPopState.firstWhere(
+              (element) => BrowserHelpers.getHistorySerialCount() == newSerialCount);
+          _ignoreNextBrowserCalls = false;
         }
       }
     }
 
     /// Leave if the url is external
     if (isUrlExternal) {
-      ignoreNextBrowserCalls = true;
+      _ignoreNextBrowserCalls = true;
       await BrowserHelpers.pushExternal(newUrl, openNewTab: openNewTab);
       return;
     }
 
     ///   The state of the VRouter changes            ///
     // Add the new serial count to the state
-    newState.addAll(Map<String, String>.from({'serialCount': '$serialCount'}));
-    final oldUrl = _url;
-    final newRouterState = newState['-2'];
-    if (_url != newUrl || newRouterState != _historyState) {
+    newState.addAll(Map<String, String>.from({'serialCount': '$_serialCount'}));
+    final oldUrl = url;
+    final newRouterState = newState['-1'];
+    if (url != newUrl || newRouterState != vRouterNode?.historyState) {
       _updateStateVariables(
         newUrl,
         newPath,
@@ -1400,20 +1446,18 @@ class VRouterState extends State<VRouter> {
         pathParameters: newPathParameters,
       );
       if (isReplacement) {
-        ignoreNextBrowserCalls = true;
+        _ignoreNextBrowserCalls = true;
         if (BrowserHelpers.getPathAndQuery(routerMode: widget.mode) != newUrl) {
           BrowserHelpers.pushReplacement(newUrl, routerMode: widget.mode);
-          if (BrowserHelpers.getPathAndQuery(routerMode: widget.mode) !=
-              newUrl) {
+          if (BrowserHelpers.getPathAndQuery(routerMode: widget.mode) != newUrl) {
             await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
-                BrowserHelpers.getPathAndQuery(routerMode: widget.mode) ==
-                newUrl);
+                BrowserHelpers.getPathAndQuery(routerMode: widget.mode) == newUrl);
           }
         }
         BrowserHelpers.replaceHistoryState(jsonEncode(newState));
-        ignoreNextBrowserCalls = false;
+        _ignoreNextBrowserCalls = false;
       } else {
-        serialCount = newSerialCount ?? serialCount + 1;
+        _serialCount = newSerialCount ?? _serialCount + 1;
       }
       setState(() {});
     }
@@ -1421,18 +1465,26 @@ class VRouterState extends State<VRouter> {
     // We need to do this after rebuild as completed so that the user can have access
     // to the new state variables
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
-      ///   6. afterEnter in the VRouter
+      /// 7. Call afterEnter in all initialized [VNavigationGuard]
+      // This is done automatically by VNotificationGuard
+
+      /// 8. Call afterEnter all initialized [VRouteElement]
+      for (var vPage in initializedPages) {
+        if (vPage.child._vRouteElement.afterEnter != null) {
+          vPage.child._vRouteElement.afterEnter!(
+            vPage.child._vRouteElement.stateKey!.currentContext!,
+            oldUrl,
+            newUrl,
+          );
+        }
+      }
+
+      /// 9. Call afterEnter in the [VRouter]
       if (widget.afterEnter != null) {
         widget.afterEnter!(_vRouterInformationContext, oldUrl, newUrl);
       }
 
-      ///   7. afterEnter in the nest-most VRouteClass of the new route
-      if (newVRoutePathOfPath!.vRouteElements.last.afterEnter != null) {
-        newVRoutePathOfPath.vRouteElements.last.afterEnter!(
-            _vRouterInformationContext, oldUrl, newUrl);
-      }
-
-      ///   8. afterUpdate in all reused vRouteElement
+      /// 10. Call afterUpdate in all reused [VNavigationGuard]
       for (var vPage in reusedPages) {
         final vNavigationMessages =
             vPage.child.stateKey?.currentState?.vNavigationGuardMessages ?? [];
@@ -1447,8 +1499,16 @@ class VRouterState extends State<VRouter> {
         }
       }
 
-      ///   9. afterEnter in all initialized vRouteElement
-      // This is done automatically by VNotificationGuard
+      /// 11. Call afterUpdate in all reused [VRouteElement]
+      for (var vPage in reusedPages) {
+        if (vPage.child._vRouteElement.afterUpdate != null) {
+          vPage.child._vRouteElement.afterUpdate!(
+            vPage.child._vRouteElement.stateKey!.currentContext!,
+            oldUrl,
+            newUrl,
+          );
+        }
+      }
     });
   }
 
@@ -1457,14 +1517,14 @@ class VRouterState extends State<VRouter> {
     Map<String, String> queryParameters = const {},
     String? newState,
   }) async {
-    assert(_url != null);
+    assert(url != null);
 
     // Instantiate VRedirector if null
     // It might be not null if called from systemPop
     vRedirector ??= _defaultPop(queryParameters: queryParameters);
 
     /// Call onPop in all active VNavigationGuards
-    for (var page in flattenPages.reversed) {
+    for (var page in _flattenPages.reversed) {
       final vNavigationMessages =
           page.child.stateKey?.currentState?.vNavigationGuardMessages ?? [];
       for (var vNavigationMessage in vNavigationMessages.reversed) {
@@ -1479,13 +1539,12 @@ class VRouterState extends State<VRouter> {
 
     /// Call onPop of the nested-most VRouteElement
     // Get the current path
-    final path = Uri.parse(_url!).path;
+    final path = Uri.parse(url!).path;
 
     // Get the current route
-    final vRoutePathLocals = pathToRoutes
+    final vRoutePathLocals = _pathToRoutes
         .firstWhere(
-            (_VRoutePath vRoutePathRegexp) =>
-                vRoutePathRegexp.pathRegExp.hasMatch(path),
+            (_VRoutePath vRoutePathRegexp) => vRoutePathRegexp.pathRegExp.hasMatch(path),
             orElse: () => throw InvalidUrlException(url: path))
         .vRouteElements;
 
@@ -1508,9 +1567,9 @@ class VRouterState extends State<VRouter> {
     }
 
     /// Update the url to the one found in [_defaultPop]
-    if (vRedirector.newVRouteData != null) {
+    if (vRedirector.newVRouterData != null) {
       _updateUrl(vRedirector.to!,
-          queryParameters: queryParameters, newState: {'-2': newState});
+          queryParameters: queryParameters, newState: {'-1': newState});
     } else if (!kIsWeb) {
       // If we didn't find a url to go to, we are at the start of the stack
       // so we close the app on mobile
@@ -1543,15 +1602,14 @@ class VRouterState extends State<VRouter> {
     Map<String, String> queryParameters = const {},
     String? newState,
   }) {
-    assert(_url != null);
-    final path = Uri.parse(_url!).path;
+    assert(url != null);
+    final path = Uri.parse(url!).path;
 
     // Get the current route (we copy it to avoid modifying it)
     final vRouteElements = List<VRouteElement>.from(
-      pathToRoutes
+      _pathToRoutes
           .firstWhere(
-              (_VRoutePath vRoutePathRegexp) =>
-                  vRoutePathRegexp.pathRegExp.hasMatch(path),
+              (_VRoutePath vRoutePathRegexp) => vRoutePathRegexp.pathRegExp.hasMatch(path),
               orElse: () => throw InvalidUrlException(url: path))
           .vRouteElements,
     );
@@ -1567,18 +1625,20 @@ class VRouterState extends State<VRouter> {
     // This VRouteData will be not null if we find a route to go to
     VRouteData? newVRouteData;
 
+    // This VRouterData will be not null if we find a route to go to
+    VRouterData? newVRouterData;
+
     // This url will be not null if we find a route to go to
     String? newUrl;
 
     if (vRouteElements.isNotEmpty) {
       // Get the VRoutePath from the vRouteElements
-      final newVRoutePath = pathToRoutes.firstWhere(
+      final newVRoutePath = _pathToRoutes.firstWhere(
         (vRoutePath) => listEquals(vRoutePath.vRouteElements, vRouteElements),
       );
 
       // Get the new pathRegexp as a prefix regExp
-      final newPathRegExpPrefix =
-          pathToRegExp(newVRoutePath.path, prefix: true);
+      final newPathRegExpPrefix = pathToRegExp(newVRoutePath.path, prefix: true);
 
       // Extract the newRawPath from the path using the newRawPath
       final match = newPathRegExpPrefix.matchAsPrefix(path);
@@ -1606,8 +1666,8 @@ class VRouterState extends State<VRouter> {
           ? extract(newVRoutePath.parameters, newMatch)
           : <String, String>{};
       // Decode path parameters
-      newPathParameters = newPathParameters
-          .map((key, value) => MapEntry(key, Uri.decodeComponent(value)));
+      newPathParameters =
+          newPathParameters.map((key, value) => MapEntry(key, Uri.decodeComponent(value)));
 
       newVRouteData = VRouteData(
         child: Container(),
@@ -1619,38 +1679,57 @@ class VRouterState extends State<VRouter> {
         pathParameters: newPathParameters,
         queryParameters: queryParameters,
       );
+
+      newVRouterData = VRouterData(
+        child: Container(),
+        historyState: newState,
+        pathParameters: newPathParameters,
+        queryParameters: queryParameters,
+        url: newUrl,
+        previousUrl: url,
+        state: this,
+      );
     }
 
     return VRedirector(
       context: _vRouterInformationContext,
-      from: _url,
+      from: url,
       to: newUrl,
       previousVRouteData: VRouteData(
         child: Container(),
-        historyState: vRoute?.key.currentState?.historyState,
+        historyState: vRouterNode?.historyState,
         replaceHistoryState: (String _) =>
             throw 'replaceHistoryState cannot be called using this object.\n'
                 'If you want to save the state of the current route: Use saveHistoryState in beforeLeave.\n'
                 'If you want to change the history state of the new route: call VRouterData.replaceHistoryState in afterEnter or afterUpdate.',
-        pathParameters: vRoute?.pathParameters ?? {},
-        queryParameters: vRoute?.queryParameters ?? {},
+        pathParameters: vRouterNode?.pathParameters ?? {},
+        queryParameters: vRouterNode?.queryParameters ?? {},
+      ),
+      previousVRouterData: VRouterData(
+        child: Container(),
+        historyState: vRouterNode?.historyState,
+        pathParameters: vRouterNode?.pathParameters ?? {},
+        queryParameters: vRouterNode?.queryParameters ?? {},
+        state: this,
+        previousUrl: previousUrl,
+        url: url,
       ),
       newVRouteData: newVRouteData,
+      newVRouterData: newVRouterData,
     );
   }
 
-  /// See [VRouterData.replaceHistoryState]
+  /// See [VRouterMethodsHolder.replaceHistoryState]
   void replaceHistoryState(String newRouterState) {
     if (kIsWeb) {
       final historyState = BrowserHelpers.getHistoryState() ?? '{}';
-      final historyStateMap =
-          Map<String, String>.from(jsonDecode(historyState));
-      historyStateMap['-2'] = newRouterState;
+      final historyStateMap = Map<String, String>.from(jsonDecode(historyState));
+      historyStateMap['-1'] = newRouterState;
       final newHistoryState = jsonEncode(historyStateMap);
       BrowserHelpers.replaceHistoryState(newHistoryState);
     }
     setState(() {
-      _historyState = newRouterState;
+      historyState = newRouterState;
     });
   }
 
@@ -1659,9 +1738,9 @@ class VRouterState extends State<VRouter> {
   /// Mind that this happens when the user enter a url manually in the
   /// browser so we can't prevent him from leaving the page
   void _onBeforeUnload() async {
-    if (_url == null) return;
-    final newSerialCount = serialCount + 1;
-    final path = Uri.parse(_url!).path;
+    if (url == null) return;
+    final newSerialCount = _serialCount + 1;
+    final path = Uri.parse(url!).path;
 
     var shouldSaveHistoryState = true;
 
@@ -1675,17 +1754,14 @@ class VRouterState extends State<VRouter> {
     }
 
     ///   1. beforeLeave in all deactivated vRouteElement
-    for (var deactivatedPage in flattenPages) {
-      final vNavigationMessages = deactivatedPage
-              .child.stateKey?.currentState?.vNavigationGuardMessages ??
-          [];
+    for (var deactivatedPage in _flattenPages) {
+      final vNavigationMessages =
+          deactivatedPage.child.stateKey?.currentState?.vNavigationGuardMessages ?? [];
       for (var vNavigationMessage in vNavigationMessages) {
         if (vNavigationMessage.vNavigationGuard.beforeLeave != null) {
-          await vNavigationMessage.vNavigationGuard.beforeLeave!(
-              null, saveHistoryState);
+          await vNavigationMessage.vNavigationGuard.beforeLeave!(null, saveHistoryState);
           if (objectToSave != null) {
-            historyStatesToSave['${deactivatedPage.child.depth}'] =
-                objectToSave!;
+            historyStatesToSave['${deactivatedPage.child.depth}'] = objectToSave!;
             objectToSave = null;
             shouldSaveHistoryState = true;
           }
@@ -1695,9 +1771,8 @@ class VRouterState extends State<VRouter> {
 
     ///   2. beforeLeave in the nest-most [VRouteElement] of the current route
     // Get the actual route
-    final vRoutePathOfPath = pathToRoutes.firstWhere(
-        (_VRoutePath vRoutePathRegexp) =>
-            vRoutePathRegexp.pathRegExp.hasMatch(path),
+    final vRoutePathOfPath = _pathToRoutes.firstWhere(
+        (_VRoutePath vRoutePathRegexp) => vRoutePathRegexp.pathRegExp.hasMatch(path),
         orElse: () => throw InvalidUrlException(url: path));
 
     // Call the nest-most VRouteClass of the current route
@@ -1716,7 +1791,7 @@ class VRouterState extends State<VRouter> {
     if (widget.beforeLeave != null) {
       await widget.beforeLeave!(null, saveHistoryState);
       if (objectToSave != null) {
-        historyStatesToSave['-2'] = objectToSave!;
+        historyStatesToSave['-1'] = objectToSave!;
         objectToSave = null;
         shouldSaveHistoryState = true;
       }
@@ -1724,12 +1799,12 @@ class VRouterState extends State<VRouter> {
 
     if (historyStatesToSave.isNotEmpty && shouldSaveHistoryState) {
       ///   The historyStates got in beforeLeave are stored   ///
-      serialCount = newSerialCount;
+      _serialCount = newSerialCount;
       BrowserHelpers.replaceHistoryState(jsonEncode(historyStatesToSave));
     }
   }
 
-  /// See [VRouterData.pop]
+  /// See [VRouterMethodsHolder.pop]
   Future<void> pop({
     Map<String, String> queryParameters = const {},
     String? newState,
@@ -1737,19 +1812,19 @@ class VRouterState extends State<VRouter> {
     _pop(queryParameters: queryParameters, newState: newState);
   }
 
-  /// See [VRouterData.systemPop]
+  /// See [VRouterMethodsHolder.systemPop]
   Future<void> systemPop({
     Map<String, String> queryParameters = const {},
     String? newState,
   }) async {
-    assert(_url != null);
+    assert(url != null);
 
     // Instantiate VRedirector if null
     // It might be not null if called from systemPop
     final vRedirector = _defaultPop(queryParameters: queryParameters);
 
     /// Call onSystemPop in all active VNavigationGuards
-    for (var page in flattenPages.reversed) {
+    for (var page in _flattenPages.reversed) {
       final vNavigationMessages =
           page.child.stateKey?.currentState?.vNavigationGuardMessages ?? [];
       for (var vNavigationMessage in vNavigationMessages.reversed) {
@@ -1764,13 +1839,12 @@ class VRouterState extends State<VRouter> {
 
     /// Call onSystemPop of the nested-most VRouteElement
     // Get the current path
-    final path = Uri.parse(_url!).path;
+    final path = Uri.parse(url!).path;
 
     // Get the current route
-    final vRoutePathLocals = pathToRoutes
+    final vRoutePathLocals = _pathToRoutes
         .firstWhere(
-            (_VRoutePath vRoutePathRegexp) =>
-                vRoutePathRegexp.pathRegExp.hasMatch(path),
+            (_VRoutePath vRoutePathRegexp) => vRoutePathRegexp.pathRegExp.hasMatch(path),
             orElse: () => throw InvalidUrlException(url: path))
         .vRouteElements;
 
@@ -1798,27 +1872,27 @@ class VRouterState extends State<VRouter> {
     await _pop(vRedirector: vRedirector);
   }
 
-  /// See [VRouterData.push]
+  /// See [VRouterMethodsHolder.push]
   void push(
     String newUrl, {
     Map<String, String> queryParameters = const {},
     String? routerState,
   }) {
     if (!newUrl.startsWith('/')) {
-      if (_url == null) {
+      if (url == null) {
         throw Exception(
             "The current url is null but you are trying to access a path which does not start with '/'.");
       }
-      final currentPath = Uri.parse(_url!).path;
+      final currentPath = Uri.parse(url!).path;
       newUrl = currentPath + '/$newUrl';
     }
 
     _updateUrl(newUrl,
         queryParameters: queryParameters,
-        newState: (routerState != null) ? {'-2': routerState} : {});
+        newState: (routerState != null) ? {'-1': routerState} : {});
   }
 
-  /// See [VRouterData.pushNamed]
+  /// See [VRouterMethodsHolder.pushNamed]
   void pushNamed(
     String name, {
     Map<String, String> pathParameters = const {},
@@ -1828,10 +1902,10 @@ class VRouterState extends State<VRouter> {
     _updateUrlFromName(name,
         pathParameters: pathParameters,
         queryParameters: queryParameters,
-        newState: (routerState != null) ? {'-2': routerState} : {});
+        newState: (routerState != null) ? {'-1': routerState} : {});
   }
 
-  /// See [VRouterData.pushReplacement]
+  /// See [VRouterMethodsHolder.pushReplacement]
   void pushReplacement(
     String newUrl, {
     Map<String, String> queryParameters = const {},
@@ -1839,16 +1913,15 @@ class VRouterState extends State<VRouter> {
   }) {
     // If not on the web, this is the same as push
     if (!kIsWeb) {
-      return push(newUrl,
-          queryParameters: queryParameters, routerState: routerState);
+      return push(newUrl, queryParameters: queryParameters, routerState: routerState);
     }
 
     if (!newUrl.startsWith('/')) {
-      if (_url == null) {
+      if (url == null) {
         throw Exception(
             "The current url is null but you are trying to access a path which does not start with'/'.");
       }
-      final currentPath = Uri.parse(_url!).path;
+      final currentPath = Uri.parse(url!).path;
       newUrl = currentPath + '/$newUrl';
     }
 
@@ -1856,12 +1929,12 @@ class VRouterState extends State<VRouter> {
     _updateUrl(
       newUrl,
       queryParameters: queryParameters,
-      newState: (routerState != null) ? {'-2': routerState} : {},
+      newState: (routerState != null) ? {'-1': routerState} : {},
       isReplacement: true,
     );
   }
 
-  /// See [VRouterData.pushReplacementNamed]
+  /// See [VRouterMethodsHolder.pushReplacementNamed]
   void pushReplacementNamed(
     String name, {
     Map<String, String> pathParameters = const {},
@@ -1871,13 +1944,89 @@ class VRouterState extends State<VRouter> {
     _updateUrlFromName(name,
         pathParameters: pathParameters,
         queryParameters: queryParameters,
-        newState: (routerState != null) ? {'-2': routerState} : {},
+        newState: (routerState != null) ? {'-1': routerState} : {},
         isReplacement: true);
   }
 
-  /// See [VRouterData.pushExternal]
+  /// See [VRouterMethodsHolder.pushExternal]
   void pushExternal(String newUrl, {bool openNewTab = false}) =>
       _updateUrl(newUrl, isUrlExternal: true, openNewTab: openNewTab);
+}
+
+class VRouterNode extends StatelessWidget {
+  final List<VPage> pages;
+  final GlobalKey<NavigatorState> navigatorKey;
+  final HeroController heroController;
+  final void Function({
+    Map<String, String> queryParameters,
+    String? routerState,
+  }) pop;
+  final Future<void> Function({
+    Map<String, String> queryParameters,
+    String? routerState,
+  }) systemPop;
+
+  /// See [VRouterData.state]
+  final VRouterState state;
+
+  /// See [VRouterData.url]
+  final String? url;
+
+  /// See [VRouterData.previousUrl]
+  final String? previousUrl;
+
+  /// See [VRouterData.historyState]
+  final String? historyState;
+
+  /// See [VRouterData.pathParameters]
+  final Map<String, String> pathParameters;
+
+  /// See [VRouterData.queryParameters]
+  final Map<String, String> queryParameters;
+
+  const VRouterNode({
+    Key? key,
+    required this.pages,
+    required this.navigatorKey,
+    required this.heroController,
+    required this.pop,
+    required this.systemPop,
+    required this.state,
+    required this.url,
+    required this.previousUrl,
+    required this.historyState,
+    required this.pathParameters,
+    required this.queryParameters,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return VRouterData(
+      state: state,
+      url: url,
+      previousUrl: previousUrl,
+      historyState: historyState,
+      pathParameters: pathParameters,
+      queryParameters: queryParameters,
+      child: VRouterHelper(
+        pages: pages,
+        navigatorKey: navigatorKey,
+        observers: [heroController],
+        backButtonDispatcher: RootBackButtonDispatcher(),
+        onPopPage: (_, __) {
+          pop();
+
+          // We always prevent popping because we handle it in VRouter
+          return false;
+        },
+        onSystemPopPage: () async {
+          await systemPop();
+          // We always prevent popping because we handle it in VRouter
+          return true;
+        },
+      ),
+    );
+  }
 }
 
 class VRouterData extends InheritedWidget {
@@ -1887,6 +2036,11 @@ class VRouterData extends InheritedWidget {
     Key? key,
     required Widget child,
     required VRouterState state,
+    required this.url,
+    required this.previousUrl,
+    required this.historyState,
+    required this.pathParameters,
+    required this.queryParameters,
   })   : _state = state,
         super(
           key: key,
@@ -1897,16 +2051,18 @@ class VRouterData extends InheritedWidget {
   bool updateShouldNotify(VRouterData old) {
     return (old.url != url ||
         old.previousUrl != previousUrl ||
-        old.historyState != historyState);
+        old.historyState != historyState ||
+        old.pathParameters != pathParameters ||
+        old.queryParameters != queryParameters);
   }
 
   /// Url currently synced with the state
   /// This url can differ from the once of the browser if
   /// the state has been yet been updated
-  String? get url => _state._url;
+  final String? url;
 
   /// Previous url that was synced with the state
-  String? get previousUrl => _state._previousUrl;
+  final String? previousUrl;
 
   /// This state is saved in the browser history. This means that if the user presses
   /// the back or forward button on the navigator, this historyState will be the same
@@ -1919,7 +2075,242 @@ class VRouterData extends InheritedWidget {
   ///      version of the historyState
   ///   * [VRouterData.historyState] if you want to use a router level
   ///      version of the historyState
-  String? get historyState => _state._historyState;
+  final String? historyState;
+
+  /// Maps all route parameters (i.e. parameters of the path
+  /// mentioned as ":someId")
+  /// Note that if you have multiple parameters with the same
+  /// name, only the last one will be visible here
+  /// However every parameters is passed locally to VRouteElementWidgetData
+  /// so you should find them there.
+  /// See [VRouteElementData.pathParameters]
+  final Map<String, String> pathParameters;
+
+  /// Contains all query parameters (i.e. parameters after
+  /// the "?" in the url) of the current url
+  final Map<String, String> queryParameters;
+
+  /// Pushes the new route of the given url on top of the current one
+  /// A path can be of one of two forms:
+  ///   * stating with '/', in which case we just navigate
+  ///     to the given path
+  ///   * not starting with '/', in which case we append the
+  ///     current path to the given one
+  ///
+  /// We can also specify queryParameters, either by directly
+  /// putting them is the url or by providing a Map using [queryParameters]
+  ///
+  /// We can also put a state to the next route, this state will
+  /// be a router state (this is the only kind of state that we can
+  /// push) accessible with VRouterData.of(context).historyState
+  @Deprecated("""Use VRouter.push instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
+  void push(
+    String newUrl, {
+    Map<String, String> queryParameters = const {},
+    String? routerState,
+  }) =>
+      _state.push(newUrl, queryParameters: queryParameters, routerState: routerState);
+
+  /// Updates the url given a [VRouteElement] name
+  ///
+  /// We can also specify path parameters to inject into the new path
+  ///
+  /// We can also specify queryParameters, either by directly
+  /// putting them is the url or by providing a Map using [queryParameters]
+  ///
+  /// We can also put a state to the next route, this state will
+  /// be a router state (this is the only kind of state that we can
+  /// push) accessible with VRouterData.of(context).historyState
+  ///
+  /// After finding the url and taking charge of the path parameters
+  /// it updates the url
+  ///
+  /// To specify a name, see [VRouteElement.name]
+  @Deprecated("""Use VRouter.pushNamed instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
+  void pushNamed(
+    String name, {
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    String? routerState,
+  }) =>
+      _state.pushNamed(name,
+          pathParameters: pathParameters,
+          queryParameters: queryParameters,
+          routerState: routerState);
+
+  /// Replace the current one by the new route corresponding to the given url
+  /// The difference with [push] is that this overwrites the current browser history entry
+  /// If you are on mobile, this is the same as push
+  /// Path can be of one of two forms:
+  ///   * stating with '/', in which case we just navigate
+  ///     to the given path
+  ///   * not starting with '/', in which case we append the
+  ///     current path to the given one
+  ///
+  /// We can also specify queryParameters, either by directly
+  /// putting them is the url or by providing a Map using [queryParameters]
+  ///
+  /// We can also put a state to the next route, this state will
+  /// be a router state (this is the only kind of state that we can
+  /// push) accessible with VRouterData.of(context).historyState
+  @Deprecated("""Use VRouter.pushReplacement instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
+  void pushReplacement(
+    String newUrl, {
+    Map<String, String> queryParameters = const {},
+    String? routerState,
+  }) =>
+      _state.pushReplacement(newUrl,
+          queryParameters: queryParameters, routerState: routerState);
+
+  /// Replace the url given a [VRouteElement] name
+  /// The difference with [pushNamed] is that this overwrites the current browser history entry
+  ///
+  /// We can also specify path parameters to inject into the new path
+  ///
+  /// We can also specify queryParameters, either by directly
+  /// putting them is the url or by providing a Map using [queryParameters]
+  ///
+  /// We can also put a state to the next route, this state will
+  /// be a router state (this is the only kind of state that we can
+  /// push) accessible with VRouterData.of(context).historyState
+  ///
+  /// After finding the url and taking charge of the path parameters
+  /// it updates the url
+  ///
+  /// To specify a name, see [VRouteElement.name]
+  @Deprecated("""Use VRouter.pushReplacementNamed instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
+  void pushReplacementNamed(
+    String name, {
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    String? routerState,
+  }) =>
+      _state.pushReplacementNamed(name,
+          pathParameters: pathParameters,
+          queryParameters: queryParameters,
+          routerState: routerState);
+
+  /// Goes to an url which is not in the app
+  ///
+  /// On the web, you can set [openNewTab] to true to open this url
+  /// in a new tab
+  @Deprecated("""Use VRouter.pushExternal instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
+  void pushExternal(String newUrl, {bool openNewTab = false}) =>
+      _state.pushExternal(newUrl, openNewTab: openNewTab);
+
+  /// Starts a pop cycle
+  ///
+  /// Pop cycle:
+  ///   1. onPop is called in all [VNavigationGuard]s
+  ///   2. onPop is called in the nested-most [VRouteElement] of the current route
+  ///   3. onPop is called in [VRouter]
+  ///   4. Default behaviour of pop is called: [VRouterState._defaultPop]
+  ///
+  /// In any of the above steps, we can use [vRedirector] if you want to redirect or
+  /// stop the navigation
+  @Deprecated("""Use VRouter.pop instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
+  void pop({
+    Map<String, String> queryParameters = const {},
+    String? routerState,
+  }) =>
+      _state.pop(queryParameters: queryParameters, newState: routerState);
+
+  /// Starts a systemPop cycle
+  ///
+  /// systemPop cycle:
+  ///   1. onSystemPop is called in all VNavigationGuards
+  ///   2. onSystemPop is called in the nested-most VRouteElement of the current route
+  ///   3. onSystemPop is called in VRouter
+  ///   4. [pop] is called
+  ///
+  /// In any of the above steps, we can use [vRedirector] if you want to redirect or
+  /// stop the navigation
+  @Deprecated("""Use VRouter.systemPop instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
+  Future<void> systemPop({
+    Map<String, String> queryParameters = const {},
+    String? routerState,
+  }) =>
+      _state.systemPop(queryParameters: queryParameters, newState: routerState);
+
+  /// This replaces the current history state of [VRouterData] with given one
+  @Deprecated("""Use VRouter.replaceHistoryState instead.
+  
+Here are the important modification:
+    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
+    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
+    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
+""")
+  void replaceHistoryState(String historyState) => _state.replaceHistoryState(historyState);
+
+  static VRouterData of(BuildContext context) {
+    final vRouterData = context.dependOnInheritedWidgetOfExactType<VRouterData>();
+    if (vRouterData == null) {
+      throw FlutterError(
+          'VRouterData.of(context) was called with a context which does not contain a VRouter.\n'
+          'The context used to retrieve VRouterData must be that of a widget that '
+          'is a descendant of a VRouter widget.');
+    }
+    return vRouterData;
+  }
+}
+
+class VRouterMethodsHolder extends InheritedWidget {
+  final VRouterState _state;
+
+  VRouterMethodsHolder({
+    Key? key,
+    required Widget child,
+    required VRouterState state,
+  })   : _state = state,
+        super(
+          key: key,
+          child: child,
+        );
+
+  @override
+  bool updateShouldNotify(VRouterMethodsHolder old) => false;
 
   /// Pushes the new route of the given url on top of the current one
   /// A path can be of one of two forms:
@@ -1939,8 +2330,7 @@ class VRouterData extends InheritedWidget {
     Map<String, String> queryParameters = const {},
     String? routerState,
   }) =>
-      _state.push(newUrl,
-          queryParameters: queryParameters, routerState: routerState);
+      _state.push(newUrl, queryParameters: queryParameters, routerState: routerState);
 
   /// Updates the url given a [VRouteElement] name
   ///
@@ -2058,18 +2448,17 @@ class VRouterData extends InheritedWidget {
       _state.systemPop(queryParameters: queryParameters, newState: routerState);
 
   /// This replaces the current history state of [VRouterData] with given one
-  void replaceHistoryState(String historyState) =>
-      _state.replaceHistoryState(historyState);
+  void replaceHistoryState(String historyState) => _state.replaceHistoryState(historyState);
+}
 
-  static VRouterData of(BuildContext context) {
-    final vRouterData =
-        context.dependOnInheritedWidgetOfExactType<VRouterData>();
-    if (vRouterData == null) {
-      throw FlutterError(
-          'VRouterData.of(context) was called with a context which does not contain a VRouter.\n'
-          'The context used to retrieve VRouterData must be that of a widget that '
-          'is a descendant of a VRouter widget.');
-    }
-    return vRouterData;
-  }
+extension VRouterContext on BuildContext {
+  VRouterMethodsHolder get vRouter => VRouter.of(this);
+}
+
+extension VRouterDataContext on BuildContext {
+  VRouterData get vRouterData => VRouterData.of(this);
+}
+
+extension VRouteElementDataContext on BuildContext {
+  VRouteElementData get vRouteElementData => VRouteElementData.of(this);
 }

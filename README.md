@@ -94,7 +94,7 @@ class MyScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: VRouteElementData.of(context).vChild,
+      body: context.vRouteElementData.vChild,
     );
   }
 }
@@ -111,17 +111,17 @@ at the **[vrouter.dev](https://vrouter.dev)** website.
 
 ### Programmatic Navigation
 
-Use VRouterData to access VRouter methods which allow you to navigate:
+Use VRouter to access methods which allow you to navigate:
 
 ```
 // Pushing a new url
-VRouterData.of(context).push('/home');
+context.vRouter.push('/home');
 
 // Pushing a named route
-VRouterData.of(context).pushNamed('home');
+context.vRouter.pushNamed('home');
 
 // Pushing an external route
-VRouterData.of(context).pushExternal('google.com');
+context.vRouter.pushExternal('google.com');
 ```
 
 ### Named route
@@ -153,11 +153,11 @@ Access the path parameters in you widgets:
 class UserWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Use VRouteElement to access general information about the route
-    print('The current id is: ${VRouteData.of(context).pathParameters['id']}');
+    // Use VRouterData to access general information about the route
+    print('The current id is: ${context.vRouterData.pathParameters['id']}');
 
     // Use VRouteElementData to data which belong to this VRouteElement
-    return Text('User id is ${VRouteElementData.of(context).pathParameters['id']}');
+    return Text('User id is ${context.vRouteElementData.pathParameters['id']}');
   }
 }
 ```
@@ -229,22 +229,24 @@ VRouter(
 VRouter allows you to have a fine grain control over
 navigation events.
 
-Use the `beforeLeave`, `beforeEnter`, `afterEnter` or `afterUpdate` to
+Use the `beforeLeave`, `beforeEnter`, `beforeUpdate`, `afterEnter` or `afterUpdate` to
 catch navigation events, referring to the following navigation
 cycle to know in which order they happen:
-1. Call beforeLeave in all deactivated [VNavigationGuard]
-2. Call beforeLeave in the nest-most [VRouteElement] of the current route
-3. Call beforeLeave in the [VRouter]
-4. Call beforeEnter in the [VRouter]
-5. Call beforeEnter in the nest-most [VRouteElement] of the new route
+1. Call *beforeLeave* in all deactivated \[VNavigationGuard\]
+2. Call *beforeLeave* in all deactivated \[VRouteElement\]
+3. Call *beforeLeave* in the \[VRouter\]
+4. Call *beforeEnter* in the \[VRouter\]
+5. Call *beforeEnter* in all initialized \[VRouteElement\] of the new route
+6. Call beforeUpdate in all reused \[VRouteElement\]
 
 \#\# The history state got in beforeLeave are stored  
-\#\# The state of the VRouter changes
+\#\# The state is updated
 
-6. Call afterEnter in the [VRouter]
-7. Call afterEnter in the nest-most [VRouteElement] of the new route
-8. Call afterUpdate in all reused [VNavigationGuard]
-9. Call afterEnter in all initialized [VNavigationGuard]
+7. Call *afterEnter* in all initialized \[VNavigationGuard\]
+8. Call *afterEnter* all initialized \[VRouteElement\]
+9. Call *afterEnter* in the \[VRouter\]
+10. Call *afterUpdate* in all reused \[VNavigationGuard\]
+11. Call *afterUpdate* in all reused \[VRouteElement\]
 
 In every before.. function, you can use the first argument to stop the  
 navigation using .stopNavigation()

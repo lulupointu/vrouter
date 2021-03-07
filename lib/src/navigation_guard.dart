@@ -13,7 +13,7 @@ class VNavigationGuard extends StatefulWidget {
   /// but not in the new one
   ///
   /// Use [vRedirector] if you want to redirect or stop the navigation.
-  /// DO NOT use VRouterData methods to redirect.
+  /// DO NOT use VRouter methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
   /// Use [newVRouteData] if you want information on the new route but be
@@ -41,6 +41,21 @@ class VNavigationGuard extends StatefulWidget {
     VRedirector? vRedirector,
     void Function(String state) saveHistoryState,
   )? beforeLeave;
+
+  /// This is called before the url is updated, if this [VRouteElement] is in the previous route
+  /// AND in the new route
+  ///
+  /// Use [vRedirector] if you want to redirect or stop the navigation.
+  /// DO NOT use VRouter methods to redirect.
+  /// [vRedirector] also has information about the route you leave and the route you go to
+  ///
+  /// Note that you should consider the navigation cycle to
+  /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
+  ///
+  /// Also see:
+  ///   * [VRouter.beforeEnter] for global level beforeEnter
+  ///   * [VRedirector] to known how to redirect and have access to route information
+  final Future<void> Function(VRedirector vRedirector)? beforeUpdate;
 
   /// Called when the url changes and this [VNavigationGuard] was NOT part
   /// of the previous route.
@@ -73,7 +88,7 @@ class VNavigationGuard extends StatefulWidget {
   /// or by other widgets such as the appBar back button
   ///
   /// Use [vRedirector] if you want to redirect or stop the navigation.
-  /// DO NOT use VRouterData methods to redirect.
+  /// DO NOT use VRouter methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
   /// The route you go to is calculated based on [VRouterState._defaultPop]
@@ -91,7 +106,7 @@ class VNavigationGuard extends StatefulWidget {
   /// This happens on android when the system back button is pressed
   ///
   /// Use [vRedirector] if you want to redirect or stop the navigation.
-  /// DO NOT use VRouterData methods to redirect.
+  /// DO NOT use VRouter methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
   /// The route you go to is calculated based on [VRouterState._defaultPop]
@@ -107,8 +122,9 @@ class VNavigationGuard extends StatefulWidget {
   const VNavigationGuard({
     Key? key,
     this.afterEnter,
-    this.beforeLeave,
     this.afterUpdate,
+    this.beforeUpdate,
+    this.beforeLeave,
     this.onPop,
     this.onSystemPop,
     required this.child,

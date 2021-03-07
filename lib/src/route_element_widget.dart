@@ -1,30 +1,33 @@
 part of 'main.dart';
 
-/// For each [VRouteElement], a [RouteElementWidget] will be inserted
+/// For each [VRouteElement], a [VRouteElementWidget] will be inserted
 /// in the widget tree
 ///
 /// This class handles the [VRouteElementData] which gives you local
 /// information about the [VRouteElement]
-class RouteElementWidget extends StatefulWidget {
+class VRouteElementWidget extends StatefulWidget {
   /// See [VRouteElementData.vChild]
   final Widget? vChild;
 
   /// See [VRouteElementData.vChildName]
   final String? vChildName;
 
+  final VRouteElement _vRouteElement;
+
   /// See [VRouteElementData.name]
-  final String? name;
+  String? get name => _vRouteElement.name;
 
   /// See [VRouteElementData.pathParameters]
   final Map<String, String> pathParameters;
 
   /// See [VRouteElementData.child]
-  final Widget? child;
+  Widget? get child => _vRouteElement.widget;
 
-  final Function? childBuilder;
+  Widget Function(BuildContext context, Widget? vChild)? get childBuilder =>
+      _vRouteElement.widgetBuilder;
 
   /// The key which allows us to access the state of this widget
-  final GlobalKey<_RouteElementWidgetState>? stateKey;
+  final GlobalKey<_VRouteElementWidgetState>? stateKey;
 
   /// The history state that we got back from the browser
   /// If the user navigate using a browser history entry, and
@@ -36,32 +39,30 @@ class RouteElementWidget extends StatefulWidget {
   /// This is used to save and restore the historyState
   final int depth;
 
-  const RouteElementWidget({
+  const VRouteElementWidget({
+    required VRouteElement vRouteElement,
     required this.pathParameters,
     required this.depth,
-    this.child,
-    this.childBuilder,
     this.vChild,
     this.vChildName,
-    this.name,
     this.stateKey,
     this.initialHistorySate,
-  })  : assert(child != null || childBuilder != null),
+  })  : _vRouteElement = vRouteElement,
         super(key: stateKey);
 
   @override
-  _RouteElementWidgetState createState() =>
-      _RouteElementWidgetState(historyState: initialHistorySate);
+  _VRouteElementWidgetState createState() =>
+      _VRouteElementWidgetState(historyState: initialHistorySate);
 }
 
-class _RouteElementWidgetState extends State<RouteElementWidget> {
+class _VRouteElementWidgetState extends State<VRouteElementWidget> {
   /// List of all the [VNavigationGuard] which are associated to the [VRouteElement]
   List<VNavigationGuardMessage> vNavigationGuardMessages = [];
 
   /// See [VRouteElementData.historyState]
   String? historyState;
 
-  _RouteElementWidgetState({this.historyState});
+  _VRouteElementWidgetState({this.historyState});
 
   @override
   Widget build(BuildContext context) {
@@ -83,7 +84,7 @@ class _RouteElementWidgetState extends State<RouteElementWidget> {
         return true;
       },
       child: VRouteElementData(
-        child: widget.child ?? widget.childBuilder!(context),
+        child: widget.child ?? widget.childBuilder!(context, widget.vChild),
         pathParameters: widget.pathParameters,
         name: widget.name,
         vChild: widget.vChild,
@@ -144,8 +145,6 @@ class VRouteElementData extends InheritedWidget {
   /// Also see:
   ///   * [VRouterData.historyState] if you want to use a router level
   ///      version of the historyState
-  ///   * [VRouteData.historyState] if you want to use a route level
-  ///      version of the historyState
   final String? historyState;
 
   /// This replaces the current history state of this [VRouteElementData] with given one
@@ -168,15 +167,15 @@ class VRouteElementData extends InheritedWidget {
   }) : super(key: key, child: child);
 
   static VRouteElementData of(BuildContext context) {
-    final vRouteElementWidgetData =
+    final vRouteElementData =
         context.dependOnInheritedWidgetOfExactType<VRouteElementData>();
-    if (vRouteElementWidgetData == null) {
+    if (vRouteElementData == null) {
       throw FlutterError(
           'VRouteElementWidgetData.of(context) was called with a context which does not contain a VRouteElementWidgetData.\n'
           'The context used to retrieve VRouteElementWidgetData must be that of a widget that '
           'is a descendant of a VRouteElementWidgetData widget.');
     }
-    return vRouteElementWidgetData;
+    return vRouteElementData;
   }
 
   @override

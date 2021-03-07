@@ -34,3 +34,5 @@ part 'route_element.dart';
 part 'router.dart';
 
 part 'redirector.dart';
+
+part 'initial_url.dart';

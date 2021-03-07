@@ -54,7 +54,7 @@ abstract class VRouteElement {
   /// will be accessible/displayed
   ///
   /// Note that you can either define this or [widget] but not both
-  Widget Function(BuildContext context)? get widgetBuilder;
+  Widget Function(BuildContext context, Widget? vChild)? get widgetBuilder;
 
   /// Whether this [VRouteElement] is going to be displayed as a
   /// child or not.
@@ -84,10 +84,11 @@ abstract class VRouteElement {
   Widget Function(Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child)? get buildTransition;
 
-  /// This is called before the url is updated but after all beforeLeave are called
+  /// This is called before the url is updated, if this [VRouteElement] is NOT in the previous route
+  /// but IS in the new route
   ///
   /// Use [vRedirector] if you want to redirect or stop the navigation.
-  /// DO NOT use VRouterData methods to redirect.
+  /// DO NOT use VRouter methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
   /// Note that you should consider the navigation cycle to
@@ -98,16 +99,31 @@ abstract class VRouteElement {
   ///   * [VRedirector] to known how to redirect and have access to route information
   Future<void> Function(VRedirector vRedirector)? get beforeEnter;
 
-  /// This is called before the url is updated if this [VRouteElement] is the
-  /// last of the current route
+  /// This is called before the url is updated, if this [VRouteElement] is in the previous route
+  /// AND in the new route
   ///
   /// Use [vRedirector] if you want to redirect or stop the navigation.
-  /// DO NOT use VRouterData methods to redirect.
+  /// DO NOT use VRouter methods to redirect.
+  /// [vRedirector] also has information about the route you leave and the route you go to
+  ///
+  /// Note that you should consider the navigation cycle to
+  /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
+  ///
+  /// Also see:
+  ///   * [VRouter.beforeEnter] for global level beforeEnter
+  ///   * [VRedirector] to known how to redirect and have access to route information
+  Future<void> Function(VRedirector vRedirector)? get beforeUpdate;
+
+  /// This is called before the url is updated, if this [VRouteElement] is in the previous route
+  /// AND NOT in the new route
+  ///
+  /// Use [vRedirector] if you want to redirect or stop the navigation.
+  /// DO NOT use VRouter methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
   /// [saveHistoryState] can be used to save a history state before leaving
   /// This history state will be restored if the user uses the back button
-  /// You will find the saved history state in the [VRouteData] using
+  /// You will find the saved history state in the [VRouterData] using
   /// [VRouteData.of(context).historyState]
   ///
   /// Note that you should consider the navigation cycle to
@@ -123,9 +139,10 @@ abstract class VRouteElement {
   )? get beforeLeave;
 
   /// This is called after the url and the state is updated if this [VRouteElement]
-  /// is the last of the current route
+  /// was not it the previous route
+  ///
   /// You can't prevent the navigation anymore
-  /// You can get the new route parameters, and queryParameters
+  /// You can get the new route parameters, and queryParameters from the context
   ///
   /// Note that you should consider the navigation cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
@@ -135,6 +152,20 @@ abstract class VRouteElement {
   ///   * [VNavigationGuard.afterEnter] for widget level afterEnter
   void Function(BuildContext context, String? from, String to)? get afterEnter;
 
+  /// This is called after the url and the state is updated if this [VRouteElement]
+  /// was already it the previous route
+  ///
+  /// You can't prevent the navigation anymore
+  /// You can get the new route parameters, and queryParameters from the context
+  ///
+  /// Note that you should consider the navigation cycle to
+  /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
+  ///
+  /// Also see:
+  ///   * [VRouter.afterEnter] for global level afterEnter
+  ///   * [VNavigationGuard.afterEnter] for widget level afterEnter
+  void Function(BuildContext context, String? from, String to)? get afterUpdate;
+
   /// This function is called after [VNavigationGuard.onPop] before [VRouter.onPop]
   /// when a pop event occurs and this [VRouteElement] is the last in the
   /// current route
@@ -142,7 +173,7 @@ abstract class VRouteElement {
   /// or by other widgets such as the appBar back button
   ///
   /// Use [vRedirector] if you want to redirect or stop the navigation.
-  /// DO NOT use VRouterData methods to redirect.
+  /// DO NOT use VRouter methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
   /// The route you go to is calculated based on [VRouterState._defaultPop]
@@ -163,7 +194,7 @@ abstract class VRouteElement {
   ///
   ///
   /// Use [vRedirector] if you want to redirect or stop the navigation.
-  /// DO NOT use VRouterData methods to redirect.
+  /// DO NOT use VRouter methods to redirect.
   /// [vRedirector] also has information about the route you leave and the route you go to
   ///
   /// The route you go to is calculated based on [VRouterState._defaultPop]
@@ -209,7 +240,7 @@ abstract class VRouteElement {
   /// A global key for the [VRouteElementWIdgetState] which will
   /// be the widget holding the data of this [VRouteElement]
   /// It is created automatically
-  GlobalKey<_RouteElementWidgetState>? get stateKey;
+  GlobalKey<_VRouteElementWidgetState>? get stateKey;
 }
 
 @immutable
@@ -224,7 +255,7 @@ class VStacked extends VRouteElement {
 
   /// See [VRouteElement.widgetBuilder]
   @override
-  final Widget Function(BuildContext context)? widgetBuilder;
+  final Widget Function(BuildContext context, Widget? vChild)? widgetBuilder;
 
   /// See [VRouteElement.path]
   @override
@@ -259,6 +290,10 @@ class VStacked extends VRouteElement {
   @override
   final Future<void> Function(VRedirector vRedirector)? beforeEnter;
 
+  /// See [VRouteElement.beforeUpdate]
+  @override
+  final Future<void> Function(VRedirector vRedirector)? beforeUpdate;
+
   /// See [VRouteElement.beforeLeave]
   @override
   final Future<void> Function(VRedirector? vRedirector,
@@ -268,6 +303,11 @@ class VStacked extends VRouteElement {
   @override
   final void Function(BuildContext context, String? from, String to)?
       afterEnter;
+
+  /// See [VRouteElement.afterUpdate]
+  @override
+  final void Function(BuildContext context, String? from, String to)?
+      afterUpdate;
 
   /// See [VRouteElement.onPop]
   @override
@@ -291,8 +331,10 @@ class VStacked extends VRouteElement {
     this.subroutes,
     this.aliases,
     this.beforeEnter,
+    this.beforeUpdate,
     this.beforeLeave,
     this.afterEnter,
+    this.afterUpdate,
     this.buildTransition,
     this.transitionDuration,
     this.reverseTransitionDuration,
@@ -326,7 +368,7 @@ class VStacked extends VRouteElement {
                     -1)
             ? HeroController()
             : null,
-        stateKey = GlobalKey<_RouteElementWidgetState>() {
+        stateKey = GlobalKey<_VRouteElementWidgetState>() {
     if (widget == null && widgetBuilder == null) {
       throw ArgumentError(
         'You must either provide a widget or a widgetBuilder but they can not both be null.',
@@ -396,7 +438,7 @@ class VStacked extends VRouteElement {
 
   /// See [VRouteElement.stateKey]
   @override
-  final GlobalKey<_RouteElementWidgetState> stateKey;
+  final GlobalKey<_VRouteElementWidgetState> stateKey;
 }
 
 @immutable
@@ -411,7 +453,7 @@ class VChild extends VRouteElement {
 
   /// See [VRouteElement.widgetBuilder]
   @override
-  final Widget Function(BuildContext context)? widgetBuilder;
+  final Widget Function(BuildContext context, Widget? vChild)? widgetBuilder;
 
   /// See [VRouteElement.path]
   @override
@@ -446,6 +488,10 @@ class VChild extends VRouteElement {
   @override
   final Future<void> Function(VRedirector vRedirector)? beforeEnter;
 
+  /// See [VRouteElement.beforeUpdate]
+  @override
+  final Future<void> Function(VRedirector vRedirector)? beforeUpdate;
+
   /// See [VRouteElement.beforeLeave]
   @override
   final Future<void> Function(VRedirector? vRedirector,
@@ -455,6 +501,11 @@ class VChild extends VRouteElement {
   @override
   final void Function(BuildContext context, String? from, String to)?
       afterEnter;
+
+  /// See [VRouteElement.afterUpdate]
+  @override
+  final void Function(BuildContext context, String? from, String to)?
+      afterUpdate;
 
   /// See [VRouteElement.onPop]
   @override
@@ -478,8 +529,10 @@ class VChild extends VRouteElement {
     this.subroutes,
     this.aliases,
     this.beforeEnter,
+    this.beforeUpdate,
     this.beforeLeave,
     this.afterEnter,
+    this.afterUpdate,
     this.buildTransition,
     this.transitionDuration,
     this.reverseTransitionDuration,
@@ -513,7 +566,7 @@ class VChild extends VRouteElement {
                     -1)
             ? HeroController()
             : null,
-        stateKey = GlobalKey<_RouteElementWidgetState>() {
+        stateKey = GlobalKey<_VRouteElementWidgetState>() {
     if (widget == null && widgetBuilder == null) {
       throw ArgumentError(
         'You must either provide a widget or a widgetBuilder but they can not both be null.',
@@ -583,7 +636,7 @@ class VChild extends VRouteElement {
 
   /// See [VRouteElement.stateKey]
   @override
-  final GlobalKey<_RouteElementWidgetState> stateKey;
+  final GlobalKey<_VRouteElementWidgetState> stateKey;
 }
 
 @immutable
@@ -645,9 +698,10 @@ class VRouteRedirector extends VRouteElement {
   @override
   Widget? get widget => Container();
 
-  /// See [VRouteElement.widgetBuilder]
+  /// Not implemented, this class is only for redirection
   @override
-  Widget Function(BuildContext context)? get widgetBuilder => null;
+  Widget Function(BuildContext context, Widget? vChild)? get widgetBuilder =>
+      null;
 
   /// Not implemented, this class is only for redirection
   @override
@@ -659,6 +713,10 @@ class VRouteRedirector extends VRouteElement {
 
   /// Not implemented, this class is only for redirection
   @override
+  Future<void> Function(VRedirector vRedirector)? get beforeUpdate => null;
+
+  /// Not implemented, this class is only for redirection
+  @override
   Future<bool> Function(VRedirector? vRedirector,
       void Function(String state) saveHistoryState)? get beforeLeave => null;
 
@@ -666,6 +724,11 @@ class VRouteRedirector extends VRouteElement {
   @override
   void Function(BuildContext context, String? from, String to)?
       get afterEnter => null;
+
+  /// Not implemented, this class is only for redirection
+  @override
+  void Function(BuildContext context, String? from, String to)?
+      get afterUpdate => null;
 
   /// Not implemented, this class is only for redirection
   @override
@@ -708,5 +771,5 @@ class VRouteRedirector extends VRouteElement {
 
   /// Not implemented, this class is only for redirection
   @override
-  GlobalKey<_RouteElementWidgetState>? get stateKey => null;
+  GlobalKey<_VRouteElementWidgetState>? get stateKey => null;
 }
