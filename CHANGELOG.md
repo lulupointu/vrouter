@@ -1,3 +1,7 @@
+## [0.0.15] - 27/02/2021
+
+* Enabling app_to_background when popping last VStacked
+
 ## [0.0.14] - 27/02/2021
 
 * Enable access to VRouterState to enable navigation without context
