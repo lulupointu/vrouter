@@ -1360,11 +1360,12 @@ class VRouterState extends State<VRouter> {
               ...this.pathParameters,
               ...pathParameters,
             },
-            parentPath: null)
+            parentPath: '')
         ?.path;
 
     late final RootVRouterData? newVRouterData;
-    if (newPath != null) {
+    // If newPath is empty then the VRouteElement to pop is VRouter
+    if (newPath != null && newPath.isNotEmpty) {
       // Integrate the given query parameters
       newUrl = Uri(
         path: newPath,

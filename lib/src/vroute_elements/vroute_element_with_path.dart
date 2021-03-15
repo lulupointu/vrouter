@@ -54,12 +54,9 @@ abstract class VRouteElementWithPath extends VRouteElement {
     this.aliases = const [],
     this.mustMatchSubRoute = false,
   })  : pathRegExp = (path != null) ? pathToRegExp(path, prefix: true) : null,
-        aliasesRegExp = [
-          for (var alias in aliases) pathToRegExp(alias, prefix: true)
-        ],
+        aliasesRegExp = [for (var alias in aliases) pathToRegExp(alias, prefix: true)],
         pathParametersKeys = <String>[],
-        aliasesPathParametersKeys =
-            List<List<String>>.filled(aliases.length, []) {
+        aliasesPathParametersKeys = List<List<String>>.filled(aliases.length, []) {
     // Get local parameters
     if (path != null) {
       final localPath = path!.startsWith('/') ? path!.substring(1) : path!;
@@ -133,8 +130,8 @@ abstract class VRouteElementWithPath extends VRouteElement {
     );
     if (subRouteVRoute != null) {
       return VRoute(
-        vRouteElementNode: VRouteElementNode(this,
-            subVRouteElementNode: subRouteVRoute.vRouteElementNode),
+        vRouteElementNode:
+            VRouteElementNode(this, subVRouteElementNode: subRouteVRoute.vRouteElementNode),
         pages: subRouteVRoute.pages,
         pathParameters: {
           ...parentPathParameters,
@@ -161,8 +158,8 @@ abstract class VRouteElementWithPath extends VRouteElement {
       );
       if (subRouteVRoute != null) {
         return VRoute(
-          vRouteElementNode: VRouteElementNode(this,
-              subVRouteElementNode: subRouteVRoute.vRouteElementNode),
+          vRouteElementNode:
+              VRouteElementNode(this, subVRouteElementNode: subRouteVRoute.vRouteElementNode),
           pages: subRouteVRoute.pages,
           pathParameters: {
             ...parentPathParameters,
@@ -231,18 +228,13 @@ abstract class VRouteElementWithPath extends VRouteElement {
     required Map<String, String> parentPathParameters,
     required GetPathMatchResult getPathMatchResult,
   }) {
-    if (!mustMatchSubRoute &&
-        (getPathMatchResult.remainingPath?.isEmpty ?? false)) {
-      return VRoute(
-          vRouteElementNode: VRouteElementNode(this),
-          pages: [],
-          pathParameters: {
-            ...parentPathParameters,
-            ...getPathMatchResult.pathParameters,
-          },
-          vRouteElements: <VRouteElement>[
-            this
-          ]);
+    if (!mustMatchSubRoute && (getPathMatchResult.remainingPath?.isEmpty ?? false)) {
+      return VRoute(vRouteElementNode: VRouteElementNode(this), pages: [], pathParameters: {
+        ...parentPathParameters,
+        ...getPathMatchResult.pathParameters,
+      }, vRouteElements: <VRouteElement>[
+        this
+      ]);
     }
   }
 
@@ -278,20 +270,17 @@ abstract class VRouteElementWithPath extends VRouteElement {
       // If it does not start with '/', the path is relative
       // We try to remove this part of the path from the remainingPathFromParent
       match = selfPathRegExp!.matchAsPrefix(remainingPathFromParent);
-      remainingPath =
-          (match != null) ? remainingPathFromParent.substring(match.end) : null;
+      remainingPath = (match != null) ? remainingPathFromParent.substring(match.end) : null;
     } else {
       // If remainingPathFromParent is null and the path is relative
       // the parent did not match, so there is no match
       match = null;
       remainingPath = null;
     }
-    final pathParameters = (match != null)
-        ? extract(selfPathParametersKeys, match)
-        : <String, String>{};
+    final pathParameters =
+        (match != null) ? extract(selfPathParametersKeys, match) : <String, String>{};
 
-    return GetPathMatchResult(
-        remainingPath: remainingPath, pathParameters: pathParameters);
+    return GetPathMatchResult(remainingPath: remainingPath, pathParameters: pathParameters);
   }
 
   /// Tries to a path from a name
@@ -320,13 +309,12 @@ abstract class VRouteElementWithPath extends VRouteElement {
 
     // Get the new parent path by taking this path into account
     newParentPathFromPath = getNewParentPath(parentPath,
-        path: path,
-        pathParametersKeys: pathParametersKeys,
-        pathParameters: pathParameters);
+        path: path, pathParametersKeys: pathParametersKeys, pathParameters: pathParameters);
 
-    newRemainingPathParametersFromPath =
-        Map<String, String>.from(remainingPathParameters)
-          ..removeWhere((key, value) => pathParametersKeys.contains(key));
+    newRemainingPathParametersFromPath = (path != null && path!.startsWith('/'))
+        ? Map<String, String>.from(pathParameters)
+        : Map<String, String>.from(remainingPathParameters)
+      ..removeWhere((key, value) => pathParametersKeys.contains(key));
 
     for (var vRouteElement in subroutes) {
       String? childPathFromName = vRouteElement.getPathFromName(
@@ -351,8 +339,10 @@ abstract class VRouteElementWithPath extends VRouteElement {
         pathParameters: pathParameters,
       ));
       newRemainingPathParametersFromAliases.add(
-        Map<String, String>.from(remainingPathParameters)
-          ..removeWhere((key, value) => pathParametersKeys.contains(key)),
+        (aliases[i].startsWith('/'))
+            ? Map<String, String>.from(pathParameters)
+            : Map<String, String>.from(remainingPathParameters)
+          ..removeWhere((key, value) => aliasesPathParametersKeys[i].contains(key)),
       );
       for (var vRouteElement in subroutes) {
         String? childPathFromName = vRouteElement.getPathFromName(
@@ -371,13 +361,15 @@ abstract class VRouteElementWithPath extends VRouteElement {
     if (name == nameToMatch) {
       // Note that newParentPath will be null if this path can't be included so the return value
       // is the right one
-      if (newParentPathFromPath != null &&
-          newRemainingPathParametersFromPath.isEmpty) {
+      if (newParentPathFromPath != null && newRemainingPathParametersFromPath.isEmpty) {
         return newParentPathFromPath;
       }
       for (var i = 0; i < aliases.length; i++) {
+        print(aliases[i]);
+        print(newParentPathFromAliases[i]);
+        print(newRemainingPathParametersFromAliases[i]);
         if (newParentPathFromAliases[i] != null &&
-            newRemainingPathParametersFromAliases[i].isNotEmpty) {
+            newRemainingPathParametersFromAliases[i].isEmpty) {
           return newParentPathFromAliases[i];
         }
       }
@@ -409,13 +401,12 @@ abstract class VRouteElementWithPath extends VRouteElement {
     required Map<String, String> pathParameters,
   }) {
     // First check that we have the path parameters needed to have this path
-    final indexNoMatch = pathParametersKeys
-        .indexWhere((key) => !pathParameters.containsKey(key));
+    final indexNoMatch =
+        pathParametersKeys.indexWhere((key) => !pathParameters.containsKey(key));
 
     // If we have all the path parameters needed, get the local path
-    final localPath = (indexNoMatch == -1 && path != null)
-        ? pathToFunction(path)(pathParameters)
-        : null;
+    final localPath =
+        (indexNoMatch == -1 && path != null) ? pathToFunction(path)(pathParameters) : null;
 
     late final String? newParentPath;
     if (path == null) {
@@ -484,8 +475,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
             parentPath: newParentPathFromAlias,
           );
           if (childPopResult != null) {
-            return GetPathFromPopResult(
-                path: childPopResult.path, didPop: false);
+            return GetPathFromPopResult(path: childPopResult.path, didPop: false);
           }
         }
       }

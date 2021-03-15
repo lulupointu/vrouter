@@ -16,7 +16,7 @@ void main() {
           routes: [
             VWidget(
               widget: Container(),
-              path: '/home',
+              path: '',
               subroutes: [
                 elementToPop,
                 VWidget(
@@ -32,11 +32,11 @@ void main() {
             .getPathFromPop(
               elementToPop,
               pathParameters: {},
-              parentPath: null,
+              parentPath: '',
             )
             ?.path;
 
-        expect(newPath, '/home');
+        expect(newPath, '/');
       });
 
       test('Pop from relative path to absolute path', () {
@@ -65,7 +65,7 @@ void main() {
             .getPathFromPop(
               elementToPop,
               pathParameters: {},
-              parentPath: null,
+              parentPath: '',
             )
             ?.path;
 
@@ -104,7 +104,7 @@ void main() {
             .getPathFromPop(
               elementToPop,
               pathParameters: {},
-              parentPath: null,
+              parentPath: '',
             )
             ?.path;
 
@@ -143,7 +143,7 @@ void main() {
             .getPathFromPop(
               elementToPop,
               pathParameters: {},
-              parentPath: null,
+              parentPath: '',
             )
             ?.path;
 
@@ -170,11 +170,11 @@ void main() {
             .getPathFromPop(
               elementToPop,
               pathParameters: {},
-              parentPath: null,
+              parentPath: '',
             )
             ?.path;
 
-        expect(newPath, null);
+        expect(newPath, '');
       });
 
       test('Pop with right pathParameters', () {
@@ -209,7 +209,7 @@ void main() {
             .getPathFromPop(
               elementToPop,
               pathParameters: {'profileId': '2'},
-              parentPath: null,
+              parentPath: '',
             )
             ?.path;
 
@@ -248,7 +248,7 @@ void main() {
             .getPathFromPop(
               elementToPop,
               pathParameters: {},
-              parentPath: null,
+              parentPath: '',
             )
             ?.path;
 
@@ -288,7 +288,7 @@ void main() {
               .getPathFromPop(
                 elementToPop,
                 pathParameters: {},
-                parentPath: null,
+                parentPath: '',
               )
               ?.path;
 
@@ -329,7 +329,7 @@ void main() {
               .getPathFromPop(
                 elementToPop,
                 pathParameters: {},
-                parentPath: null,
+                parentPath: '',
               )
               ?.path;
 
@@ -372,7 +372,7 @@ void main() {
               .getPathFromPop(
                 elementToPop,
                 pathParameters: {},
-                parentPath: null,
+                parentPath: '',
               )
               ?.path;
 
