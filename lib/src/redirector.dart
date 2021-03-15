@@ -12,8 +12,6 @@ class VRedirector {
     required BuildContext context,
     required this.from,
     required this.to,
-    required this.previousVRouteData,
-    required this.newVRouteData,
     required this.previousVRouterData,
     required this.newVRouterData,
   }) : _context = context;
@@ -23,6 +21,7 @@ class VRedirector {
   /// You should NOT modify this, instead use [stopRedirection], or other methods
   /// such as [push], [pushNamed], ...
   bool _shouldUpdate = true;
+
   bool get shouldUpdate => _shouldUpdate;
 
   /// The url we are coming from
@@ -30,42 +29,6 @@ class VRedirector {
 
   /// The url we are going to
   final String? to;
-
-  /// The [VRouteData] of the previous route
-  /// Useful information is:
-  ///   * [VRouteData.pathParameters]
-  ///   * [VRouteData.queryParameters]
-  ///   * [VRouteData.historyState]
-  ///
-  /// Note that you should NOT call [newVRouteData.replaceHistoryState]
-  ///   If you are in beforeLeave, call [saveHistoryState] instead
-  ///   If you are in beforeEnter, you can't save an history state here
-  @Deprecated("""Use previousVRouterData instead.
-  
-Here are the important modification:
-    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
-    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
-    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
-""")
-  final VRouteData? previousVRouteData;
-
-  /// The [VRouteData] of the new route
-  /// Useful information is:
-  ///   * [VRouteData.pathParameters]
-  ///   * [VRouteData.queryParameters]
-  ///   * [VRouteData.historyState]
-  ///
-  /// Note that you should NOT call [newVRouteData.replaceHistoryState]
-  ///   If you are in beforeLeave, call [saveHistoryState] instead
-  ///   If you are in beforeEnter, you can't save an history state here
-  @Deprecated("""Use previousVRouterData instead.
-  
-Here are the important modification:
-    - context.vRouter (or VRouter.of(context)): Holds every navigation methods (push, ...) 
-    - context.vRouterData (or VRouterData.of(context)): holds every general route information 
-    - context.vRouteElementData (or VRouteElementData.of(context)): Holds every local information 
-""")
-  final VRouteData? newVRouteData;
 
   /// The [VRouterData] of the previous route
   /// Useful information is:
@@ -76,7 +39,7 @@ Here are the important modification:
   /// Note that you should NOT call [newVRouterData.replaceHistoryState]
   ///   If you are in beforeLeave, call [saveHistoryState] instead
   ///   If you are in beforeEnter, you can't save an history state here
-  final VRouterData? previousVRouterData;
+  final RootVRouterData? previousVRouterData;
 
   /// The [VRouterData] of the new route
   /// Useful information is:
@@ -87,7 +50,7 @@ Here are the important modification:
   /// Note that you should NOT call [newVRouterData.replaceHistoryState]
   ///   If you are in beforeLeave, call [saveHistoryState] instead
   ///   If you are in beforeEnter, you can't save an history state here
-  final VRouterData? newVRouterData;
+  final RootVRouterData? newVRouterData;
 
   /// A context which gives us access to VRouter and the current VRoute
   /// This is local because we don't want developers to use VRouterData to redirect
@@ -95,7 +58,7 @@ Here are the important modification:
 
   /// Function which will be executed after stopping the redirection
   /// if [push], [pushNamed], ... have been used.
-  VoidCallback? _redirectFunction;
+  void Function(VRouteElementNode vRouteElementNode)? _redirectFunction;
 
   /// Stops the redirection
   ///
@@ -113,11 +76,11 @@ Here are the important modification:
   void push(
     String newUrl, {
     Map<String, String> queryParameters = const {},
-    String? routerState,
+    Map<String, String> historyState = const {},
   }) {
     stopRedirection();
-    _redirectFunction = () => VRouter.of(_context).push(newUrl,
-        queryParameters: queryParameters, routerState: routerState);
+    _redirectFunction = (_) => RootVRouterData.of(_context).push(newUrl,
+        queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Prevent the current redirection and pushNamed a route instead
@@ -130,7 +93,7 @@ Here are the important modification:
     String? routerState,
   }) {
     stopRedirection();
-    _redirectFunction = () => VRouter.of(_context).pushNamed(name,
+    _redirectFunction = (_) => RootVRouterData.of(_context).pushNamed(name,
         pathParameters: pathParameters,
         queryParameters: queryParameters,
         routerState: routerState);
@@ -142,11 +105,13 @@ Here are the important modification:
   void pushReplacement(
     String newUrl, {
     Map<String, String> queryParameters = const {},
-    String? routerState,
+    Map<String, String> historyState = const {},
   }) {
     stopRedirection();
-    _redirectFunction = () => VRouter.of(_context).pushReplacement(newUrl,
-        queryParameters: queryParameters, routerState: routerState);
+    _redirectFunction = (_) => RootVRouterData.of(_context).pushReplacement(
+        newUrl,
+        queryParameters: queryParameters,
+        historyState: historyState);
   }
 
   /// Prevent the current redirection and pushReplacementNamed a route instead
@@ -156,14 +121,14 @@ Here are the important modification:
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String? routerState,
+    Map<String, String> historyState = const {},
   }) {
     stopRedirection();
-    _redirectFunction = () => VRouter.of(_context).pushReplacementNamed(
+    _redirectFunction = (_) => RootVRouterData.of(_context).pushReplacementNamed(
           name,
           pathParameters: pathParameters,
           queryParameters: queryParameters,
-          routerState: routerState,
+          historyState: historyState,
         );
   }
 
@@ -172,23 +137,31 @@ Here are the important modification:
   /// See [VRouter.push] for more information on push
   void pushExternal(String newUrl, {bool openNewTab = false}) {
     stopRedirection();
-    _redirectFunction =
-        () => VRouter.of(_context).pushExternal(newUrl, openNewTab: openNewTab);
+    _redirectFunction = (_) => RootVRouterData.of(_context)
+        .pushExternal(newUrl, openNewTab: openNewTab);
   }
 
   /// Prevent the current redirection and call pop instead
   ///
   /// See [VRouter.pop] for more information on push
-  void pop() {
+  void pop(
+      {Map<String, String> pathParameters = const {},
+      Map<String, String> queryParameters = const {},
+      Map<String, String> newHistoryState = const {},}) {
     stopRedirection();
-    _redirectFunction = () => VRouter.of(_context).pop();
+    _redirectFunction = (VRouteElementNode vRouteElementNode) =>
+        RootVRouterData.of(_context).pop(vRouteElementNode.getVRouteElementToPop(), pathParameters: pathParameters, queryParameters: queryParameters, newHistoryState: newHistoryState,);
   }
 
   /// Prevent the current redirection and call systemPop instead
   ///
   /// See [VRouter.systemPop] for more information on push
-  Future<void> systemPop() async {
+  Future<void> systemPop(
+      {Map<String, String> pathParameters = const {},
+      Map<String, String> queryParameters = const {},
+      Map<String, String> newHistoryState = const {},}) async {
     stopRedirection();
-    _redirectFunction = () => VRouter.of(_context).systemPop();
+    _redirectFunction = (VRouteElementNode vRouteElementNode) =>
+        RootVRouterData.of(_context).systemPop(vRouteElementNode.getVRouteElementToPop(), pathParameters: pathParameters, queryParameters: queryParameters, newHistoryState: newHistoryState,);
   }
 }

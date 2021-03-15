@@ -39,8 +39,8 @@ class VNavigationGuard extends StatefulWidget {
   ///   * [VRedirector] to known how to redirect and have access to route information
   final Future<void> Function(
     VRedirector? vRedirector,
-    void Function(String state) saveHistoryState,
-  )? beforeLeave;
+    void Function(Map<String, String> state) saveHistoryState,
+  ) beforeLeave;
 
   /// This is called before the url is updated, if this [VRouteElement] is in the previous route
   /// AND in the new route
@@ -55,7 +55,7 @@ class VNavigationGuard extends StatefulWidget {
   /// Also see:
   ///   * [VRouter.beforeEnter] for global level beforeEnter
   ///   * [VRedirector] to known how to redirect and have access to route information
-  final Future<void> Function(VRedirector vRedirector)? beforeUpdate;
+  final Future<void> Function(VRedirector vRedirector) beforeUpdate;
 
   /// Called when the url changes and this [VNavigationGuard] was NOT part
   /// of the previous route.
@@ -69,8 +69,7 @@ class VNavigationGuard extends StatefulWidget {
   /// Also see:
   ///   * [VRouter.afterEnter] for global level afterEnter
   ///   * [VRouteElement.afterEnter] for route level afterEnter
-  final void Function(BuildContext context, String? from, String to)?
-      afterEnter;
+  final void Function(BuildContext context, String? from, String to) afterEnter;
 
   /// Called when the url changes and this [VNavigationGuard] was already part
   /// of the previous route.
@@ -80,7 +79,7 @@ class VNavigationGuard extends StatefulWidget {
   ///
   /// Note that you should consider the navigation cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
-  final void Function(BuildContext context, String? from, String to)?
+  final void Function(BuildContext context, String? from, String to)
       afterUpdate;
 
   /// Called when a pop event occurs.
@@ -99,8 +98,8 @@ class VNavigationGuard extends StatefulWidget {
   /// Also see:
   ///   * [VRouter.onPop] for global level onPop
   ///   * [VRouteElement.onPop] for route level onPop
-  ///   * [VRouterState._defaultPop] for the default onPop
-  final Future<void> Function(VRedirector vRedirector)? onPop;
+  ///   * [VRedirector] to known how to redirect and have access to route information
+  final Future<void> Function(VRedirector vRedirector) onPop;
 
   /// Called when a system pop event occurs.
   /// This happens on android when the system back button is pressed
@@ -117,16 +116,17 @@ class VNavigationGuard extends StatefulWidget {
   /// Also see:
   ///   * [VRouter.onSystemPop] for global level onSystemPop
   ///   * [VRouteElement.onSystemPop] for route level onSystemPop
-  final Future<void> Function(VRedirector vRedirector)? onSystemPop;
+  ///   * [VRedirector] to known how to redirect and have access to route information
+  final Future<void> Function(VRedirector vRedirector) onSystemPop;
 
   const VNavigationGuard({
     Key? key,
-    this.afterEnter,
-    this.afterUpdate,
-    this.beforeUpdate,
-    this.beforeLeave,
-    this.onPop,
-    this.onSystemPop,
+    this.afterEnter = VRouteElement._voidAfterEnter,
+    this.afterUpdate = VRouteElement._voidAfterUpdate,
+    this.beforeUpdate = VRouteElement._voidBeforeUpdate,
+    this.beforeLeave = VRouteElement._voidBeforeLeave,
+    this.onPop = VRouteElement._voidOnPop,
+    this.onSystemPop = VRouteElement._voidOnSystemPop,
     required this.child,
   }) : super(key: key);
 
@@ -140,12 +140,10 @@ class _VNavigationGuardState extends State<VNavigationGuard> {
     VNavigationGuardMessage(vNavigationGuard: widget, localContext: context)
         .dispatch(context);
     super.initState();
-    if (widget.afterEnter != null) {
-      WidgetsBinding.instance?.addPostFrameCallback((_) {
-        widget.afterEnter!(context, VRouterData.of(context).previousUrl,
-            VRouterData.of(context).url!);
-      });
-    }
+    WidgetsBinding.instance?.addPostFrameCallback((_) {
+      widget.afterEnter(
+          context, VRouter.of(context).previousUrl, VRouter.of(context).url!);
+    });
   }
 
   // This is used to try to support hot restart
@@ -165,11 +163,23 @@ class _VNavigationGuardState extends State<VNavigationGuard> {
 }
 
 /// This message is a notification that each [VNavigationGuard] sends
-/// and received by their associated [VRouteElement] to air them
+/// and received by their associated [VRouteElementWidget] which will in turn
+/// send a [VNavigationGuardRootMessage] for the [VRouter]
 class VNavigationGuardMessage extends Notification {
   final VNavigationGuard vNavigationGuard;
   final BuildContext localContext;
 
   VNavigationGuardMessage(
       {required this.vNavigationGuard, required this.localContext});
+}
+
+class VNavigationGuardMessageRoot extends Notification {
+  final VNavigationGuard vNavigationGuard;
+  final BuildContext localContext;
+  final VRouteElementWithPage associatedVRouteElement;
+
+  VNavigationGuardMessageRoot(
+      {required this.vNavigationGuard,
+      required this.localContext,
+      required this.associatedVRouteElement});
 }

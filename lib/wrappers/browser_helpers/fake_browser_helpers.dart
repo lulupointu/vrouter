@@ -1,6 +1,6 @@
 import 'package:url_launcher/url_launcher.dart';
 
-import 'main.dart';
+import '../../src/main.dart';
 
 /// List of static methods to interact with the browser
 /// Only one is implemented for mobile: pushExternal

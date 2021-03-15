@@ -4,10 +4,11 @@ library web_helpers;
 import 'dart:convert';
 
 import 'package:js/js.dart';
+
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
 
-import 'main.dart';
+import '../../src/main.dart';
 
 /// List of static methods to interact with the browser
 /// Only one is implemented for mobile: pushExternal
@@ -39,9 +40,8 @@ class BrowserHelpers {
     }
     int? newSerialCount;
     try {
-      newSerialCount = int.parse(jsonDecode(
-              html.window.history.state['state'] ?? '{}')['serialCount'] ??
-          '');
+      newSerialCount =
+          jsonDecode(html.window.history.state['state'] ?? '{}')['serialCount'];
       // ignore: empty_catches
     } on FormatException {}
     return newSerialCount;
@@ -89,7 +89,6 @@ class BrowserHelpers {
   /// This replace the current url by the given one
   /// Meaning that while the url changes, no new history entry is created
   static void pushReplacement(String url, {required VRouterModes routerMode}) =>
-      (routerMode == VRouterModes.hash)
-          ? html.window.location.replace('/#$url')
-          : html.window.location.replace(url);
+      html.window.history.replaceState(html.window.history.state, "",
+          (routerMode == VRouterModes.hash) ? '/#$url' : url);
 }

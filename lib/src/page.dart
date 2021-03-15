@@ -4,9 +4,9 @@ part of 'main.dart';
 ///
 /// This is a normal page except that it allows for
 /// custom transitions easily.
-abstract class VPage<T> extends Page<T> {
+abstract class VBasePage<T> extends Page<T> {
   /// The child of this page
-  final VRouteElementWidget child;
+  final LocalVRouterData child;
 
   /// The name of this page
   @override
@@ -45,7 +45,7 @@ abstract class VPage<T> extends Page<T> {
   /// {@macro flutter.widgets.PageRoute.fullscreenDialog}
   final bool fullscreenDialog;
 
-  VPage({
+  VBasePage({
     required this.key,
     required this.child,
     this.maintainState = true,
@@ -56,9 +56,9 @@ abstract class VPage<T> extends Page<T> {
     this.reverseTransitionDuration,
   }) : super(key: key);
 
-  factory VPage.fromPlatform({
+  factory VBasePage.fromPlatform({
     required LocalKey key,
-    required VRouteElementWidget child,
+    required LocalVRouterData child,
     String? name,
     Widget Function(Animation<double> animation,
             Animation<double> secondaryAnimation, Widget child)?
@@ -83,38 +83,16 @@ abstract class VPage<T> extends Page<T> {
               transitionDuration: transitionDuration,
               reverseTransitionDuration: reverseTransitionDuration,
             );
-
-// @override
-// Route<T> createRoute(BuildContext context) {
-//   // If any transition was given, use it
-//   if (buildTransition != null) {
-//     return VPageRoute<T>(
-//       page: this,
-//       customTransition: (_, Animation<double> animation,
-//           Animation<double> secondaryAnimation, Widget child) =>
-//           buildTransition!(
-//             animation,
-//             secondaryAnimation,
-//             child,
-//           ),
-//       transitionDuration: transitionDuration,
-//       reverseTransitionDuration: reverseTransitionDuration,
-//     );
-//   }
-//
-//   // Default is parent animation (ie MaterialPageRoute animation)
-//   return super.createRoute(context);
-// }
 }
 
 /// A page to put in [Navigator] pages
 ///
-/// This is a normal page except that it allows for
+/// This is a normal material page except that it allows for
 /// custom transitions easily.
-class VMaterialPage<T> extends MaterialPage<T> implements VPage<T> {
+class VMaterialPage<T> extends MaterialPage<T> implements VBasePage<T> {
   /// The child of this page
   @override
-  final VRouteElementWidget child;
+  final LocalVRouterData child;
 
   /// The name of this page
   @override
@@ -181,12 +159,12 @@ class VMaterialPage<T> extends MaterialPage<T> implements VPage<T> {
 
 /// A page to put in [Navigator] pages
 ///
-/// This is a normal page except that it allows for
+/// This is a normal cupertino page except that it allows for
 /// custom transitions easily.
-class VCupertinoPage<T> extends CupertinoPage<T> implements VPage<T> {
+class VCupertinoPage<T> extends CupertinoPage<T> implements VBasePage<T> {
   /// The child of this page
   @override
-  final VRouteElementWidget child;
+  final LocalVRouterData child;
 
   /// The name of this page
   @override
@@ -261,7 +239,7 @@ class VPageRoute<T> extends PageRoute<T> {
       Animation<double> secondaryAnimation, Widget child) customTransition;
 
   VPageRoute({
-    required VPage<T> page,
+    required VBasePage<T> page,
     required this.customTransition,
     Duration? transitionDuration,
     Duration? reverseTransitionDuration,
@@ -272,7 +250,7 @@ class VPageRoute<T> extends PageRoute<T> {
     assert(opaque);
   }
 
-  VPage<T> get _page => settings as VPage<T>;
+  VBasePage<T> get _page => settings as VBasePage<T>;
 
   @override
   bool get maintainState => _page.maintainState;

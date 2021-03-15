@@ -92,7 +92,7 @@ packages:
       name: move_to_background
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.1"
+    version: "1.0.1-nullsafety.1"
   path:
     dependency: transitive
     description:
@@ -106,7 +106,7 @@ packages:
       name: path_to_regexp
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.4.0-nullsafety.0"
+    version: "0.4.0"
   plugin_platform_interface:
     dependency: transitive
     description:
@@ -120,7 +120,7 @@ packages:
       name: simple_url_handler
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "1.0.0-nullsafety.0"
+    version: "1.0.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -181,21 +181,21 @@ packages:
       name: url_launcher
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "6.0.0-nullsafety.7"
+    version: "6.0.2"
   url_launcher_linux:
     dependency: transitive
     description:
       name: url_launcher_linux
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.0-nullsafety.3"
+    version: "2.0.0"
   url_launcher_macos:
     dependency: transitive
     description:
       name: url_launcher_macos
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.0-nullsafety.2"
+    version: "2.0.0"
   url_launcher_platform_interface:
     dependency: transitive
     description:
@@ -209,21 +209,21 @@ packages:
       name: url_launcher_web
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0-nullsafety"
+    version: "2.0.0"
   url_launcher_windows:
     dependency: transitive
     description:
       name: url_launcher_windows
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.1.0-nullsafety.2"
+    version: "2.0.0"
   url_strategy:
     dependency: transitive
     description:
       name: url_strategy
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "0.2.0-nullsafety.0"
+    version: "0.2.0"
   vector_math:
     dependency: transitive
     description:
@@ -239,5 +239,5 @@ packages:
     source: path
     version: "1.0.0-nullsafety.11"
 sdks:
-  dart: ">=2.12.0-259.9.beta <3.0.0"
+  dart: ">=2.12.0 <3.0.0"
   flutter: ">=1.22.0"

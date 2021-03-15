@@ -10,18 +10,17 @@ import 'package:flutter/widgets.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:simple_url_handler/simple_url_handler.dart';
 import 'package:url_strategy/url_strategy.dart';
-
-// import 'move_to_background.dart';
-import 'fake_web_helpers.dart' if (dart.library.js) 'web_helpers.dart';
-import 'platform/platform_none.dart'
-    if (dart.library.io) 'platform/platform_io.dart'
-    if (dart.library.js) 'platform/platform_web.dart';
+import '../wrappers/move_to_background_fake.dart'
+    if (dart.library.io) 'package:move_to_background/move_to_background.dart';
+import '../wrappers/browser_helpers/fake_browser_helpers.dart'
+    if (dart.library.js) '../wrappers/browser_helpers/browser_helpers.dart';
+import '../wrappers/platform/platform_none.dart'
+    if (dart.library.io) '../wrappers/platform/platform_io.dart'
+    if (dart.library.js) '../wrappers/platform/platform_web.dart';
 
 part 'exceptions.dart';
 
-part 'route_element_widget.dart';
-
-part 'navigation_2_wrappers.dart';
+part 'navigation_2_helpers.dart';
 
 part 'navigation_guard.dart';
 
@@ -29,10 +28,34 @@ part 'page.dart';
 
 part 'route.dart';
 
-part 'route_element.dart';
+part 'vrouter/local_vrouter_data.dart';
 
-part 'router.dart';
+part 'vrouter/root_vrouter_data.dart';
+
+part 'vrouter/vrouter.dart';
 
 part 'redirector.dart';
 
 part 'initial_url.dart';
+
+part 'vroute_elements/vguard.dart';
+
+part 'vroute_elements/vnester.dart';
+
+part 'vroute_elements/vnester_page.dart';
+
+part 'vroute_elements/vpage.dart';
+
+part 'vroute_elements/vpop_handler.dart';
+
+part 'vroute_elements/vroute_element_base.dart';
+
+part 'vroute_elements/vroute_element_with_page.dart';
+
+part 'vroute_elements/vroute_element_with_path.dart';
+
+part 'vroute_elements/vroute_element_without_page.dart';
+
+part 'vroute_elements/vroute_redirector.dart';
+
+part 'vroute_elements/vwidget.dart';

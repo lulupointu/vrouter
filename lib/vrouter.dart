@@ -2,21 +2,19 @@ library vrouter;
 
 export 'src/main.dart'
     show
+        VPage,
+        VWidget,
+        VNesterPage,
+        VNester,
+        VGuard,
+        VPopHandler,
+        VRouteRedirector,
         InvalidUrlException,
         VMaterialApp,
         VNavigationGuard,
-        VRouteData,
         VRouteElement,
-        VStacked,
-        VChild,
         VRedirector,
-        VRouteRedirector,
-        VRouteElementData,
         VRouterModes,
         VRouter,
         VRouterState,
-        VRouterData,
-        InitialUrl,
-        VRouterContext,
-        VRouterDataContext,
-        VRouteElementDataContext;
+        InitialUrl;
