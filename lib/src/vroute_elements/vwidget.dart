@@ -3,8 +3,8 @@ part of '../main.dart';
 @immutable
 class VWidget extends VPage {
   VWidget({
-    required Widget widget,
     required String? path,
+    required Widget widget,
     String? name,
     List<VRouteElement> stackedRoutes = const [],
     List<String> aliases = const [],
@@ -13,7 +13,7 @@ class VWidget extends VPage {
     this.reverseTransitionDuration,
     this.buildTransition,
   }) : super(
-          pageBuilder: (LocalVRouterData child) => VBasePage.fromPlatform(
+          pageBuilder: (Widget child) => VBasePage.fromPlatform(
             key: ValueKey(path),
             child: child,
             transitionDuration: transitionDuration,

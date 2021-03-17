@@ -115,7 +115,7 @@ abstract class VRouteElement {
   ///   * [VNavigationGuard.beforeLeave] for widget level beforeLeave
   ///   * [VRedirector] to known how to redirect and have access to route information
   Future<void> Function(
-    VRedirector? vRedirector,
+    VRedirector vRedirector,
     void Function(Map<String, String> state) saveHistoryState,
   ) get beforeLeave => _voidBeforeLeave;
 

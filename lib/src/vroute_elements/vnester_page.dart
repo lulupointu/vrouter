@@ -6,9 +6,9 @@ class VNesterPage extends VPage {
   final Widget Function(Widget child) widgetBuilder;
 
   VNesterPage({
-    required Page Function(LocalVRouterData child) pageBuilder,
-    required this.widgetBuilder,
     required String? path,
+    required Page Function(Widget child) pageBuilder,
+    required this.widgetBuilder,
     required this.nestedRoutes,
     String? name,
     List<VRouteElement> stackedRoutes = const [],

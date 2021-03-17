@@ -53,7 +53,7 @@ class VGuard with VRouteElement, VRouteElementWithoutPage {
   ///   * [VNavigationGuard.beforeLeave] for widget level beforeLeave
   ///   * [VRedirector] to known how to redirect and have access to route information
   @override
-  final Future<void> Function(VRedirector? vRedirector,
+  final Future<void> Function(VRedirector vRedirector,
       void Function(Map<String, String> state) saveHistoryState) beforeLeave;
 
   /// This is called after the url and the state is updated if this [VRouteElement]

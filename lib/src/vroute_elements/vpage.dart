@@ -2,12 +2,12 @@ part of '../main.dart';
 
 @immutable
 class VPage extends VRouteElementWithPage {
-  final Page Function(LocalVRouterData child) pageBuilder;
+  final Page Function(Widget child) pageBuilder;
 
   VPage({
+    required String? path,
     required this.pageBuilder,
     required Widget widget,
-    required String? path,
     String? name,
     List<VRouteElement> stackedRoutes = const [],
     List<String> aliases = const [],

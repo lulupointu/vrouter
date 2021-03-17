@@ -56,7 +56,7 @@ class VRouter extends StatefulWidget with VRouteElement, VRouteElementWithoutPag
   ///   * [VNavigationGuard.beforeLeave] for widget level beforeLeave
   ///   * [VRedirector] to known how to redirect and have access to route information
   final Future<void> Function(
-    VRedirector? vRedirector,
+    VRedirector vRedirector,
     void Function(Map<String, String> historyState) saveHistoryState,
   ) beforeLeave;
 
@@ -901,7 +901,7 @@ class VRouterState extends State<VRouter> {
       );
 
       if (newVRoute == null) {
-        throw Exception('No route could be found for the url $url');
+        throw Exception('No route could be found for the url $newUrl');
       }
 
       // This copy is necessary in order not to modify newVRoute.vRouteElements
@@ -982,7 +982,7 @@ class VRouterState extends State<VRouter> {
           await _abortUpdateUrl(
             fromBrowser: fromBrowser,
             serialCount: _serialCount,
-            newSerialCount: newSerialCount!,
+            newSerialCount: newSerialCount,
           );
 
           vRedirector._redirectFunction?.call(_vRoute.vRouteElementNode
@@ -1001,7 +1001,7 @@ class VRouterState extends State<VRouter> {
           await _abortUpdateUrl(
             fromBrowser: fromBrowser,
             serialCount: _serialCount,
-            newSerialCount: newSerialCount!,
+            newSerialCount: newSerialCount,
           );
           vRedirector._redirectFunction?.call(_vRoute.vRouteElementNode
                   .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
@@ -1017,7 +1017,7 @@ class VRouterState extends State<VRouter> {
         await _abortUpdateUrl(
           fromBrowser: fromBrowser,
           serialCount: _serialCount,
-          newSerialCount: newSerialCount!,
+          newSerialCount: newSerialCount,
         );
         vRedirector._redirectFunction?.call(_vRoute.vRouteElementNode);
         return;
@@ -1032,7 +1032,7 @@ class VRouterState extends State<VRouter> {
         await _abortUpdateUrl(
           fromBrowser: fromBrowser,
           serialCount: _serialCount,
-          newSerialCount: newSerialCount!,
+          newSerialCount: newSerialCount,
         );
         vRedirector._redirectFunction?.call(_vRoute.vRouteElementNode);
         return;
@@ -1046,7 +1046,7 @@ class VRouterState extends State<VRouter> {
           await _abortUpdateUrl(
             fromBrowser: fromBrowser,
             serialCount: _serialCount,
-            newSerialCount: newSerialCount!,
+            newSerialCount: newSerialCount,
           );
           vRedirector._redirectFunction?.call(_vRoute.vRouteElementNode
                   .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
@@ -1063,12 +1063,13 @@ class VRouterState extends State<VRouter> {
           await _abortUpdateUrl(
             fromBrowser: fromBrowser,
             serialCount: _serialCount,
-            newSerialCount: newSerialCount!,
+            newSerialCount: newSerialCount,
           );
 
           vRedirector._redirectFunction?.call(_vRoute.vRouteElementNode
                   .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
               _vRoute.vRouteElementNode);
+          return;
         }
       }
     }
@@ -1206,10 +1207,12 @@ class VRouterState extends State<VRouter> {
   /// On the web, if the browser already navigated away, we have to navigate back to where we were
   ///
   /// Note that this should be called before setState, otherwise it is useless and cannot prevent a state spread
+  ///
+  /// newSerialCount should not be null if the updateUrl came from the Browser
   Future<void> _abortUpdateUrl({
     required bool fromBrowser,
     required int serialCount,
-    required int newSerialCount,
+    required int? newSerialCount,
   }) async {
     // If the url change comes from the browser, chances are the url is already changed
     // So we have to navigate back to the old url (stored in _url)
@@ -1219,7 +1222,7 @@ class VRouterState extends State<VRouter> {
         fromBrowser &&
         (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
       _ignoreNextBrowserCalls = true;
-      BrowserHelpers.browserGo(serialCount - newSerialCount);
+      BrowserHelpers.browserGo(serialCount - newSerialCount!);
       await BrowserHelpers.onBrowserPopState
           .firstWhere((element) => BrowserHelpers.getHistorySerialCount() == serialCount);
       _ignoreNextBrowserCalls = false;

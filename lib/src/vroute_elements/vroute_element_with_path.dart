@@ -257,7 +257,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
     late final Match? match;
 
     // remainingPath is null if there is no match
-    late final String? remainingPath;
+    late String? remainingPath;
     if (selfPath == null) {
       // This is ugly but the only way to return a non-null empty match...
       match = RegExp('').matchAsPrefix('');
@@ -280,6 +280,10 @@ abstract class VRouteElementWithPath extends VRouteElement {
     final pathParameters =
         (match != null) ? extract(selfPathParametersKeys, match) : <String, String>{};
 
+    // Remove the trailing '/' in remainingPath if needed
+    if (remainingPath != null && remainingPath.startsWith('/'))
+      remainingPath = remainingPath.replaceFirst('/', '');
+
     return GetPathMatchResult(remainingPath: remainingPath, pathParameters: pathParameters);
   }
 
@@ -297,7 +301,6 @@ abstract class VRouteElementWithPath extends VRouteElement {
     required String? parentPath,
     required Map<String, String> remainingPathParameters,
   }) {
-
     // A variable to store the new parentPath from the path
     late final String? newParentPathFromPath;
     late final Map<String, String> newRemainingPathParametersFromPath;
@@ -416,6 +419,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
       // if we don't start with '/' and parent path is null, then newParentPath is also null
       newParentPath = null;
     } else {
+      // If localPath is null, the pathParameters did not match so newParentPath is null
       newParentPath = (localPath != null) ? parentPath + '/' + localPath : null;
     }
 

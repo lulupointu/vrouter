@@ -4,8 +4,8 @@ class VRouteRedirector extends VRouteElementWithPath {
   final String redirectTo;
 
   VRouteRedirector({
-    required this.redirectTo,
     required String path,
+    required this.redirectTo,
   }) : super(path: path);
 
   @override

@@ -2,8 +2,8 @@ part of '../main.dart';
 
 class VNester extends VNesterPage {
   VNester({
-    required Widget Function(Widget) widgetBuilder,
     required String? path,
+    required Widget Function(Widget) widgetBuilder,
     required List<VRouteElement> nestedRoutes,
     String? name,
     List<VRouteElement> stackedRoutes = const [],
@@ -15,7 +15,7 @@ class VNester extends VNesterPage {
         buildTransition,
   }) : super(
           nestedRoutes: nestedRoutes,
-          pageBuilder: (LocalVRouterData child) => VBasePage.fromPlatform(
+          pageBuilder: (Widget child) => VBasePage.fromPlatform(
             key: ValueKey(path),
             child: child,
             transitionDuration: transitionDuration,
