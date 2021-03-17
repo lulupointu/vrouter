@@ -39,7 +39,7 @@ VRouter(
       path: '/in',
       widget: MyScaffold(),
 
-      subroutes: [
+      stackedRoutes: [
         // VChild are accessible via VRouteElementData.vChild
         VChild(
           // This matches the path '/in/profile/:id'
@@ -74,7 +74,7 @@ For example:
 ```
 VStacked(
   path: '/login', widget: LoginWidget(),
-  subroutes: [
+  stackedRoutes: [
     VStacked(path: '/home', widget: HomeWidget()),
   ]
 )
@@ -178,7 +178,7 @@ VRouter(
     VStacked(
       path: '/user',
       widget: ProfileWidget(),
-      subroutes: [
+      stackedRoutes: [
         // The custom transition will be played when accessing '/user/likes'
         VChild(
           path: 'likes',

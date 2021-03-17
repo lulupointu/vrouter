@@ -87,7 +87,7 @@ class VGuard with VRouteElement, VRouteElementWithoutPage {
   final void Function(BuildContext context, String? from, String to)
       afterUpdate;
 
-  final List<VRouteElement> subroutes;
+  final List<VRouteElement> stackedRoutes;
 
   VGuard({
     this.afterEnter = VRouteElement._voidAfterEnter,
@@ -95,7 +95,7 @@ class VGuard with VRouteElement, VRouteElementWithoutPage {
     this.beforeEnter = VRouteElement._voidBeforeEnter,
     this.beforeLeave = VRouteElement._voidBeforeLeave,
     this.beforeUpdate = VRouteElement._voidBeforeUpdate,
-    required this.subroutes,
+    required this.stackedRoutes,
   });
 
   @override

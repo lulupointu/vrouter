@@ -3,7 +3,7 @@ part of '../main.dart';
 /// If the VRouteElement does have a page to display, it should instantiate this class
 ///
 /// What is does is:
-///     - Requiring attributes [path], [name], [aliases], [widget] and [mustMatchSubroutes]
+///     - Requiring attributes [path], [name], [aliases], [widget] and [mustMatchStackedRoutes]
 ///     - Computing attributes [pathRegExp], [aliasesRegExp], [pathParametersKeys],
 ///                                                          [aliasesParameters] and [stateKey]
 ///     - implementing [build] and [getPathFromName] methods for them
@@ -15,13 +15,13 @@ abstract class VRouteElementWithPage extends VRouteElementWithPath {
     required this.widget,
     required String? path,
     required String? name,
-    required List<VRouteElement> subroutes,
+    required List<VRouteElement> stackedRoutes,
     required List<String> aliases,
     required bool mustMatchSubRoute,
   }) : super(
           path: path,
           name: name,
-          subroutes: subroutes,
+          stackedRoutes: stackedRoutes,
           aliases: aliases,
           mustMatchSubRoute: mustMatchSubRoute,
         );

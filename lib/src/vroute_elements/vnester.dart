@@ -6,7 +6,7 @@ class VNester extends VNesterPage {
     required String? path,
     required List<VRouteElement> nestedRoutes,
     String? name,
-    List<VRouteElement> subroutes = const [],
+    List<VRouteElement> stackedRoutes = const [],
     List<String> aliases = const [],
     bool mustMatchSubRoute = false,
     Duration? transitionDuration,
@@ -25,7 +25,7 @@ class VNester extends VNesterPage {
           widgetBuilder: widgetBuilder,
           path: path,
           name: name,
-          subroutes: subroutes,
+          stackedRoutes: stackedRoutes,
           aliases: aliases,
           mustMatchSubRoute: mustMatchSubRoute,
         );

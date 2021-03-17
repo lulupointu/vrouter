@@ -3,7 +3,7 @@ part of '../main.dart';
 /// If the VRouteElement does have a page to display, it should instantiate this class
 ///
 /// What is does is:
-///     - Requiring attributes [path], [name], [aliases], [widget] and [mustMatchSubroutes]
+///     - Requiring attributes [path], [name], [aliases], [widget] and [mustMatchStackedRoutes]
 ///     - Computing attributes [pathRegExp], [aliasesRegExp], [pathParametersKeys],
 ///                                                          [aliasesParameters] and [stateKey]
 ///     - implementing [build] and [getPathFromName] methods for them
@@ -45,18 +45,18 @@ abstract class VRouteElementWithPath extends VRouteElement {
 
   final bool mustMatchSubRoute;
 
-  final List<VRouteElement> subroutes;
+  final List<VRouteElement> stackedRoutes;
 
   VRouteElementWithPath({
     required this.path,
     this.name,
-    this.subroutes = const [],
+    this.stackedRoutes = const [],
     this.aliases = const [],
     this.mustMatchSubRoute = false,
   })  : pathRegExp = (path != null) ? pathToRegExp(path, prefix: true) : null,
         aliasesRegExp = [for (var alias in aliases) pathToRegExp(alias, prefix: true)],
         pathParametersKeys = <String>[],
-        aliasesPathParametersKeys = List<List<String>>.filled(aliases.length, []) {
+        aliasesPathParametersKeys = List<List<String>>.generate(aliases.length, (_) => []) {
     // Get local parameters
     if (path != null) {
       final localPath = path!.startsWith('/') ? path!.substring(1) : path!;
@@ -112,7 +112,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
     // This will hold every GetPathMatchResult for the aliases so that we compute them only once
     List<GetPathMatchResult> aliasesGetPathMatchResult = [];
 
-    // Try to find valid VRoute from subroutes
+    // Try to find valid VRoute from stackedRoutes
 
     // Check for the path
     pathGetPathMatchResult = getPathMatch(
@@ -124,7 +124,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
     );
     final VRoute? subRouteVRoute = getVRouteFromRoutes(
       vPathRequestData,
-      routes: subroutes,
+      routes: stackedRoutes,
       parentPathParameters: parentPathParameters,
       getPathMatchResult: pathGetPathMatchResult,
     );
@@ -152,7 +152,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
           selfPathParametersKeys: aliasesPathParametersKeys[i]));
       final VRoute? subRouteVRoute = getVRouteFromRoutes(
         vPathRequestData,
-        routes: subroutes,
+        routes: stackedRoutes,
         parentPathParameters: parentPathParameters,
         getPathMatchResult: aliasesGetPathMatchResult[i],
       );
@@ -285,7 +285,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
 
   /// Tries to a path from a name
   ///
-  /// This first asks its subroutes if they have a match
+  /// This first asks its stackedRoutes if they have a match
   /// Else is tries to see if this [VRouteElement] matches the name
   /// Else return null
   ///
@@ -297,6 +297,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
     required String? parentPath,
     required Map<String, String> remainingPathParameters,
   }) {
+
     // A variable to store the new parentPath from the path
     late final String? newParentPathFromPath;
     late final Map<String, String> newRemainingPathParametersFromPath;
@@ -316,7 +317,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
         : Map<String, String>.from(remainingPathParameters)
       ..removeWhere((key, value) => pathParametersKeys.contains(key));
 
-    for (var vRouteElement in subroutes) {
+    for (var vRouteElement in stackedRoutes) {
       String? childPathFromName = vRouteElement.getPathFromName(
         nameToMatch,
         pathParameters: pathParameters,
@@ -344,7 +345,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
             : Map<String, String>.from(remainingPathParameters)
           ..removeWhere((key, value) => aliasesPathParametersKeys[i].contains(key)),
       );
-      for (var vRouteElement in subroutes) {
+      for (var vRouteElement in stackedRoutes) {
         String? childPathFromName = vRouteElement.getPathFromName(
           nameToMatch,
           pathParameters: pathParameters,
@@ -365,9 +366,6 @@ abstract class VRouteElementWithPath extends VRouteElement {
         return newParentPathFromPath;
       }
       for (var i = 0; i < aliases.length; i++) {
-        print(aliases[i]);
-        print(newParentPathFromAliases[i]);
-        print(newRemainingPathParametersFromAliases[i]);
         if (newParentPathFromAliases[i] != null &&
             newRemainingPathParametersFromAliases[i].isEmpty) {
           return newParentPathFromAliases[i];
@@ -393,7 +391,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
   ///             we return the parent path + this path
   ///         * Or we return null
   ///
-  /// This method is used in pop
+  /// This method is used in [getPathFromPop]
   String? getNewParentPath(
     String? parentPath, {
     required String? path,
@@ -442,9 +440,9 @@ abstract class VRouteElementWithPath extends VRouteElement {
       pathParameters: pathParameters,
     );
 
-    // If the path matched and produced a non null newParentPath, try to pop from the subroutes
+    // If the path matched and produced a non null newParentPath, try to pop from the stackedRoutes
     if (newParentPathFromPath != null) {
-      for (var vRouteElement in subroutes) {
+      for (var vRouteElement in stackedRoutes) {
         final childPopResult = vRouteElement.getPathFromPop(
           elementToPop,
           pathParameters: pathParameters,
@@ -465,10 +463,10 @@ abstract class VRouteElementWithPath extends VRouteElement {
         pathParameters: pathParameters,
       );
 
-      // If an alias matched and produced a non null newParentPath, try to pop from the subroutes
+      // If an alias matched and produced a non null newParentPath, try to pop from the stackedRoutes
       if (newParentPathFromAlias != null) {
-        // Try to pop from the subroutes
-        for (var vRouteElement in subroutes) {
+        // Try to pop from the stackedRoutes
+        for (var vRouteElement in stackedRoutes) {
           final childPopResult = vRouteElement.getPathFromPop(
             elementToPop,
             pathParameters: pathParameters,
@@ -481,7 +479,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
       }
     }
 
-    // If none of the subroutes popped and this did not pop, return a null result
+    // If none of the stackedRoutes popped and this did not pop, return a null result
     return null;
   }
 }

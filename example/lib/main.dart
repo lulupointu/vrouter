@@ -8,19 +8,19 @@ void main() {
     VRouter(
       debugShowCheckedModeBanner: false, // VRouter acts as a MaterialApp
       mode: VRouterModes.history, // Remove the '#' from the url
+      initialUrl: '/profile/boby',
       routes: [
         VWidget(
           path: '/login',
           widget: LoginWidget(),
-          subroutes: [
+          stackedRoutes: [
             VGuard(
               beforeEnter: (_) async => print('MyScaffold beforeEnter'),
               beforeLeave: (_, __) async => print('MyScaffold beforeLeave'),
               beforeUpdate: (_) async => print('MyScaffold beforeUpdate'),
-              afterUpdate: (_, __, ___) async =>
-                  print('MyScaffold afterUpdate'),
+              afterUpdate: (_, __, ___) async => print('MyScaffold afterUpdate'),
               afterEnter: (_, __, ___) async => print('MyScaffold afterEnter'),
-              subroutes: [
+              stackedRoutes: [
                 VNester(
                   path: null,
                   name: 'VNester1',
@@ -30,53 +30,51 @@ void main() {
                   ),
                   nestedRoutes: [
                     VWidget(
-                        path: '/settings',
-                        widget: InfoWidget(),
+                      path: '/settings',
+                      widget: InfoWidget(),
 
-                        // Custom transition
-                        buildTransition: (animation, ___, child) {
-                          return ScaleTransition(
-                            scale: animation,
-                            child: child,
-                          );
-                        },
-                        subroutes: [
-                          VNester(
-                            path: null,
-                            name: 'VNester2',
-                            widgetBuilder: (child) => MyScaffold(
-                              child,
-                              title: 'VNester2',
-                            ),
-                            nestedRoutes: [
-                              VGuard(
-                                beforeEnter: (_) async =>
-                                    print('ProfileWidget beforeEnter'),
-                                beforeLeave: (_, __) async =>
-                                    print('ProfileWidget beforeLeave'),
-                                beforeUpdate: (_) async =>
-                                    print('ProfileWidget beforeUpdate'),
-                                afterUpdate: (_, __, ___) async =>
-                                    print('ProfileWidget afterUpdate'),
-                                afterEnter: (_, __, ___) async =>
-                                    print('ProfileWidget afterEnter'),
-                                subroutes: [
-                                  VWidget(
-                                    path: '/profile/:username',
-                                    // :username is a path parameter and can be any value
-                                    name: 'profile',
-                                    // We also give a name for easier navigation
-                                    widget: ProfileWidget(),
-
-                                    // The path '/profile' might also match this path
-                                    // In this case, we must handle the empty pathParameter
-                                    aliases: ['/profile'],
-                                  ),
-                                ],
-                              ),
-                            ],
+                      // Custom transition
+                      buildTransition: (animation, ___, child) {
+                        return ScaleTransition(
+                          scale: animation,
+                          child: child,
+                        );
+                      },
+                      stackedRoutes: [
+                        VNester(
+                          path: null,
+                          name: 'VNester2',
+                          widgetBuilder: (child) => MyScaffold(
+                            child,
+                            title: 'VNester2',
                           ),
-                        ]),
+                          nestedRoutes: [
+                            VGuard(
+                              beforeEnter: (_) async => print('ProfileWidget beforeEnter'),
+                              beforeLeave: (_, __) async => print('ProfileWidget beforeLeave'),
+                              beforeUpdate: (_) async => print('ProfileWidget beforeUpdate'),
+                              afterUpdate: (_, __, ___) async =>
+                                  print('ProfileWidget afterUpdate'),
+                              afterEnter: (_, __, ___) async =>
+                                  print('ProfileWidget afterEnter'),
+                              stackedRoutes: [
+                                VWidget(
+                                  path: '/profile/:username',
+                                  // :username is a path parameter and can be any value
+                                  name: 'profile',
+                                  // We also give a name for easier navigation
+                                  widget: ProfileWidget(),
+
+                                  // The path '/profile' might also match this path
+                                  // In this case, we must handle the empty pathParameter
+                                  aliases: ['/profile'],
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ],
                 ),
               ],
@@ -182,10 +180,8 @@ class MyScaffold extends StatelessWidget {
           // We check the vChild name to known where we are
           currentIndex: currentIndex,
           items: [
-            BottomNavigationBarItem(
-                icon: Icon(Icons.person_outline), label: 'Profile'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.info_outline), label: 'Info'),
+            BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
+            BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'Info'),
           ],
           onTap: (int index) {
             if (currentIndex != index) {
@@ -268,8 +264,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     borderRadius: BorderRadius.circular(50),
                     color: Colors.blueAccent,
                   ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                   child: Text(
                     'Your pressed this button $count times',
                     style: buttonTextStyle,
@@ -326,93 +321,3 @@ class InfoWidget extends StatelessWidget {
 
 final textStyle = TextStyle(color: Colors.black, fontSize: 16);
 final buttonTextStyle = textStyle.copyWith(color: Colors.white);
-
-//
-// VRouter(
-//   subroute: VSwitcher(
-//     subroutes: [
-//       VPath(
-//         path: '/login',
-//         subroute: VWidget(
-//           widget: LoginPage(),
-//         ),
-//       ),
-//       VChildGetter(
-//         widgetBuilder: (vChild) => MyScaffold(vChild)
-//         subroute: VSwitcher(
-//           subroutes: [
-//             VPath(
-//               path: '/home',
-//               subroute: VWidget(
-//                 widget: HomePage(),
-//               ),
-//             ),
-//             VPath(
-//               path: '/settings',
-//               subroute: VWidget(
-//                 widget: SettingsPage(),
-//               ),
-//             ),
-//           ]
-//         ),
-//       ),
-//     ],
-//   ),
-// );
-//
-// VRouter(
-//   subroute: VStacker(
-//     subroutes: [
-//       VChildGetter(
-//         widgetBuilder: (vChild) => MyScaffold(vChild)
-//         subroute: VSwitcher(
-//           subroutes: [
-//             VPath(
-//               path: '/home',
-//               subroute: VWidget(
-//                 widget: HomePage(),
-//               ),
-//             ),
-//             VPath(
-//               path: '/settings',
-//               subroute: VWidget(
-//                 widget: SettingsPage(),
-//               ),
-//             ),
-//           ]
-//         ),
-//       ),
-//       VPath(
-//         path: '/comments/:id',
-//           subroute: VWidget(
-//           widget: LoginPage(),
-//         ),
-//       ),
-//     ],
-//   ),
-// );
-//
-//
-// void f() {
-//   VRouter(
-//     subroute: [
-//       VStacked(
-//         path: '/login',
-//         widget: LoginWidget(),
-//       ),
-//       VStacked(
-//         widgetBuilder: (vChild) => MyScaffold(vChild),
-//         subroutes: [
-//           VChild(
-//             path: '/home',
-//             widget: HomePage(),
-//           ),
-//           VChild(
-//             path: '/settings',
-//             widget: SettingsPage(),
-//           ),
-//         ]
-//       ),
-//     ],
-//   );
-// }

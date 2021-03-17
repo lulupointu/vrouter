@@ -11,11 +11,11 @@ class VNesterPage extends VPage {
     required String? path,
     required this.nestedRoutes,
     String? name,
-    List<VRouteElement> subroutes = const [],
+    List<VRouteElement> stackedRoutes = const [],
     List<String> aliases = const [],
     bool mustMatchSubRoute = false,
   })  : assert(nestedRoutes.isNotEmpty,
-            'The subroutes of a VNester should not be null, otherwise it can\'t nest'),
+            'The stackedRoutes of a VNester should not be null, otherwise it can\'t nest'),
         navigatorKey = GlobalKey<NavigatorState>(),
         heroController = HeroController(),
         super(
@@ -23,7 +23,7 @@ class VNesterPage extends VPage {
           widget: widgetBuilder(Container()),
           path: path,
           name: name,
-          subroutes: subroutes,
+          stackedRoutes: stackedRoutes,
           aliases: aliases,
           mustMatchSubRoute: mustMatchSubRoute,
         );
@@ -100,7 +100,7 @@ class VNesterPage extends VPage {
     // Else also try to match nestedRoute with the path (or the alias) with which the nestedRoute was valid
     final VRoute? subRouteVRoute = getVRouteFromRoutes(
       vPathRequestData,
-      routes: subroutes,
+      routes: stackedRoutes,
       parentPathParameters: {
         ...parentPathParameters,
         ...getPathMatchResult.pathParameters,
@@ -250,7 +250,7 @@ class VNesterPage extends VPage {
     }
 
     // Check if any subroute matches the name using path
-    for (var vRouteElement in subroutes) {
+    for (var vRouteElement in stackedRoutes) {
       String? childPathFromName = vRouteElement.getPathFromName(
         nameToMatch,
         pathParameters: pathParameters,
@@ -289,7 +289,7 @@ class VNesterPage extends VPage {
       }
 
       // Check if any subroute matches the name using aliases
-      for (var vRouteElement in subroutes) {
+      for (var vRouteElement in stackedRoutes) {
         String? childPathFromName = vRouteElement.getPathFromName(
           nameToMatch,
           pathParameters: pathParameters,
@@ -339,10 +339,10 @@ class VNesterPage extends VPage {
       pathParameters: pathParameters,
     );
 
-    // If the path matched and produced a non null newParentPath, try to pop from the subroutes or the nestedRoutes
+    // If the path matched and produced a non null newParentPath, try to pop from the stackedRoutes or the nestedRoutes
     if (newParentPathFromPath != null) {
-      // Try to pop from the subroutes
-      for (var vRouteElement in subroutes) {
+      // Try to pop from the stackedRoutes
+      for (var vRouteElement in stackedRoutes) {
         final childPopResult = vRouteElement.getPathFromPop(
           elementToPop,
           pathParameters: pathParameters,
@@ -380,10 +380,10 @@ class VNesterPage extends VPage {
         pathParameters: pathParameters,
       );
 
-      // If an alias matched and produced a non null newParentPath, try to pop from the subroutes or the nestedRoutes
+      // If an alias matched and produced a non null newParentPath, try to pop from the stackedRoutes or the nestedRoutes
       if (newParentPathFromAlias != null) {
-        // Try to pop from the subroutes
-        for (var vRouteElement in subroutes) {
+        // Try to pop from the stackedRoutes
+        for (var vRouteElement in stackedRoutes) {
           final childPopResult = vRouteElement.getPathFromPop(
             elementToPop,
             pathParameters: pathParameters,
@@ -413,7 +413,7 @@ class VNesterPage extends VPage {
       }
     }
 
-    // If none of the subroutes nor the nestedRoutes popped and this did not pop, return a null result
+    // If none of the stackedRoutes nor the nestedRoutes popped and this did not pop, return a null result
     return null;
   }
 }

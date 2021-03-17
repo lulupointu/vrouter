@@ -2,8 +2,8 @@ part of '../main.dart';
 
 @immutable
 abstract class VRouteElement {
-  /// A list of subroutes composed of any type of [VRouteElement]
-  List<VRouteElement> get subroutes;
+  /// A list of stackedRoutes composed of any type of [VRouteElement]
+  List<VRouteElement> get stackedRoutes;
 
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
@@ -23,7 +23,7 @@ abstract class VRouteElement {
     required Map<String, String> remainingPathParameters,
   }) {
     // Check if any subroute matches the name
-    for (var vRouteElement in subroutes) {
+    for (var vRouteElement in stackedRoutes) {
       String? childPathFromName = vRouteElement.getPathFromName(
         nameToMatch,
         pathParameters: pathParameters,
@@ -43,14 +43,14 @@ abstract class VRouteElement {
   /// [GetPathFromPopResult.path] is null if this path can't be the right one according to
   ///                                                                     the path parameters
   /// [GetPathFromPopResult] is null when this [VRouteElement] does not pop AND none of
-  ///                                                                     its subroutes popped
+  ///                                                                     its stackedRoutes popped
   GetPathFromPopResult? getPathFromPop(
     VRouteElement elementToPop, {
     required Map<String, String> pathParameters,
     required String? parentPath,
   }) {
-    // Try to pop from the subroutes
-    for (var vRouteElement in subroutes) {
+    // Try to pop from the stackedRoutes
+    for (var vRouteElement in stackedRoutes) {
       final childPopResult = vRouteElement.getPathFromPop(
         elementToPop,
         pathParameters: pathParameters,
@@ -61,7 +61,7 @@ abstract class VRouteElement {
       }
     }
 
-    // If none of the subroutes popped and this did not pop, return a null result
+    // If none of the stackedRoutes popped and this did not pop, return a null result
     return null;
   }
 
@@ -268,7 +268,7 @@ class VRouteElementNode {
   /// The is used be all types of [VNestedPage]
   final VRouteElementNode? nestedVRouteElementNode;
 
-  /// The [VRouteElementNode] containing the [VRouteElement] which is the current sub route
+  /// The [VRouteElementNode] containing the [VRouteElement] which is the current stacked routes
   /// to be valid, if any
   final VRouteElementNode? subVRouteElementNode;
 

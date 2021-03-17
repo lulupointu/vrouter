@@ -13,7 +13,7 @@ void main() {
               widget: Container(),
               path: '/home',
               name: 'home',
-              subroutes: [
+              stackedRoutes: [
                 VWidget(
                   widget: Container(),
                   path: '/other',
@@ -28,7 +28,7 @@ void main() {
           'home',
           remainingPathParameters: {},
           pathParameters: {},
-          parentPath: '',
+          parentPath: null,
         );
 
         expect(newPath, '/home');
@@ -41,12 +41,12 @@ void main() {
               widget: Container(),
               path: '/home',
               name: 'home',
-              subroutes: [
+              stackedRoutes: [
                 VWidget(
                   widget: Container(),
                   path: 'other',
                   name: 'other',
-                  subroutes: [
+                  stackedRoutes: [
                     VWidget(
                       widget: Container(),
                       path: 'settings',
@@ -67,7 +67,7 @@ void main() {
           'other',
           remainingPathParameters: {},
           pathParameters: {},
-          parentPath: '',
+          parentPath: null,
         );
 
         expect(newPath, '/home/other');
@@ -80,7 +80,7 @@ void main() {
               widget: Container(),
               path: '/home/:id',
               name: 'home',
-              subroutes: [
+              stackedRoutes: [
                 VWidget(
                   widget: Container(),
                   path: 'settings/:settingsId',
@@ -95,7 +95,7 @@ void main() {
           'settings',
           remainingPathParameters: {'id': '2', 'settingsId': '3'},
           pathParameters: {'id': '2', 'settingsId': '3'},
-          parentPath: '',
+          parentPath: null,
         );
 
         expect(newPath, '/home/2/settings/3');
@@ -116,7 +116,7 @@ void main() {
           'home',
           remainingPathParameters: {'id': '2'},
           pathParameters: {'id': '2'},
-          parentPath: '',
+          parentPath: null,
         );
 
         expect(newPath, null);
@@ -127,7 +127,7 @@ void main() {
               widget: Container(),
               path: '/home/:id',
               name: 'home',
-              subroutes: [
+              stackedRoutes: [
                 VWidget(
                   widget: Container(),
                   path: '/settings/:settingsId',
@@ -142,7 +142,7 @@ void main() {
           'settings',
           remainingPathParameters: {'id': '2', 'settingsId': '3'},
           pathParameters: {'id': '2', 'settingsId': '3'},
-          parentPath: '',
+          parentPath: null,
         );
 
         expect(newPath2, null);
@@ -155,7 +155,7 @@ void main() {
               widget: Container(),
               path: '/home',
               name: 'home',
-              aliases: [':id'],
+              aliases: ['/:id/:otherId', '/:id'],
             ),
           ],
         );
@@ -164,10 +164,31 @@ void main() {
           'home',
           remainingPathParameters: {'id': '2'},
           pathParameters: {'id': '2'},
-          parentPath: '',
+          parentPath: null,
         );
 
         expect(newPath, '/2');
+      });
+
+      test('Absent name', () {
+        final vRouter = VRouter(
+          routes: [
+            VWidget(
+              widget: Container(),
+              path: '/home',
+              name: 'home',
+            ),
+          ],
+        );
+
+        final newPath = vRouter.getPathFromName(
+          'random',
+          remainingPathParameters: {'id': '2'},
+          pathParameters: {'id': '2'},
+          parentPath: null,
+        );
+
+        expect(newPath, null);
       });
     },
   );

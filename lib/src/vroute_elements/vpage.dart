@@ -9,14 +9,14 @@ class VPage extends VRouteElementWithPage {
     required Widget widget,
     required String? path,
     String? name,
-    List<VRouteElement> subroutes = const [],
+    List<VRouteElement> stackedRoutes = const [],
     List<String> aliases = const [],
     bool mustMatchSubRoute = false,
   }) : super(
           widget: widget,
           path: path,
           name: name,
-          subroutes: subroutes,
+          stackedRoutes: stackedRoutes,
           aliases: aliases,
           mustMatchSubRoute: mustMatchSubRoute,
         );

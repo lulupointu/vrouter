@@ -11,7 +11,7 @@
 * \[**NEW**\]: You can now set a initial url using VRouter.initialUrl and the InitialUrl class
 * \[**BREAKING**\]: Navigation control methods inside VRouteElement (beforeLeave, beforeEnter, ...) are now called even if the VRouteElement is not the last element of the route
 * \[**NEW**\]: VRouteElements now have beforeUpdate method called when the route changes but it remains in the route
-* \[**NEW**\]: widgetBuilder (from VChild and VStack) have a new attribute which gives you access to the current vChild in its subroutes if any
+* \[**NEW**\]: widgetBuilder (from VChild and VStack) have a new attribute which gives you access to the current vChild in its stackedRoutes if any
 
 ## \[1.0.0-nullsafety.11\] - 27/02/2021.
 

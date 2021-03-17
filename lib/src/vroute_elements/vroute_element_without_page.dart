@@ -11,7 +11,7 @@ mixin VRouteElementWithoutPage on VRouteElement {
     required Map<String, String> parentPathParameters,
   }) {
     VRoute? childVRoute;
-    for (var vRouteElement in subroutes) {
+    for (var vRouteElement in stackedRoutes) {
       childVRoute = vRouteElement.buildRoute(
         vPathRequestData,
         parentRemainingPath: parentRemainingPath,

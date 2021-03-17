@@ -4,11 +4,11 @@ part of '../main.dart';
 class VWidget extends VPage {
   VWidget({
     required Widget widget,
-    required String path,
+    required String? path,
     String? name,
-    List<VRouteElement> subroutes = const [],
+    List<VRouteElement> stackedRoutes = const [],
     List<String> aliases = const [],
-    bool mustMatchSubRoute = false,
+    bool mustMatchStackedRoute = false,
     this.transitionDuration,
     this.reverseTransitionDuration,
     this.buildTransition,
@@ -23,9 +23,9 @@ class VWidget extends VPage {
           widget: widget,
           path: path,
           name: name,
-          subroutes: subroutes,
+          stackedRoutes: stackedRoutes,
           aliases: aliases,
-          mustMatchSubRoute: mustMatchSubRoute,
+          mustMatchSubRoute: mustMatchStackedRoute,
         );
 
   /// The duration of [VWidget.buildTransition]

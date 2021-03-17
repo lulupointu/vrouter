@@ -9,7 +9,7 @@ class VRouteRedirector extends VRouteElementWithPath {
   }) : super(path: path);
 
   @override
-  List<VRouteElement> get subroutes => [];
+  List<VRouteElement> get stackedRoutes => [];
 
   @override
   Future<void> Function(VRedirector vRedirector) get beforeEnter =>
