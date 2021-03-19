@@ -4,7 +4,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:vrouter/vrouter.dart';
 
 main() {
-
   group('VRouter', () {
     testWidgets('VRouter push', (WidgetTester tester) async {
       final vRouterKey = GlobalKey<VRouterState>();
@@ -90,7 +89,7 @@ main() {
       final vWidget1Finder2 = find.text('VWidget1');
       final vWidget2Finder2 = find.text('VWidget2');
 
-      expect(vWidget1Finder2,findsOneWidget );
+      expect(vWidget1Finder2, findsOneWidget);
       expect(vWidget2Finder2, findsNothing);
     });
 
@@ -134,7 +133,7 @@ main() {
       final vWidget1Finder2 = find.text('VWidget1');
       final vWidget2Finder2 = find.text('VWidget2');
 
-      expect(vWidget1Finder2,findsOneWidget );
+      expect(vWidget1Finder2, findsOneWidget);
       expect(vWidget2Finder2, findsNothing);
     });
 
@@ -150,10 +149,9 @@ main() {
               widget: Text('VWidget1'),
               stackedRoutes: [
                 VWidget(
-                  path: '/settings',
-                  widget: Text('VWidget2'),
-                  name: 'settings'
-                ),
+                    path: '/settings',
+                    widget: Text('VWidget2'),
+                    name: 'settings'),
               ],
             ),
           ],
@@ -183,7 +181,8 @@ main() {
       expect(vWidget2Finder2, findsOneWidget);
     });
 
-    testWidgets('VRouter pushNamed with path parameters', (WidgetTester tester) async {
+    testWidgets('VRouter pushNamed with path parameters',
+        (WidgetTester tester) async {
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -195,9 +194,9 @@ main() {
               widget: Text('VWidget1'),
               stackedRoutes: [
                 VWidget(
-                    path: '/:id',
-                    widget: Text('VWidget2'),
-                    name: 'settings',
+                  path: '/:id',
+                  widget: Text('VWidget2'),
+                  name: 'settings',
                 ),
               ],
             ),
@@ -217,7 +216,8 @@ main() {
 
       // Navigate to 'settings'
       // Tap the add button.
-      vRouterKey.currentState!.pushNamed('settings', pathParameters: {'id': '1'});
+      vRouterKey.currentState!
+          .pushNamed('settings', pathParameters: {'id': '1'});
       await tester.pumpAndSettle();
 
       // Now, only VWidget2 should be visible
@@ -227,7 +227,5 @@ main() {
       expect(vWidget1Finder2, findsNothing);
       expect(vWidget2Finder2, findsOneWidget);
     });
-
   });
-
 }

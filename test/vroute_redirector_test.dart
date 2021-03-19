@@ -37,7 +37,8 @@ main() {
     expect(vWidget2Finder1, findsNothing);
   });
 
-  testWidgets('VRouteRedirector used in a subRoute', (WidgetTester tester) async {
+  testWidgets('VRouteRedirector used in a stackedRoute',
+      (WidgetTester tester) async {
     await tester.pumpWidget(
       VRouter(
         initialUrl: '/home',

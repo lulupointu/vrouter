@@ -115,7 +115,7 @@ main() {
         VRouter(
           initialUrl: '/settings',
           beforeLeave: (vRedirector, _) async =>
-          (vRedirector.to != '/') ? vRedirector.pop() : null,
+              (vRedirector.to != '/') ? vRedirector.pop() : null,
           routes: [
             VWidget(
               path: '/',
@@ -174,7 +174,7 @@ main() {
         VRouter(
           initialUrl: '/settings',
           beforeLeave: (vRedirector, _) async =>
-          (vRedirector.to != '/') ? vRedirector.systemPop() : null,
+              (vRedirector.to != '/') ? vRedirector.systemPop() : null,
           routes: [
             VWidget(
               path: '/',
@@ -218,7 +218,7 @@ main() {
       await tester.pumpAndSettle();
 
       // The navigation should have been redirected to / because we popped instead
-      // So only VWidget should be visible
+      // So only VWidget1 should be visible
       final vWidget1Finder2 = find.text('VWidget1');
       final vWidget2Finder2 = find.text('VWidget2');
       final vWidget3Finder2 = find.text('VWidget3');
@@ -232,8 +232,9 @@ main() {
       await tester.pumpWidget(
         VRouter(
           initialUrl: '/settings',
-          beforeLeave: (vRedirector, _) async =>
-          (vRedirector.to != '/other') ? vRedirector.pushNamed('other') : null,
+          beforeLeave: (vRedirector, _) async => (vRedirector.to != '/other')
+              ? vRedirector.pushNamed('other')
+              : null,
           routes: [
             VWidget(
               path: '/',
@@ -249,10 +250,7 @@ main() {
                   ),
                 ),
                 VWidget(
-                    path: '/other',
-                    widget: Text('VWidget3'),
-                    name: 'other'
-                ),
+                    path: '/other', widget: Text('VWidget3'), name: 'other'),
               ],
             ),
           ],

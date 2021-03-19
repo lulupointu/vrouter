@@ -57,7 +57,6 @@ main() {
     });
 
     testWidgets('LocalVRouterData pop', (WidgetTester tester) async {
-
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -104,7 +103,6 @@ main() {
     });
 
     testWidgets('LocalVRouterData systemPop', (WidgetTester tester) async {
-
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -151,7 +149,6 @@ main() {
     });
 
     testWidgets('LocalVRouterData pushNamed', (WidgetTester tester) async {
-
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -164,7 +161,10 @@ main() {
                 ),
               ),
               stackedRoutes: [
-                VWidget(path: '/settings', widget: Text('VWidget2'), name: 'settings'),
+                VWidget(
+                    path: '/settings',
+                    widget: Text('VWidget2'),
+                    name: 'settings'),
               ],
             ),
           ],
@@ -196,7 +196,6 @@ main() {
 
     testWidgets('LocalVRouterData pushNamed with path parameters',
         (WidgetTester tester) async {
-
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -205,7 +204,8 @@ main() {
               widget: Builder(
                 builder: (BuildContext context) => TextButton(
                   child: Text('VWidget1'),
-                  onPressed: () => VRouter.of(context).pushNamed('settings', pathParameters: {'id': '2'}),
+                  onPressed: () => VRouter.of(context)
+                      .pushNamed('settings', pathParameters: {'id': '2'}),
                 ),
               ),
               stackedRoutes: [

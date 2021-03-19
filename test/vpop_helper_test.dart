@@ -66,7 +66,8 @@ main() {
               widget: Text('VWidget1'),
               stackedRoutes: [
                 VPopHandler(
-                  onSystemPop: (vRedirector) async => vRedirector.stopRedirection(),
+                  onSystemPop: (vRedirector) async =>
+                      vRedirector.stopRedirection(),
                   stackedRoutes: [
                     VWidget(
                       path: '/',

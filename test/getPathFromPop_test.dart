@@ -5,7 +5,7 @@ import 'package:vrouter/vrouter.dart';
 void main() {
   group(
     'The following tests are used to test [VRouteElement.getPathFromPop]',
-        () {
+    () {
       test('Pop from absolute path to absolute path', () {
         final elementToPop = VWidget(
           widget: Container(),
@@ -30,10 +30,10 @@ void main() {
 
         final newPath = vRouter
             .getPathFromPop(
-          elementToPop,
-          pathParameters: {},
-          parentPath: null,
-        )
+              elementToPop,
+              pathParameters: {},
+              parentPath: null,
+            )
             ?.path;
 
         expect(newPath, '/');
@@ -63,10 +63,10 @@ void main() {
 
         final newPath = vRouter
             .getPathFromPop(
-          elementToPop,
-          pathParameters: {},
-          parentPath: null,
-        )
+              elementToPop,
+              pathParameters: {},
+              parentPath: null,
+            )
             ?.path;
 
         expect(newPath, '/home');
@@ -102,10 +102,10 @@ void main() {
 
         final newPath = vRouter
             .getPathFromPop(
-          elementToPop,
-          pathParameters: {},
-          parentPath: null,
-        )
+              elementToPop,
+              pathParameters: {},
+              parentPath: null,
+            )
             ?.path;
 
         expect(newPath, '/home/profile');
@@ -141,10 +141,10 @@ void main() {
 
         final newPath = vRouter
             .getPathFromPop(
-          elementToPop,
-          pathParameters: {},
-          parentPath: null,
-        )
+              elementToPop,
+              pathParameters: {},
+              parentPath: null,
+            )
             ?.path;
 
         expect(newPath, '/home/profile');
@@ -168,10 +168,10 @@ void main() {
 
         final newPath = vRouter
             .getPathFromPop(
-          elementToPop,
-          pathParameters: {},
-          parentPath: null,
-        )
+              elementToPop,
+              pathParameters: {},
+              parentPath: null,
+            )
             ?.path;
 
         expect(newPath, null);
@@ -207,10 +207,10 @@ void main() {
 
         final newPath = vRouter
             .getPathFromPop(
-          elementToPop,
-          pathParameters: {'profileId': '2'},
-          parentPath: null,
-        )
+              elementToPop,
+              pathParameters: {'profileId': '2'},
+              parentPath: null,
+            )
             ?.path;
 
         expect(newPath, '/home/2');
@@ -246,10 +246,10 @@ void main() {
 
         final newPath = vRouter
             .getPathFromPop(
-          elementToPop,
-          pathParameters: {},
-          parentPath: null,
-        )
+              elementToPop,
+              pathParameters: {},
+              parentPath: null,
+            )
             ?.path;
 
         expect(newPath, null);
@@ -257,8 +257,8 @@ void main() {
 
       test(
         'Pop though VGuard'
-            'Every VRouteElement which does not have a page to display should pop along side its subroute VRouteElement',
-            () {
+        'Every VRouteElement which does not have a page to display should pop along side its subroute VRouteElement',
+        () {
           final elementToPop = VWidget(
             widget: Container(),
             path: 'settings',
@@ -286,10 +286,10 @@ void main() {
 
           final newPath = vRouter
               .getPathFromPop(
-            elementToPop,
-            pathParameters: {},
-            parentPath: null,
-          )
+                elementToPop,
+                pathParameters: {},
+                parentPath: null,
+              )
               ?.path;
 
           expect(newPath, '/home');
@@ -298,8 +298,8 @@ void main() {
 
       test(
         'Pop though VPopHandler'
-            'Every VRouteElement which does not have a page to display should pop along side its subroute VRouteElement',
-            () {
+        'Every VRouteElement which does not have a page to display should pop along side its subroute VRouteElement',
+        () {
           final elementToPop = VWidget(
             widget: Container(),
             path: 'settings',
@@ -327,10 +327,10 @@ void main() {
 
           final newPath = vRouter
               .getPathFromPop(
-            elementToPop,
-            pathParameters: {},
-            parentPath: null,
-          )
+                elementToPop,
+                pathParameters: {},
+                parentPath: null,
+              )
               ?.path;
 
           expect(newPath, '/home');
@@ -339,8 +339,8 @@ void main() {
 
       test(
         'Pop though VNester'
-            'VNester should pop if it does not have a nested child',
-            () {
+        'VNester should pop if it does not have a nested child',
+        () {
           final elementToPop = VWidget(
             widget: Container(),
             path: 'settings',
@@ -370,10 +370,10 @@ void main() {
 
           final newPath = vRouter
               .getPathFromPop(
-            elementToPop,
-            pathParameters: {},
-            parentPath: null,
-          )
+                elementToPop,
+                pathParameters: {},
+                parentPath: null,
+              )
               ?.path;
 
           expect(newPath, '/home');
@@ -405,10 +405,10 @@ void main() {
 
         final newPath = vRouter
             .getPathFromPop(
-          elementToPop,
-          pathParameters: {},
-          parentPath: null,
-        )
+              elementToPop,
+              pathParameters: {},
+              parentPath: null,
+            )
             ?.path;
 
         expect(newPath, '/home');
@@ -439,10 +439,10 @@ void main() {
 
         final newPath = vRouter
             .getPathFromPop(
-          elementToPop,
-          pathParameters: {'id': '1'},
-          parentPath: null,
-        )
+              elementToPop,
+              pathParameters: {'id': '1'},
+              parentPath: null,
+            )
             ?.path;
 
         expect(newPath, '/1');
@@ -462,7 +462,9 @@ void main() {
               stackedRoutes: [
                 VNester(
                   path: null,
-                  widgetBuilder: (child) => Container(child: child,),
+                  widgetBuilder: (child) => Container(
+                    child: child,
+                  ),
                   nestedRoutes: [
                     VWidget(
                       path: '/settings',
@@ -480,10 +482,10 @@ void main() {
 
         final newPath = vRouter
             .getPathFromPop(
-          elementToPop,
-          pathParameters: {},
-          parentPath: null,
-        )
+              elementToPop,
+              pathParameters: {},
+              parentPath: null,
+            )
             ?.path;
 
         expect(newPath, '/settings');

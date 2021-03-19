@@ -4,7 +4,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:vrouter/vrouter.dart';
 
 main() {
-  testWidgets('VRouteRedirector used in routes', (WidgetTester tester) async {
+  testWidgets('Stacked VWidget', (WidgetTester tester) async {
     await tester.pumpWidget(
       VRouter(
         routes: [

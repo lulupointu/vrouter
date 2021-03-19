@@ -17,7 +17,8 @@ main() {
               widget: Text('VWidget1'),
               stackedRoutes: [
                 VGuard(
-                  beforeLeave: (vRedirector, _) async => vRedirector.stopRedirection(),
+                  beforeLeave: (vRedirector, _) async =>
+                      vRedirector.stopRedirection(),
                   stackedRoutes: [
                     VWidget(
                       path: '/settings',
@@ -84,7 +85,8 @@ main() {
           key: vRouterKey,
           routes: [
             VGuard(
-              beforeUpdate: (vRedirector) async => vRedirector.stopRedirection(),
+              beforeUpdate: (vRedirector) async =>
+                  vRedirector.stopRedirection(),
               stackedRoutes: [
                 VWidget(
                   path: '/',
@@ -137,7 +139,8 @@ main() {
               widget: Text('VWidget1'),
               stackedRoutes: [
                 VGuard(
-                  beforeEnter: (vRedirector) async => vRedirector.stopRedirection(),
+                  beforeEnter: (vRedirector) async =>
+                      vRedirector.stopRedirection(),
                   stackedRoutes: [
                     VWidget(
                       path: '/settings',
