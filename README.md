@@ -29,28 +29,32 @@ The idea is to use the `VRouter` widget on top of you app, and use
 VRouter(
   routes: [
     // This matches the path '/login'
-    VStacked(
+    VWidget(
       path: '/login',
       widget: LoginWidget(),
     ),
-
-    VStacked(
-      // This matches the path '/in'
-      path: '/in',
-      widget: MyScaffold(),
-
+    
+    VGuard(
+      beforeEnter: (vRedirector) => (isConnected) ? null : vRedirector.push('/login'),
       stackedRoutes: [
-        // VChild are accessible via VRouteElementData.vChild
-        VChild(
-          // This matches the path '/in/profile/:id'
-          // :id can be any word and will by accessible as a path parameter
-          path: 'profile/:id',
-          widget: ProfileWidget(),
-        ),
-        VChild(
-          // This matches the path '/settings'
-          path: '/settings',
-          widget: ProfileWidget(),
+        VNester(
+          // This matches the path '/in'
+          path: '/in',
+          widgetBuilder: (child) => MyScaffold(child), // The child is from nestedRoutes
+          nestedRoutes: [
+            
+            VWidget(
+              // This matches the path '/in/profile/:id'
+              // :id can be any word and will by accessible as a path parameter
+              path: 'profile/:id',
+              widget: ProfileWidget(),
+            ),
+            VWidget(
+              // This matches the path '/settings'
+              path: '/settings',
+              widget: ProfileWidget(),
+            ),
+          ],
         ),
       ],
     ),
@@ -66,39 +70,56 @@ VRouter(
 ```
 ## VRouteElements
 
-### VStacked
+`VRouteElements` are the building blocs of your routes. Just like widgets,
+you nest them to create your routes.
 
-VStacked is a VRouteElement which is stacked on the parent VRouteElement.
-For example:
+### VWidget
+
+VWidget is used to display the given `widget` if the given `path` is matched
 
 ```
-VStacked(
-  path: '/login', widget: LoginWidget(),
+VWidget(
+  path: '/login', 
+  widget: LoginWidget(),
   stackedRoutes: [
-    VStacked(path: '/home', widget: HomeWidget()),
-  ]
+    VWidget(path: '/home', widget: HomeWidget()),
+  ],
 )
 ```
 
-Here the `HomeWidget` will be stacked on top of the `LoginWidget`.
+Using `stackedRoutes`, you can stack widget from other `VRouteElement` on top of the given `widget`: Here the `HomeWidget` will be stacked on top of the `LoginWidget`.
 
 
-### VChild
+### VNester
 
-VChild are useful when nesting widgets. You can access them using `VRouteElementData.vChild`
-
-For example, for the example above:
+VNester can be used to created `nestedRoutes`. This will allow you to nest your `widgets`
 
 ```
-class MyScaffold extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: context.vRouteElementData.vChild,
-    );
-  }
-}
+VNester(
+  path: '/in',
+  widgetBuilder: (child) => MyScaffold(child), // The child is from nestedRoutes
+  nestedRoutes: [
+    VWidget(
+      path: 'profile',
+      widget: ProfileWidget(),
+    ),
+    VWidget(
+      path: 'settings',
+      widget: ProfileWidget(),
+    ),
+  ],
+)
 ```
+
+In the example above, if you have MyScaffold and want to use a different body for different paths, you can use a `VNester`. Here:
+  - In `/in/profile` MyScaffold will have `ProfileWidget` as a `child`
+  - In `/in/settings` MyScaffold will have `Settings` as a `child`
+
+### VGuard
+
+`VGuard` helps you control the navigation changes. You can use many methods like `beforeEnter` which will be called at different times to respond to precise navigation events.
+
+In the example above, `vRedirector` is used to redirect if we are not connected.
 
 ### VRouteRedirector
 
@@ -127,7 +148,7 @@ context.vRouter.pushExternal('google.com');
 ### Named route
 
 Naming a route is simple and allows for simpler navigation,
-just use the `name` attribute of any `VRouteElement`.
+just use the `name` attribute of any `VRouteElement` having a path.
 
 ### Path parameters
 
@@ -140,7 +161,7 @@ VRouter configuration
 ```
 VRouter(
   routes: [
-    VStacked(
+    VWidget(
       path: '/user/:id',
       widget: UserWidget(),
     ),
@@ -153,11 +174,9 @@ Access the path parameters in you widgets:
 class UserWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // Use VRouterData to access general information about the route
-    print('The current id is: ${context.vRouterData.pathParameters['id']}');
-
-    // Use VRouteElementData to data which belong to this VRouteElement
-    return Text('User id is ${context.vRouteElementData.pathParameters['id']}');
+    final id = context.vRouter.pathParameters['id'];
+    
+    ...
   }
 }
 ```
@@ -175,12 +194,12 @@ VRouter(
       FadeTransition(opacity: animation1, child: child),
   routes: [
     // No transition is specified, so the default one will play for '/user'
-    VStacked(
+    VWidget(
       path: '/user',
       widget: ProfileWidget(),
       stackedRoutes: [
         // The custom transition will be played when accessing '/user/likes'
-        VChild(
+        VWidget(
           path: 'likes',
           widget: LikesWidget(),
           buildTransition: (animation1, _, child) =>
@@ -196,14 +215,9 @@ VRouter(
 
 ### Pop events
 
-Pop event are handled by default: The last VStack of the route which path  
-is not null is remove.
+Pop event are handled by default: The last `VRouteElement` of the `stackedRoutes` of the `context` is popped
 
-<p align="center" xmlns="http://www.w3.org/1999/html">
-<img src="https://raw.githubusercontent.com/lulupointu/vrouter_website/master/assets/default_pop.png" alt="VRouter logo" height="200"/>
-</p>
-
-But you can also handle a pop event by yourself
+But you can also handle a pop event by yourself, notably using the `VRouteElement` called `VPopHandler`:
 
 ```
 VRouter(
@@ -212,13 +226,14 @@ VRouter(
     return vRedirector.push('/other'); // You can use vRedirector to redirect
   },
   routes: [
-    VStacked(
-      path: 'profile',
+    VPopHandler(
       // popping the path path /login will call this
       onPop: (vRedirector) async {
         vRedirector.stopRedirection(); // You can use vRedirector to stop the redirection
       },
-      widget: ProfileWidget(),
+      stackedRoutes: [
+        VWidget(path: 'profile', widget: ProfileWidget()),  
+      ],
     ),
   ],
 )
@@ -237,7 +252,7 @@ cycle to know in which order they happen:
 3. Call *beforeLeave* in the \[VRouter\]
 4. Call *beforeEnter* in the \[VRouter\]
 5. Call *beforeEnter* in all initialized \[VRouteElement\] of the new route
-6. Call beforeUpdate in all reused \[VRouteElement\]
+6. Call *beforeUpdate* in all reused \[VRouteElement\]
 
 \#\# The history state got in beforeLeave are stored  
 \#\# The state is updated
@@ -248,8 +263,56 @@ cycle to know in which order they happen:
 10. Call *afterUpdate* in all reused \[VNavigationGuard\]
 11. Call *afterUpdate* in all reused \[VRouteElement\]
 
-In every before.. function, you can use the first argument to stop the  
-navigation using .stopNavigation()
+In every before.. function, you can use the first argument to stop the navigation using .stopNavigation()
+
+There are 3 main ways you can access those methods:
+1. `VRouter`
+```
+VRouter(
+  afterEnter: (context, String from, String to) => ...,
+  routes: [...],
+)
+```
+2. With a `VRouteElement`: `VGuard`
+```
+VRouter(
+  routes: [
+    VGuard(
+      beforeEnter: (vRedirector) => ...,
+      
+      // If any of the stackedRoutes are entered, VGuard.beforeEnter is called
+      stackedRoutes: [
+        ...
+      ],
+    ),
+  ],
+)
+```
+3. With a widget: `VWidgetGuard`
+```
+class UserWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return VWidgetGuard(
+      beforeLeave: (vRedirector, _) => ...,
+      child: ...,
+    );
+  }
+}
+```
+
+### Initial url
+
+Maybe you want to redirect people to a certain part of your app when they first launch it. You can d just that with `initialUrl` from `VRouter`:
+
+```
+VRouter(
+  initialUrl: '/home',
+  routes: [...],
+)
+```
+
+Note that this will not break deep linking. If your user are on the web and launch `/user` they won't be redirected.
 
 ## Much more
 
