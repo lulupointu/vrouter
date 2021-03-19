@@ -1,7 +1,13 @@
 part of '../main.dart';
 
-@immutable
+/// A [VRouteElement] similar to [VWidget] but which allows you to specify your own page
+/// thanks to [pageBuilder]
 class VPage extends VRouteElementWithPage {
+  /// A function which allows you to use your own custom page
+  ///
+  /// You must use [child] as the child of your page (though you can wrap it in other widgets)
+  ///
+  /// [child] will basically be whatever you put in [widget]
   final Page Function(Widget child) pageBuilder;
 
   VPage({
@@ -11,14 +17,14 @@ class VPage extends VRouteElementWithPage {
     String? name,
     List<VRouteElement> stackedRoutes = const [],
     List<String> aliases = const [],
-    bool mustMatchSubRoute = false,
+    bool mustMatchStackedRoute = false,
   }) : super(
           widget: widget,
           path: path,
           name: name,
           stackedRoutes: stackedRoutes,
           aliases: aliases,
-          mustMatchSubRoute: mustMatchSubRoute,
+          mustMatchStackedRoute: mustMatchStackedRoute,
         );
 
   @override
@@ -30,15 +36,15 @@ class VPage extends VRouteElementWithPage {
   }) =>
       pageBuilder(
         LocalVRouterData(
-          child: NotificationListener<VNavigationGuardMessage>(
-            // This listen to [VNavigationGuardNotification] which is a notification
-            // that a [VNavigationGuard] sends when it is created
-            // When this happens, we store the VNavigationGuard and its context
+          child: NotificationListener<VWidgetGuardMessage>(
+            // This listen to [VWidgetGuardNotification] which is a notification
+            // that a [VWidgetGuard] sends when it is created
+            // When this happens, we store the VWidgetGuard and its context
             // This will be used to call its afterUpdate and beforeLeave in particular.
-            onNotification: (VNavigationGuardMessage vNavigationGuardMessage) {
-              VNavigationGuardMessageRoot(
-                vNavigationGuard: vNavigationGuardMessage.vNavigationGuard,
-                localContext: vNavigationGuardMessage.localContext,
+            onNotification: (VWidgetGuardMessage vWidgetGuardMessage) {
+              VWidgetGuardMessageRoot(
+                vWidgetGuard: vWidgetGuardMessage.vWidgetGuard,
+                localContext: vWidgetGuardMessage.localContext,
                 associatedVRouteElement: this,
               ).dispatch(vPathRequestData.rootVRouterContext);
 

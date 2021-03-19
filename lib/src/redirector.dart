@@ -124,12 +124,13 @@ class VRedirector {
     Map<String, String> historyState = const {},
   }) {
     stopRedirection();
-    _redirectFunction = (_) => RootVRouterData.of(_context).pushReplacementNamed(
-          name,
-          pathParameters: pathParameters,
-          queryParameters: queryParameters,
-          historyState: historyState,
-        );
+    _redirectFunction =
+        (_) => RootVRouterData.of(_context).pushReplacementNamed(
+              name,
+              pathParameters: pathParameters,
+              queryParameters: queryParameters,
+              historyState: historyState,
+            );
   }
 
   /// Prevent the current redirection and pushExternal instead
@@ -144,24 +145,36 @@ class VRedirector {
   /// Prevent the current redirection and call pop instead
   ///
   /// See [VRouter.pop] for more information on push
-  void pop(
-      {Map<String, String> pathParameters = const {},
-      Map<String, String> queryParameters = const {},
-      Map<String, String> newHistoryState = const {},}) {
+  void pop({
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    Map<String, String> newHistoryState = const {},
+  }) {
     stopRedirection();
     _redirectFunction = (VRouteElementNode vRouteElementNode) =>
-        RootVRouterData.of(_context).pop(vRouteElementNode.getVRouteElementToPop(), pathParameters: pathParameters, queryParameters: queryParameters, newHistoryState: newHistoryState,);
+        RootVRouterData.of(_context).pop(
+          vRouteElementNode.getVRouteElementToPop(),
+          pathParameters: pathParameters,
+          queryParameters: queryParameters,
+          newHistoryState: newHistoryState,
+        );
   }
 
   /// Prevent the current redirection and call systemPop instead
   ///
   /// See [VRouter.systemPop] for more information on push
-  Future<void> systemPop(
-      {Map<String, String> pathParameters = const {},
-      Map<String, String> queryParameters = const {},
-      Map<String, String> newHistoryState = const {},}) async {
+  Future<void> systemPop({
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    Map<String, String> newHistoryState = const {},
+  }) async {
     stopRedirection();
     _redirectFunction = (VRouteElementNode vRouteElementNode) =>
-        RootVRouterData.of(_context).systemPop(vRouteElementNode.getVRouteElementToPop(), pathParameters: pathParameters, queryParameters: queryParameters, newHistoryState: newHistoryState,);
+        RootVRouterData.of(_context).systemPop(
+          vRouteElementNode.getVRouteElementToPop(),
+          pathParameters: pathParameters,
+          queryParameters: queryParameters,
+          newHistoryState: newHistoryState,
+        );
   }
 }

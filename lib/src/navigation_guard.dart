@@ -1,15 +1,22 @@
 part of 'main.dart';
 
-/// Widget which allows you to handle navigation event directly in
-/// you widgets.
-/// Any [VNavigationGuard] is associated to the [VRouteElement] above it
-/// in the route tree.
-class VNavigationGuard extends StatefulWidget {
+/// [VGuard] is a [VRouteElement] which is used to control navigation changes
+///
+/// Use [beforeLeave] or [beforeUpdate] to get navigation changes before
+/// they take place. These methods will give you a [VRedirector] that you can use to:
+///   - know about the navigation changes [VRedirector.previousVRouterData] and [VRedirector.newVRouterData]
+///   - redirect using [VRedirector.push] or stop the navigation using [VRedirector.stopRedirection]
+///
+/// Use [afterEnter] or [afterUpdate] to get notification changes after they happened. At this point
+/// you can use [VRouter.of(context)] to get any information about the new route
+///
+/// See also [VGuard] for a [VRouteElement] which control navigation changes
+class VWidgetGuard extends StatefulWidget {
   /// The child of this widget
   final Widget child;
 
   /// Called when the route changes and the [VRouteElement]
-  /// associated to this [VNavigationGuard] is in the previous route
+  /// associated to this [VWidgetGuard] is in the previous route
   /// but not in the new one
   ///
   /// Use [vRedirector] if you want to redirect or stop the navigation.
@@ -27,7 +34,7 @@ class VNavigationGuard extends StatefulWidget {
   /// You will find the saved history state in the [VRouteElementData] using
   /// [VRouteElementData.of(context).historyState]
   /// WARNING: Since the history state is saved in [VRouteElementData], if you have
-  /// multiple VNavigationGuards associated to the same [VRouteElement], only one
+  /// multiple VWidgetGuards associated to the same [VRouteElement], only one
   /// should use [saveHistoryState].
   ///
   /// Note that you should consider the navigation cycle to
@@ -57,7 +64,7 @@ class VNavigationGuard extends StatefulWidget {
   ///   * [VRedirector] to known how to redirect and have access to route information
   final Future<void> Function(VRedirector vRedirector) beforeUpdate;
 
-  /// Called when the url changes and this [VNavigationGuard] was NOT part
+  /// Called when the url changes and this [VWidgetGuard] was NOT part
   /// of the previous route.
   ///
   /// This is called after the url and the state of you app has change
@@ -71,7 +78,7 @@ class VNavigationGuard extends StatefulWidget {
   ///   * [VRouteElement.afterEnter] for route level afterEnter
   final void Function(BuildContext context, String? from, String to) afterEnter;
 
-  /// Called when the url changes and this [VNavigationGuard] was already part
+  /// Called when the url changes and this [VWidgetGuard] was already part
   /// of the previous route.
   ///
   /// This is called after the url and the state of you app has change
@@ -83,7 +90,7 @@ class VNavigationGuard extends StatefulWidget {
       afterUpdate;
 
   /// Called when a pop event occurs.
-  /// A pop event can be called programmatically (with [VRouterData.of(context).pop()])
+  /// A pop event can be called programmatically (with [VRouter.of(context).pop()])
   /// or by other widgets such as the appBar back button
   ///
   /// Use [vRedirector] if you want to redirect or stop the navigation.
@@ -119,7 +126,7 @@ class VNavigationGuard extends StatefulWidget {
   ///   * [VRedirector] to known how to redirect and have access to route information
   final Future<void> Function(VRedirector vRedirector) onSystemPop;
 
-  const VNavigationGuard({
+  const VWidgetGuard({
     Key? key,
     this.afterEnter = VRouteElement._voidAfterEnter,
     this.afterUpdate = VRouteElement._voidAfterUpdate,
@@ -131,13 +138,13 @@ class VNavigationGuard extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _VNavigationGuardState createState() => _VNavigationGuardState();
+  _VWidgetGuardState createState() => _VWidgetGuardState();
 }
 
-class _VNavigationGuardState extends State<VNavigationGuard> {
+class _VWidgetGuardState extends State<VWidgetGuard> {
   @override
   void initState() {
-    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context)
+    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context)
         .dispatch(context);
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
@@ -148,10 +155,10 @@ class _VNavigationGuardState extends State<VNavigationGuard> {
 
   // This is used to try to support hot restart
   // However it seems that even with this, two hot reloads
-  // are necessary when changes to VNavigationGuard are made
+  // are necessary when changes to VWidgetGuard are made
   @override
   void reassemble() {
-    VNavigationGuardMessage(vNavigationGuard: widget, localContext: context)
+    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context)
         .dispatch(context);
     super.reassemble();
   }
@@ -162,24 +169,23 @@ class _VNavigationGuardState extends State<VNavigationGuard> {
   }
 }
 
-/// This message is a notification that each [VNavigationGuard] sends
+/// This message is a notification that each [VWidgetGuard] sends
 /// and received by their associated [VRouteElementWidget] which will in turn
-/// send a [VNavigationGuardRootMessage] for the [VRouter]
-class VNavigationGuardMessage extends Notification {
-  final VNavigationGuard vNavigationGuard;
+/// send a [VWidgetGuardRootMessage] for the [VRouter]
+class VWidgetGuardMessage extends Notification {
+  final VWidgetGuard vWidgetGuard;
   final BuildContext localContext;
 
-  VNavigationGuardMessage(
-      {required this.vNavigationGuard, required this.localContext});
+  VWidgetGuardMessage({required this.vWidgetGuard, required this.localContext});
 }
 
-class VNavigationGuardMessageRoot extends Notification {
-  final VNavigationGuard vNavigationGuard;
+class VWidgetGuardMessageRoot extends Notification {
+  final VWidgetGuard vWidgetGuard;
   final BuildContext localContext;
   final VRouteElementWithPage associatedVRouteElement;
 
-  VNavigationGuardMessageRoot(
-      {required this.vNavigationGuard,
+  VWidgetGuardMessageRoot(
+      {required this.vWidgetGuard,
       required this.localContext,
       required this.associatedVRouteElement});
 }

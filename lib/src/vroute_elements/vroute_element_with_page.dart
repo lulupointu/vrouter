@@ -1,14 +1,14 @@
 part of '../main.dart';
 
-/// If the VRouteElement does have a page to display, it should instantiate this class
+/// If the [VRouteElement] does have a page to display, it should extend this class
 ///
 /// What is does is:
-///     - Requiring attributes [path], [name], [aliases], [widget] and [mustMatchStackedRoutes]
-///     - Computing attributes [pathRegExp], [aliasesRegExp], [pathParametersKeys],
-///                                                          [aliasesParameters] and [stateKey]
-///     - implementing [build] and [getPathFromName] methods for them
+///   - Requiring attribute [widget]
+///   - implementing [buildRoute] methods
 @immutable
 abstract class VRouteElementWithPage extends VRouteElementWithPath {
+
+  /// The widget which will be displayed for the given [path]
   final Widget widget;
 
   VRouteElementWithPage({
@@ -17,21 +17,18 @@ abstract class VRouteElementWithPage extends VRouteElementWithPath {
     required String? name,
     required List<VRouteElement> stackedRoutes,
     required List<String> aliases,
-    required bool mustMatchSubRoute,
+    required bool mustMatchStackedRoute,
   }) : super(
           path: path,
           name: name,
           stackedRoutes: stackedRoutes,
           aliases: aliases,
-          mustMatchSubRoute: mustMatchSubRoute,
+          mustMatchStackedRoute: mustMatchStackedRoute,
         );
 
-  /// [entirePath] is the entire path given (in push for example)
-  ///
-  /// [parentRemainingPath] is the part of the path which is left to match
-  /// after the parent [VRouteElement] matched the [entirePath]
-  /// WARNING: [parentRemainingPath] is null if the parent did not match the path
-  /// in which case only absolute path should be tested.
+  /// This is basically the same as [VRouteElementWithPath.buildRoute] except that
+  /// we add the page of this [VRouteElement] as a page to [VRoute.pages]
+  @override
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
     required String? parentRemainingPath,
@@ -44,25 +41,27 @@ abstract class VRouteElementWithPage extends VRouteElementWithPath {
     // If the path did match, we add the page in the list of pages
     if (vRouteElementWithPathVRoute != null) {
       return VRoute(
-          vRouteElementNode: vRouteElementWithPathVRoute.vRouteElementNode,
-          pages: [
-                buildPage(
-                  widget: widget,
-                  vPathRequestData: vPathRequestData,
-                  pathParameters: vRouteElementWithPathVRoute.pathParameters,
-                  vRouteElementNode:
-                      vRouteElementWithPathVRoute.vRouteElementNode,
-                )
-              ] +
-              vRouteElementWithPathVRoute.pages,
-          pathParameters: vRouteElementWithPathVRoute.pathParameters,
-          vRouteElements: vRouteElementWithPathVRoute.vRouteElements);
+        vRouteElementNode: vRouteElementWithPathVRoute.vRouteElementNode,
+        pages: [
+              buildPage(
+                widget: widget,
+                vPathRequestData: vPathRequestData,
+                pathParameters: vRouteElementWithPathVRoute.pathParameters,
+                vRouteElementNode:
+                    vRouteElementWithPathVRoute.vRouteElementNode,
+              )
+            ] +
+            vRouteElementWithPathVRoute.pages,
+        pathParameters: vRouteElementWithPathVRoute.pathParameters,
+        vRouteElements: vRouteElementWithPathVRoute.vRouteElements,
+      );
     }
 
     // Else return null
     return null;
   }
 
+  /// A function which should allow us to build the page to put in [VRoute.pages]
   Page buildPage({
     required Widget widget,
     required VPathRequestData vPathRequestData,

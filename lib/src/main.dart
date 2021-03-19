@@ -36,8 +36,6 @@ part 'vrouter/vrouter.dart';
 
 part 'redirector.dart';
 
-part 'initial_url.dart';
-
 part 'vroute_elements/vguard.dart';
 
 part 'vroute_elements/vnester.dart';

@@ -1,5 +1,16 @@
 part of '../main.dart';
 
+/// [VGuard] is a [VRouteElement] which is used to control navigation changes
+///
+/// Use [beforeEnter], [beforeLeave] or [beforeUpdate] to get navigation changes before
+/// they take place. These methods will give you a [VRedirector] that you can use to:
+///   - know about the navigation changes [VRedirector.previousVRouterData] and [VRedirector.newVRouterData]
+///   - redirect using [VRedirector.push] or stop the navigation using [VRedirector.stopRedirection]
+///
+/// Use [afterEnter] or [afterUpdate] to get notification changes after they happened. At this point
+/// you can use [VRouter.of(context)] to get any information about the new route
+///
+/// See also [VWidgetGuard] for a widget-level way of controlling navigation changes
 class VGuard with VRouteElement, VRouteElementWithoutPage {
   /// This is called before the url is updated, if this [VRouteElement] is NOT in the previous route
   /// but IS in the new route
@@ -50,7 +61,7 @@ class VGuard with VRouteElement, VRouteElementWithoutPage {
   ///
   /// Also see:
   ///   * [VRouter.beforeLeave] for global level beforeLeave
-  ///   * [VNavigationGuard.beforeLeave] for widget level beforeLeave
+  ///   * [VWidgetGuard.beforeLeave] for widget level beforeLeave
   ///   * [VRedirector] to known how to redirect and have access to route information
   @override
   final Future<void> Function(VRedirector vRedirector,
@@ -67,7 +78,7 @@ class VGuard with VRouteElement, VRouteElementWithoutPage {
   ///
   /// Also see:
   ///   * [VRouter.afterEnter] for global level afterEnter
-  ///   * [VNavigationGuard.afterEnter] for widget level afterEnter
+  ///   * [VWidgetGuard.afterEnter] for widget level afterEnter
   @override
   final void Function(BuildContext context, String? from, String to) afterEnter;
 
@@ -82,11 +93,13 @@ class VGuard with VRouteElement, VRouteElementWithoutPage {
   ///
   /// Also see:
   ///   * [VRouter.afterEnter] for global level afterEnter
-  ///   * [VNavigationGuard.afterEnter] for widget level afterEnter
+  ///   * [VWidgetGuard.afterEnter] for widget level afterEnter
   @override
   final void Function(BuildContext context, String? from, String to)
       afterUpdate;
 
+  /// See [VRouteElement.stackedRoutes]
+  @override
   final List<VRouteElement> stackedRoutes;
 
   VGuard({
@@ -97,12 +110,4 @@ class VGuard with VRouteElement, VRouteElementWithoutPage {
     this.beforeUpdate = VRouteElement._voidBeforeUpdate,
     required this.stackedRoutes,
   });
-
-  @override
-  Future<void> Function(VRedirector vRedirector) get onPop =>
-      VRouteElement._voidOnPop;
-
-  @override
-  Future<void> Function(VRedirector vRedirector) get onSystemPop =>
-      VRouteElement._voidOnSystemPop;
 }

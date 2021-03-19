@@ -1,5 +1,8 @@
 part of '../main.dart';
 
+/// An [InheritedWidget] which should not be accessed by end developers
+///
+/// [RootVRouterData] holds methods and parameters from [VRouterState]
 class RootVRouterData extends InheritedWidget {
   final VRouterState _state;
 
@@ -61,19 +64,7 @@ class RootVRouterData extends InheritedWidget {
   /// the "?" in the url) of the current url
   final Map<String, String> queryParameters;
 
-  /// Pushes the new route of the given url on top of the current one
-  /// A path can be of one of two forms:
-  ///   * stating with '/', in which case we just navigate
-  ///     to the given path
-  ///   * not starting with '/', in which case we append the
-  ///     current path to the given one
-  ///
-  /// We can also specify queryParameters, either by directly
-  /// putting them is the url or by providing a Map using [queryParameters]
-  ///
-  /// We can also put a state to the next route, this state will
-  /// be a router state (this is the only kind of state that we can
-  /// push) accessible with VRouterData.of(context).historyState
+  /// See [VRouterState.push]
   void push(
     String newUrl, {
     Map<String, String> queryParameters = const {},
@@ -82,21 +73,7 @@ class RootVRouterData extends InheritedWidget {
       _state.push(newUrl,
           queryParameters: queryParameters, historyState: historyState);
 
-  /// Updates the url given a [VRouteElement] name
-  ///
-  /// We can also specify path parameters to inject into the new path
-  ///
-  /// We can also specify queryParameters, either by directly
-  /// putting them is the url or by providing a Map using [queryParameters]
-  ///
-  /// We can also put a state to the next route, this state will
-  /// be a router state (this is the only kind of state that we can
-  /// push) accessible with VRouterData.of(context).historyState
-  ///
-  /// After finding the url and taking charge of the path parameters
-  /// it updates the url
-  ///
-  /// To specify a name, see [VRouteElement.name]
+  /// See [VRouterState.pushNamed]
   void pushNamed(
     String name, {
     Map<String, String> pathParameters = const {},
@@ -108,21 +85,7 @@ class RootVRouterData extends InheritedWidget {
           queryParameters: queryParameters,
           routerState: routerState);
 
-  /// Replace the current one by the new route corresponding to the given url
-  /// The difference with [push] is that this overwrites the current browser history entry
-  /// If you are on mobile, this is the same as push
-  /// Path can be of one of two forms:
-  ///   * stating with '/', in which case we just navigate
-  ///     to the given path
-  ///   * not starting with '/', in which case we append the
-  ///     current path to the given one
-  ///
-  /// We can also specify queryParameters, either by directly
-  /// putting them is the url or by providing a Map using [queryParameters]
-  ///
-  /// We can also put a state to the next route, this state will
-  /// be a router state (this is the only kind of state that we can
-  /// push) accessible with VRouterData.of(context).historyState
+  /// See [VRouterState.pushReplacement]
   void pushReplacement(
     String newUrl, {
     Map<String, String> queryParameters = const {},
@@ -131,22 +94,7 @@ class RootVRouterData extends InheritedWidget {
       _state.pushReplacement(newUrl,
           queryParameters: queryParameters, historyState: historyState);
 
-  /// Replace the url given a [VRouteElement] name
-  /// The difference with [pushNamed] is that this overwrites the current browser history entry
-  ///
-  /// We can also specify path parameters to inject into the new path
-  ///
-  /// We can also specify queryParameters, either by directly
-  /// putting them is the url or by providing a Map using [queryParameters]
-  ///
-  /// We can also put a state to the next route, this state will
-  /// be a router state (this is the only kind of state that we can
-  /// push) accessible with VRouterData.of(context).historyState
-  ///
-  /// After finding the url and taking charge of the path parameters
-  /// it updates the url
-  ///
-  /// To specify a name, see [VRouteElement.name]
+  /// See [VRouterState.pushReplacementNamed]
   void pushReplacementNamed(
     String name, {
     Map<String, String> pathParameters = const {},
@@ -158,23 +106,11 @@ class RootVRouterData extends InheritedWidget {
           queryParameters: queryParameters,
           historyState: historyState);
 
-  /// Goes to an url which is not in the app
-  ///
-  /// On the web, you can set [openNewTab] to true to open this url
-  /// in a new tab
+  /// See [VRouterState.pushExternal]
   void pushExternal(String newUrl, {bool openNewTab = false}) =>
       _state.pushExternal(newUrl, openNewTab: openNewTab);
 
-  /// Starts a pop cycle
-  ///
-  /// Pop cycle:
-  ///   1. onPop is called in all [VNavigationGuard]s
-  ///   2. onPop is called in the nested-most [VRouteElement] of the current route
-  ///   3. onPop is called in [VRouter]
-  ///   4. Default behaviour of pop is called: [VRouterState._defaultPop]
-  ///
-  /// In any of the above steps, we can use [vRedirector] if you want to redirect or
-  /// stop the navigation
+  /// See [VRouterState._pop]
   void pop(
     VRouteElement itemToPop, {
     Map<String, String> pathParameters = const {},
@@ -188,16 +124,7 @@ class RootVRouterData extends InheritedWidget {
         newHistoryState: newHistoryState,
       );
 
-  /// Starts a systemPop cycle
-  ///
-  /// systemPop cycle:
-  ///   1. onSystemPop is called in all VNavigationGuards
-  ///   2. onSystemPop is called in the nested-most VRouteElement of the current route
-  ///   3. onSystemPop is called in VRouter
-  ///   4. [pop] is called
-  ///
-  /// In any of the above steps, we can use [vRedirector] if you want to redirect or
-  /// stop the navigation
+  /// See [VRouterState._systemPop]
   Future<void> systemPop(
     VRouteElement itemToPop, {
     Map<String, String> pathParameters = const {},
@@ -211,7 +138,7 @@ class RootVRouterData extends InheritedWidget {
         newHistoryState: newHistoryState,
       );
 
-  /// This replaces the current history state of [VRouterData] with given one
+  /// See [VRouterState.replaceHistoryState]
   void replaceHistoryState(Map<String, String> historyState) =>
       _state.replaceHistoryState(historyState);
 

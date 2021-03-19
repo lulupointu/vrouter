@@ -11,7 +11,7 @@ export 'src/main.dart'
         VRouteRedirector,
         InvalidUrlException,
         VMaterialApp,
-        VNavigationGuard,
+        VWidgetGuard,
         VRouteElement,
         VRedirector,
         VRouterModes,

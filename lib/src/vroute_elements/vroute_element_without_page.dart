@@ -2,8 +2,12 @@ part of '../main.dart';
 
 /// If the VRouteElement does not have a page to display, it should instantiate this class
 ///
-/// What is does is implementing [buildRoute] and [getPathFromName] methods for them
+/// What is does is implementing [buildRoute] methods
 mixin VRouteElementWithoutPage on VRouteElement {
+  /// This [buildRoute] basically just checks for a match in stackedRoutes and if any
+  /// adds this [VRouteElement] to the [VRoute]
+  ///
+  /// For more info on buildRoute, see [VRouteElement.buildRoute]
   @override
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
@@ -20,12 +24,9 @@ mixin VRouteElementWithoutPage on VRouteElement {
       if (childVRoute != null) {
         return VRoute(
           vRouteElementNode: VRouteElementNode(this,
-              subVRouteElementNode: childVRoute.vRouteElementNode),
+              stackedVRouteElementNode: childVRoute.vRouteElementNode),
           pages: childVRoute.pages,
-          pathParameters: {
-            ...parentPathParameters,
-            ...childVRoute.pathParameters,
-          },
+          pathParameters: childVRoute.pathParameters,
           vRouteElements: <VRouteElement>[this] + childVRoute.vRouteElements,
         );
       }

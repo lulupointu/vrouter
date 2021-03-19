@@ -1,10 +1,26 @@
 part of '../main.dart';
 
+/// [VRouteElement] is the base class for any object used in routes, stackedRoutes
+/// or nestedRoutes
 @immutable
 abstract class VRouteElement {
-  /// A list of stackedRoutes composed of any type of [VRouteElement]
   List<VRouteElement> get stackedRoutes;
 
+  /// [buildRoute] must return [VRoute] if it constitute (which its subroutes or not) a valid
+  /// route given the input parameters
+  /// [VRoute] should describe this valid route
+  ///
+  ///
+  /// [vPathRequestData] contains all the information about the original request coming
+  /// from [VRouter]
+  /// It should not be changed and should be given as-is to its subroutes
+  ///
+  /// [parentRemainingPath] is the part on which to base any local path
+  /// WARNING: [parentRemainingPath] is null if the parent did not match the path
+  /// in which case only absolute path should be tested.
+  ///
+  /// [parentPathParameters] are the path parameters of every [VRouteElement] above this
+  /// one in the route
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
     required String? parentRemainingPath,
@@ -92,7 +108,7 @@ abstract class VRouteElement {
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
   ///
   /// Also see:
-  ///   * [VNavigationGuard.beforeUpdate] for widget level beforeUpdate
+  ///   * [VWidgetGuard.beforeUpdate] for widget level beforeUpdate
   ///   * [VRedirector] to known how to redirect and have access to route information
   Future<void> Function(VRedirector vRedirector) get beforeUpdate =>
       _voidBeforeUpdate;
@@ -105,14 +121,14 @@ abstract class VRouteElement {
   /// [saveHistoryState] can be used to save a history state before leaving
   /// This history state will be restored if the user uses the back button
   /// You will find the saved history state in the [VRouteElementData] using
-  /// [VRouterData.of(context).historyState]
+  /// [VRouter.of(context).historyState]
   ///
   /// Note that you should consider the navigation cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
   ///
   /// Also see:
   ///   * [VRouteElement.beforeLeave] for route level beforeLeave
-  ///   * [VNavigationGuard.beforeLeave] for widget level beforeLeave
+  ///   * [VWidgetGuard.beforeLeave] for widget level beforeLeave
   ///   * [VRedirector] to known how to redirect and have access to route information
   Future<void> Function(
     VRedirector vRedirector,
@@ -129,7 +145,7 @@ abstract class VRouteElement {
   ///
   /// Also see:
   ///   * [VRouter.afterEnter] for router level afterEnter
-  ///   * [VNavigationGuard.afterEnter] for widget level afterEnter
+  ///   * [VWidgetGuard.afterEnter] for widget level afterEnter
   void Function(BuildContext context, String? from, String to) get afterEnter =>
       _voidAfterEnter;
 
@@ -142,12 +158,12 @@ abstract class VRouteElement {
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
   ///
   /// Also see:
-  ///   * [VNavigationGuard.afterUpdate] for widget level afterUpdate
+  ///   * [VWidgetGuard.afterUpdate] for widget level afterUpdate
   void Function(BuildContext context, String? from, String to)
       get afterUpdate => _voidAfterUpdate;
 
   /// Called when a pop event occurs
-  /// A pop event can be called programmatically (with [VRouterData.of(context).pop()])
+  /// A pop event can be called programmatically (with [VRouter.of(context).pop()])
   /// or by other widgets such as the appBar back button
   ///
   /// Use [vRedirector] if you want to redirect or stop the navigation.
@@ -161,7 +177,7 @@ abstract class VRouteElement {
   ///
   /// Also see:
   ///   * [VRouter.onPop] for router level onPop
-  ///   * [VNavigationGuard.onPop] for widget level onPop
+  ///   * [VWidgetGuard.onPop] for widget level onPop
   ///   * [VRedirector] to known how to redirect and have access to route information
   Future<void> Function(VRedirector vRedirector) get onPop => _voidOnPop;
 
@@ -179,7 +195,7 @@ abstract class VRouteElement {
   ///
   /// Also see:
   ///   * [VRouter.onSystemPop] for route level onSystemPop
-  ///   * [VNavigationGuard.onSystemPop] for widget level onSystemPop
+  ///   * [VWidgetGuard.onSystemPop] for widget level onSystemPop
   ///   * [VRedirector] to known how to redirect and have access to route information
   Future<void> Function(VRedirector vRedirector) get onSystemPop =>
       _voidOnSystemPop;
@@ -217,12 +233,12 @@ abstract class VRouteElement {
 }
 
 /// Return type of [VRouteElement.getPathFromPop]
-///
-/// [didPop] should be true if this [VRouteElement] is to be popped
-/// [path] should be deducted from the parent path, [VRouteElement.path] and the path parameters,
-///   Note the it should be null if the path can not be deduced from the said parameters
 class GetPathFromPopResult {
+  /// [path] should be deducted from the parent path, [VRouteElement.path] and the path parameters,
+  ///  Note the it should be null if the path can not be deduced from the said parameters
   final String? path;
+
+  /// [didPop] should be true if this [VRouteElement] is to be popped
   final bool didPop;
 
   GetPathFromPopResult({
@@ -241,9 +257,17 @@ class GetPathFromPopResult {
 ///   2. Holds information that are used to populate the [LocalVRouterData] attached to every
 ///   _  [VRouteElement]
 class VPathRequestData {
+  /// The previous url (which is actually the current one since when [VPathRequestData] is passed
+  /// the url did not yet change from [VRouter] point of view)
   final String? previousUrl;
+
+  /// The new uri. This is what should be used to determine the validity of the [VRouteElement]
   final Uri uri;
+
+  /// The new history state, used to populate the [LocalVRouterData]
   final Map<String, String> historyState;
+
+  /// A [BuildContext] with which we can access [RootVRouterData]
   final BuildContext rootVRouterContext;
 
   VPathRequestData({
@@ -253,10 +277,13 @@ class VPathRequestData {
     required this.rootVRouterContext,
   });
 
+  /// The path contained in the uri
   String get path => uri.path;
 
+  /// The query parameters contained in the uri
   Map<String, String> get queryParameters => uri.queryParameters;
 
+  /// The url corresponding to the uri
   String get url => uri.toString();
 }
 
@@ -270,7 +297,7 @@ class VRouteElementNode {
 
   /// The [VRouteElementNode] containing the [VRouteElement] which is the current stacked routes
   /// to be valid, if any
-  final VRouteElementNode? subVRouteElementNode;
+  final VRouteElementNode? stackedVRouteElementNode;
 
   /// The [VRouteElement] attached to this node
   final VRouteElement vRouteElement;
@@ -278,14 +305,14 @@ class VRouteElementNode {
   VRouteElementNode(
     this.vRouteElement, {
     this.nestedVRouteElementNode,
-    this.subVRouteElementNode,
+    this.stackedVRouteElementNode,
   });
 
   /// Finding the element to pop for a [VRouteElementNode] means finding which one is at the
-  /// end of the chain of subVRouteElementNode (if none then this should be popped)
+  /// end of the chain of stackedVRouteElementNode (if none then this should be popped)
   VRouteElement getVRouteElementToPop() {
-    if (subVRouteElementNode != null) {
-      return subVRouteElementNode!.getVRouteElementToPop();
+    if (stackedVRouteElementNode != null) {
+      return stackedVRouteElementNode!.getVRouteElementToPop();
     }
     return vRouteElement;
   }
@@ -309,9 +336,9 @@ class VRouteElementNode {
       }
     }
 
-    // Search if the VRouteElementNode containing the VRouteElement is in the subVRouteElementNode
-    if (subVRouteElementNode != null) {
-      VRouteElementNode? vRouteElementNode = subVRouteElementNode!
+    // Search if the VRouteElementNode containing the VRouteElement is in the stackedVRouteElementNode
+    if (stackedVRouteElementNode != null) {
+      VRouteElementNode? vRouteElementNode = stackedVRouteElementNode!
           .getChildVRouteElementNode(vRouteElement: vRouteElement);
       if (vRouteElementNode != null) {
         return vRouteElementNode;

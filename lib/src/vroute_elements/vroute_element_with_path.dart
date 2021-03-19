@@ -1,15 +1,14 @@
 part of '../main.dart';
 
-/// If the VRouteElement does have a page to display, it should instantiate this class
+/// If the [VRouteElement] contains a path, it should extend this class
 ///
 /// What is does is:
-///     - Requiring attributes [path], [name], [aliases], [widget] and [mustMatchStackedRoutes]
-///     - Computing attributes [pathRegExp], [aliasesRegExp], [pathParametersKeys],
-///                                                          [aliasesParameters] and [stateKey]
-///     - implementing [build] and [getPathFromName] methods for them
+///   - Requiring attributes [path], [name], [aliases]
+///   - Computing attributes [pathRegExp], [aliasesRegExp], [pathParametersKeys] and [aliasesPathParametersKeys]
+///   - implementing a default [buildRoute] and [getPathFromName] methods for them
 @immutable
 abstract class VRouteElementWithPath extends VRouteElement {
-  /// The path (local or absolute) or this [VRouteElement]
+  /// The path (relative or absolute) or this [VRouteElement]
   ///
   /// If the path of a subroute is exactly matched, this will be used in
   /// the route but might be covered by another [VRouteElement.widget]
@@ -27,24 +26,30 @@ abstract class VRouteElementWithPath extends VRouteElement {
   /// You can also use more advance technique using regexp directly in your path, for example
   /// '.*' will match any route, '/user/:id(\d+)' will match any route starting with user
   /// and followed by a digit. Here is a recap:
-  /// |     pattern 	  | matched path | 	[VRouteElementData.pathParameters]
-  /// | /user/:username |  /user/evan  | 	    { username: 'evan' }
-  /// | /user/:id(\d+)  |  /user/123   | 	        { id: '123' }
-  /// |     .*          |  every path  |                 -
-  // TODO: change example
+  /// |     pattern 	  | matched path | 	[VRouter.pathParameters]
+  /// | /user/:username |  /user/evan  | 	 { username: 'evan' }
+  /// | /user/:id(\d+)  |  /user/123   | 	     { id: '123' }
+  /// |     .*          |  every path  |             -
   final String? path;
 
   /// A name for the route which will allow you to easily navigate to it
-  /// using [VRouterData.of(context).pushNamed]
+  /// using [VRouter.of(context).pushNamed]
   ///
   /// Note that [name] should be unique w.r.t every [VRouteElement]
   final String? name;
 
-  /// An alternative path that will be matched to this route
+  /// Alternative paths that will be matched to this route
+  ///
+  /// Note that path is match first, then every aliases in order
   final List<String> aliases;
 
-  final bool mustMatchSubRoute;
+  /// A boolean to indicate whether this can be a valid [VRouteElement] of the [VRoute] if no
+  /// [VRouteElement] in its [stackedRoute] is matched
+  ///
+  /// This is mainly useful for [VRouteElement]s which are NOT [VRouteElementWithPage]
+  final bool mustMatchStackedRoute;
 
+  /// See [VRouteElement.stackedRoutes]
   final List<VRouteElement> stackedRoutes;
 
   VRouteElementWithPath({
@@ -52,11 +57,14 @@ abstract class VRouteElementWithPath extends VRouteElement {
     this.name,
     this.stackedRoutes = const [],
     this.aliases = const [],
-    this.mustMatchSubRoute = false,
+    this.mustMatchStackedRoute = false,
   })  : pathRegExp = (path != null) ? pathToRegExp(path, prefix: true) : null,
-        aliasesRegExp = [for (var alias in aliases) pathToRegExp(alias, prefix: true)],
+        aliasesRegExp = [
+          for (var alias in aliases) pathToRegExp(alias, prefix: true)
+        ],
         pathParametersKeys = <String>[],
-        aliasesPathParametersKeys = List<List<String>>.generate(aliases.length, (_) => []) {
+        aliasesPathParametersKeys =
+            List<List<String>>.generate(aliases.length, (_) => []) {
     // Get local parameters
     if (path != null) {
       final localPath = path!.startsWith('/') ? path!.substring(1) : path!;
@@ -69,11 +77,6 @@ abstract class VRouteElementWithPath extends VRouteElement {
       pathToRegExp(localPath, parameters: aliasesPathParametersKeys[i]);
     }
   }
-
-  // /// A key for the [VBasePage] that will host the widget
-  // /// You shouldn't care about using it unless you don't
-  // /// specify a path.
-  // LocalKey? get key;
 
   /// RegExp version of the path
   /// It is created automatically
@@ -95,12 +98,11 @@ abstract class VRouteElementWithPath extends VRouteElement {
   /// It is created automatically
   final List<List<String>> aliasesPathParametersKeys;
 
-  /// [entirePath] is the entire path given (in push for example)
+  /// What this [buildRoute] does is look if any path or alias can give a valid [VRoute]
+  /// considering this and the stackedRoutes
   ///
-  /// [parentRemainingPath] is the part of the path which is left to match
-  /// after the parent [VRouteElement] matched the [entirePath]
-  /// WARNING: [parentRemainingPath] is null if the parent did not match the path
-  /// in which case only absolute path should be tested.
+  /// For more about buildRoute, see [VRouteElement.buildRoute]
+  @override
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
     required String? parentRemainingPath,
@@ -121,52 +123,53 @@ abstract class VRouteElementWithPath extends VRouteElement {
       selfPath: path,
       selfPathRegExp: pathRegExp,
       selfPathParametersKeys: pathParametersKeys,
+      parentPathParameters: parentPathParameters,
     );
-    final VRoute? subRouteVRoute = getVRouteFromRoutes(
+    final VRoute? stackedRouteVRoute = getVRouteFromRoutes(
       vPathRequestData,
       routes: stackedRoutes,
-      parentPathParameters: parentPathParameters,
       getPathMatchResult: pathGetPathMatchResult,
     );
-    if (subRouteVRoute != null) {
+    if (stackedRouteVRoute != null) {
       return VRoute(
-        vRouteElementNode:
-            VRouteElementNode(this, subVRouteElementNode: subRouteVRoute.vRouteElementNode),
-        pages: subRouteVRoute.pages,
-        pathParameters: {
-          ...parentPathParameters,
-          ...pathGetPathMatchResult.pathParameters,
-          ...subRouteVRoute.pathParameters,
-        },
-        vRouteElements: <VRouteElement>[this] + subRouteVRoute.vRouteElements,
+        vRouteElementNode: VRouteElementNode(
+          this,
+          stackedVRouteElementNode: stackedRouteVRoute.vRouteElementNode,
+        ),
+        pages: stackedRouteVRoute.pages,
+        pathParameters: stackedRouteVRoute.pathParameters,
+        vRouteElements:
+            <VRouteElement>[this] + stackedRouteVRoute.vRouteElements,
       );
     }
 
     // Check for the aliases
     for (var i = 0; i < aliases.length; i++) {
-      aliasesGetPathMatchResult.add(getPathMatch(
+      aliasesGetPathMatchResult.add(
+        getPathMatch(
           entirePath: vPathRequestData.path,
           remainingPathFromParent: parentRemainingPath,
           selfPath: aliases[i],
           selfPathRegExp: aliasesRegExp[i],
-          selfPathParametersKeys: aliasesPathParametersKeys[i]));
-      final VRoute? subRouteVRoute = getVRouteFromRoutes(
+          selfPathParametersKeys: aliasesPathParametersKeys[i],
+          parentPathParameters: parentPathParameters,
+        ),
+      );
+      final VRoute? stackedRouteVRoute = getVRouteFromRoutes(
         vPathRequestData,
         routes: stackedRoutes,
-        parentPathParameters: parentPathParameters,
         getPathMatchResult: aliasesGetPathMatchResult[i],
       );
-      if (subRouteVRoute != null) {
+      if (stackedRouteVRoute != null) {
         return VRoute(
-          vRouteElementNode:
-              VRouteElementNode(this, subVRouteElementNode: subRouteVRoute.vRouteElementNode),
-          pages: subRouteVRoute.pages,
-          pathParameters: {
-            ...parentPathParameters,
-            ...aliasesGetPathMatchResult[i].pathParameters,
-            ...subRouteVRoute.pathParameters,
-          },
-          vRouteElements: <VRouteElement>[this] + subRouteVRoute.vRouteElements,
+          vRouteElementNode: VRouteElementNode(
+            this,
+            stackedVRouteElementNode: stackedRouteVRoute.vRouteElementNode,
+          ),
+          pages: stackedRouteVRoute.pages,
+          pathParameters: stackedRouteVRoute.pathParameters,
+          vRouteElements:
+              <VRouteElement>[this] + stackedRouteVRoute.vRouteElements,
         );
       }
     }
@@ -203,17 +206,13 @@ abstract class VRouteElementWithPath extends VRouteElement {
   VRoute? getVRouteFromRoutes(
     VPathRequestData vPathRequestData, {
     required List<VRouteElement> routes,
-    required Map<String, String> parentPathParameters,
     required GetPathMatchResult getPathMatchResult,
   }) {
     for (var vRouteElement in routes) {
       final childVRoute = vRouteElement.buildRoute(
         vPathRequestData,
         parentRemainingPath: getPathMatchResult.remainingPath,
-        parentPathParameters: {
-          ...parentPathParameters,
-          ...getPathMatchResult.pathParameters,
-        },
+        parentPathParameters: getPathMatchResult.pathParameters,
       );
       if (childVRoute != null) return childVRoute;
     }
@@ -221,20 +220,21 @@ abstract class VRouteElementWithPath extends VRouteElement {
 
   /// Try to form a [VRoute] where this [VRouteElement] is the last [VRouteElement]
   /// This is possible is:
-  ///   - [mustMatchSubRoute] is false
-  ///   - Their is a match of the path and it is exact
+  ///   - [mustMatchStackedRoute] is false
+  ///   - There is a match of the path and it is exact
   VRoute? getVRouteFromSelf(
     VPathRequestData vPathRequestData, {
     required Map<String, String> parentPathParameters,
     required GetPathMatchResult getPathMatchResult,
   }) {
-    if (!mustMatchSubRoute && (getPathMatchResult.remainingPath?.isEmpty ?? false)) {
-      return VRoute(vRouteElementNode: VRouteElementNode(this), pages: [], pathParameters: {
-        ...parentPathParameters,
-        ...getPathMatchResult.pathParameters,
-      }, vRouteElements: <VRouteElement>[
-        this
-      ]);
+    if (!mustMatchStackedRoute &&
+        (getPathMatchResult.remainingPath?.isEmpty ?? false)) {
+      return VRoute(
+        vRouteElementNode: VRouteElementNode(this),
+        pages: [],
+        pathParameters: getPathMatchResult.pathParameters,
+        vRouteElements: <VRouteElement>[this],
+      );
     }
   }
 
@@ -246,45 +246,57 @@ abstract class VRouteElementWithPath extends VRouteElement {
   ///
   /// Returns a [GetPathMatchResult] which holds two information:
   ///   - The remaining path, after having removed the [selfPathRegExp] (null if there is no match)
-  ///   - The path parameters gotten from [selfPathRegExp] and the path
+  ///   - The path parameters gotten from [selfPathRegExp] and the path, added to the parentPathParameters if relative path
   GetPathMatchResult getPathMatch({
     required String entirePath,
     required String? remainingPathFromParent,
     required String? selfPath,
     required RegExp? selfPathRegExp,
     required List<String> selfPathParametersKeys,
+    required Map<String, String> parentPathParameters,
   }) {
     late final Match? match;
 
     // remainingPath is null if there is no match
     late String? remainingPath;
+    late final Map<String, String> newPathParameters;
     if (selfPath == null) {
       // This is ugly but the only way to return a non-null empty match...
       match = RegExp('').matchAsPrefix('');
       remainingPath = remainingPathFromParent;
+      newPathParameters = parentPathParameters;
     } else if ((selfPath.startsWith('/'))) {
       // If our path starts with '/', this is an absolute path
       match = selfPathRegExp!.matchAsPrefix(entirePath);
       remainingPath = (match != null) ? entirePath.substring(match.end) : null;
+      newPathParameters =
+          (match != null) ? extract(selfPathParametersKeys, match) : {};
     } else if ((remainingPathFromParent != null)) {
       // If it does not start with '/', the path is relative
       // We try to remove this part of the path from the remainingPathFromParent
       match = selfPathRegExp!.matchAsPrefix(remainingPathFromParent);
-      remainingPath = (match != null) ? remainingPathFromParent.substring(match.end) : null;
+      remainingPath =
+          (match != null) ? remainingPathFromParent.substring(match.end) : null;
+      newPathParameters = (match != null)
+          ? {
+              ...parentPathParameters,
+              ...extract(selfPathParametersKeys, match),
+            }
+          : {};
     } else {
       // If remainingPathFromParent is null and the path is relative
       // the parent did not match, so there is no match
       match = null;
       remainingPath = null;
+      newPathParameters = {};
     }
-    final pathParameters =
-        (match != null) ? extract(selfPathParametersKeys, match) : <String, String>{};
 
     // Remove the trailing '/' in remainingPath if needed
     if (remainingPath != null && remainingPath.startsWith('/'))
       remainingPath = remainingPath.replaceFirst('/', '');
 
-    return GetPathMatchResult(remainingPath: remainingPath, pathParameters: pathParameters);
+    return GetPathMatchResult(
+        remainingPath: remainingPath, pathParameters: newPathParameters);
   }
 
   /// Tries to a path from a name
@@ -313,7 +325,9 @@ abstract class VRouteElementWithPath extends VRouteElement {
 
     // Get the new parent path by taking this path into account
     newParentPathFromPath = getNewParentPath(parentPath,
-        path: path, pathParametersKeys: pathParametersKeys, pathParameters: pathParameters);
+        path: path,
+        pathParametersKeys: pathParametersKeys,
+        pathParameters: pathParameters);
 
     newRemainingPathParametersFromPath = (path != null && path!.startsWith('/'))
         ? Map<String, String>.from(pathParameters)
@@ -346,7 +360,8 @@ abstract class VRouteElementWithPath extends VRouteElement {
         (aliases[i].startsWith('/'))
             ? Map<String, String>.from(pathParameters)
             : Map<String, String>.from(remainingPathParameters)
-          ..removeWhere((key, value) => aliasesPathParametersKeys[i].contains(key)),
+          ..removeWhere(
+              (key, value) => aliasesPathParametersKeys[i].contains(key)),
       );
       for (var vRouteElement in stackedRoutes) {
         String? childPathFromName = vRouteElement.getPathFromName(
@@ -365,7 +380,8 @@ abstract class VRouteElementWithPath extends VRouteElement {
     if (name == nameToMatch) {
       // Note that newParentPath will be null if this path can't be included so the return value
       // is the right one
-      if (newParentPathFromPath != null && newRemainingPathParametersFromPath.isEmpty) {
+      if (newParentPathFromPath != null &&
+          newRemainingPathParametersFromPath.isEmpty) {
         return newParentPathFromPath;
       }
       for (var i = 0; i < aliases.length; i++) {
@@ -402,12 +418,13 @@ abstract class VRouteElementWithPath extends VRouteElement {
     required Map<String, String> pathParameters,
   }) {
     // First check that we have the path parameters needed to have this path
-    final indexNoMatch =
-        pathParametersKeys.indexWhere((key) => !pathParameters.containsKey(key));
+    final indexNoMatch = pathParametersKeys
+        .indexWhere((key) => !pathParameters.containsKey(key));
 
     // If we have all the path parameters needed, get the local path
-    final localPath =
-        (indexNoMatch == -1 && path != null) ? pathToFunction(path)(pathParameters) : null;
+    final localPath = (indexNoMatch == -1 && path != null)
+        ? pathToFunction(path)(pathParameters)
+        : null;
 
     late final String? newParentPath;
     if (path == null) {
@@ -477,7 +494,8 @@ abstract class VRouteElementWithPath extends VRouteElement {
             parentPath: newParentPathFromAlias,
           );
           if (childPopResult != null) {
-            return GetPathFromPopResult(path: childPopResult.path, didPop: false);
+            return GetPathFromPopResult(
+                path: childPopResult.path, didPop: false);
           }
         }
       }
@@ -490,7 +508,14 @@ abstract class VRouteElementWithPath extends VRouteElement {
 
 /// Return type for [VRouteElementWithPath.getPathMatch]
 class GetPathMatchResult {
+  /// The remaining of the path after having remove the part of the path that this
+  /// [VRouteElementWithPath] has matched
   final String? remainingPath;
+
+  /// The path parameters of the valid [VRoute] which are
+  ///   - Empty if no valid [VRoute] has been found
+  ///   - This [VRouteElementWithPath.pathParameters] if [VRouteElement.path] is absolute
+  ///   - This [VRouteElementWithPath.pathParameters] and the parent pathParameters if  [VRouteElement.path] is relative
   final Map<String, String> pathParameters;
 
   GetPathMatchResult({

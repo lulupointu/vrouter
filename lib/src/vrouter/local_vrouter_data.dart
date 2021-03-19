@@ -1,8 +1,19 @@
 part of '../main.dart';
 
+/// An [InheritedWidget] accessible via [VRouter.of(context)]
+///
+/// [LocalVRouterData] is placed on top of each [VRouteElement.widget], the main goal of having
+/// local classes compared to a single one is that:
+///   1. [_vRouteElementNode] is specific to the local [VRouteElement] to allow a different
+///   _  pop event based on where the [VRouteElement] is in the [VRoute]
+///   2. When a [VRouteElement] is no longer in the route, it has a page animation out. During
+///   _  this, the old VRouterData should be used, which this [LocalVRouterData] holds
 class LocalVRouterData extends InheritedWidget {
+  /// The [VRouteElementNode] of the associated [VRouteElement]
   final VRouteElementNode _vRouteElementNode;
-  final BuildContext _context;
+
+  /// A [BuildContext] which can be used to access the [RootVRouterData]
+  final BuildContext _rootVRouterDataContext;
 
   LocalVRouterData({
     Key? key,
@@ -15,7 +26,7 @@ class LocalVRouterData extends InheritedWidget {
     required VRouteElementNode vRouteElementNode,
     required BuildContext context,
   })   : _vRouteElementNode = vRouteElementNode,
-        _context = context,
+        _rootVRouterDataContext = context,
         super(
           key: key,
           child: child,
@@ -76,13 +87,13 @@ class LocalVRouterData extends InheritedWidget {
   ///
   /// We can also put a state to the next route, this state will
   /// be a router state (this is the only kind of state that we can
-  /// push) accessible with VRouterData.of(context).historyState
+  /// push) accessible with VRouter.of(context).historyState
   void push(
     String newUrl, {
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
   }) =>
-      RootVRouterData.of(_context).push(newUrl,
+      RootVRouterData.of(_rootVRouterDataContext).push(newUrl,
           queryParameters: queryParameters, historyState: historyState);
 
   /// Updates the url given a [VRouteElement] name
@@ -94,9 +105,9 @@ class LocalVRouterData extends InheritedWidget {
   ///
   /// We can also put a state to the next route, this state will
   /// be a router state (this is the only kind of state that we can
-  /// push) accessible with VRouterData.of(context).historyState
+  /// push) accessible with VRouter.of(context).historyState
   ///
-  /// After finding the url and taking charge of the path parameters
+  /// After finding the url and taking charge of the path parameters,
   /// it updates the url
   ///
   /// To specify a name, see [VRouteElement.name]
@@ -106,7 +117,7 @@ class LocalVRouterData extends InheritedWidget {
     Map<String, String> queryParameters = const {},
     String? routerState,
   }) =>
-      RootVRouterData.of(_context).pushNamed(name,
+      RootVRouterData.of(_rootVRouterDataContext).pushNamed(name,
           pathParameters: pathParameters,
           queryParameters: queryParameters,
           routerState: routerState);
@@ -125,13 +136,13 @@ class LocalVRouterData extends InheritedWidget {
   ///
   /// We can also put a state to the next route, this state will
   /// be a router state (this is the only kind of state that we can
-  /// push) accessible with VRouterData.of(context).historyState
+  /// push) accessible with VRouter.of(context).historyState
   void pushReplacement(
     String newUrl, {
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
   }) =>
-      RootVRouterData.of(_context).pushReplacement(newUrl,
+      RootVRouterData.of(_rootVRouterDataContext).pushReplacement(newUrl,
           queryParameters: queryParameters, historyState: historyState);
 
   /// Replace the url given a [VRouteElement] name
@@ -144,19 +155,19 @@ class LocalVRouterData extends InheritedWidget {
   ///
   /// We can also put a state to the next route, this state will
   /// be a router state (this is the only kind of state that we can
-  /// push) accessible with VRouterData.of(context).historyState
+  /// push) accessible with VRouter.of(context).historyState
   ///
   /// After finding the url and taking charge of the path parameters
   /// it updates the url
   ///
-  /// To specify a name, see [VRouteElement.name]
+  /// To specify a name, see [VRouteElementWithPath.name]
   void pushReplacementNamed(
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
   }) =>
-      RootVRouterData.of(_context).pushReplacementNamed(name,
+      RootVRouterData.of(_rootVRouterDataContext).pushReplacementNamed(name,
           pathParameters: pathParameters,
           queryParameters: queryParameters,
           historyState: historyState);
@@ -166,12 +177,13 @@ class LocalVRouterData extends InheritedWidget {
   /// On the web, you can set [openNewTab] to true to open this url
   /// in a new tab
   void pushExternal(String newUrl, {bool openNewTab = false}) =>
-      RootVRouterData.of(_context).pushExternal(newUrl, openNewTab: openNewTab);
+      RootVRouterData.of(_rootVRouterDataContext)
+          .pushExternal(newUrl, openNewTab: openNewTab);
 
   /// Starts a pop cycle
   ///
   /// Pop cycle:
-  ///   1. onPop is called in all [VNavigationGuard]s
+  ///   1. onPop is called in all [VWidgetGuard]s
   ///   2. onPop is called in the nested-most [VRouteElement] of the current route
   ///   3. onPop is called in [VRouter]
   ///   4. Default behaviour of pop is called: [VRouterState._defaultPop]
@@ -183,7 +195,7 @@ class LocalVRouterData extends InheritedWidget {
     Map<String, String> queryParameters = const {},
     Map<String, String> newHistoryState = const {},
   }) =>
-      RootVRouterData.of(_context).pop(
+      RootVRouterData.of(_rootVRouterDataContext).pop(
         _vRouteElementNode.getVRouteElementToPop(),
         pathParameters: pathParameters,
         queryParameters: queryParameters,
@@ -193,7 +205,7 @@ class LocalVRouterData extends InheritedWidget {
   /// Starts a systemPop cycle
   ///
   /// systemPop cycle:
-  ///   1. onSystemPop is called in all VNavigationGuards
+  ///   1. onSystemPop is called in all VWidgetGuards
   ///   2. onSystemPop is called in the nested-most VRouteElement of the current route
   ///   3. onSystemPop is called in VRouter
   ///   4. [pop] is called
@@ -205,23 +217,24 @@ class LocalVRouterData extends InheritedWidget {
     Map<String, String> queryParameters = const {},
     Map<String, String> newHistoryState = const {},
   }) =>
-      RootVRouterData.of(_context).systemPop(
+      RootVRouterData.of(_rootVRouterDataContext).systemPop(
         _vRouteElementNode.getVRouteElementToPop(),
         pathParameters: pathParameters,
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
       );
 
-  /// This replaces the current history state of [VRouterData] with given one
+  /// This replaces the current history state of [VRouter] with given one
   void replaceHistoryState(Map<String, String> historyState) =>
-      RootVRouterData.of(_context).replaceHistoryState(historyState);
+      RootVRouterData.of(_rootVRouterDataContext)
+          .replaceHistoryState(historyState);
 
   static LocalVRouterData of(BuildContext context) {
     final localVRouterData =
         context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
     if (localVRouterData == null) {
       throw FlutterError(
-          'LocalVRouterData.of(context) was called with a context which does not contain a LocalVRouterData.\n'
+          'LocalVRouter.of(context) was called with a context which does not contain a LocalVRouterData.\n'
           'The context used to retrieve LocalVRouterData must be that of a widget that '
           'is a descendant of a LocalVRouterData widget.');
     }
