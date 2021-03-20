@@ -448,6 +448,34 @@ VPopHandler(
 )
 ```
 
+If you used `VNavigationGuard`, they have been renamed to `VWidgetGuard`:
+
+*OLD*
+```
+class UserWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return VNavigationGuard(
+      beforeLeave: (vRedirector, _) => ...,
+      child: ...,
+    );
+  }
+}
+```
+
+*NEW*
+```
+class UserWidget extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return VWidgetGuard(
+      beforeLeave: (vRedirector, _) => ...,
+      child: ...,
+    );
+  }
+}
+```
+
 **About paths**:
 * If you ever used a null path to match the parent, you can still do so but it has to be specified by using `path: null`
 * Every path in `VRouter.routes` have to start with '/'
