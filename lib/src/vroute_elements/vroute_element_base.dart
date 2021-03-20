@@ -270,32 +270,11 @@ class VPathRequestData {
   /// A [BuildContext] with which we can access [RootVRouterData]
   final BuildContext rootVRouterContext;
 
-  /// The duration of the transition which happens when this page
-  /// is put in the widget tree
-  ///
-  /// This should be the default one, i.e. the one of [VRouter]
-  final Duration? defaultPageTransitionDuration;
-
-  /// The duration of the transition which happens when this page
-  /// is removed from the widget tree
-  ///
-  /// This should be the default one, i.e. the one of [VRouter]
-  final Duration? defaultPageReverseTransitionDuration;
-
-  /// A function to build the transition to or from this route
-  ///
-  /// This should be the default one, i.e. the one of [VRouter]
-  final Widget Function(Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child)? defaultPageBuildTransition;
-
   VPathRequestData({
     required this.previousUrl,
     required this.uri,
     required this.historyState,
     required this.rootVRouterContext,
-    required this.defaultPageBuildTransition,
-    required this.defaultPageTransitionDuration,
-    required this.defaultPageReverseTransitionDuration,
   });
 
   /// The path contained in the uri
