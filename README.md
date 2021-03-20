@@ -52,7 +52,7 @@ VRouter(
             VWidget(
               // This matches the path '/settings'
               path: '/settings',
-              widget: ProfileWidget(),
+              widget: SettingsWidget(),
             ),
           ],
         ),
@@ -318,3 +318,165 @@ Note that this will not break deep linking. If your user are on the web and laun
 
 There is so much more that this package can do, check out the example
 or have a look at the **[vrouter.dev](https://vrouter.dev)** website
+
+## Migrate to >=1.1.0
+
+1.1.0 introduces new concept and simplify other, and the cost of breaking changes.
+Here is a quick guide of how to migrate:
+
+### Building routes
+
+**About subroutes**
+
+`subroutes` changed its name. The easiest way is to first change all of them to `stackedRoutes`, then use the indications on `VStacked` and `VChild` to change it to something else if needed.
+
+**VStacked**
+
+`VStacked` becomes `VWidget` and its `subroutes` becomes `stackedRoutes`
+
+*OLD*
+```
+VStacked(
+  path: '/yourPath',
+  widget: YourWidget(),
+  subroutes: [...],
+)
+```
+
+*NEW*
+```
+VWidget(
+  path: '/yourPath',
+  widget: YourWidget(),
+  stackedRoutes: [...],
+)
+```
+
+**VChild**
+
+Replace your `VChild` by `VWidget` and wrap them in a `VNester` (a new `VRouteElement`) to nest them.
+The easiest way is to look at an example:
+
+*OLD*
+```
+VStacked(
+  path: '/in',
+  widget: MyScaffold(),
+  nestedRoutes: [
+    // VChild are accessible via VRouteElementData.vChild
+    VChild(
+      path: 'profile',
+      widget: ProfileWidget(),
+    ),
+    VChild(
+      path: 'settings',
+      widget: SettingsWidget(),
+    ),
+  ],
+)
+```
+
+*NEW*
+```
+VNester(
+  path: '/in',
+  widgetBuilder: (child) => MyScaffold(child), // The child is from nestedRoutes
+  subroutes: [
+    VWidget(
+      path: 'profile',
+      widget: ProfileWidget(),
+    ),
+    VWidget(
+      path: 'settings',
+      widget: SettingsWidget(),
+    ),
+  ],
+)
+```
+
+Note how `VNester` has `nestedRoutes` instead of `stackedRoutes`. This is because you want the routes bellow to be nested and not stacked.
+
+**Navigation control**
+
+If you used `beforeEnter`, `beforeUpdate`, `beforeLeave`, `afterEnter` or `afterUpdate` in a `VStacked` or a `VChild`, you now have to extract this logic in a new `VRouteElement` called `VGuard`. Here is how to:
+
+*OLD*
+```
+VStacked(
+  beforeEnter: ...,
+  path: '/yourPath',
+  widget: YourWidget(),
+)
+```
+
+*NEW*
+```
+VGuard(
+  beforeEnter: ...,
+  stackedRoutes[
+    VWidget(
+      path: '/yourPath',
+      widget: YourWidget(),
+    ),
+  ],
+)
+```
+
+Since `VGuard` uses `stackedRoutes`, it in now easy to wrap multiple routes in a single `VGuard`
+
+If you used `onPop` or `onSystemPop`, apply the same logic as `VGuard` but with `VPopHandler`:
+
+*OLD*
+```
+VStacked(
+  onPop: ...,
+  path: '/yourPath',
+  widget: YourWidget(),
+)
+```
+
+*NEW*
+```
+VPopHandler(
+  onPop: ...,
+  stackedRoutes[
+    VWidget(
+      path: '/yourPath',
+      widget: YourWidget(),
+    ),
+  ],
+)
+```
+
+**About paths**:
+* If you ever used a null path to match the parent, you can still do so but it has to be specified by using `path: null`
+* Every path in `VRouter.routes` have to start with '/'
+
+### Navigation
+
+`VRouterData` is replaced by `VRouter` so:
+* When you did `VRouterData.of(context).push`
+* You can do `VRouter.of(context).push`
+
+You can also use the easier access to VRouter: `context.vRouter`
+So `VRouterData.of(context).push` will become `context.vRouter.push`.
+
+### Accessing data
+
+Previously there was 3 ways to access data:
+* `VRouterData`
+* `VRouteData`
+* `VRouteElementData`
+
+Now **everything is store in `VRouter`**, accessible even more easily using `context.vRouter`:
+* `context.vRouter.pathParameters`
+* `context.vRouter.queryParameters`
+* `context.vRouter.historyState`
+
+If you did use *historyState*:
+* it was previously a `String` which was different for `VRouterData`, `VRouteData`, `VRouteElementData`.
+* It is now a `Map<String, String>`, unique, and accessible using `context.vRouter.historyState`
+
+### Help I can't migrate
+
+If despite this guide, you are having trouble migrating, feel free to open [a new issue on github](https://github.com/lulupointu/vrouter/issues/new).
