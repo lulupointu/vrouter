@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">51</td>
-            <td class="headerCovTableEntry">150</td>
-            <td class="headerCovTableEntryLo">34.0 %</td>
+            <td class="headerCovTableEntry">118</td>
+            <td class="headerCovTableEntry">147</td>
+            <td class="headerCovTableEntryMed">80.3 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-17 11:07:57</td>
+            <td class="headerValue">2021-03-18 15:42:40</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -67,22 +67,22 @@
 <a name="5"><span class="lineNum">       5 </span>            :   final List&lt;VRouteElement&gt; nestedRoutes;</a>
 <a name="6"><span class="lineNum">       6 </span>            :   final Widget Function(Widget child) widgetBuilder;</a>
 <a name="7"><span class="lineNum">       7 </span>            : </a>
-<a name="8"><span class="lineNum">       8 </span><span class="lineCov">          2 :   VNesterPage({</span></a>
-<a name="9"><span class="lineNum">       9 </span>            :     required Page Function(LocalVRouterData child) pageBuilder,</a>
-<a name="10"><span class="lineNum">      10 </span>            :     required this.widgetBuilder,</a>
-<a name="11"><span class="lineNum">      11 </span>            :     required String? path,</a>
+<a name="8"><span class="lineNum">       8 </span><span class="lineCov">          3 :   VNesterPage({</span></a>
+<a name="9"><span class="lineNum">       9 </span>            :     required String? path,</a>
+<a name="10"><span class="lineNum">      10 </span>            :     required Page Function(Widget child) pageBuilder,</a>
+<a name="11"><span class="lineNum">      11 </span>            :     required this.widgetBuilder,</a>
 <a name="12"><span class="lineNum">      12 </span>            :     required this.nestedRoutes,</a>
 <a name="13"><span class="lineNum">      13 </span>            :     String? name,</a>
 <a name="14"><span class="lineNum">      14 </span>            :     List&lt;VRouteElement&gt; stackedRoutes = const [],</a>
 <a name="15"><span class="lineNum">      15 </span>            :     List&lt;String&gt; aliases = const [],</a>
 <a name="16"><span class="lineNum">      16 </span>            :     bool mustMatchSubRoute = false,</a>
-<a name="17"><span class="lineNum">      17 </span><span class="lineCov">          2 :   })  : assert(nestedRoutes.isNotEmpty,</span></a>
+<a name="17"><span class="lineNum">      17 </span><span class="lineCov">          3 :   })  : assert(nestedRoutes.isNotEmpty,</span></a>
 <a name="18"><span class="lineNum">      18 </span>            :             'The stackedRoutes of a VNester should not be null, otherwise it can\'t nest'),</a>
-<a name="19"><span class="lineNum">      19 </span><span class="lineCov">          2 :         navigatorKey = GlobalKey&lt;NavigatorState&gt;(),</span></a>
-<a name="20"><span class="lineNum">      20 </span><span class="lineCov">          2 :         heroController = HeroController(),</span></a>
-<a name="21"><span class="lineNum">      21 </span><span class="lineCov">          2 :         super(</span></a>
+<a name="19"><span class="lineNum">      19 </span><span class="lineCov">          3 :         navigatorKey = GlobalKey&lt;NavigatorState&gt;(),</span></a>
+<a name="20"><span class="lineNum">      20 </span><span class="lineCov">          3 :         heroController = HeroController(),</span></a>
+<a name="21"><span class="lineNum">      21 </span><span class="lineCov">          3 :         super(</span></a>
 <a name="22"><span class="lineNum">      22 </span>            :           pageBuilder: pageBuilder,</a>
-<a name="23"><span class="lineNum">      23 </span><span class="lineCov">          4 :           widget: widgetBuilder(Container()),</span></a>
+<a name="23"><span class="lineNum">      23 </span><span class="lineCov">          6 :           widget: widgetBuilder(Container()),</span></a>
 <a name="24"><span class="lineNum">      24 </span>            :           path: path,</a>
 <a name="25"><span class="lineNum">      25 </span>            :           name: name,</a>
 <a name="26"><span class="lineNum">      26 </span>            :           stackedRoutes: stackedRoutes,</a>
@@ -98,7 +98,7 @@
 <a name="36"><span class="lineNum">      36 </span>            :   /// It is created automatically</a>
 <a name="37"><span class="lineNum">      37 </span>            :   final HeroController heroController;</a>
 <a name="38"><span class="lineNum">      38 </span>            : </a>
-<a name="39"><span class="lineNum">      39 </span><span class="lineCov">          1 :   @override</span></a>
+<a name="39"><span class="lineNum">      39 </span><span class="lineCov">          2 :   @override</span></a>
 <a name="40"><span class="lineNum">      40 </span>            :   VRoute? buildRoute(</a>
 <a name="41"><span class="lineNum">      41 </span>            :     VPathRequestData vPathRequestData, {</a>
 <a name="42"><span class="lineNum">      42 </span>            :     required String? parentRemainingPath,</a>
@@ -107,378 +107,375 @@
 <a name="45"><span class="lineNum">      45 </span>            :     VRoute? nestedRouteVRoute;</a>
 <a name="46"><span class="lineNum">      46 </span>            :     late final GetPathMatchResult getPathMatchResult;</a>
 <a name="47"><span class="lineNum">      47 </span>            : </a>
-<a name="48"><span class="lineNum">      48 </span>            :     // This will hold every GetPathMatchResult for the aliases so that we compute them only once</a>
-<a name="49"><span class="lineNum">      49 </span><span class="lineCov">          1 :     List&lt;GetPathMatchResult&gt; aliasesGetPathMatchResult = [];</span></a>
-<a name="50"><span class="lineNum">      50 </span>            : </a>
-<a name="51"><span class="lineNum">      51 </span>            :     // Try to find valid VRoute from nestedRoutes</a>
-<a name="52"><span class="lineNum">      52 </span>            : </a>
-<a name="53"><span class="lineNum">      53 </span>            :     // Check for the path</a>
-<a name="54"><span class="lineNum">      54 </span><span class="lineCov">          1 :     final pathGetPathMatchResult = getPathMatch(</span></a>
-<a name="55"><span class="lineNum">      55 </span><span class="lineCov">          1 :       entirePath: vPathRequestData.path,</span></a>
-<a name="56"><span class="lineNum">      56 </span>            :       remainingPathFromParent: parentRemainingPath,</a>
-<a name="57"><span class="lineNum">      57 </span><span class="lineCov">          1 :       selfPath: path,</span></a>
-<a name="58"><span class="lineNum">      58 </span><span class="lineCov">          1 :       selfPathRegExp: pathRegExp,</span></a>
-<a name="59"><span class="lineNum">      59 </span><span class="lineCov">          1 :       selfPathParametersKeys: pathParametersKeys,</span></a>
-<a name="60"><span class="lineNum">      60 </span>            :     );</a>
-<a name="61"><span class="lineNum">      61 </span><span class="lineCov">          1 :     final VRoute? vRoute = getVRouteFromRoutes(</span></a>
-<a name="62"><span class="lineNum">      62 </span>            :       vPathRequestData,</a>
-<a name="63"><span class="lineNum">      63 </span><span class="lineCov">          1 :       routes: nestedRoutes,</span></a>
-<a name="64"><span class="lineNum">      64 </span>            :       parentPathParameters: parentPathParameters,</a>
-<a name="65"><span class="lineNum">      65 </span>            :       getPathMatchResult: pathGetPathMatchResult,</a>
-<a name="66"><span class="lineNum">      66 </span>            :     );</a>
-<a name="67"><span class="lineNum">      67 </span>            :     if (vRoute != null) {</a>
-<a name="68"><span class="lineNum">      68 </span>            :       // If we have a matching path with the path, keep it</a>
-<a name="69"><span class="lineNum">      69 </span>            :       nestedRouteVRoute = vRoute;</a>
-<a name="70"><span class="lineNum">      70 </span><span class="lineNoCov">          0 :       getPathMatchResult = pathGetPathMatchResult;</span></a>
-<a name="71"><span class="lineNum">      71 </span>            :     } else {</a>
-<a name="72"><span class="lineNum">      72 </span>            :       // Else check with the aliases</a>
-<a name="73"><span class="lineNum">      73 </span><span class="lineCov">          3 :       for (var i = 0; i &lt; aliases.length; i++) {</span></a>
-<a name="74"><span class="lineNum">      74 </span><span class="lineNoCov">          0 :         final aliasGetPathMatchResult = getPathMatch(</span></a>
-<a name="75"><span class="lineNum">      75 </span><span class="lineNoCov">          0 :           entirePath: vPathRequestData.path,</span></a>
-<a name="76"><span class="lineNum">      76 </span>            :           remainingPathFromParent: parentRemainingPath,</a>
-<a name="77"><span class="lineNum">      77 </span><span class="lineNoCov">          0 :           selfPath: aliases[i],</span></a>
-<a name="78"><span class="lineNum">      78 </span><span class="lineNoCov">          0 :           selfPathRegExp: aliasesRegExp[i],</span></a>
-<a name="79"><span class="lineNum">      79 </span><span class="lineNoCov">          0 :           selfPathParametersKeys: aliasesPathParametersKeys[i],</span></a>
-<a name="80"><span class="lineNum">      80 </span>            :         );</a>
-<a name="81"><span class="lineNum">      81 </span><span class="lineNoCov">          0 :         final VRoute? vRoute = getVRouteFromRoutes(</span></a>
-<a name="82"><span class="lineNum">      82 </span>            :           vPathRequestData,</a>
-<a name="83"><span class="lineNum">      83 </span><span class="lineNoCov">          0 :           routes: nestedRoutes,</span></a>
-<a name="84"><span class="lineNum">      84 </span>            :           parentPathParameters: parentPathParameters,</a>
-<a name="85"><span class="lineNum">      85 </span><span class="lineNoCov">          0 :           getPathMatchResult: aliasesGetPathMatchResult[i],</span></a>
-<a name="86"><span class="lineNum">      86 </span>            :         );</a>
-<a name="87"><span class="lineNum">      87 </span>            :         if (vRoute != null) {</a>
-<a name="88"><span class="lineNum">      88 </span>            :           nestedRouteVRoute = vRoute;</a>
-<a name="89"><span class="lineNum">      89 </span><span class="lineNoCov">          0 :           getPathMatchResult = aliasGetPathMatchResult;</span></a>
-<a name="90"><span class="lineNum">      90 </span>            :           break;</a>
-<a name="91"><span class="lineNum">      91 </span>            :         }</a>
-<a name="92"><span class="lineNum">      92 </span>            :       }</a>
-<a name="93"><span class="lineNum">      93 </span>            :     }</a>
-<a name="94"><span class="lineNum">      94 </span>            : </a>
-<a name="95"><span class="lineNum">      95 </span>            :     // If no child route match, this is not a match</a>
-<a name="96"><span class="lineNum">      96 </span>            :     if (nestedRouteVRoute == null) {</a>
-<a name="97"><span class="lineNum">      97 </span>            :       return null;</a>
-<a name="98"><span class="lineNum">      98 </span>            :     }</a>
-<a name="99"><span class="lineNum">      99 </span>            : </a>
-<a name="100"><span class="lineNum">     100 </span>            :     // Else also try to match nestedRoute with the path (or the alias) with which the nestedRoute was valid</a>
-<a name="101"><span class="lineNum">     101 </span><span class="lineCov">          1 :     final VRoute? subRouteVRoute = getVRouteFromRoutes(</span></a>
-<a name="102"><span class="lineNum">     102 </span>            :       vPathRequestData,</a>
-<a name="103"><span class="lineNum">     103 </span><span class="lineCov">          1 :       routes: stackedRoutes,</span></a>
-<a name="104"><span class="lineNum">     104 </span><span class="lineCov">          1 :       parentPathParameters: {</span></a>
-<a name="105"><span class="lineNum">     105 </span><span class="lineCov">          1 :         ...parentPathParameters,</span></a>
-<a name="106"><span class="lineNum">     106 </span><span class="lineCov">          1 :         ...getPathMatchResult.pathParameters,</span></a>
-<a name="107"><span class="lineNum">     107 </span>            :       },</a>
-<a name="108"><span class="lineNum">     108 </span><span class="lineNoCov">          0 :       getPathMatchResult: getPathMatchResult,</span></a>
-<a name="109"><span class="lineNum">     109 </span>            :     );</a>
-<a name="110"><span class="lineNum">     110 </span>            : </a>
-<a name="111"><span class="lineNum">     111 </span>            :     if (subRouteVRoute == null) {</a>
-<a name="112"><span class="lineNum">     112 </span><span class="lineCov">          1 :       final allPathParameters = {</span></a>
-<a name="113"><span class="lineNum">     113 </span><span class="lineCov">          1 :         ...parentPathParameters,</span></a>
-<a name="114"><span class="lineNum">     114 </span><span class="lineCov">          1 :         ...getPathMatchResult.pathParameters,</span></a>
-<a name="115"><span class="lineNum">     115 </span><span class="lineCov">          1 :         ...nestedRouteVRoute.pathParameters,</span></a>
-<a name="116"><span class="lineNum">     116 </span>            :       };</a>
-<a name="117"><span class="lineNum">     117 </span><span class="lineCov">          1 :       final newVRouteElements = VRouteElementNode(this,</span></a>
-<a name="118"><span class="lineNum">     118 </span><span class="lineCov">          1 :           nestedVRouteElementNode: nestedRouteVRoute.vRouteElementNode);</span></a>
-<a name="119"><span class="lineNum">     119 </span>            : </a>
-<a name="120"><span class="lineNum">     120 </span>            :       // If vPageRouteC is null, create a VRoute with the nestedVRoute</a>
-<a name="121"><span class="lineNum">     121 </span><span class="lineCov">          1 :       return VRoute(</span></a>
-<a name="122"><span class="lineNum">     122 </span>            :         vRouteElementNode: newVRouteElements,</a>
-<a name="123"><span class="lineNum">     123 </span><span class="lineCov">          1 :         pages: [</span></a>
-<a name="124"><span class="lineNum">     124 </span><span class="lineCov">          1 :           buildPage(</span></a>
-<a name="125"><span class="lineNum">     125 </span><span class="lineCov">          2 :             widget: widgetBuilder(</span></a>
-<a name="126"><span class="lineNum">     126 </span><span class="lineCov">          1 :               Builder(</span></a>
-<a name="127"><span class="lineNum">     127 </span><span class="lineCov">          1 :                 builder: (BuildContext context) {</span></a>
-<a name="128"><span class="lineNum">     128 </span><span class="lineCov">          1 :                   return VRouterHelper(</span></a>
-<a name="129"><span class="lineNum">     129 </span><span class="lineCov">          2 :                     pages: nestedRouteVRoute!.pages.isNotEmpty</span></a>
-<a name="130"><span class="lineNum">     130 </span><span class="lineCov">          1 :                         ? nestedRouteVRoute.pages</span></a>
-<a name="131"><span class="lineNum">     131 </span><span class="lineNoCov">          0 :                         : [</span></a>
-<a name="132"><span class="lineNum">     132 </span><span class="lineNoCov">          0 :                             MaterialPage(child: Center(child: CircularProgressIndicator())),</span></a>
-<a name="133"><span class="lineNum">     133 </span>            :                           ],</a>
-<a name="134"><span class="lineNum">     134 </span><span class="lineCov">          1 :                     navigatorKey: navigatorKey,</span></a>
-<a name="135"><span class="lineNum">     135 </span><span class="lineCov">          2 :                     observers: [heroController],</span></a>
-<a name="136"><span class="lineNum">     136 </span>            :                     backButtonDispatcher:</a>
-<a name="137"><span class="lineNum">     137 </span><span class="lineCov">          3 :                         ChildBackButtonDispatcher(Router.of(context).backButtonDispatcher!),</span></a>
-<a name="138"><span class="lineNum">     138 </span><span class="lineNoCov">          0 :                     onPopPage: (_, __) {</span></a>
-<a name="139"><span class="lineNum">     139 </span><span class="lineNoCov">          0 :                       RootVRouterData.of(context)</span></a>
-<a name="140"><span class="lineNum">     140 </span><span class="lineNoCov">          0 :                           .pop(nestedRouteVRoute!.vRouteElementNode.getVRouteElementToPop());</span></a>
-<a name="141"><span class="lineNum">     141 </span>            : </a>
-<a name="142"><span class="lineNum">     142 </span>            :                       // We always prevent popping because we handle it in VRouter</a>
-<a name="143"><span class="lineNum">     143 </span>            :                       return false;</a>
-<a name="144"><span class="lineNum">     144 </span>            :                     },</a>
-<a name="145"><span class="lineNum">     145 </span><span class="lineNoCov">          0 :                     onSystemPopPage: () async {</span></a>
-<a name="146"><span class="lineNum">     146 </span><span class="lineNoCov">          0 :                       await RootVRouterData.of(context).systemPop(</span></a>
-<a name="147"><span class="lineNum">     147 </span><span class="lineNoCov">          0 :                           nestedRouteVRoute!.vRouteElementNode.getVRouteElementToPop());</span></a>
-<a name="148"><span class="lineNum">     148 </span>            : </a>
-<a name="149"><span class="lineNum">     149 </span>            :                       // We always prevent popping because we handle it in VRouter</a>
-<a name="150"><span class="lineNum">     150 </span>            :                       return true;</a>
-<a name="151"><span class="lineNum">     151 </span>            :                     },</a>
-<a name="152"><span class="lineNum">     152 </span>            :                   );</a>
-<a name="153"><span class="lineNum">     153 </span>            :                 },</a>
-<a name="154"><span class="lineNum">     154 </span>            :               ),</a>
-<a name="155"><span class="lineNum">     155 </span>            :             ),</a>
-<a name="156"><span class="lineNum">     156 </span>            :             vPathRequestData: vPathRequestData,</a>
-<a name="157"><span class="lineNum">     157 </span>            :             pathParameters: allPathParameters,</a>
-<a name="158"><span class="lineNum">     158 </span>            :             vRouteElementNode: newVRouteElements,</a>
-<a name="159"><span class="lineNum">     159 </span>            :           ),</a>
-<a name="160"><span class="lineNum">     160 </span>            :         ],</a>
-<a name="161"><span class="lineNum">     161 </span>            :         pathParameters: allPathParameters,</a>
-<a name="162"><span class="lineNum">     162 </span><span class="lineCov">          3 :         vRouteElements: &lt;VRouteElement&gt;[this] + nestedRouteVRoute.vRouteElements,</span></a>
-<a name="163"><span class="lineNum">     163 </span>            :       );</a>
-<a name="164"><span class="lineNum">     164 </span>            :     } else {</a>
-<a name="165"><span class="lineNum">     165 </span>            :       // If vPageRouteC is NOT null, create a VRoute by mixing nestedVRoute and vPageVRoute</a>
-<a name="166"><span class="lineNum">     166 </span>            : </a>
-<a name="167"><span class="lineNum">     167 </span><span class="lineNoCov">          0 :       final allPathParameters = {</span></a>
-<a name="168"><span class="lineNum">     168 </span><span class="lineNoCov">          0 :         ...parentPathParameters,</span></a>
-<a name="169"><span class="lineNum">     169 </span><span class="lineNoCov">          0 :         ...getPathMatchResult.pathParameters,</span></a>
-<a name="170"><span class="lineNum">     170 </span><span class="lineNoCov">          0 :         ...nestedRouteVRoute.pathParameters,</span></a>
-<a name="171"><span class="lineNum">     171 </span><span class="lineNoCov">          0 :         ...subRouteVRoute.pathParameters,</span></a>
-<a name="172"><span class="lineNum">     172 </span>            :       };</a>
-<a name="173"><span class="lineNum">     173 </span><span class="lineNoCov">          0 :       final newVRouteElementNode = VRouteElementNode(</span></a>
-<a name="174"><span class="lineNum">     174 </span>            :         this,</a>
-<a name="175"><span class="lineNum">     175 </span><span class="lineNoCov">          0 :         nestedVRouteElementNode: nestedRouteVRoute.vRouteElementNode,</span></a>
-<a name="176"><span class="lineNum">     176 </span><span class="lineNoCov">          0 :         subVRouteElementNode: subRouteVRoute.vRouteElementNode,</span></a>
-<a name="177"><span class="lineNum">     177 </span>            :       );</a>
-<a name="178"><span class="lineNum">     178 </span>            : </a>
-<a name="179"><span class="lineNum">     179 </span><span class="lineNoCov">          0 :       return VRoute(</span></a>
-<a name="180"><span class="lineNum">     180 </span>            :         vRouteElementNode: newVRouteElementNode,</a>
-<a name="181"><span class="lineNum">     181 </span><span class="lineNoCov">          0 :         pages: [</span></a>
-<a name="182"><span class="lineNum">     182 </span><span class="lineNoCov">          0 :           buildPage(</span></a>
-<a name="183"><span class="lineNum">     183 </span><span class="lineNoCov">          0 :             widget: Builder(</span></a>
-<a name="184"><span class="lineNum">     184 </span><span class="lineNoCov">          0 :               builder: (BuildContext context) {</span></a>
-<a name="185"><span class="lineNum">     185 </span><span class="lineNoCov">          0 :                 return VRouterHelper(</span></a>
-<a name="186"><span class="lineNum">     186 </span><span class="lineNoCov">          0 :                   pages: nestedRouteVRoute!.pages,</span></a>
-<a name="187"><span class="lineNum">     187 </span><span class="lineNoCov">          0 :                   navigatorKey: navigatorKey,</span></a>
-<a name="188"><span class="lineNum">     188 </span><span class="lineNoCov">          0 :                   observers: [heroController],</span></a>
-<a name="189"><span class="lineNum">     189 </span>            :                   backButtonDispatcher:</a>
-<a name="190"><span class="lineNum">     190 </span><span class="lineNoCov">          0 :                       ChildBackButtonDispatcher(Router.of(context).backButtonDispatcher!),</span></a>
-<a name="191"><span class="lineNum">     191 </span><span class="lineNoCov">          0 :                   onPopPage: (_, __) {</span></a>
-<a name="192"><span class="lineNum">     192 </span><span class="lineNoCov">          0 :                     RootVRouterData.of(context)</span></a>
-<a name="193"><span class="lineNum">     193 </span><span class="lineNoCov">          0 :                         .pop(newVRouteElementNode.getVRouteElementToPop());</span></a>
-<a name="194"><span class="lineNum">     194 </span>            :                     return false;</a>
-<a name="195"><span class="lineNum">     195 </span>            :                   },</a>
-<a name="196"><span class="lineNum">     196 </span><span class="lineNoCov">          0 :                   onSystemPopPage: () async {</span></a>
-<a name="197"><span class="lineNum">     197 </span><span class="lineNoCov">          0 :                     await RootVRouterData.of(context)</span></a>
-<a name="198"><span class="lineNum">     198 </span><span class="lineNoCov">          0 :                         .systemPop(newVRouteElementNode.getVRouteElementToPop());</span></a>
-<a name="199"><span class="lineNum">     199 </span>            :                     return true;</a>
-<a name="200"><span class="lineNum">     200 </span>            :                   },</a>
-<a name="201"><span class="lineNum">     201 </span>            :                 );</a>
-<a name="202"><span class="lineNum">     202 </span>            :               },</a>
-<a name="203"><span class="lineNum">     203 </span>            :             ),</a>
-<a name="204"><span class="lineNum">     204 </span>            :             vPathRequestData: vPathRequestData,</a>
-<a name="205"><span class="lineNum">     205 </span>            :             pathParameters: allPathParameters,</a>
-<a name="206"><span class="lineNum">     206 </span>            :             vRouteElementNode: newVRouteElementNode,</a>
-<a name="207"><span class="lineNum">     207 </span>            :           ),</a>
-<a name="208"><span class="lineNum">     208 </span><span class="lineNoCov">          0 :           ...subRouteVRoute.pages,</span></a>
-<a name="209"><span class="lineNum">     209 </span>            :         ],</a>
-<a name="210"><span class="lineNum">     210 </span>            :         pathParameters: allPathParameters,</a>
-<a name="211"><span class="lineNum">     211 </span><span class="lineNoCov">          0 :         vRouteElements: &lt;VRouteElement&gt;[this] +</span></a>
-<a name="212"><span class="lineNum">     212 </span><span class="lineNoCov">          0 :             nestedRouteVRoute.vRouteElements +</span></a>
-<a name="213"><span class="lineNum">     213 </span><span class="lineNoCov">          0 :             subRouteVRoute.vRouteElements,</span></a>
-<a name="214"><span class="lineNum">     214 </span>            :       );</a>
-<a name="215"><span class="lineNum">     215 </span>            :     }</a>
-<a name="216"><span class="lineNum">     216 </span>            :   }</a>
-<a name="217"><span class="lineNum">     217 </span>            : </a>
-<a name="218"><span class="lineNum">     218 </span><span class="lineNoCov">          0 :   String? getPathFromName(</span></a>
-<a name="219"><span class="lineNum">     219 </span>            :     String nameToMatch, {</a>
-<a name="220"><span class="lineNum">     220 </span>            :     required Map&lt;String, String&gt; pathParameters,</a>
-<a name="221"><span class="lineNum">     221 </span>            :     required String? parentPath,</a>
-<a name="222"><span class="lineNum">     222 </span>            :     required Map&lt;String, String&gt; remainingPathParameters,</a>
-<a name="223"><span class="lineNum">     223 </span>            :   }) {</a>
-<a name="224"><span class="lineNum">     224 </span>            :     // A variable to store the new parentPath from the path</a>
-<a name="225"><span class="lineNum">     225 </span>            :     late final String? newParentPathFromPath;</a>
-<a name="226"><span class="lineNum">     226 </span>            :     late final Map&lt;String, String&gt; newRemainingPathParametersFromPath;</a>
-<a name="227"><span class="lineNum">     227 </span>            : </a>
-<a name="228"><span class="lineNum">     228 </span>            :     // A variable to store the new parent path from the aliases</a>
-<a name="229"><span class="lineNum">     229 </span><span class="lineNoCov">          0 :     final List&lt;String?&gt; newParentPathFromAliases = [];</span></a>
-<a name="230"><span class="lineNum">     230 </span><span class="lineNoCov">          0 :     final List&lt;Map&lt;String, String&gt;&gt; newRemainingPathParametersFromAliases = [];</span></a>
-<a name="231"><span class="lineNum">     231 </span>            : </a>
-<a name="232"><span class="lineNum">     232 </span>            :     // Get the new parent path by taking this path into account</a>
-<a name="233"><span class="lineNum">     233 </span><span class="lineNoCov">          0 :     newParentPathFromPath = getNewParentPath(parentPath,</span></a>
-<a name="234"><span class="lineNum">     234 </span><span class="lineNoCov">          0 :         path: path, pathParametersKeys: pathParametersKeys, pathParameters: pathParameters);</span></a>
-<a name="235"><span class="lineNum">     235 </span>            : </a>
-<a name="236"><span class="lineNum">     236 </span><span class="lineNoCov">          0 :     newRemainingPathParametersFromPath = Map&lt;String, String&gt;.from(remainingPathParameters)</span></a>
-<a name="237"><span class="lineNum">     237 </span><span class="lineNoCov">          0 :       ..removeWhere((key, value) =&gt; pathParametersKeys.contains(key));</span></a>
-<a name="238"><span class="lineNum">     238 </span>            : </a>
-<a name="239"><span class="lineNum">     239 </span>            :     // Check if any nested route matches the name using path</a>
-<a name="240"><span class="lineNum">     240 </span><span class="lineNoCov">          0 :     for (var vRouteElement in nestedRoutes) {</span></a>
-<a name="241"><span class="lineNum">     241 </span><span class="lineNoCov">          0 :       String? childPathFromName = vRouteElement.getPathFromName(</span></a>
-<a name="242"><span class="lineNum">     242 </span>            :         nameToMatch,</a>
-<a name="243"><span class="lineNum">     243 </span>            :         pathParameters: pathParameters,</a>
-<a name="244"><span class="lineNum">     244 </span><span class="lineNoCov">          0 :         parentPath: newParentPathFromPath,</span></a>
-<a name="245"><span class="lineNum">     245 </span><span class="lineNoCov">          0 :         remainingPathParameters: newRemainingPathParametersFromPath,</span></a>
-<a name="246"><span class="lineNum">     246 </span>            :       );</a>
-<a name="247"><span class="lineNum">     247 </span>            :       if (childPathFromName != null) {</a>
-<a name="248"><span class="lineNum">     248 </span>            :         return childPathFromName;</a>
-<a name="249"><span class="lineNum">     249 </span>            :       }</a>
-<a name="250"><span class="lineNum">     250 </span>            :     }</a>
-<a name="251"><span class="lineNum">     251 </span>            : </a>
-<a name="252"><span class="lineNum">     252 </span>            :     // Check if any subroute matches the name using path</a>
-<a name="253"><span class="lineNum">     253 </span><span class="lineNoCov">          0 :     for (var vRouteElement in stackedRoutes) {</span></a>
-<a name="254"><span class="lineNum">     254 </span><span class="lineNoCov">          0 :       String? childPathFromName = vRouteElement.getPathFromName(</span></a>
-<a name="255"><span class="lineNum">     255 </span>            :         nameToMatch,</a>
-<a name="256"><span class="lineNum">     256 </span>            :         pathParameters: pathParameters,</a>
-<a name="257"><span class="lineNum">     257 </span><span class="lineNoCov">          0 :         parentPath: newParentPathFromPath,</span></a>
-<a name="258"><span class="lineNum">     258 </span><span class="lineNoCov">          0 :         remainingPathParameters: newRemainingPathParametersFromPath,</span></a>
-<a name="259"><span class="lineNum">     259 </span>            :       );</a>
-<a name="260"><span class="lineNum">     260 </span>            :       if (childPathFromName != null) {</a>
-<a name="261"><span class="lineNum">     261 </span>            :         return childPathFromName;</a>
-<a name="262"><span class="lineNum">     262 </span>            :       }</a>
-<a name="263"><span class="lineNum">     263 </span>            :     }</a>
-<a name="264"><span class="lineNum">     264 </span>            : </a>
-<a name="265"><span class="lineNum">     265 </span><span class="lineNoCov">          0 :     for (var i = 0; i &lt; aliases.length; i++) {</span></a>
-<a name="266"><span class="lineNum">     266 </span>            :       // Get the new parent path by taking this alias into account</a>
-<a name="267"><span class="lineNum">     267 </span><span class="lineNoCov">          0 :       newParentPathFromAliases.add(getNewParentPath(</span></a>
-<a name="268"><span class="lineNum">     268 </span>            :         parentPath,</a>
-<a name="269"><span class="lineNum">     269 </span><span class="lineNoCov">          0 :         path: aliases[i],</span></a>
-<a name="270"><span class="lineNum">     270 </span><span class="lineNoCov">          0 :         pathParametersKeys: aliasesPathParametersKeys[i],</span></a>
-<a name="271"><span class="lineNum">     271 </span>            :         pathParameters: pathParameters,</a>
-<a name="272"><span class="lineNum">     272 </span>            :       ));</a>
-<a name="273"><span class="lineNum">     273 </span><span class="lineNoCov">          0 :       newRemainingPathParametersFromAliases.add(</span></a>
-<a name="274"><span class="lineNum">     274 </span><span class="lineNoCov">          0 :         Map&lt;String, String&gt;.from(remainingPathParameters)</span></a>
-<a name="275"><span class="lineNum">     275 </span><span class="lineNoCov">          0 :           ..removeWhere((key, value) =&gt; pathParametersKeys.contains(key)),</span></a>
-<a name="276"><span class="lineNum">     276 </span>            :       );</a>
-<a name="277"><span class="lineNum">     277 </span>            : </a>
-<a name="278"><span class="lineNum">     278 </span>            :       // Check if any nested route matches the name using aliases</a>
-<a name="279"><span class="lineNum">     279 </span><span class="lineNoCov">          0 :       for (var vRouteElement in nestedRoutes) {</span></a>
-<a name="280"><span class="lineNum">     280 </span><span class="lineNoCov">          0 :         String? childPathFromName = vRouteElement.getPathFromName(</span></a>
-<a name="281"><span class="lineNum">     281 </span>            :           nameToMatch,</a>
-<a name="282"><span class="lineNum">     282 </span>            :           pathParameters: pathParameters,</a>
-<a name="283"><span class="lineNum">     283 </span><span class="lineNoCov">          0 :           parentPath: newParentPathFromAliases[i],</span></a>
-<a name="284"><span class="lineNum">     284 </span><span class="lineNoCov">          0 :           remainingPathParameters: newRemainingPathParametersFromAliases[i],</span></a>
-<a name="285"><span class="lineNum">     285 </span>            :         );</a>
-<a name="286"><span class="lineNum">     286 </span>            :         if (childPathFromName != null) {</a>
-<a name="287"><span class="lineNum">     287 </span>            :           return childPathFromName;</a>
-<a name="288"><span class="lineNum">     288 </span>            :         }</a>
-<a name="289"><span class="lineNum">     289 </span>            :       }</a>
-<a name="290"><span class="lineNum">     290 </span>            : </a>
-<a name="291"><span class="lineNum">     291 </span>            :       // Check if any subroute matches the name using aliases</a>
-<a name="292"><span class="lineNum">     292 </span><span class="lineNoCov">          0 :       for (var vRouteElement in stackedRoutes) {</span></a>
-<a name="293"><span class="lineNum">     293 </span><span class="lineNoCov">          0 :         String? childPathFromName = vRouteElement.getPathFromName(</span></a>
-<a name="294"><span class="lineNum">     294 </span>            :           nameToMatch,</a>
-<a name="295"><span class="lineNum">     295 </span>            :           pathParameters: pathParameters,</a>
-<a name="296"><span class="lineNum">     296 </span><span class="lineNoCov">          0 :           parentPath: newParentPathFromAliases[i],</span></a>
-<a name="297"><span class="lineNum">     297 </span><span class="lineNoCov">          0 :           remainingPathParameters: newRemainingPathParametersFromAliases[i],</span></a>
-<a name="298"><span class="lineNum">     298 </span>            :         );</a>
-<a name="299"><span class="lineNum">     299 </span>            :         if (childPathFromName != null) {</a>
-<a name="300"><span class="lineNum">     300 </span>            :           return childPathFromName;</a>
-<a name="301"><span class="lineNum">     301 </span>            :         }</a>
-<a name="302"><span class="lineNum">     302 </span>            :       }</a>
-<a name="303"><span class="lineNum">     303 </span>            :     }</a>
-<a name="304"><span class="lineNum">     304 </span>            : </a>
-<a name="305"><span class="lineNum">     305 </span>            :     // If no subroute matches the name, try to match this name</a>
-<a name="306"><span class="lineNum">     306 </span><span class="lineNoCov">          0 :     if (name == nameToMatch) {</span></a>
-<a name="307"><span class="lineNum">     307 </span>            :       // Note that newParentPath will be null if this path can't be included so the return value</a>
-<a name="308"><span class="lineNum">     308 </span>            :       // is the right one</a>
-<a name="309"><span class="lineNum">     309 </span><span class="lineNoCov">          0 :       if (newParentPathFromPath != null &amp;&amp; newRemainingPathParametersFromPath.isEmpty) {</span></a>
-<a name="310"><span class="lineNum">     310 </span><span class="lineNoCov">          0 :         return newParentPathFromPath;</span></a>
+<a name="48"><span class="lineNum">      48 </span>            :     // Try to find valid VRoute from nestedRoutes</a>
+<a name="49"><span class="lineNum">      49 </span>            : </a>
+<a name="50"><span class="lineNum">      50 </span>            :     // Check for the path</a>
+<a name="51"><span class="lineNum">      51 </span><span class="lineCov">          2 :     final pathGetPathMatchResult = getPathMatch(</span></a>
+<a name="52"><span class="lineNum">      52 </span><span class="lineCov">          2 :       entirePath: vPathRequestData.path,</span></a>
+<a name="53"><span class="lineNum">      53 </span>            :       remainingPathFromParent: parentRemainingPath,</a>
+<a name="54"><span class="lineNum">      54 </span><span class="lineCov">          2 :       selfPath: path,</span></a>
+<a name="55"><span class="lineNum">      55 </span><span class="lineCov">          2 :       selfPathRegExp: pathRegExp,</span></a>
+<a name="56"><span class="lineNum">      56 </span><span class="lineCov">          2 :       selfPathParametersKeys: pathParametersKeys,</span></a>
+<a name="57"><span class="lineNum">      57 </span>            :       parentPathParameters: parentPathParameters,</a>
+<a name="58"><span class="lineNum">      58 </span>            :     );</a>
+<a name="59"><span class="lineNum">      59 </span><span class="lineCov">          2 :     final VRoute? vRoute = getVRouteFromRoutes(</span></a>
+<a name="60"><span class="lineNum">      60 </span>            :       vPathRequestData,</a>
+<a name="61"><span class="lineNum">      61 </span><span class="lineCov">          2 :       routes: nestedRoutes,</span></a>
+<a name="62"><span class="lineNum">      62 </span>            :       getPathMatchResult: pathGetPathMatchResult,</a>
+<a name="63"><span class="lineNum">      63 </span>            :     );</a>
+<a name="64"><span class="lineNum">      64 </span>            :     if (vRoute != null) {</a>
+<a name="65"><span class="lineNum">      65 </span>            :       // If we have a matching path with the path, keep it</a>
+<a name="66"><span class="lineNum">      66 </span>            :       nestedRouteVRoute = vRoute;</a>
+<a name="67"><span class="lineNum">      67 </span><span class="lineNoCov">          0 :       getPathMatchResult = pathGetPathMatchResult;</span></a>
+<a name="68"><span class="lineNum">      68 </span>            :     } else {</a>
+<a name="69"><span class="lineNum">      69 </span>            :       // Else check with the aliases</a>
+<a name="70"><span class="lineNum">      70 </span><span class="lineCov">          7 :       for (var i = 0; i &lt; aliases.length; i++) {</span></a>
+<a name="71"><span class="lineNum">      71 </span><span class="lineCov">          1 :         final aliasGetPathMatchResult = getPathMatch(</span></a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">          1 :           entirePath: vPathRequestData.path,</span></a>
+<a name="73"><span class="lineNum">      73 </span>            :           remainingPathFromParent: parentRemainingPath,</a>
+<a name="74"><span class="lineNum">      74 </span><span class="lineCov">          2 :           selfPath: aliases[i],</span></a>
+<a name="75"><span class="lineNum">      75 </span><span class="lineCov">          2 :           selfPathRegExp: aliasesRegExp[i],</span></a>
+<a name="76"><span class="lineNum">      76 </span><span class="lineCov">          2 :           selfPathParametersKeys: aliasesPathParametersKeys[i],</span></a>
+<a name="77"><span class="lineNum">      77 </span>            :           parentPathParameters: parentPathParameters,</a>
+<a name="78"><span class="lineNum">      78 </span>            :         );</a>
+<a name="79"><span class="lineNum">      79 </span><span class="lineCov">          1 :         final VRoute? vRoute = getVRouteFromRoutes(</span></a>
+<a name="80"><span class="lineNum">      80 </span>            :           vPathRequestData,</a>
+<a name="81"><span class="lineNum">      81 </span><span class="lineCov">          1 :           routes: nestedRoutes,</span></a>
+<a name="82"><span class="lineNum">      82 </span>            :           getPathMatchResult: aliasGetPathMatchResult,</a>
+<a name="83"><span class="lineNum">      83 </span>            :         );</a>
+<a name="84"><span class="lineNum">      84 </span>            :         if (vRoute != null) {</a>
+<a name="85"><span class="lineNum">      85 </span>            :           nestedRouteVRoute = vRoute;</a>
+<a name="86"><span class="lineNum">      86 </span><span class="lineNoCov">          0 :           getPathMatchResult = aliasGetPathMatchResult;</span></a>
+<a name="87"><span class="lineNum">      87 </span>            :           break;</a>
+<a name="88"><span class="lineNum">      88 </span>            :         }</a>
+<a name="89"><span class="lineNum">      89 </span>            :       }</a>
+<a name="90"><span class="lineNum">      90 </span>            :     }</a>
+<a name="91"><span class="lineNum">      91 </span>            : </a>
+<a name="92"><span class="lineNum">      92 </span>            :     // If no child route match, this is not a match</a>
+<a name="93"><span class="lineNum">      93 </span>            :     if (nestedRouteVRoute == null) {</a>
+<a name="94"><span class="lineNum">      94 </span>            :       return null;</a>
+<a name="95"><span class="lineNum">      95 </span>            :     }</a>
+<a name="96"><span class="lineNum">      96 </span>            : </a>
+<a name="97"><span class="lineNum">      97 </span>            :     // Else also try to match nestedRoute with the path (or the alias) with which the nestedRoute was valid</a>
+<a name="98"><span class="lineNum">      98 </span><span class="lineCov">          2 :     final VRoute? stackedRouteVRoute = getVRouteFromRoutes(</span></a>
+<a name="99"><span class="lineNum">      99 </span>            :       vPathRequestData,</a>
+<a name="100"><span class="lineNum">     100 </span><span class="lineCov">          2 :       routes: stackedRoutes,</span></a>
+<a name="101"><span class="lineNum">     101 </span><span class="lineNoCov">          0 :       getPathMatchResult: getPathMatchResult,</span></a>
+<a name="102"><span class="lineNum">     102 </span>            :     );</a>
+<a name="103"><span class="lineNum">     103 </span>            : </a>
+<a name="104"><span class="lineNum">     104 </span>            :     if (stackedRouteVRoute == null) {</a>
+<a name="105"><span class="lineNum">     105 </span><span class="lineCov">          2 :       final newVRouteElements = VRouteElementNode(this,</span></a>
+<a name="106"><span class="lineNum">     106 </span><span class="lineCov">          2 :           nestedVRouteElementNode: nestedRouteVRoute.vRouteElementNode);</span></a>
+<a name="107"><span class="lineNum">     107 </span>            : </a>
+<a name="108"><span class="lineNum">     108 </span>            :       // If stackedRouteVRoute is null, create a VRoute with nestedRouteVRoute</a>
+<a name="109"><span class="lineNum">     109 </span><span class="lineCov">          2 :       return VRoute(</span></a>
+<a name="110"><span class="lineNum">     110 </span>            :         vRouteElementNode: newVRouteElements,</a>
+<a name="111"><span class="lineNum">     111 </span><span class="lineCov">          2 :         pages: [</span></a>
+<a name="112"><span class="lineNum">     112 </span><span class="lineCov">          2 :           buildPage(</span></a>
+<a name="113"><span class="lineNum">     113 </span><span class="lineCov">          4 :             widget: widgetBuilder(</span></a>
+<a name="114"><span class="lineNum">     114 </span><span class="lineCov">          2 :               Builder(</span></a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineCov">          2 :                 builder: (BuildContext context) {</span></a>
+<a name="116"><span class="lineNum">     116 </span><span class="lineCov">          2 :                   return VRouterHelper(</span></a>
+<a name="117"><span class="lineNum">     117 </span><span class="lineCov">          4 :                     pages: nestedRouteVRoute!.pages.isNotEmpty</span></a>
+<a name="118"><span class="lineNum">     118 </span><span class="lineCov">          2 :                         ? nestedRouteVRoute.pages</span></a>
+<a name="119"><span class="lineNum">     119 </span><span class="lineNoCov">          0 :                         : [</span></a>
+<a name="120"><span class="lineNum">     120 </span><span class="lineNoCov">          0 :                             MaterialPage(child: Center(child: CircularProgressIndicator())),</span></a>
+<a name="121"><span class="lineNum">     121 </span>            :                           ],</a>
+<a name="122"><span class="lineNum">     122 </span><span class="lineCov">          2 :                     navigatorKey: navigatorKey,</span></a>
+<a name="123"><span class="lineNum">     123 </span><span class="lineCov">          4 :                     observers: [heroController],</span></a>
+<a name="124"><span class="lineNum">     124 </span>            :                     backButtonDispatcher:</a>
+<a name="125"><span class="lineNum">     125 </span><span class="lineCov">          6 :                         ChildBackButtonDispatcher(Router.of(context).backButtonDispatcher!),</span></a>
+<a name="126"><span class="lineNum">     126 </span><span class="lineCov">          1 :                     onPopPage: (_, __) {</span></a>
+<a name="127"><span class="lineNum">     127 </span><span class="lineCov">          2 :                       RootVRouterData.of(context).pop(</span></a>
+<a name="128"><span class="lineNum">     128 </span><span class="lineCov">          2 :                         nestedRouteVRoute!.vRouteElementNode.getVRouteElementToPop(),</span></a>
+<a name="129"><span class="lineNum">     129 </span><span class="lineCov">          2 :                         pathParameters: VRouter.of(context).pathParameters,</span></a>
+<a name="130"><span class="lineNum">     130 </span>            :                       );</a>
+<a name="131"><span class="lineNum">     131 </span>            : </a>
+<a name="132"><span class="lineNum">     132 </span>            :                       // We always prevent popping because we handle it in VRouter</a>
+<a name="133"><span class="lineNum">     133 </span>            :                       return false;</a>
+<a name="134"><span class="lineNum">     134 </span>            :                     },</a>
+<a name="135"><span class="lineNum">     135 </span><span class="lineNoCov">          0 :                     onSystemPopPage: () async {</span></a>
+<a name="136"><span class="lineNum">     136 </span><span class="lineNoCov">          0 :                       await RootVRouterData.of(context).systemPop(</span></a>
+<a name="137"><span class="lineNum">     137 </span><span class="lineNoCov">          0 :                         nestedRouteVRoute!.vRouteElementNode.getVRouteElementToPop(),</span></a>
+<a name="138"><span class="lineNum">     138 </span><span class="lineNoCov">          0 :                         pathParameters: VRouter.of(context).pathParameters,</span></a>
+<a name="139"><span class="lineNum">     139 </span>            :                       );</a>
+<a name="140"><span class="lineNum">     140 </span>            : </a>
+<a name="141"><span class="lineNum">     141 </span>            :                       // We always prevent popping because we handle it in VRouter</a>
+<a name="142"><span class="lineNum">     142 </span>            :                       return true;</a>
+<a name="143"><span class="lineNum">     143 </span>            :                     },</a>
+<a name="144"><span class="lineNum">     144 </span>            :                   );</a>
+<a name="145"><span class="lineNum">     145 </span>            :                 },</a>
+<a name="146"><span class="lineNum">     146 </span>            :               ),</a>
+<a name="147"><span class="lineNum">     147 </span>            :             ),</a>
+<a name="148"><span class="lineNum">     148 </span>            :             vPathRequestData: vPathRequestData,</a>
+<a name="149"><span class="lineNum">     149 </span><span class="lineCov">          2 :             pathParameters: nestedRouteVRoute.pathParameters,</span></a>
+<a name="150"><span class="lineNum">     150 </span>            :             vRouteElementNode: newVRouteElements,</a>
+<a name="151"><span class="lineNum">     151 </span>            :           ),</a>
+<a name="152"><span class="lineNum">     152 </span>            :         ],</a>
+<a name="153"><span class="lineNum">     153 </span><span class="lineCov">          2 :         pathParameters: nestedRouteVRoute.pathParameters,</span></a>
+<a name="154"><span class="lineNum">     154 </span><span class="lineCov">          6 :         vRouteElements: &lt;VRouteElement&gt;[this] + nestedRouteVRoute.vRouteElements,</span></a>
+<a name="155"><span class="lineNum">     155 </span>            :       );</a>
+<a name="156"><span class="lineNum">     156 </span>            :     } else {</a>
+<a name="157"><span class="lineNum">     157 </span>            :       // If stackedRouteVRoute is NOT null, create a VRoute by mixing nestedRouteVRoute and stackedRouteVRoute</a>
+<a name="158"><span class="lineNum">     158 </span>            : </a>
+<a name="159"><span class="lineNum">     159 </span><span class="lineCov">          1 :       final allPathParameters = {</span></a>
+<a name="160"><span class="lineNum">     160 </span><span class="lineCov">          1 :         ...nestedRouteVRoute.pathParameters,</span></a>
+<a name="161"><span class="lineNum">     161 </span><span class="lineCov">          1 :         ...stackedRouteVRoute.pathParameters,</span></a>
+<a name="162"><span class="lineNum">     162 </span>            :       };</a>
+<a name="163"><span class="lineNum">     163 </span><span class="lineCov">          1 :       final newVRouteElementNode = VRouteElementNode(</span></a>
+<a name="164"><span class="lineNum">     164 </span>            :         this,</a>
+<a name="165"><span class="lineNum">     165 </span><span class="lineCov">          1 :         nestedVRouteElementNode: nestedRouteVRoute.vRouteElementNode,</span></a>
+<a name="166"><span class="lineNum">     166 </span><span class="lineCov">          1 :         stackedVRouteElementNode: stackedRouteVRoute.vRouteElementNode,</span></a>
+<a name="167"><span class="lineNum">     167 </span>            :       );</a>
+<a name="168"><span class="lineNum">     168 </span>            : </a>
+<a name="169"><span class="lineNum">     169 </span><span class="lineCov">          1 :       return VRoute(</span></a>
+<a name="170"><span class="lineNum">     170 </span>            :         vRouteElementNode: newVRouteElementNode,</a>
+<a name="171"><span class="lineNum">     171 </span><span class="lineCov">          1 :         pages: [</span></a>
+<a name="172"><span class="lineNum">     172 </span><span class="lineCov">          1 :           buildPage(</span></a>
+<a name="173"><span class="lineNum">     173 </span><span class="lineCov">          1 :             widget: Builder(</span></a>
+<a name="174"><span class="lineNum">     174 </span><span class="lineCov">          1 :               builder: (BuildContext context) {</span></a>
+<a name="175"><span class="lineNum">     175 </span><span class="lineCov">          1 :                 return VRouterHelper(</span></a>
+<a name="176"><span class="lineNum">     176 </span><span class="lineCov">          1 :                   pages: nestedRouteVRoute!.pages,</span></a>
+<a name="177"><span class="lineNum">     177 </span><span class="lineCov">          1 :                   navigatorKey: navigatorKey,</span></a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineCov">          2 :                   observers: [heroController],</span></a>
+<a name="179"><span class="lineNum">     179 </span>            :                   backButtonDispatcher:</a>
+<a name="180"><span class="lineNum">     180 </span><span class="lineCov">          3 :                       ChildBackButtonDispatcher(Router.of(context).backButtonDispatcher!),</span></a>
+<a name="181"><span class="lineNum">     181 </span><span class="lineNoCov">          0 :                   onPopPage: (_, __) {</span></a>
+<a name="182"><span class="lineNum">     182 </span><span class="lineNoCov">          0 :                     RootVRouterData.of(context).pop(</span></a>
+<a name="183"><span class="lineNum">     183 </span><span class="lineNoCov">          0 :                       newVRouteElementNode.getVRouteElementToPop(),</span></a>
+<a name="184"><span class="lineNum">     184 </span><span class="lineNoCov">          0 :                       pathParameters: VRouter.of(context).pathParameters,</span></a>
+<a name="185"><span class="lineNum">     185 </span>            :                     );</a>
+<a name="186"><span class="lineNum">     186 </span>            :                     return false;</a>
+<a name="187"><span class="lineNum">     187 </span>            :                   },</a>
+<a name="188"><span class="lineNum">     188 </span><span class="lineNoCov">          0 :                   onSystemPopPage: () async {</span></a>
+<a name="189"><span class="lineNum">     189 </span><span class="lineNoCov">          0 :                     await RootVRouterData.of(context).systemPop(</span></a>
+<a name="190"><span class="lineNum">     190 </span><span class="lineNoCov">          0 :                       newVRouteElementNode.getVRouteElementToPop(),</span></a>
+<a name="191"><span class="lineNum">     191 </span><span class="lineNoCov">          0 :                       pathParameters: VRouter.of(context).pathParameters,</span></a>
+<a name="192"><span class="lineNum">     192 </span>            :                     );</a>
+<a name="193"><span class="lineNum">     193 </span>            :                     return true;</a>
+<a name="194"><span class="lineNum">     194 </span>            :                   },</a>
+<a name="195"><span class="lineNum">     195 </span>            :                 );</a>
+<a name="196"><span class="lineNum">     196 </span>            :               },</a>
+<a name="197"><span class="lineNum">     197 </span>            :             ),</a>
+<a name="198"><span class="lineNum">     198 </span>            :             vPathRequestData: vPathRequestData,</a>
+<a name="199"><span class="lineNum">     199 </span>            :             pathParameters: allPathParameters,</a>
+<a name="200"><span class="lineNum">     200 </span>            :             vRouteElementNode: newVRouteElementNode,</a>
+<a name="201"><span class="lineNum">     201 </span>            :           ),</a>
+<a name="202"><span class="lineNum">     202 </span><span class="lineCov">          1 :           ...stackedRouteVRoute.pages,</span></a>
+<a name="203"><span class="lineNum">     203 </span>            :         ],</a>
+<a name="204"><span class="lineNum">     204 </span>            :         pathParameters: allPathParameters,</a>
+<a name="205"><span class="lineNum">     205 </span><span class="lineCov">          2 :         vRouteElements: &lt;VRouteElement&gt;[this] +</span></a>
+<a name="206"><span class="lineNum">     206 </span><span class="lineCov">          2 :             nestedRouteVRoute.vRouteElements +</span></a>
+<a name="207"><span class="lineNum">     207 </span><span class="lineCov">          1 :             stackedRouteVRoute.vRouteElements,</span></a>
+<a name="208"><span class="lineNum">     208 </span>            :       );</a>
+<a name="209"><span class="lineNum">     209 </span>            :     }</a>
+<a name="210"><span class="lineNum">     210 </span>            :   }</a>
+<a name="211"><span class="lineNum">     211 </span>            : </a>
+<a name="212"><span class="lineNum">     212 </span><span class="lineCov">          1 :   String? getPathFromName(</span></a>
+<a name="213"><span class="lineNum">     213 </span>            :     String nameToMatch, {</a>
+<a name="214"><span class="lineNum">     214 </span>            :     required Map&lt;String, String&gt; pathParameters,</a>
+<a name="215"><span class="lineNum">     215 </span>            :     required String? parentPath,</a>
+<a name="216"><span class="lineNum">     216 </span>            :     required Map&lt;String, String&gt; remainingPathParameters,</a>
+<a name="217"><span class="lineNum">     217 </span>            :   }) {</a>
+<a name="218"><span class="lineNum">     218 </span>            :     // A variable to store the new parentPath from the path</a>
+<a name="219"><span class="lineNum">     219 </span>            :     late final String? newParentPathFromPath;</a>
+<a name="220"><span class="lineNum">     220 </span>            :     late final Map&lt;String, String&gt; newRemainingPathParametersFromPath;</a>
+<a name="221"><span class="lineNum">     221 </span>            : </a>
+<a name="222"><span class="lineNum">     222 </span>            :     // A variable to store the new parent path from the aliases</a>
+<a name="223"><span class="lineNum">     223 </span><span class="lineCov">          1 :     final List&lt;String?&gt; newParentPathFromAliases = [];</span></a>
+<a name="224"><span class="lineNum">     224 </span><span class="lineCov">          1 :     final List&lt;Map&lt;String, String&gt;&gt; newRemainingPathParametersFromAliases = [];</span></a>
+<a name="225"><span class="lineNum">     225 </span>            : </a>
+<a name="226"><span class="lineNum">     226 </span>            :     // Get the new parent path by taking this path into account</a>
+<a name="227"><span class="lineNum">     227 </span><span class="lineCov">          1 :     newParentPathFromPath = getNewParentPath(parentPath,</span></a>
+<a name="228"><span class="lineNum">     228 </span><span class="lineCov">          2 :         path: path, pathParametersKeys: pathParametersKeys, pathParameters: pathParameters);</span></a>
+<a name="229"><span class="lineNum">     229 </span>            : </a>
+<a name="230"><span class="lineNum">     230 </span><span class="lineCov">          1 :     newRemainingPathParametersFromPath = Map&lt;String, String&gt;.from(remainingPathParameters)</span></a>
+<a name="231"><span class="lineNum">     231 </span><span class="lineCov">          1 :       ..removeWhere((key, value) =&gt; pathParametersKeys.contains(key));</span></a>
+<a name="232"><span class="lineNum">     232 </span>            : </a>
+<a name="233"><span class="lineNum">     233 </span>            :     // Check if any nested route matches the name using path</a>
+<a name="234"><span class="lineNum">     234 </span><span class="lineCov">          2 :     for (var vRouteElement in nestedRoutes) {</span></a>
+<a name="235"><span class="lineNum">     235 </span><span class="lineCov">          1 :       String? childPathFromName = vRouteElement.getPathFromName(</span></a>
+<a name="236"><span class="lineNum">     236 </span>            :         nameToMatch,</a>
+<a name="237"><span class="lineNum">     237 </span>            :         pathParameters: pathParameters,</a>
+<a name="238"><span class="lineNum">     238 </span><span class="lineNoCov">          0 :         parentPath: newParentPathFromPath,</span></a>
+<a name="239"><span class="lineNum">     239 </span><span class="lineNoCov">          0 :         remainingPathParameters: newRemainingPathParametersFromPath,</span></a>
+<a name="240"><span class="lineNum">     240 </span>            :       );</a>
+<a name="241"><span class="lineNum">     241 </span>            :       if (childPathFromName != null) {</a>
+<a name="242"><span class="lineNum">     242 </span>            :         return childPathFromName;</a>
+<a name="243"><span class="lineNum">     243 </span>            :       }</a>
+<a name="244"><span class="lineNum">     244 </span>            :     }</a>
+<a name="245"><span class="lineNum">     245 </span>            : </a>
+<a name="246"><span class="lineNum">     246 </span>            :     // Check if any subroute matches the name using path</a>
+<a name="247"><span class="lineNum">     247 </span><span class="lineCov">          1 :     for (var vRouteElement in stackedRoutes) {</span></a>
+<a name="248"><span class="lineNum">     248 </span><span class="lineNoCov">          0 :       String? childPathFromName = vRouteElement.getPathFromName(</span></a>
+<a name="249"><span class="lineNum">     249 </span>            :         nameToMatch,</a>
+<a name="250"><span class="lineNum">     250 </span>            :         pathParameters: pathParameters,</a>
+<a name="251"><span class="lineNum">     251 </span><span class="lineNoCov">          0 :         parentPath: newParentPathFromPath,</span></a>
+<a name="252"><span class="lineNum">     252 </span><span class="lineNoCov">          0 :         remainingPathParameters: newRemainingPathParametersFromPath,</span></a>
+<a name="253"><span class="lineNum">     253 </span>            :       );</a>
+<a name="254"><span class="lineNum">     254 </span>            :       if (childPathFromName != null) {</a>
+<a name="255"><span class="lineNum">     255 </span>            :         return childPathFromName;</a>
+<a name="256"><span class="lineNum">     256 </span>            :       }</a>
+<a name="257"><span class="lineNum">     257 </span>            :     }</a>
+<a name="258"><span class="lineNum">     258 </span>            : </a>
+<a name="259"><span class="lineNum">     259 </span><span class="lineCov">          4 :     for (var i = 0; i &lt; aliases.length; i++) {</span></a>
+<a name="260"><span class="lineNum">     260 </span>            :       // Get the new parent path by taking this alias into account</a>
+<a name="261"><span class="lineNum">     261 </span><span class="lineCov">          2 :       newParentPathFromAliases.add(getNewParentPath(</span></a>
+<a name="262"><span class="lineNum">     262 </span>            :         parentPath,</a>
+<a name="263"><span class="lineNum">     263 </span><span class="lineCov">          2 :         path: aliases[i],</span></a>
+<a name="264"><span class="lineNum">     264 </span><span class="lineCov">          2 :         pathParametersKeys: aliasesPathParametersKeys[i],</span></a>
+<a name="265"><span class="lineNum">     265 </span>            :         pathParameters: pathParameters,</a>
+<a name="266"><span class="lineNum">     266 </span>            :       ));</a>
+<a name="267"><span class="lineNum">     267 </span><span class="lineCov">          1 :       newRemainingPathParametersFromAliases.add(</span></a>
+<a name="268"><span class="lineNum">     268 </span><span class="lineCov">          1 :         Map&lt;String, String&gt;.from(remainingPathParameters)</span></a>
+<a name="269"><span class="lineNum">     269 </span><span class="lineCov">          1 :           ..removeWhere((key, value) =&gt; pathParametersKeys.contains(key)),</span></a>
+<a name="270"><span class="lineNum">     270 </span>            :       );</a>
+<a name="271"><span class="lineNum">     271 </span>            : </a>
+<a name="272"><span class="lineNum">     272 </span>            :       // Check if any nested route matches the name using aliases</a>
+<a name="273"><span class="lineNum">     273 </span><span class="lineCov">          2 :       for (var vRouteElement in nestedRoutes) {</span></a>
+<a name="274"><span class="lineNum">     274 </span><span class="lineCov">          1 :         String? childPathFromName = vRouteElement.getPathFromName(</span></a>
+<a name="275"><span class="lineNum">     275 </span>            :           nameToMatch,</a>
+<a name="276"><span class="lineNum">     276 </span>            :           pathParameters: pathParameters,</a>
+<a name="277"><span class="lineNum">     277 </span><span class="lineCov">          1 :           parentPath: newParentPathFromAliases[i],</span></a>
+<a name="278"><span class="lineNum">     278 </span><span class="lineCov">          1 :           remainingPathParameters: newRemainingPathParametersFromAliases[i],</span></a>
+<a name="279"><span class="lineNum">     279 </span>            :         );</a>
+<a name="280"><span class="lineNum">     280 </span>            :         if (childPathFromName != null) {</a>
+<a name="281"><span class="lineNum">     281 </span>            :           return childPathFromName;</a>
+<a name="282"><span class="lineNum">     282 </span>            :         }</a>
+<a name="283"><span class="lineNum">     283 </span>            :       }</a>
+<a name="284"><span class="lineNum">     284 </span>            : </a>
+<a name="285"><span class="lineNum">     285 </span>            :       // Check if any subroute matches the name using aliases</a>
+<a name="286"><span class="lineNum">     286 </span><span class="lineCov">          1 :       for (var vRouteElement in stackedRoutes) {</span></a>
+<a name="287"><span class="lineNum">     287 </span><span class="lineNoCov">          0 :         String? childPathFromName = vRouteElement.getPathFromName(</span></a>
+<a name="288"><span class="lineNum">     288 </span>            :           nameToMatch,</a>
+<a name="289"><span class="lineNum">     289 </span>            :           pathParameters: pathParameters,</a>
+<a name="290"><span class="lineNum">     290 </span><span class="lineNoCov">          0 :           parentPath: newParentPathFromAliases[i],</span></a>
+<a name="291"><span class="lineNum">     291 </span><span class="lineNoCov">          0 :           remainingPathParameters: newRemainingPathParametersFromAliases[i],</span></a>
+<a name="292"><span class="lineNum">     292 </span>            :         );</a>
+<a name="293"><span class="lineNum">     293 </span>            :         if (childPathFromName != null) {</a>
+<a name="294"><span class="lineNum">     294 </span>            :           return childPathFromName;</a>
+<a name="295"><span class="lineNum">     295 </span>            :         }</a>
+<a name="296"><span class="lineNum">     296 </span>            :       }</a>
+<a name="297"><span class="lineNum">     297 </span>            :     }</a>
+<a name="298"><span class="lineNum">     298 </span>            : </a>
+<a name="299"><span class="lineNum">     299 </span>            :     // If no subroute matches the name, try to match this name</a>
+<a name="300"><span class="lineNum">     300 </span><span class="lineCov">          2 :     if (name == nameToMatch) {</span></a>
+<a name="301"><span class="lineNum">     301 </span>            :       // Note that newParentPath will be null if this path can't be included so the return value</a>
+<a name="302"><span class="lineNum">     302 </span>            :       // is the right one</a>
+<a name="303"><span class="lineNum">     303 </span><span class="lineCov">          1 :       if (newParentPathFromPath != null &amp;&amp; newRemainingPathParametersFromPath.isEmpty) {</span></a>
+<a name="304"><span class="lineNum">     304 </span><span class="lineNoCov">          0 :         return newParentPathFromPath;</span></a>
+<a name="305"><span class="lineNum">     305 </span>            :       }</a>
+<a name="306"><span class="lineNum">     306 </span><span class="lineCov">          3 :       for (var i = 0; i &lt; aliases.length; i++) {</span></a>
+<a name="307"><span class="lineNum">     307 </span><span class="lineCov">          1 :         if (newParentPathFromAliases[i] != null &amp;&amp;</span></a>
+<a name="308"><span class="lineNum">     308 </span><span class="lineCov">          2 :             newRemainingPathParametersFromAliases[i].isEmpty) {</span></a>
+<a name="309"><span class="lineNum">     309 </span><span class="lineCov">          1 :           return newParentPathFromAliases[i];</span></a>
+<a name="310"><span class="lineNum">     310 </span>            :         }</a>
 <a name="311"><span class="lineNum">     311 </span>            :       }</a>
-<a name="312"><span class="lineNum">     312 </span><span class="lineNoCov">          0 :       for (var i = 0; i &lt; aliases.length; i++) {</span></a>
-<a name="313"><span class="lineNum">     313 </span><span class="lineNoCov">          0 :         if (newParentPathFromAliases[i] != null &amp;&amp;</span></a>
-<a name="314"><span class="lineNum">     314 </span><span class="lineNoCov">          0 :             newRemainingPathParametersFromAliases[i].isNotEmpty) {</span></a>
-<a name="315"><span class="lineNum">     315 </span><span class="lineNoCov">          0 :           return newParentPathFromAliases[i];</span></a>
-<a name="316"><span class="lineNum">     316 </span>            :         }</a>
-<a name="317"><span class="lineNum">     317 </span>            :       }</a>
-<a name="318"><span class="lineNum">     318 </span>            :     }</a>
-<a name="319"><span class="lineNum">     319 </span>            : </a>
-<a name="320"><span class="lineNum">     320 </span>            :     // Else we return null</a>
-<a name="321"><span class="lineNum">     321 </span>            :     return null;</a>
-<a name="322"><span class="lineNum">     322 </span>            :   }</a>
-<a name="323"><span class="lineNum">     323 </span>            : </a>
-<a name="324"><span class="lineNum">     324 </span><span class="lineCov">          2 :   GetPathFromPopResult? getPathFromPop(</span></a>
-<a name="325"><span class="lineNum">     325 </span>            :     VRouteElement elementToPop, {</a>
-<a name="326"><span class="lineNum">     326 </span>            :     required Map&lt;String, String&gt; pathParameters,</a>
-<a name="327"><span class="lineNum">     327 </span>            :     required String? parentPath,</a>
-<a name="328"><span class="lineNum">     328 </span>            :   }) {</a>
-<a name="329"><span class="lineNum">     329 </span>            :     // If vRouteElement is this, then this is the element to pop so we return null</a>
-<a name="330"><span class="lineNum">     330 </span><span class="lineCov">          2 :     if (elementToPop == this) {</span></a>
-<a name="331"><span class="lineNum">     331 </span><span class="lineNoCov">          0 :       return GetPathFromPopResult(path: parentPath, didPop: true);</span></a>
-<a name="332"><span class="lineNum">     332 </span>            :     }</a>
-<a name="333"><span class="lineNum">     333 </span>            : </a>
-<a name="334"><span class="lineNum">     334 </span>            :     // Try to match the path given the path parameters</a>
-<a name="335"><span class="lineNum">     335 </span><span class="lineCov">          2 :     final newParentPathFromPath = getNewParentPath(</span></a>
-<a name="336"><span class="lineNum">     336 </span>            :       parentPath,</a>
-<a name="337"><span class="lineNum">     337 </span><span class="lineCov">          2 :       path: path,</span></a>
-<a name="338"><span class="lineNum">     338 </span><span class="lineCov">          2 :       pathParametersKeys: pathParametersKeys,</span></a>
-<a name="339"><span class="lineNum">     339 </span>            :       pathParameters: pathParameters,</a>
-<a name="340"><span class="lineNum">     340 </span>            :     );</a>
-<a name="341"><span class="lineNum">     341 </span>            : </a>
-<a name="342"><span class="lineNum">     342 </span>            :     // If the path matched and produced a non null newParentPath, try to pop from the stackedRoutes or the nestedRoutes</a>
-<a name="343"><span class="lineNum">     343 </span>            :     if (newParentPathFromPath != null) {</a>
-<a name="344"><span class="lineNum">     344 </span>            :       // Try to pop from the stackedRoutes</a>
-<a name="345"><span class="lineNum">     345 </span><span class="lineCov">          2 :       for (var vRouteElement in stackedRoutes) {</span></a>
-<a name="346"><span class="lineNum">     346 </span><span class="lineNoCov">          0 :         final childPopResult = vRouteElement.getPathFromPop(</span></a>
-<a name="347"><span class="lineNum">     347 </span>            :           elementToPop,</a>
-<a name="348"><span class="lineNum">     348 </span>            :           pathParameters: pathParameters,</a>
-<a name="349"><span class="lineNum">     349 </span>            :           parentPath: newParentPathFromPath,</a>
-<a name="350"><span class="lineNum">     350 </span>            :         );</a>
-<a name="351"><span class="lineNum">     351 </span>            :         if (childPopResult != null) {</a>
-<a name="352"><span class="lineNum">     352 </span><span class="lineNoCov">          0 :           return GetPathFromPopResult(path: childPopResult.path, didPop: false);</span></a>
-<a name="353"><span class="lineNum">     353 </span>            :         }</a>
-<a name="354"><span class="lineNum">     354 </span>            :       }</a>
-<a name="355"><span class="lineNum">     355 </span>            : </a>
-<a name="356"><span class="lineNum">     356 </span>            :       // Try to pop from the nestedRoutes</a>
-<a name="357"><span class="lineNum">     357 </span><span class="lineCov">          4 :       for (var vRouteElement in nestedRoutes) {</span></a>
-<a name="358"><span class="lineNum">     358 </span><span class="lineCov">          2 :         final childPopResult = vRouteElement.getPathFromPop(</span></a>
-<a name="359"><span class="lineNum">     359 </span>            :           elementToPop,</a>
-<a name="360"><span class="lineNum">     360 </span>            :           pathParameters: pathParameters,</a>
-<a name="361"><span class="lineNum">     361 </span>            :           parentPath: newParentPathFromPath,</a>
-<a name="362"><span class="lineNum">     362 </span>            :         );</a>
-<a name="363"><span class="lineNum">     363 </span>            :         if (childPopResult != null) {</a>
-<a name="364"><span class="lineNum">     364 </span><span class="lineCov">          2 :           if (childPopResult.didPop) {</span></a>
-<a name="365"><span class="lineNum">     365 </span>            :             // if the nestedRoute popped, we should pop too</a>
-<a name="366"><span class="lineNum">     366 </span><span class="lineCov">          2 :             return GetPathFromPopResult(path: parentPath, didPop: true);</span></a>
-<a name="367"><span class="lineNum">     367 </span>            :           } else {</a>
-<a name="368"><span class="lineNum">     368 </span><span class="lineCov">          4 :             return GetPathFromPopResult(path: childPopResult.path, didPop: false);</span></a>
-<a name="369"><span class="lineNum">     369 </span>            :           }</a>
-<a name="370"><span class="lineNum">     370 </span>            :         }</a>
-<a name="371"><span class="lineNum">     371 </span>            :       }</a>
-<a name="372"><span class="lineNum">     372 </span>            :     }</a>
-<a name="373"><span class="lineNum">     373 </span>            : </a>
-<a name="374"><span class="lineNum">     374 </span>            :     // Try to match the aliases given the path parameters</a>
-<a name="375"><span class="lineNum">     375 </span><span class="lineNoCov">          0 :     for (var i = 0; i &lt; aliases.length; i++) {</span></a>
-<a name="376"><span class="lineNum">     376 </span><span class="lineNoCov">          0 :       final newParentPathFromAlias = getNewParentPath(</span></a>
-<a name="377"><span class="lineNum">     377 </span>            :         parentPath,</a>
-<a name="378"><span class="lineNum">     378 </span><span class="lineNoCov">          0 :         path: aliases[i],</span></a>
-<a name="379"><span class="lineNum">     379 </span><span class="lineNoCov">          0 :         pathParametersKeys: aliasesPathParametersKeys[i],</span></a>
-<a name="380"><span class="lineNum">     380 </span>            :         pathParameters: pathParameters,</a>
-<a name="381"><span class="lineNum">     381 </span>            :       );</a>
-<a name="382"><span class="lineNum">     382 </span>            : </a>
-<a name="383"><span class="lineNum">     383 </span>            :       // If an alias matched and produced a non null newParentPath, try to pop from the stackedRoutes or the nestedRoutes</a>
-<a name="384"><span class="lineNum">     384 </span>            :       if (newParentPathFromAlias != null) {</a>
-<a name="385"><span class="lineNum">     385 </span>            :         // Try to pop from the stackedRoutes</a>
-<a name="386"><span class="lineNum">     386 </span><span class="lineNoCov">          0 :         for (var vRouteElement in stackedRoutes) {</span></a>
-<a name="387"><span class="lineNum">     387 </span><span class="lineNoCov">          0 :           final childPopResult = vRouteElement.getPathFromPop(</span></a>
-<a name="388"><span class="lineNum">     388 </span>            :             elementToPop,</a>
-<a name="389"><span class="lineNum">     389 </span>            :             pathParameters: pathParameters,</a>
-<a name="390"><span class="lineNum">     390 </span>            :             parentPath: newParentPathFromAlias,</a>
-<a name="391"><span class="lineNum">     391 </span>            :           );</a>
-<a name="392"><span class="lineNum">     392 </span>            :           if (childPopResult != null) {</a>
-<a name="393"><span class="lineNum">     393 </span><span class="lineNoCov">          0 :             return GetPathFromPopResult(path: childPopResult.path, didPop: false);</span></a>
-<a name="394"><span class="lineNum">     394 </span>            :           }</a>
-<a name="395"><span class="lineNum">     395 </span>            :         }</a>
-<a name="396"><span class="lineNum">     396 </span>            : </a>
-<a name="397"><span class="lineNum">     397 </span>            :         // Try to pop from the nested routes</a>
-<a name="398"><span class="lineNum">     398 </span><span class="lineNoCov">          0 :         for (var vRouteElement in nestedRoutes) {</span></a>
-<a name="399"><span class="lineNum">     399 </span><span class="lineNoCov">          0 :           final childPopResult = vRouteElement.getPathFromPop(</span></a>
-<a name="400"><span class="lineNum">     400 </span>            :             elementToPop,</a>
-<a name="401"><span class="lineNum">     401 </span>            :             pathParameters: pathParameters,</a>
-<a name="402"><span class="lineNum">     402 </span>            :             parentPath: newParentPathFromAlias,</a>
-<a name="403"><span class="lineNum">     403 </span>            :           );</a>
-<a name="404"><span class="lineNum">     404 </span>            :           if (childPopResult != null) {</a>
-<a name="405"><span class="lineNum">     405 </span><span class="lineNoCov">          0 :             if (childPopResult.didPop) {</span></a>
-<a name="406"><span class="lineNum">     406 </span>            :               // if the nestedRoute popped, we should pop too</a>
-<a name="407"><span class="lineNum">     407 </span><span class="lineNoCov">          0 :               return GetPathFromPopResult(path: parentPath, didPop: true);</span></a>
-<a name="408"><span class="lineNum">     408 </span>            :             } else {</a>
-<a name="409"><span class="lineNum">     409 </span><span class="lineNoCov">          0 :               return GetPathFromPopResult(path: childPopResult.path, didPop: false);</span></a>
-<a name="410"><span class="lineNum">     410 </span>            :             }</a>
-<a name="411"><span class="lineNum">     411 </span>            :           }</a>
-<a name="412"><span class="lineNum">     412 </span>            :         }</a>
-<a name="413"><span class="lineNum">     413 </span>            :       }</a>
-<a name="414"><span class="lineNum">     414 </span>            :     }</a>
-<a name="415"><span class="lineNum">     415 </span>            : </a>
-<a name="416"><span class="lineNum">     416 </span>            :     // If none of the stackedRoutes nor the nestedRoutes popped and this did not pop, return a null result</a>
-<a name="417"><span class="lineNum">     417 </span>            :     return null;</a>
-<a name="418"><span class="lineNum">     418 </span>            :   }</a>
-<a name="419"><span class="lineNum">     419 </span>            : }</a>
+<a name="312"><span class="lineNum">     312 </span>            :     }</a>
+<a name="313"><span class="lineNum">     313 </span>            : </a>
+<a name="314"><span class="lineNum">     314 </span>            :     // Else we return null</a>
+<a name="315"><span class="lineNum">     315 </span>            :     return null;</a>
+<a name="316"><span class="lineNum">     316 </span>            :   }</a>
+<a name="317"><span class="lineNum">     317 </span>            : </a>
+<a name="318"><span class="lineNum">     318 </span><span class="lineCov">          3 :   GetPathFromPopResult? getPathFromPop(</span></a>
+<a name="319"><span class="lineNum">     319 </span>            :     VRouteElement elementToPop, {</a>
+<a name="320"><span class="lineNum">     320 </span>            :     required Map&lt;String, String&gt; pathParameters,</a>
+<a name="321"><span class="lineNum">     321 </span>            :     required String? parentPath,</a>
+<a name="322"><span class="lineNum">     322 </span>            :   }) {</a>
+<a name="323"><span class="lineNum">     323 </span>            :     // If vRouteElement is this, then this is the element to pop so we return null</a>
+<a name="324"><span class="lineNum">     324 </span><span class="lineCov">          3 :     if (elementToPop == this) {</span></a>
+<a name="325"><span class="lineNum">     325 </span><span class="lineNoCov">          0 :       return GetPathFromPopResult(path: parentPath, didPop: true);</span></a>
+<a name="326"><span class="lineNum">     326 </span>            :     }</a>
+<a name="327"><span class="lineNum">     327 </span>            : </a>
+<a name="328"><span class="lineNum">     328 </span>            :     // Try to match the path given the path parameters</a>
+<a name="329"><span class="lineNum">     329 </span><span class="lineCov">          3 :     final newParentPathFromPath = getNewParentPath(</span></a>
+<a name="330"><span class="lineNum">     330 </span>            :       parentPath,</a>
+<a name="331"><span class="lineNum">     331 </span><span class="lineCov">          3 :       path: path,</span></a>
+<a name="332"><span class="lineNum">     332 </span><span class="lineCov">          3 :       pathParametersKeys: pathParametersKeys,</span></a>
+<a name="333"><span class="lineNum">     333 </span>            :       pathParameters: pathParameters,</a>
+<a name="334"><span class="lineNum">     334 </span>            :     );</a>
+<a name="335"><span class="lineNum">     335 </span>            : </a>
+<a name="336"><span class="lineNum">     336 </span><span class="lineCov">          6 :     print('newParentPathFromPath: $newParentPathFromPath');</span></a>
+<a name="337"><span class="lineNum">     337 </span>            : </a>
+<a name="338"><span class="lineNum">     338 </span>            :     // If the path matched and produced a non null newParentPath, try to pop from the stackedRoutes or the nestedRoutes</a>
+<a name="339"><span class="lineNum">     339 </span>            :     if (newParentPathFromPath != null) {</a>
+<a name="340"><span class="lineNum">     340 </span>            :       // Try to pop from the stackedRoutes</a>
+<a name="341"><span class="lineNum">     341 </span><span class="lineCov">          4 :       for (var vRouteElement in stackedRoutes) {</span></a>
+<a name="342"><span class="lineNum">     342 </span><span class="lineCov">          1 :         final childPopResult = vRouteElement.getPathFromPop(</span></a>
+<a name="343"><span class="lineNum">     343 </span>            :           elementToPop,</a>
+<a name="344"><span class="lineNum">     344 </span>            :           pathParameters: pathParameters,</a>
+<a name="345"><span class="lineNum">     345 </span>            :           parentPath: newParentPathFromPath,</a>
+<a name="346"><span class="lineNum">     346 </span>            :         );</a>
+<a name="347"><span class="lineNum">     347 </span>            :         if (childPopResult != null) {</a>
+<a name="348"><span class="lineNum">     348 </span><span class="lineCov">          2 :           return GetPathFromPopResult(path: childPopResult.path, didPop: false);</span></a>
+<a name="349"><span class="lineNum">     349 </span>            :         }</a>
+<a name="350"><span class="lineNum">     350 </span>            :       }</a>
+<a name="351"><span class="lineNum">     351 </span>            : </a>
+<a name="352"><span class="lineNum">     352 </span>            :       // Try to pop from the nestedRoutes</a>
+<a name="353"><span class="lineNum">     353 </span><span class="lineCov">          6 :       for (var vRouteElement in nestedRoutes) {</span></a>
+<a name="354"><span class="lineNum">     354 </span><span class="lineCov">          3 :         final childPopResult = vRouteElement.getPathFromPop(</span></a>
+<a name="355"><span class="lineNum">     355 </span>            :           elementToPop,</a>
+<a name="356"><span class="lineNum">     356 </span>            :           pathParameters: pathParameters,</a>
+<a name="357"><span class="lineNum">     357 </span>            :           parentPath: newParentPathFromPath,</a>
+<a name="358"><span class="lineNum">     358 </span>            :         );</a>
+<a name="359"><span class="lineNum">     359 </span>            :         if (childPopResult != null) {</a>
+<a name="360"><span class="lineNum">     360 </span><span class="lineCov">          3 :           if (childPopResult.didPop) {</span></a>
+<a name="361"><span class="lineNum">     361 </span>            :             // if the nestedRoute popped, we should pop too</a>
+<a name="362"><span class="lineNum">     362 </span><span class="lineCov">          3 :             return GetPathFromPopResult(path: parentPath, didPop: true);</span></a>
+<a name="363"><span class="lineNum">     363 </span>            :           } else {</a>
+<a name="364"><span class="lineNum">     364 </span><span class="lineCov">          9 :             print('childPopResult.path: ${childPopResult.path}');</span></a>
+<a name="365"><span class="lineNum">     365 </span><span class="lineCov">          6 :             return GetPathFromPopResult(path: childPopResult.path, didPop: false);</span></a>
+<a name="366"><span class="lineNum">     366 </span>            :           }</a>
+<a name="367"><span class="lineNum">     367 </span>            :         }</a>
+<a name="368"><span class="lineNum">     368 </span>            :       }</a>
+<a name="369"><span class="lineNum">     369 </span>            :     }</a>
+<a name="370"><span class="lineNum">     370 </span>            : </a>
+<a name="371"><span class="lineNum">     371 </span>            :     // Try to match the aliases given the path parameters</a>
+<a name="372"><span class="lineNum">     372 </span><span class="lineCov">          3 :     for (var i = 0; i &lt; aliases.length; i++) {</span></a>
+<a name="373"><span class="lineNum">     373 </span><span class="lineCov">          1 :       final newParentPathFromAlias = getNewParentPath(</span></a>
+<a name="374"><span class="lineNum">     374 </span>            :         parentPath,</a>
+<a name="375"><span class="lineNum">     375 </span><span class="lineCov">          2 :         path: aliases[i],</span></a>
+<a name="376"><span class="lineNum">     376 </span><span class="lineCov">          2 :         pathParametersKeys: aliasesPathParametersKeys[i],</span></a>
+<a name="377"><span class="lineNum">     377 </span>            :         pathParameters: pathParameters,</a>
+<a name="378"><span class="lineNum">     378 </span>            :       );</a>
+<a name="379"><span class="lineNum">     379 </span>            : </a>
+<a name="380"><span class="lineNum">     380 </span>            :       // If an alias matched and produced a non null newParentPath, try to pop from the stackedRoutes or the nestedRoutes</a>
+<a name="381"><span class="lineNum">     381 </span>            :       if (newParentPathFromAlias != null) {</a>
+<a name="382"><span class="lineNum">     382 </span>            :         // Try to pop from the stackedRoutes</a>
+<a name="383"><span class="lineNum">     383 </span><span class="lineCov">          1 :         for (var vRouteElement in stackedRoutes) {</span></a>
+<a name="384"><span class="lineNum">     384 </span><span class="lineNoCov">          0 :           final childPopResult = vRouteElement.getPathFromPop(</span></a>
+<a name="385"><span class="lineNum">     385 </span>            :             elementToPop,</a>
+<a name="386"><span class="lineNum">     386 </span>            :             pathParameters: pathParameters,</a>
+<a name="387"><span class="lineNum">     387 </span>            :             parentPath: newParentPathFromAlias,</a>
+<a name="388"><span class="lineNum">     388 </span>            :           );</a>
+<a name="389"><span class="lineNum">     389 </span>            :           if (childPopResult != null) {</a>
+<a name="390"><span class="lineNum">     390 </span><span class="lineNoCov">          0 :             return GetPathFromPopResult(path: childPopResult.path, didPop: false);</span></a>
+<a name="391"><span class="lineNum">     391 </span>            :           }</a>
+<a name="392"><span class="lineNum">     392 </span>            :         }</a>
+<a name="393"><span class="lineNum">     393 </span>            : </a>
+<a name="394"><span class="lineNum">     394 </span>            :         // Try to pop from the nested routes</a>
+<a name="395"><span class="lineNum">     395 </span><span class="lineCov">          2 :         for (var vRouteElement in nestedRoutes) {</span></a>
+<a name="396"><span class="lineNum">     396 </span><span class="lineCov">          1 :           final childPopResult = vRouteElement.getPathFromPop(</span></a>
+<a name="397"><span class="lineNum">     397 </span>            :             elementToPop,</a>
+<a name="398"><span class="lineNum">     398 </span>            :             pathParameters: pathParameters,</a>
+<a name="399"><span class="lineNum">     399 </span>            :             parentPath: newParentPathFromAlias,</a>
+<a name="400"><span class="lineNum">     400 </span>            :           );</a>
+<a name="401"><span class="lineNum">     401 </span>            :           if (childPopResult != null) {</a>
+<a name="402"><span class="lineNum">     402 </span><span class="lineCov">          1 :             if (childPopResult.didPop) {</span></a>
+<a name="403"><span class="lineNum">     403 </span>            :               // if the nestedRoute popped, we should pop too</a>
+<a name="404"><span class="lineNum">     404 </span><span class="lineCov">          1 :               return GetPathFromPopResult(path: parentPath, didPop: true);</span></a>
+<a name="405"><span class="lineNum">     405 </span>            :             } else {</a>
+<a name="406"><span class="lineNum">     406 </span><span class="lineCov">          2 :               return GetPathFromPopResult(path: childPopResult.path, didPop: false);</span></a>
+<a name="407"><span class="lineNum">     407 </span>            :             }</a>
+<a name="408"><span class="lineNum">     408 </span>            :           }</a>
+<a name="409"><span class="lineNum">     409 </span>            :         }</a>
+<a name="410"><span class="lineNum">     410 </span>            :       }</a>
+<a name="411"><span class="lineNum">     411 </span>            :     }</a>
+<a name="412"><span class="lineNum">     412 </span>            : </a>
+<a name="413"><span class="lineNum">     413 </span>            :     // If none of the stackedRoutes nor the nestedRoutes popped and this did not pop, return a null result</a>
+<a name="414"><span class="lineNum">     414 </span>            :     return null;</a>
+<a name="415"><span class="lineNum">     415 </span>            :   }</a>
+<a name="416"><span class="lineNum">     416 </span>            : }</a>
 </pre>
       </td>
     </tr>

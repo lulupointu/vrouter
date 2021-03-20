@@ -20,9 +20,11 @@ import '../wrappers/platform/platform_none.dart'
 
 part 'exceptions.dart';
 
+part 'extended_context.dart';
+
 part 'navigation_2_helpers.dart';
 
-part 'navigation_guard.dart';
+part 'vwidget_guard.dart';
 
 part 'page.dart';
 

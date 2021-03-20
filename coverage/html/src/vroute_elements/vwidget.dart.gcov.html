@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-17 11:07:57</td>
+            <td class="headerValue">2021-03-18 15:42:40</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -64,9 +64,9 @@
 <a name="2"><span class="lineNum">       2 </span>            : </a>
 <a name="3"><span class="lineNum">       3 </span>            : @immutable</a>
 <a name="4"><span class="lineNum">       4 </span>            : class VWidget extends VPage {</a>
-<a name="5"><span class="lineNum">       5 </span><span class="lineCov">          5 :   VWidget({</span></a>
-<a name="6"><span class="lineNum">       6 </span>            :     required Widget widget,</a>
-<a name="7"><span class="lineNum">       7 </span>            :     required String? path,</a>
+<a name="5"><span class="lineNum">       5 </span><span class="lineCov">         11 :   VWidget({</span></a>
+<a name="6"><span class="lineNum">       6 </span>            :     required String? path,</a>
+<a name="7"><span class="lineNum">       7 </span>            :     required Widget widget,</a>
 <a name="8"><span class="lineNum">       8 </span>            :     String? name,</a>
 <a name="9"><span class="lineNum">       9 </span>            :     List&lt;VRouteElement&gt; stackedRoutes = const [],</a>
 <a name="10"><span class="lineNum">      10 </span>            :     List&lt;String&gt; aliases = const [],</a>
@@ -74,9 +74,9 @@
 <a name="12"><span class="lineNum">      12 </span>            :     this.transitionDuration,</a>
 <a name="13"><span class="lineNum">      13 </span>            :     this.reverseTransitionDuration,</a>
 <a name="14"><span class="lineNum">      14 </span>            :     this.buildTransition,</a>
-<a name="15"><span class="lineNum">      15 </span><span class="lineCov">          5 :   }) : super(</span></a>
-<a name="16"><span class="lineNum">      16 </span><span class="lineCov">          6 :           pageBuilder: (LocalVRouterData child) =&gt; VBasePage.fromPlatform(</span></a>
-<a name="17"><span class="lineNum">      17 </span><span class="lineCov">          3 :             key: ValueKey(path),</span></a>
+<a name="15"><span class="lineNum">      15 </span><span class="lineCov">         11 :   }) : super(</span></a>
+<a name="16"><span class="lineNum">      16 </span><span class="lineCov">         18 :           pageBuilder: (Widget child) =&gt; VBasePage.fromPlatform(</span></a>
+<a name="17"><span class="lineNum">      17 </span><span class="lineCov">          9 :             key: ValueKey(path),</span></a>
 <a name="18"><span class="lineNum">      18 </span>            :             child: child,</a>
 <a name="19"><span class="lineNum">      19 </span>            :             transitionDuration: transitionDuration,</a>
 <a name="20"><span class="lineNum">      20 </span>            :             reverseTransitionDuration: reverseTransitionDuration,</a>

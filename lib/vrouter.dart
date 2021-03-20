@@ -16,5 +16,5 @@ export 'src/main.dart'
         VRedirector,
         VRouterModes,
         VRouter,
-        VRouterState,
-        InitialUrl;
+        VRouterContext,
+        VRouterState;

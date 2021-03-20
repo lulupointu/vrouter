@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">2</td>
+            <td class="headerCovTableEntry">22</td>
             <td class="headerCovTableEntry">29</td>
-            <td class="headerCovTableEntryLo">6.9 %</td>
+            <td class="headerCovTableEntryMed">75.9 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-17 11:07:57</td>
+            <td class="headerValue">2021-03-18 15:42:40</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -70,7 +70,7 @@
 <a name="8"><span class="lineNum">       8 </span>            : /// Note that you should use this object to redirect in beforeLeave and beforeEnter. Never</a>
 <a name="9"><span class="lineNum">       9 </span>            : /// use VRouterData to do so.</a>
 <a name="10"><span class="lineNum">      10 </span>            : class VRedirector {</a>
-<a name="11"><span class="lineNum">      11 </span><span class="lineCov">          3 :   VRedirector({</span></a>
+<a name="11"><span class="lineNum">      11 </span><span class="lineCov">         10 :   VRedirector({</span></a>
 <a name="12"><span class="lineNum">      12 </span>            :     required BuildContext context,</a>
 <a name="13"><span class="lineNum">      13 </span>            :     required this.from,</a>
 <a name="14"><span class="lineNum">      14 </span>            :     required this.to,</a>
@@ -84,7 +84,7 @@
 <a name="22"><span class="lineNum">      22 </span>            :   /// such as [push], [pushNamed], ...</a>
 <a name="23"><span class="lineNum">      23 </span>            :   bool _shouldUpdate = true;</a>
 <a name="24"><span class="lineNum">      24 </span>            : </a>
-<a name="25"><span class="lineNum">      25 </span><span class="lineCov">          6 :   bool get shouldUpdate =&gt; _shouldUpdate;</span></a>
+<a name="25"><span class="lineNum">      25 </span><span class="lineCov">         18 :   bool get shouldUpdate =&gt; _shouldUpdate;</span></a>
 <a name="26"><span class="lineNum">      26 </span>            : </a>
 <a name="27"><span class="lineNum">      27 </span>            :   /// The url we are coming from</a>
 <a name="28"><span class="lineNum">      28 </span>            :   final String? from;</a>
@@ -125,37 +125,37 @@
 <a name="63"><span class="lineNum">      63 </span>            :   /// Stops the redirection</a>
 <a name="64"><span class="lineNum">      64 </span>            :   ///</a>
 <a name="65"><span class="lineNum">      65 </span>            :   /// This also checks that only one method which stops the redirection is used</a>
-<a name="66"><span class="lineNum">      66 </span><span class="lineNoCov">          0 :   void stopRedirection() {</span></a>
-<a name="67"><span class="lineNum">      67 </span><span class="lineNoCov">          0 :     if (!shouldUpdate) {</span></a>
+<a name="66"><span class="lineNum">      66 </span><span class="lineCov">          4 :   void stopRedirection() {</span></a>
+<a name="67"><span class="lineNum">      67 </span><span class="lineCov">          4 :     if (!shouldUpdate) {</span></a>
 <a name="68"><span class="lineNum">      68 </span>            :       throw 'You already stopped the redirection. You can only use one such action on VRedirector.';</a>
 <a name="69"><span class="lineNum">      69 </span>            :     }</a>
-<a name="70"><span class="lineNum">      70 </span><span class="lineNoCov">          0 :     _shouldUpdate = false;</span></a>
+<a name="70"><span class="lineNum">      70 </span><span class="lineCov">          4 :     _shouldUpdate = false;</span></a>
 <a name="71"><span class="lineNum">      71 </span>            :   }</a>
 <a name="72"><span class="lineNum">      72 </span>            : </a>
 <a name="73"><span class="lineNum">      73 </span>            :   /// Prevent the current redirection and push a route instead</a>
 <a name="74"><span class="lineNum">      74 </span>            :   ///</a>
 <a name="75"><span class="lineNum">      75 </span>            :   /// See [VRouter.push] for more information on push</a>
-<a name="76"><span class="lineNum">      76 </span><span class="lineNoCov">          0 :   void push(</span></a>
+<a name="76"><span class="lineNum">      76 </span><span class="lineCov">          1 :   void push(</span></a>
 <a name="77"><span class="lineNum">      77 </span>            :     String newUrl, {</a>
 <a name="78"><span class="lineNum">      78 </span>            :     Map&lt;String, String&gt; queryParameters = const {},</a>
 <a name="79"><span class="lineNum">      79 </span>            :     Map&lt;String, String&gt; historyState = const {},</a>
 <a name="80"><span class="lineNum">      80 </span>            :   }) {</a>
-<a name="81"><span class="lineNum">      81 </span><span class="lineNoCov">          0 :     stopRedirection();</span></a>
-<a name="82"><span class="lineNum">      82 </span><span class="lineNoCov">          0 :     _redirectFunction = (_) =&gt; RootVRouterData.of(_context).push(newUrl,</span></a>
+<a name="81"><span class="lineNum">      81 </span><span class="lineCov">          1 :     stopRedirection();</span></a>
+<a name="82"><span class="lineNum">      82 </span><span class="lineCov">          5 :     _redirectFunction = (_) =&gt; RootVRouterData.of(_context).push(newUrl,</span></a>
 <a name="83"><span class="lineNum">      83 </span>            :         queryParameters: queryParameters, historyState: historyState);</a>
 <a name="84"><span class="lineNum">      84 </span>            :   }</a>
 <a name="85"><span class="lineNum">      85 </span>            : </a>
 <a name="86"><span class="lineNum">      86 </span>            :   /// Prevent the current redirection and pushNamed a route instead</a>
 <a name="87"><span class="lineNum">      87 </span>            :   ///</a>
 <a name="88"><span class="lineNum">      88 </span>            :   /// See [VRouter.push] for more information on push</a>
-<a name="89"><span class="lineNum">      89 </span><span class="lineNoCov">          0 :   void pushNamed(</span></a>
+<a name="89"><span class="lineNum">      89 </span><span class="lineCov">          1 :   void pushNamed(</span></a>
 <a name="90"><span class="lineNum">      90 </span>            :     String name, {</a>
 <a name="91"><span class="lineNum">      91 </span>            :     Map&lt;String, String&gt; pathParameters = const {},</a>
 <a name="92"><span class="lineNum">      92 </span>            :     Map&lt;String, String&gt; queryParameters = const {},</a>
 <a name="93"><span class="lineNum">      93 </span>            :     String? routerState,</a>
 <a name="94"><span class="lineNum">      94 </span>            :   }) {</a>
-<a name="95"><span class="lineNum">      95 </span><span class="lineNoCov">          0 :     stopRedirection();</span></a>
-<a name="96"><span class="lineNum">      96 </span><span class="lineNoCov">          0 :     _redirectFunction = (_) =&gt; RootVRouterData.of(_context).pushNamed(name,</span></a>
+<a name="95"><span class="lineNum">      95 </span><span class="lineCov">          1 :     stopRedirection();</span></a>
+<a name="96"><span class="lineNum">      96 </span><span class="lineCov">          5 :     _redirectFunction = (_) =&gt; RootVRouterData.of(_context).pushNamed(name,</span></a>
 <a name="97"><span class="lineNum">      97 </span>            :         pathParameters: pathParameters,</a>
 <a name="98"><span class="lineNum">      98 </span>            :         queryParameters: queryParameters,</a>
 <a name="99"><span class="lineNum">      99 </span>            :         routerState: routerState);</a>
@@ -164,13 +164,13 @@
 <a name="102"><span class="lineNum">     102 </span>            :   /// Prevent the current redirection and pushReplacement a route instead</a>
 <a name="103"><span class="lineNum">     103 </span>            :   ///</a>
 <a name="104"><span class="lineNum">     104 </span>            :   /// See [VRouter.push] for more information on push</a>
-<a name="105"><span class="lineNum">     105 </span><span class="lineNoCov">          0 :   void pushReplacement(</span></a>
+<a name="105"><span class="lineNum">     105 </span><span class="lineCov">          1 :   void pushReplacement(</span></a>
 <a name="106"><span class="lineNum">     106 </span>            :     String newUrl, {</a>
 <a name="107"><span class="lineNum">     107 </span>            :     Map&lt;String, String&gt; queryParameters = const {},</a>
 <a name="108"><span class="lineNum">     108 </span>            :     Map&lt;String, String&gt; historyState = const {},</a>
 <a name="109"><span class="lineNum">     109 </span>            :   }) {</a>
-<a name="110"><span class="lineNum">     110 </span><span class="lineNoCov">          0 :     stopRedirection();</span></a>
-<a name="111"><span class="lineNum">     111 </span><span class="lineNoCov">          0 :     _redirectFunction = (_) =&gt; RootVRouterData.of(_context).pushReplacement(</span></a>
+<a name="110"><span class="lineNum">     110 </span><span class="lineCov">          1 :     stopRedirection();</span></a>
+<a name="111"><span class="lineNum">     111 </span><span class="lineCov">          5 :     _redirectFunction = (_) =&gt; RootVRouterData.of(_context).pushReplacement(</span></a>
 <a name="112"><span class="lineNum">     112 </span>            :         newUrl,</a>
 <a name="113"><span class="lineNum">     113 </span>            :         queryParameters: queryParameters,</a>
 <a name="114"><span class="lineNum">     114 </span>            :         historyState: historyState);</a>
@@ -206,25 +206,25 @@
 <a name="144"><span class="lineNum">     144 </span>            :   /// Prevent the current redirection and call pop instead</a>
 <a name="145"><span class="lineNum">     145 </span>            :   ///</a>
 <a name="146"><span class="lineNum">     146 </span>            :   /// See [VRouter.pop] for more information on push</a>
-<a name="147"><span class="lineNum">     147 </span><span class="lineNoCov">          0 :   void pop(</span></a>
+<a name="147"><span class="lineNum">     147 </span><span class="lineCov">          1 :   void pop(</span></a>
 <a name="148"><span class="lineNum">     148 </span>            :       {Map&lt;String, String&gt; pathParameters = const {},</a>
 <a name="149"><span class="lineNum">     149 </span>            :       Map&lt;String, String&gt; queryParameters = const {},</a>
 <a name="150"><span class="lineNum">     150 </span>            :       Map&lt;String, String&gt; newHistoryState = const {},}) {</a>
-<a name="151"><span class="lineNum">     151 </span><span class="lineNoCov">          0 :     stopRedirection();</span></a>
-<a name="152"><span class="lineNum">     152 </span><span class="lineNoCov">          0 :     _redirectFunction = (VRouteElementNode vRouteElementNode) =&gt;</span></a>
-<a name="153"><span class="lineNum">     153 </span><span class="lineNoCov">          0 :         RootVRouterData.of(_context).pop(vRouteElementNode.getVRouteElementToPop(), pathParameters: pathParameters, queryParameters: queryParameters, newHistoryState: newHistoryState,);</span></a>
+<a name="151"><span class="lineNum">     151 </span><span class="lineCov">          1 :     stopRedirection();</span></a>
+<a name="152"><span class="lineNum">     152 </span><span class="lineCov">          2 :     _redirectFunction = (VRouteElementNode vRouteElementNode) =&gt;</span></a>
+<a name="153"><span class="lineNum">     153 </span><span class="lineCov">          4 :         RootVRouterData.of(_context).pop(vRouteElementNode.getVRouteElementToPop(), pathParameters: pathParameters, queryParameters: queryParameters, newHistoryState: newHistoryState,);</span></a>
 <a name="154"><span class="lineNum">     154 </span>            :   }</a>
 <a name="155"><span class="lineNum">     155 </span>            : </a>
 <a name="156"><span class="lineNum">     156 </span>            :   /// Prevent the current redirection and call systemPop instead</a>
 <a name="157"><span class="lineNum">     157 </span>            :   ///</a>
 <a name="158"><span class="lineNum">     158 </span>            :   /// See [VRouter.systemPop] for more information on push</a>
-<a name="159"><span class="lineNum">     159 </span><span class="lineNoCov">          0 :   Future&lt;void&gt; systemPop(</span></a>
+<a name="159"><span class="lineNum">     159 </span><span class="lineCov">          1 :   Future&lt;void&gt; systemPop(</span></a>
 <a name="160"><span class="lineNum">     160 </span>            :       {Map&lt;String, String&gt; pathParameters = const {},</a>
 <a name="161"><span class="lineNum">     161 </span>            :       Map&lt;String, String&gt; queryParameters = const {},</a>
 <a name="162"><span class="lineNum">     162 </span>            :       Map&lt;String, String&gt; newHistoryState = const {},}) async {</a>
-<a name="163"><span class="lineNum">     163 </span><span class="lineNoCov">          0 :     stopRedirection();</span></a>
-<a name="164"><span class="lineNum">     164 </span><span class="lineNoCov">          0 :     _redirectFunction = (VRouteElementNode vRouteElementNode) =&gt;</span></a>
-<a name="165"><span class="lineNum">     165 </span><span class="lineNoCov">          0 :         RootVRouterData.of(_context).systemPop(vRouteElementNode.getVRouteElementToPop(), pathParameters: pathParameters, queryParameters: queryParameters, newHistoryState: newHistoryState,);</span></a>
+<a name="163"><span class="lineNum">     163 </span><span class="lineCov">          1 :     stopRedirection();</span></a>
+<a name="164"><span class="lineNum">     164 </span><span class="lineCov">          2 :     _redirectFunction = (VRouteElementNode vRouteElementNode) =&gt;</span></a>
+<a name="165"><span class="lineNum">     165 </span><span class="lineCov">          4 :         RootVRouterData.of(_context).systemPop(vRouteElementNode.getVRouteElementToPop(), pathParameters: pathParameters, queryParameters: queryParameters, newHistoryState: newHistoryState,);</span></a>
 <a name="166"><span class="lineNum">     166 </span>            :   }</a>
 <a name="167"><span class="lineNum">     167 </span>            : }</a>
 </pre>

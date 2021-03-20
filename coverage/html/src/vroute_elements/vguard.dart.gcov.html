@@ -32,12 +32,12 @@
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntry">1</td>
-            <td class="headerCovTableEntry">3</td>
-            <td class="headerCovTableEntryLo">33.3 %</td>
+            <td class="headerCovTableEntry">1</td>
+            <td class="headerCovTableEntryHi">100.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-03-17 11:07:57</td>
+            <td class="headerValue">2021-03-18 15:42:40</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -115,7 +115,7 @@
 <a name="53"><span class="lineNum">      53 </span>            :   ///   * [VNavigationGuard.beforeLeave] for widget level beforeLeave</a>
 <a name="54"><span class="lineNum">      54 </span>            :   ///   * [VRedirector] to known how to redirect and have access to route information</a>
 <a name="55"><span class="lineNum">      55 </span>            :   @override</a>
-<a name="56"><span class="lineNum">      56 </span>            :   final Future&lt;void&gt; Function(VRedirector? vRedirector,</a>
+<a name="56"><span class="lineNum">      56 </span>            :   final Future&lt;void&gt; Function(VRedirector vRedirector,</a>
 <a name="57"><span class="lineNum">      57 </span>            :       void Function(Map&lt;String, String&gt; state) saveHistoryState) beforeLeave;</a>
 <a name="58"><span class="lineNum">      58 </span>            : </a>
 <a name="59"><span class="lineNum">      59 </span>            :   /// This is called after the url and the state is updated if this [VRouteElement]</a>
@@ -151,7 +151,7 @@
 <a name="89"><span class="lineNum">      89 </span>            : </a>
 <a name="90"><span class="lineNum">      90 </span>            :   final List&lt;VRouteElement&gt; stackedRoutes;</a>
 <a name="91"><span class="lineNum">      91 </span>            : </a>
-<a name="92"><span class="lineNum">      92 </span><span class="lineCov">          1 :   VGuard({</span></a>
+<a name="92"><span class="lineNum">      92 </span><span class="lineCov">          2 :   VGuard({</span></a>
 <a name="93"><span class="lineNum">      93 </span>            :     this.afterEnter = VRouteElement._voidAfterEnter,</a>
 <a name="94"><span class="lineNum">      94 </span>            :     this.afterUpdate = VRouteElement._voidAfterUpdate,</a>
 <a name="95"><span class="lineNum">      95 </span>            :     this.beforeEnter = VRouteElement._voidBeforeEnter,</a>
@@ -159,15 +159,7 @@
 <a name="97"><span class="lineNum">      97 </span>            :     this.beforeUpdate = VRouteElement._voidBeforeUpdate,</a>
 <a name="98"><span class="lineNum">      98 </span>            :     required this.stackedRoutes,</a>
 <a name="99"><span class="lineNum">      99 </span>            :   });</a>
-<a name="100"><span class="lineNum">     100 </span>            : </a>
-<a name="101"><span class="lineNum">     101 </span><span class="lineNoCov">          0 :   @override</span></a>
-<a name="102"><span class="lineNum">     102 </span>            :   Future&lt;void&gt; Function(VRedirector vRedirector) get onPop =&gt;</a>
-<a name="103"><span class="lineNum">     103 </span>            :       VRouteElement._voidOnPop;</a>
-<a name="104"><span class="lineNum">     104 </span>            : </a>
-<a name="105"><span class="lineNum">     105 </span><span class="lineNoCov">          0 :   @override</span></a>
-<a name="106"><span class="lineNum">     106 </span>            :   Future&lt;void&gt; Function(VRedirector vRedirector) get onSystemPop =&gt;</a>
-<a name="107"><span class="lineNum">     107 </span>            :       VRouteElement._voidOnSystemPop;</a>
-<a name="108"><span class="lineNum">     108 </span>            : }</a>
+<a name="100"><span class="lineNum">     100 </span>            : }</a>
 </pre>
       </td>
     </tr>
