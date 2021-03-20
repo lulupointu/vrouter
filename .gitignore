@@ -29,6 +29,8 @@
 .pub-cache/
 .pub/
 build/
+pubspec.lock
+example/pubspec.lock
 
 # Android related
 **/android/**/gradle-wrapper.jar

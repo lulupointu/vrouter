@@ -6,7 +6,6 @@ final key = GlobalKey<VRouterState>();
 void main() {
   runApp(
     VRouter(
-      afterEnter: (context, _, __) => ...,
       initialUrl: '/home',
       routes: [
         VWidget(
