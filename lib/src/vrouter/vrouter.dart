@@ -770,6 +770,9 @@ class VRouterState extends State<VRouter> {
     Map<String, String> newHistoryState = const {},
     bool isReplacement = false,
   }) {
+    // Encode the path parameters
+    pathParameters.updateAll((key, value) => Uri.encodeComponent(value));
+
     // We use VRouteElement.getPathFromName
     String? newPath = widget.getPathFromName(
       name,
@@ -1350,6 +1353,8 @@ class VRouterState extends State<VRouter> {
     Map<String, String> newHistoryState = const {},
   }) {
     assert(url != null);
+    // Encode the path parameters
+    pathParameters.updateAll((key, value) => Uri.encodeComponent(value));
 
     // This url will be not null if we find a route to go to
     String? newUrl;
