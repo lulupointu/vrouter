@@ -884,7 +884,7 @@ class VRouterState extends State<VRouter> {
       );
 
       if (newVRoute == null) {
-        throw Exception('No route could be found for the url $newUrl');
+        throw Exception('No route could be found for the url ${newUri.toString()}');
       }
 
       // This copy is necessary in order not to modify newVRoute.vRouteElements
@@ -934,7 +934,7 @@ class VRouterState extends State<VRouter> {
     final vRedirector = VRedirector(
       context: _rootVRouterContext,
       from: url,
-      to: newUrl,
+      to: newUri.toString(),
       previousVRouterData: RootVRouterData(
         child: Container(),
         historyState: historyState,
@@ -950,7 +950,7 @@ class VRouterState extends State<VRouter> {
         pathParameters: newVRoute?.pathParameters ?? {},
         queryParameters: queryParameters,
         state: this,
-        url: newUrl,
+        url: newUri.toString(),
         previousUrl: url,
       ),
     );
@@ -1099,7 +1099,7 @@ class VRouterState extends State<VRouter> {
     print('/// Leave if the url is external');
     if (isUrlExternal) {
       _ignoreNextBrowserCalls = true;
-      await BrowserHelpers.pushExternal(newUrl, openNewTab: openNewTab);
+      await BrowserHelpers.pushExternal(newUri.toString(), openNewTab: openNewTab);
       return;
     }
 
@@ -1108,22 +1108,22 @@ class VRouterState extends State<VRouter> {
 
     final oldUrl = url;
 
-    if (url != newUrl || newHistoryState != historyState) {
+    if (url != newUri.toString() || newHistoryState != historyState) {
       _updateStateVariables(
         newVRoute!,
-        newUrl,
+        newUri.toString(),
         historyState: newHistoryState,
         queryParameters: queryParameters,
       );
       if (isReplacement) {
         _doReportBackUrlToBrowser = false;
         _ignoreNextBrowserCalls = true;
-        if (BrowserHelpers.getPathAndQuery(routerMode: widget.mode) != newUrl) {
-          print('calling pushReplacement from VRouter with url $newUrl');
-          BrowserHelpers.pushReplacement(newUrl, routerMode: widget.mode);
-          if (BrowserHelpers.getPathAndQuery(routerMode: widget.mode) != newUrl) {
+        if (BrowserHelpers.getPathAndQuery(routerMode: widget.mode) != newUri.toString()) {
+          print('calling pushReplacement from VRouter with url ${newUri.toString()}');
+          BrowserHelpers.pushReplacement(newUri.toString(), routerMode: widget.mode);
+          if (BrowserHelpers.getPathAndQuery(routerMode: widget.mode) != newUri.toString()) {
             await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
-                BrowserHelpers.getPathAndQuery(routerMode: widget.mode) == newUrl);
+                BrowserHelpers.getPathAndQuery(routerMode: widget.mode) == newUri.toString());
           }
         }
         BrowserHelpers.replaceHistoryState(jsonEncode({
@@ -1151,13 +1151,13 @@ class VRouterState extends State<VRouter> {
           _rootVRouterContext,
           // TODO: Change this to local context? This might imply that we need a global key which is not ideal
           oldUrl,
-          newUrl,
+          newUri.toString(),
         );
       }
 
       /// 9. Call afterEnter in the [VRouter]
       print('/// 9. Call afterEnter in the [VRouter]');
-      widget.afterEnter(_rootVRouterContext, oldUrl, newUrl);
+      widget.afterEnter(_rootVRouterContext, oldUrl, newUri.toString());
 
       /// 10. Call afterUpdate in all reused [VWidgetGuard]
       print('/// 10. Call afterUpdate in all reused [VWidgetGuard]');
@@ -1165,7 +1165,7 @@ class VRouterState extends State<VRouter> {
         vWidgetGuardMessageRoot.vWidgetGuard.afterUpdate(
           vWidgetGuardMessageRoot.localContext,
           oldUrl,
-          newUrl,
+          newUri.toString(),
         );
       }
 
@@ -1176,7 +1176,7 @@ class VRouterState extends State<VRouter> {
           _rootVRouterContext,
           // TODO: Change this to local context? This might imply that we need a global key which is not ideal
           oldUrl,
-          newUrl,
+          newUri.toString(),
         );
       }
     });
