@@ -42,22 +42,11 @@ class RootVRouterData extends InheritedWidget {
   /// the back or forward button on the navigator, this historyState will be the same
   /// as the last one you saved.
   ///
-  /// It can be changed by using [VRouteElementWidgetData.of(context).replaceHistoryState(newState)]
-  ///
-  /// Also see:
-  ///   * [VRouteElementData.historyState] if you want to use a local level
-  ///      version of the historyState
-  ///   * [VRouterData.historyState] if you want to use a router level
-  ///      version of the historyState
+  /// It can be changed by using [context.vRouter.replaceHistoryState(newState)]
   final Map<String, String> historyState;
 
   /// Maps all route parameters (i.e. parameters of the path
   /// mentioned as ":someId")
-  /// Note that if you have multiple parameters with the same
-  /// name, only the last one will be visible here
-  /// However every parameters is passed locally to VRouteElementWidgetData
-  /// so you should find them there.
-  /// See [VRouteElementData.pathParameters]
   final Map<String, String> pathParameters;
 
   /// Contains all query parameters (i.e. parameters after
@@ -78,7 +67,7 @@ class RootVRouterData extends InheritedWidget {
 
   /// A function to build the transition to or from this route
   ///
-  /// This should be the default one, i.e. the one of [VRouter]
+  /// This should be the default one, i.e. the one of [VRouter]git 
   Widget Function(Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child)? get _defaultPageBuildTransition => _state.widget.buildTransition;
 
