@@ -773,7 +773,8 @@ class VRouterState extends State<VRouter> {
     bool isReplacement = false,
   }) {
     // Encode the path parameters
-    pathParameters = pathParameters.map((key, value) => MapEntry(key, Uri.encodeComponent(value)));
+    pathParameters =
+        pathParameters.map((key, value) => MapEntry(key, Uri.encodeComponent(value)));
 
     // We use VRouteElement.getPathFromName
     String? newPath = widget.getPathFromName(
@@ -1108,34 +1109,32 @@ class VRouterState extends State<VRouter> {
 
     final oldUrl = url;
 
-    if (url != newUri.toString() || newHistoryState != historyState) {
-      _updateStateVariables(
-        newVRoute!,
-        newUri.toString(),
-        historyState: newHistoryState,
-        queryParameters: queryParameters,
-      );
-      if (isReplacement) {
-        _doReportBackUrlToBrowser = false;
-        _ignoreNextBrowserCalls = true;
+    _updateStateVariables(
+      newVRoute!,
+      newUri.toString(),
+      historyState: newHistoryState,
+      queryParameters: queryParameters,
+    );
+    if (isReplacement) {
+      _doReportBackUrlToBrowser = false;
+      _ignoreNextBrowserCalls = true;
+      if (BrowserHelpers.getPathAndQuery(routerMode: widget.mode) != newUri.toString()) {
+        print('calling pushReplacement from VRouter with url ${newUri.toString()}');
+        BrowserHelpers.pushReplacement(newUri.toString(), routerMode: widget.mode);
         if (BrowserHelpers.getPathAndQuery(routerMode: widget.mode) != newUri.toString()) {
-          print('calling pushReplacement from VRouter with url ${newUri.toString()}');
-          BrowserHelpers.pushReplacement(newUri.toString(), routerMode: widget.mode);
-          if (BrowserHelpers.getPathAndQuery(routerMode: widget.mode) != newUri.toString()) {
-            await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
-                BrowserHelpers.getPathAndQuery(routerMode: widget.mode) == newUri.toString());
-          }
+          await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
+              BrowserHelpers.getPathAndQuery(routerMode: widget.mode) == newUri.toString());
         }
-        BrowserHelpers.replaceHistoryState(jsonEncode({
-          'serialCount': _serialCount,
-          'historyState': jsonEncode(newHistoryState),
-        }));
-        _ignoreNextBrowserCalls = false;
-      } else {
-        _serialCount = newSerialCount ?? _serialCount + 1;
       }
-      setState(() {});
+      BrowserHelpers.replaceHistoryState(jsonEncode({
+        'serialCount': _serialCount,
+        'historyState': jsonEncode(newHistoryState),
+      }));
+      _ignoreNextBrowserCalls = false;
+    } else {
+      _serialCount = newSerialCount ?? _serialCount + 1;
     }
+    setState(() {});
 
     // We need to do this after rebuild as completed so that the user can have access
     // to the new state variables
@@ -1340,7 +1339,8 @@ class VRouterState extends State<VRouter> {
   }) {
     assert(url != null);
     // Encode the path parameters
-    pathParameters = pathParameters.map((key, value) => MapEntry(key, Uri.encodeComponent(value)));
+    pathParameters =
+        pathParameters.map((key, value) => MapEntry(key, Uri.encodeComponent(value)));
 
     // This url will be not null if we find a route to go to
     String? newUrl;
