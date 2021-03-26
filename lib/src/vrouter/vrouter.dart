@@ -1340,7 +1340,7 @@ class VRouterState extends State<VRouter> {
   }) {
     assert(url != null);
     // Encode the path parameters
-    pathParameters.updateAll((key, value) => Uri.encodeComponent(value));
+    pathParameters = pathParameters.map((key, value) => MapEntry(key, Uri.encodeComponent(value)));
 
     // This url will be not null if we find a route to go to
     String? newUrl;
