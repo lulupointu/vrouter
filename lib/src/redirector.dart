@@ -2,8 +2,8 @@ part of 'main.dart';
 
 /// A class which helps you in beforeLeave or beforeEnter functions
 /// This class contain 2 main functionality:
-///     1. It allows you to redirect using push, pushNamed, ...
-///     2. It gives you access to information about the previous route and the new route
+///   1. It allows you to redirect using [VRedirector.push], [VRedirector.pushNamed], ...
+///   2. It gives you access to information about the previous route and the new route
 ///
 /// Note that you should use this object to redirect in beforeLeave and beforeEnter. Never
 /// use VRouterData to do so.
