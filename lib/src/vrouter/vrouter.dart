@@ -773,7 +773,7 @@ class VRouterState extends State<VRouter> {
     bool isReplacement = false,
   }) {
     // Encode the path parameters
-    pathParameters.updateAll((key, value) => Uri.encodeComponent(value));
+    pathParameters = pathParameters.map((key, value) => MapEntry(key, Uri.encodeComponent(value)));
 
     // We use VRouteElement.getPathFromName
     String? newPath = widget.getPathFromName(
