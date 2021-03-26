@@ -1212,6 +1212,11 @@ class VRouterState extends State<VRouter> {
     return;
   }
 
+  /// Performs a systemPop cycle:
+  ///   1. Call onPop in all active [VWidgetGuards]
+  ///   2. Call onPop in all [VRouteElement]
+  ///   3. Call onPop of VRouter
+  ///   4. Update the url to the one found in [_defaultPop]
   Future<void> _pop(
     VRouteElement elementToPop, {
     VRedirector? vRedirector,
@@ -1230,7 +1235,7 @@ class VRouterState extends State<VRouter> {
       newHistoryState: newHistoryState,
     );
 
-    /// Call onPop in all active [VWidgetGuards]
+    /// 1. Call onPop in all active [VWidgetGuards]
     for (var vWidgetGuardMessageRoot in _vWidgetGuardMessagesRoot) {
       await vWidgetGuardMessageRoot.vWidgetGuard.onPop(vRedirector);
       if (!vRedirector.shouldUpdate) {
@@ -1238,21 +1243,16 @@ class VRouterState extends State<VRouter> {
       }
     }
 
-    /// Call onPop in all [VRouteElement]
-    for (var vRouteElement in _vRoute.vRouteElements) {
+    /// 2. Call onPop in all [VRouteElement]
+    /// 3. Call onPop of VRouter
+    for (var vRouteElement in _vRoute.vRouteElements.reversed) {
       await vRouteElement.onPop(vRedirector);
       if (!vRedirector.shouldUpdate) {
         return;
       }
     }
 
-    /// Call onPop of VRouter
-    await widget.onPop(vRedirector);
-    if (!vRedirector.shouldUpdate) {
-      return;
-    }
-
-    /// Update the url to the one found in [_defaultPop]
+    /// 4. Update the url to the one found in [_defaultPop]
     if (vRedirector.newVRouterData != null) {
       _updateUrl(vRedirector.to!,
           queryParameters: queryParameters, newHistoryState: newHistoryState);
@@ -1263,7 +1263,11 @@ class VRouterState extends State<VRouter> {
     }
   }
 
-  /// See [VRouterMethodsHolder.systemPop]
+  /// Performs a systemPop cycle:
+  /// 1. Call onSystemPop in all active [VWidgetGuards] if implemented, else onPop
+  /// 2. Call onSystemPop in all [VRouteElement] if implemented, else onPop
+  /// 3. Call onSystemPop of VRouter if implemented, else onPop
+  /// 4. Update the url to the one found in [_defaultPop]
   Future<void> _systemPop(
     VRouteElement itemToPop, {
     Map<String, String> pathParameters = const {},
@@ -1280,7 +1284,7 @@ class VRouterState extends State<VRouter> {
       newHistoryState: newHistoryState,
     );
 
-    /// Call onSystemPop in all active [VWidgetGuards] if implemented, else onPop
+    /// 1. Call onSystemPop in all active [VWidgetGuards] if implemented, else onPop
     for (var vWidgetGuardMessageRoot in _vWidgetGuardMessagesRoot) {
       if (vWidgetGuardMessageRoot.vWidgetGuard.onSystemPop != VRouteElement._voidOnSystemPop) {
         await vWidgetGuardMessageRoot.vWidgetGuard.onSystemPop(vRedirector);
@@ -1292,8 +1296,9 @@ class VRouterState extends State<VRouter> {
       }
     }
 
-    /// Call onSystemPop in all [VRouteElement] if implemented, else onPop
-    for (var vRouteElement in _vRoute.vRouteElements) {
+    /// 2. Call onSystemPop in all [VRouteElement] if implemented, else onPop
+    /// 3. Call onSystemPop of VRouter if implemented, else onPop
+    for (var vRouteElement in _vRoute.vRouteElements.reversed) {
       if (vRouteElement.onSystemPop != VRouteElement._voidOnSystemPop) {
         await vRouteElement.onSystemPop(vRedirector);
       } else {
@@ -1304,17 +1309,7 @@ class VRouterState extends State<VRouter> {
       }
     }
 
-    /// Call onSystemPop of VRouter if implemented, else onPop
-    if (widget.onSystemPop != VRouteElement._voidOnSystemPop) {
-      await widget.onSystemPop(vRedirector);
-    } else {
-      await widget.onPop(vRedirector);
-    }
-    if (!vRedirector.shouldUpdate) {
-      return;
-    }
-
-    /// Update the url to the one found in [_defaultPop]
+    /// 4. Update the url to the one found in [_defaultPop]
     if (vRedirector.newVRouterData != null) {
       _updateUrl(vRedirector.to!,
           queryParameters: queryParameters, newHistoryState: newHistoryState);
