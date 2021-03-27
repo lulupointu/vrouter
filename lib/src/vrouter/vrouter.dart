@@ -1055,8 +1055,11 @@ class VRouterState extends State<VRouter> {
 
     if (historyStateToSave.isNotEmpty && path != null) {
       if (!kIsWeb) {
-        ' WARNING: Tried to store the state $historyStateToSave while not on the web. State saving/restoration only work on the web.\n'
-            'You can safely ignore this message if you just want this functionality on the web.');
+        log(
+          ' WARNING: Tried to store the state $historyStateToSave while not on the web. State saving/restoration only work on the web.\n'
+          'You can safely ignore this message if you just want this functionality on the web.',
+          name: 'VRouter',
+        );
       } else {
         ///   The historyStates got in beforeLeave are stored   ///
         // If we come from the browser, chances are we already left the page
