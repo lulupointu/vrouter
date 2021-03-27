@@ -958,7 +958,6 @@ class VRouterState extends State<VRouter> {
 
     if (url != null) {
       ///   1. Call beforeLeave in all deactivated [VWidgetGuard]
-      print('///   1. Call beforeLeave in all deactivated [VWidgetGuard]');
       for (var vWidgetGuardMessageRoot in deactivatedVWidgetGuardsMessagesRoot) {
         await vWidgetGuardMessageRoot.vWidgetGuard.beforeLeave(vRedirector, saveHistoryState);
         if (!vRedirector._shouldUpdate) {
@@ -977,7 +976,6 @@ class VRouterState extends State<VRouter> {
       }
 
       ///   2. Call beforeLeave in all deactivated [VRouteElement]
-      print('///   2. Call beforeLeave in all deactivated [VRouteElement]');
       for (var vRouteElement in deactivatedVRouteElements) {
         await vRouteElement.beforeLeave(vRedirector, saveHistoryState);
         if (!vRedirector._shouldUpdate) {
@@ -994,7 +992,6 @@ class VRouterState extends State<VRouter> {
       }
 
       /// 3. Call beforeLeave in the [VRouter]
-      print('/// 3. Call beforeLeave in the [VRouter]');
       await widget.beforeLeave(vRedirector, saveHistoryState);
       if (!vRedirector._shouldUpdate) {
         await _abortUpdateUrl(
@@ -1009,7 +1006,6 @@ class VRouterState extends State<VRouter> {
 
     if (!isUrlExternal) {
       /// 4. Call beforeEnter in the [VRouter]
-      print('/// 4. Call beforeEnter in the [VRouter]');
       await widget.beforeEnter(vRedirector);
       if (!vRedirector._shouldUpdate) {
         await _abortUpdateUrl(
@@ -1022,7 +1018,6 @@ class VRouterState extends State<VRouter> {
       }
 
       /// 5. Call beforeEnter in all initialized [VRouteElement] of the new route
-      print('/// 5. Call beforeEnter in all initialized [VRouteElement] of the new route');
       for (var vRouteElement in initializedVRouteElements) {
         await vRouteElement.beforeEnter(vRedirector);
         if (!vRedirector._shouldUpdate) {
@@ -1039,7 +1034,6 @@ class VRouterState extends State<VRouter> {
       }
 
       /// 6. Call beforeUpdate in all reused [VRouteElement]
-      print('/// 6. Call beforeUpdate in all reused [VRouteElement]');
       for (var vRouteElement in reusedVRouteElements) {
         await vRouteElement.beforeUpdate(vRedirector);
         if (!vRedirector._shouldUpdate) {
@@ -1059,15 +1053,12 @@ class VRouterState extends State<VRouter> {
 
     final oldSerialCount = _serialCount;
 
-    print('vWidgetGuardMessagesRoot: $_vWidgetGuardMessagesRoot');
     if (historyStateToSave.isNotEmpty && path != null) {
       if (!kIsWeb) {
-        print(
-            ' WARNING: Tried to store the state $historyStateToSave while not on the web. State saving/restoration only work on the web.\n'
+        ' WARNING: Tried to store the state $historyStateToSave while not on the web. State saving/restoration only work on the web.\n'
             'You can safely ignore this message if you just want this functionality on the web.');
       } else {
         ///   The historyStates got in beforeLeave are stored   ///
-        print(' ///   The historyStates got in beforeLeave are stored   ///');
         // If we come from the browser, chances are we already left the page
         // So we need to:
         //    1. Go back to where we were
@@ -1076,9 +1067,7 @@ class VRouterState extends State<VRouter> {
         if (kIsWeb && fromBrowser && oldSerialCount != newSerialCount) {
           _ignoreNextBrowserCalls = true;
           BrowserHelpers.browserGo(oldSerialCount - newSerialCount!);
-          print('target serial count: $oldSerialCount');
           await BrowserHelpers.onBrowserPopState.firstWhere((element) {
-            print('Got serial count: ${BrowserHelpers.getHistorySerialCount()}');
             return BrowserHelpers.getHistorySerialCount() == oldSerialCount;
           });
         }
@@ -1097,7 +1086,6 @@ class VRouterState extends State<VRouter> {
     }
 
     /// Leave if the url is external
-    print('/// Leave if the url is external');
     if (isUrlExternal) {
       _ignoreNextBrowserCalls = true;
       await BrowserHelpers.pushExternal(newUri.toString(), openNewTab: openNewTab);
@@ -1105,8 +1093,6 @@ class VRouterState extends State<VRouter> {
     }
 
     ///   The state of the VRouter changes            ///
-    print('///   The state of the VRouter changes            ///');
-
     final oldUrl = url;
 
     _updateStateVariables(
@@ -1119,7 +1105,6 @@ class VRouterState extends State<VRouter> {
       _doReportBackUrlToBrowser = false;
       _ignoreNextBrowserCalls = true;
       if (BrowserHelpers.getPathAndQuery(routerMode: widget.mode) != newUri.toString()) {
-        print('calling pushReplacement from VRouter with url ${newUri.toString()}');
         BrowserHelpers.pushReplacement(newUri.toString(), routerMode: widget.mode);
         if (BrowserHelpers.getPathAndQuery(routerMode: widget.mode) != newUri.toString()) {
           await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
@@ -1140,11 +1125,9 @@ class VRouterState extends State<VRouter> {
     // to the new state variables
     WidgetsBinding.instance?.addPostFrameCallback((timeStamp) {
       /// 7. Call afterEnter in all initialized [VWidgetGuard]
-      print('/// 7. Call afterEnter in all initialized [VWidgetGuard]');
       // This is done automatically by VNotificationGuard
 
       /// 8. Call afterEnter all initialized [VRouteElement]
-      print('/// 8. Call afterEnter all initialized [VRouteElement]');
       for (var vRouteElement in initializedVRouteElements) {
         vRouteElement.afterEnter(
           _rootVRouterContext,
@@ -1155,11 +1138,9 @@ class VRouterState extends State<VRouter> {
       }
 
       /// 9. Call afterEnter in the [VRouter]
-      print('/// 9. Call afterEnter in the [VRouter]');
       widget.afterEnter(_rootVRouterContext, oldUrl, newUri.toString());
 
       /// 10. Call afterUpdate in all reused [VWidgetGuard]
-      print('/// 10. Call afterUpdate in all reused [VWidgetGuard]');
       for (var vWidgetGuardMessageRoot in reusedVWidgetGuardsMessagesRoot) {
         vWidgetGuardMessageRoot.vWidgetGuard.afterUpdate(
           vWidgetGuardMessageRoot.localContext,
@@ -1169,7 +1150,6 @@ class VRouterState extends State<VRouter> {
       }
 
       /// 11. Call afterUpdate in all reused [VRouteElement]
-      print('/// 11. Call afterUpdate in all reused [VRouteElement]');
       for (var vRouteElement in reusedVRouteElements) {
         vRouteElement.afterUpdate(
           _rootVRouterContext,

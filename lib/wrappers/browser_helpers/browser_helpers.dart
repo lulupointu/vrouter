@@ -20,8 +20,6 @@ class BrowserHelpers {
   /// only 'state' should be changed
   static void replaceHistoryState(String state) {
     var globalState = html.window.history.state;
-    print("globalState: ${globalState}");
-    print("globalState['state']: ${globalState['state']}");
     globalState['state'] = state;
     html.window.history.replaceState(globalState, 'flutter', null);
   }
