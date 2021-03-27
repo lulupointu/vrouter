@@ -61,7 +61,7 @@ VRouter(
 
     VRouteRedirector(
       // This matches any path
-      path: ':_(.*)',
+      path: ':_(.+)',
       // We redirect to /login
       redirectTo: '/login',
     )
