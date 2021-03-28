@@ -11,10 +11,9 @@ import 'package:flutter/widgets.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:simple_url_handler/simple_url_handler.dart';
 import 'package:url_strategy/url_strategy.dart';
-import '../wrappers/move_to_background_fake.dart'
-    if (dart.library.io) 'package:move_to_background/move_to_background.dart';
 import '../wrappers/browser_helpers/fake_browser_helpers.dart'
     if (dart.library.js) '../wrappers/browser_helpers/browser_helpers.dart';
+import '../wrappers/move_to_background.dart';
 import '../wrappers/platform/platform_none.dart'
     if (dart.library.io) '../wrappers/platform/platform_io.dart'
     if (dart.library.js) '../wrappers/platform/platform_web.dart';
