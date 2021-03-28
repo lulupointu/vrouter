@@ -113,9 +113,11 @@ class _LoginWidgetState extends State<LoginWidget> {
             // This FAB is shared and shows hero animations working with no issues
             FloatingActionButton(
               heroTag: 'FAB',
-              onPressed: () => setState(() => (_formKey.currentState.validate())
+              onPressed: () {
+                setState(() => (_formKey.currentState.validate())
                   ? VRouter.of(context).push('/profile/$name')
-                  : null),
+                  : null);
+              },
               child: Icon(Icons.login),
             )
           ],

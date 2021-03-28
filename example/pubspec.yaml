@@ -24,15 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   move_to_background: any
-
-
-  vrouter:
-    path: ../
-
-#  vrouter:
-#    git:
-#      url: https://github.com/lulupointu/vrouter.git
-#      ref: null-safety
+  vrouter: ^1.1.0+3
 
 dev_dependencies:
   flutter_test:
