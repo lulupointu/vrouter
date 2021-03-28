@@ -1,3 +1,7 @@
+## \[1.1.0+4\] - 03/03/2021.
+
+* Change import to support desktop yet again
+
 ## \[1.1.0+3\] - 03/03/2021.
 
 * Update readme
