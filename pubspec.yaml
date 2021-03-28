@@ -15,7 +15,7 @@ dependencies:
   url_strategy: ^0.2.0
   js: ^0.6.3
   url_launcher: ^6.0.2
-  move_to_background: ^1.0.1-nullsafety.1
+  move_to_background: 1.0.1-nullsafety.1
 
 dev_dependencies:
   test:
