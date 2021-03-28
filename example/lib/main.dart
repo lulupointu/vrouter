@@ -115,8 +115,8 @@ class _LoginWidgetState extends State<LoginWidget> {
               heroTag: 'FAB',
               onPressed: () {
                 setState(() => (_formKey.currentState.validate())
-                  ? VRouter.of(context).push('/profile/$name')
-                  : null);
+                    ? VRouter.of(context).push('/profile/$name')
+                    : null);
               },
               child: Icon(Icons.login),
             )
