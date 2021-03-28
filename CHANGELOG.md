@@ -1,3 +1,7 @@
+## \[1.1.0+2\] - 03/03/2021.
+
+* Change import to support desktop
+
 ## \[1.1.0+1\] - 03/03/2021.
 
 * Change dependency constraints for null safety
