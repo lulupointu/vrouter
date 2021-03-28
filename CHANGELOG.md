@@ -1,4 +1,4 @@
-## \[1.0.1-nullsafety.0\] - 03/03/2021.
+## \[1.1.0\] - 03/03/2021.
 
 * Add description to packages classes, example of class uses can now be found there
 * \[**DEPRECIATED**\]: VRouteData should not be used anymore, use VRouterData to access the current route data
@@ -12,6 +12,8 @@
 * \[**BREAKING**\]: Navigation control methods inside VRouteElement (beforeLeave, beforeEnter, ...) are now called even if the VRouteElement is not the last element of the route
 * \[**NEW**\]: VRouteElements now have beforeUpdate method called when the route changes but it remains in the route
 * \[**NEW**\]: widgetBuilder (from VChild and VStack) have a new attribute which gives you access to the current vChild in its stackedRoutes if any
+
+See the migration guide at the end of the README to migrate!
 
 ## \[1.0.0-nullsafety.11\] - 27/02/2021.
 

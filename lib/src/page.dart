@@ -150,19 +150,22 @@ class VMaterialPage<T> extends MaterialPage<T> implements VBasePage<T> {
         transitionDuration: transitionDuration,
         reverseTransitionDuration: reverseTransitionDuration,
       );
-    } else if (RootVRouterData.of(context)._defaultPageBuildTransition != null) {
+    } else if (RootVRouterData.of(context)._defaultPageBuildTransition !=
+        null) {
       // Else try to use the router transition
       return VPageRoute<T>(
         page: this,
         customTransition: (_, Animation<double> animation,
-            Animation<double> secondaryAnimation, Widget child) =>
+                Animation<double> secondaryAnimation, Widget child) =>
             RootVRouterData.of(context)._defaultPageBuildTransition!(
-              animation,
-              secondaryAnimation,
-              child,
-            ),
-        transitionDuration: RootVRouterData.of(context)._defaultPageTransitionDuration,
-        reverseTransitionDuration: RootVRouterData.of(context)._defaultPageReverseTransitionDuration,
+          animation,
+          secondaryAnimation,
+          child,
+        ),
+        transitionDuration:
+            RootVRouterData.of(context)._defaultPageTransitionDuration,
+        reverseTransitionDuration:
+            RootVRouterData.of(context)._defaultPageReverseTransitionDuration,
       );
     }
 
@@ -236,19 +239,22 @@ class VCupertinoPage<T> extends CupertinoPage<T> implements VBasePage<T> {
         transitionDuration: transitionDuration,
         reverseTransitionDuration: reverseTransitionDuration,
       );
-    } else if (RootVRouterData.of(context)._defaultPageBuildTransition != null) {
+    } else if (RootVRouterData.of(context)._defaultPageBuildTransition !=
+        null) {
       // Else try to use the router transition
       return VPageRoute<T>(
         page: this,
         customTransition: (_, Animation<double> animation,
-            Animation<double> secondaryAnimation, Widget child) =>
+                Animation<double> secondaryAnimation, Widget child) =>
             RootVRouterData.of(context)._defaultPageBuildTransition!(
-              animation,
-              secondaryAnimation,
-              child,
-            ),
-        transitionDuration: RootVRouterData.of(context)._defaultPageTransitionDuration,
-        reverseTransitionDuration: RootVRouterData.of(context)._defaultPageReverseTransitionDuration,
+          animation,
+          secondaryAnimation,
+          child,
+        ),
+        transitionDuration:
+            RootVRouterData.of(context)._defaultPageTransitionDuration,
+        reverseTransitionDuration:
+            RootVRouterData.of(context)._defaultPageReverseTransitionDuration,
       );
     }
 

@@ -7,7 +7,6 @@ part of '../main.dart';
 ///   - implementing [buildRoute] methods
 @immutable
 abstract class VRouteElementWithPage extends VRouteElementWithPath {
-
   /// The widget which will be displayed for the given [path]
   final Widget widget;
 

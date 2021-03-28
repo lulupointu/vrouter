@@ -26,7 +26,9 @@ class BrowserHelpers {
 
   /// Gets the current history state if any, null otherwise
   static String? getHistoryState() {
-    return (html.window.history.state != null) ? html.window.history.state['state'] : null;
+    return (html.window.history.state != null)
+        ? html.window.history.state['state']
+        : null;
   }
 
   /// We use a custom state entry called 'serialCount'
@@ -38,7 +40,8 @@ class BrowserHelpers {
     }
     int? newSerialCount;
     try {
-      newSerialCount = jsonDecode(html.window.history.state['state'] ?? '{}')['serialCount'];
+      newSerialCount =
+          jsonDecode(html.window.history.state['state'] ?? '{}')['serialCount'];
       // ignore: empty_catches
     } on FormatException {} on TypeError {
       /// Catch and fix error with flutter sdk, see https://github.com/flutter/flutter/issues/78620
@@ -64,17 +67,20 @@ class BrowserHelpers {
   static void browserGo(int delta) => html.window.history.go(delta);
 
   /// Fires an event when the url changes
-  static Stream<html.PopStateEvent> get onBrowserPopState => html.window.onPopState;
+  static Stream<html.PopStateEvent> get onBrowserPopState =>
+      html.window.onPopState;
 
   /// Fires an event when a page will be unloaded
   ///
   /// This mainly occurs when a user types a url in the browser on closes the browser
-  static Stream<html.Event> get onBrowserBeforeUnload => html.window.onBeforeUnload;
+  static Stream<html.Event> get onBrowserBeforeUnload =>
+      html.window.onBeforeUnload;
 
   /// Pushes a url which is from another website
   ///
   /// If [openNewTab] is true, this url in opened in a new tab
-  static Future<void> pushExternal(String url, {required bool openNewTab}) async {
+  static Future<void> pushExternal(String url,
+      {required bool openNewTab}) async {
     final targetUrl = url.startsWith('http') ? url : 'http://$url';
     if (openNewTab) {
       html.window.open(targetUrl, '_blank');
@@ -86,6 +92,6 @@ class BrowserHelpers {
   /// This replace the current url by the given one
   /// Meaning that while the url changes, no new history entry is created
   static void pushReplacement(String url, {required VRouterModes routerMode}) =>
-      html.window.history.replaceState(
-          html.window.history.state, "", (routerMode == VRouterModes.hash) ? '/#$url' : url);
+      html.window.history.replaceState(html.window.history.state, "",
+          (routerMode == VRouterModes.hash) ? '/#$url' : url);
 }

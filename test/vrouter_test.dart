@@ -148,7 +148,10 @@ main() {
               path: '/',
               widget: Text('VWidget1'),
               stackedRoutes: [
-                VWidget(path: '/settings', widget: Text('VWidget2'), name: 'settings'),
+                VWidget(
+                    path: '/settings',
+                    widget: Text('VWidget2'),
+                    name: 'settings'),
               ],
             ),
           ],
@@ -178,7 +181,8 @@ main() {
       expect(vWidget2Finder2, findsOneWidget);
     });
 
-    testWidgets('VRouter pushNamed with path parameters', (WidgetTester tester) async {
+    testWidgets('VRouter pushNamed with path parameters',
+        (WidgetTester tester) async {
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -212,7 +216,8 @@ main() {
 
       // Navigate to 'settings'
       // Tap the add button.
-      vRouterKey.currentState!.pushNamed('settings', pathParameters: {'id': '1'});
+      vRouterKey.currentState!
+          .pushNamed('settings', pathParameters: {'id': '1'});
       await tester.pumpAndSettle();
 
       // Now, only VWidget2 should be visible
@@ -223,7 +228,8 @@ main() {
       expect(vWidget2Finder2, findsOneWidget);
     });
 
-    testWidgets('VRouter push with queryParameters', (WidgetTester tester) async {
+    testWidgets('VRouter push with queryParameters',
+        (WidgetTester tester) async {
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
