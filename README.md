@@ -31,7 +31,7 @@ VRouter(
     // This matches the path '/login'
     VWidget(
       path: '/login',
-      widget: LoginWidget(),
+      widget: LoginScreen(),
     ),
     
     VGuard(
@@ -47,12 +47,12 @@ VRouter(
               // This matches the path '/in/profile/:id'
               // :id can be any word and will by accessible as a path parameter
               path: 'profile/:id',
-              widget: ProfileWidget(),
+              widget: ProfileScreen(),
             ),
             VWidget(
               // This matches the path '/settings'
               path: '/settings',
-              widget: SettingsWidget(),
+              widget: SettingsScreen(),
             ),
           ],
         ),
@@ -80,14 +80,14 @@ VWidget is used to display the given `widget` if the given `path` is matched
 ```
 VWidget(
   path: '/login', 
-  widget: LoginWidget(),
+  widget: LoginScreen(),
   stackedRoutes: [
-    VWidget(path: '/home', widget: HomeWidget()),
+    VWidget(path: '/home', widget: HomeScreen()),
   ],
 )
 ```
 
-Using `stackedRoutes`, you can stack widget from other `VRouteElement` on top of the given `widget`: Here the `HomeWidget` will be stacked on top of the `LoginWidget`.
+Using `stackedRoutes`, you can stack widget from other `VRouteElement` on top of the given `widget`: Here the `HomeScreen` will be stacked on top of the `LoginScreen`.
 
 
 ### VNester
@@ -101,25 +101,25 @@ VNester(
   nestedRoutes: [
     VWidget(
       path: 'profile',
-      widget: ProfileWidget(),
+      widget: ProfileScreen(),
     ),
     VWidget(
       path: 'settings',
-      widget: ProfileWidget(),
+      widget: ProfileScreen(),
     ),
   ],
 )
 ```
 
 In the example above, if you have MyScaffold and want to use a different body for different paths, you can use a `VNester`. Here:
-  - In `/in/profile` MyScaffold will have `ProfileWidget` as a `child`
-  - In `/in/settings` MyScaffold will have `Settings` as a `child`
+  - In `/in/profile` MyScaffold will have `ProfileScreen` as a `child`
+  - In `/in/settings` MyScaffold will have `SettingsScreen` as a `child`
 
 ### VGuard
 
 `VGuard` helps you control the navigation changes. You can use many methods like `beforeEnter` which will be called at different times to respond to precise navigation events.
 
-In the example above, `vRedirector` is used to redirect if we are not connected.
+In the overview example, `vRedirector` is used to redirect if we are not connected.
 
 ### VRouteRedirector
 
@@ -163,7 +163,7 @@ VRouter(
   routes: [
     VWidget(
       path: '/user/:id',
-      widget: UserWidget(),
+      widget: UserScreen(),
     ),
   ],
 )
@@ -171,7 +171,7 @@ VRouter(
 
 Access the path parameters in you widgets:
 ```
-class UserWidget extends StatelessWidget {
+class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final id = context.vRouter.pathParameters['id'];
@@ -196,19 +196,19 @@ VRouter(
     // No transition is specified, so the default one will play for '/user'
     VWidget(
       path: '/user',
-      widget: ProfileWidget(),
+      widget: ProfileScreen(),
       stackedRoutes: [
         // The custom transition will be played when accessing '/user/likes'
         VWidget(
           path: 'likes',
-          widget: LikesWidget(),
+          widget: LikesScreen(),
           buildTransition: (animation1, _, child) =>
               ScaleTransition(scale: animation1, child: child),
         )
       ],
     ),
     // No transition is specified, so the default one will play
-    VStacked(path: '/settings', widget: SettingsWidget()),
+    VStacked(path: '/settings', widget: SettingsScreen()),
   ],
 );
 ```
@@ -232,7 +232,7 @@ VRouter(
         vRedirector.stopRedirection(); // You can use vRedirector to stop the redirection
       },
       stackedRoutes: [
-        VWidget(path: 'profile', widget: ProfileWidget()),  
+        VWidget(path: 'profile', widget: ProfileScreen()),  
       ],
     ),
   ],
@@ -290,7 +290,7 @@ VRouter(
 ```
 3. With a widget: `VWidgetGuard`
 ```
-class UserWidget extends StatelessWidget {
+class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return VWidgetGuard(
@@ -338,7 +338,7 @@ Here is a quick guide of how to migrate:
 ```
 VStacked(
   path: '/yourPath',
-  widget: YourWidget(),
+  widget: YourScreen(),
   subroutes: [...],
 )
 ```
@@ -347,7 +347,7 @@ VStacked(
 ```
 VWidget(
   path: '/yourPath',
-  widget: YourWidget(),
+  widget: YourScreen(),
   stackedRoutes: [...],
 )
 ```
@@ -366,11 +366,11 @@ VStacked(
     // VChild are accessible via VRouteElementData.vChild
     VChild(
       path: 'profile',
-      widget: ProfileWidget(),
+      widget: ProfileScreen(),
     ),
     VChild(
       path: 'settings',
-      widget: SettingsWidget(),
+      widget: SettingsScreen(),
     ),
   ],
 )
@@ -384,11 +384,11 @@ VNester(
   subroutes: [
     VWidget(
       path: 'profile',
-      widget: ProfileWidget(),
+      widget: ProfileScreen(),
     ),
     VWidget(
       path: 'settings',
-      widget: SettingsWidget(),
+      widget: SettingsScreen(),
     ),
   ],
 )
@@ -405,7 +405,7 @@ If you used `beforeEnter`, `beforeUpdate`, `beforeLeave`, `afterEnter` or `after
 VStacked(
   beforeEnter: ...,
   path: '/yourPath',
-  widget: YourWidget(),
+  widget: YourScreen(),
 )
 ```
 
@@ -416,7 +416,7 @@ VGuard(
   stackedRoutes[
     VWidget(
       path: '/yourPath',
-      widget: YourWidget(),
+      widget: YourScreen(),
     ),
   ],
 )
@@ -431,7 +431,7 @@ If you used `onPop` or `onSystemPop`, apply the same logic as `VGuard` but with 
 VStacked(
   onPop: ...,
   path: '/yourPath',
-  widget: YourWidget(),
+  widget: YourScreen(),
 )
 ```
 
@@ -442,7 +442,7 @@ VPopHandler(
   stackedRoutes[
     VWidget(
       path: '/yourPath',
-      widget: YourWidget(),
+      widget: YourScreen(),
     ),
   ],
 )
@@ -452,7 +452,7 @@ If you used `VNavigationGuard`, they have been renamed to `VWidgetGuard`:
 
 *OLD*
 ```
-class UserWidget extends StatelessWidget {
+class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return VNavigationGuard(
@@ -465,7 +465,7 @@ class UserWidget extends StatelessWidget {
 
 *NEW*
 ```
-class UserWidget extends StatelessWidget {
+class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return VWidgetGuard(
