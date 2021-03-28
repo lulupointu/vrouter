@@ -590,9 +590,12 @@ class VRouterState extends State<VRouter> {
 
   @override
   void initState() {
+    print('ok1');
+
     // When the app starts, get the serialCount. Default to 0.
     _serialCount = (kIsWeb) ? (BrowserHelpers.getHistorySerialCount() ?? 0) : 0;
 
+    print('ok2');
     // Setup the url strategy (if hash, do nothing since it is the default)
     if (widget.mode == VRouterModes.history) {
       setPathUrlStrategy();
