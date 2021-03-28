@@ -1,4 +1,8 @@
-## \[1.1.0\] - 03/03/2021.
+## \[1.1.0+1\] - 03/03/2021.
+
+* Change dependency constraints for null safety
+
+## \[1.1.0\] - 28/03/2021.
 
 * Add description to packages classes, example of class uses can now be found there
 * \[**DEPRECIATED**\]: VRouteData should not be used anymore, use VRouterData to access the current route data
