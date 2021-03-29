@@ -1137,7 +1137,9 @@ class VRouterState extends State<VRouter> {
       // If this comes from a user:
       //    - If he/she pushes the same url+historyState, flutter does not create a new history entry so the serialCount remains the same
       //    - Else the serialCount gets increased by 1
-      _serialCount = newSerialCount ?? _serialCount + ((newUrl != url || newHistoryState != historyState) ? 1 : 0);
+      _serialCount = newSerialCount ??
+          _serialCount +
+              ((newUrl != url || newHistoryState != historyState) ? 1 : 0);
     }
     setState(() {
       _updateStateVariables(
@@ -1212,12 +1214,12 @@ class VRouterState extends State<VRouter> {
       print('_abortUpdateUrl IN CONDITION');
       _ignoreNextBrowserCalls = true;
       BrowserHelpers.browserGo(serialCount - newSerialCount!);
-      await BrowserHelpers.onBrowserPopState.firstWhere(
-          (element) {
-            print('BrowserHelpers.getHistorySerialCount(): ${BrowserHelpers.getHistorySerialCount()}');
-            print('serialCount: $serialCount');
-            return BrowserHelpers.getHistorySerialCount() == serialCount;
-          });
+      await BrowserHelpers.onBrowserPopState.firstWhere((element) {
+        print(
+            'BrowserHelpers.getHistorySerialCount(): ${BrowserHelpers.getHistorySerialCount()}');
+        print('serialCount: $serialCount');
+        return BrowserHelpers.getHistorySerialCount() == serialCount;
+      });
       _ignoreNextBrowserCalls = false;
     }
     return;
