@@ -1,6 +1,10 @@
-## \[1.1.0+6\] - 29/03/2021.
+## \[1.1.0+7\] - 29/03/2021.
 
 * Code formatting using dartfmt
+
+## \[1.1.0+6\] - 29/03/2021.
+
+* Adding LocalKey to VPage.buildPage, helping animations
 
 ## \[1.1.0+5\] - 28/03/2021.
 
