@@ -65,8 +65,8 @@ class VNester extends VNesterPage {
     this.buildTransition,
   }) : super(
           nestedRoutes: nestedRoutes,
-          pageBuilder: (Widget child) => VBasePage.fromPlatform(
-            key: ValueKey(path),
+          pageBuilder: (LocalKey key, Widget child) => VBasePage.fromPlatform(
+            key: key,
             child: child,
             transitionDuration: transitionDuration,
             reverseTransitionDuration: reverseTransitionDuration,

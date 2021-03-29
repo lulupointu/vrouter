@@ -22,7 +22,7 @@ main() {
             ),
             stackedRoutes: [
               VNesterPage(
-                pageBuilder: (Widget child) => MaterialPage(child: child),
+                pageBuilder: (LocalKey key, Widget child) => MaterialPage(key: key, child: child),
                 path: null,
                 widgetBuilder: (child) => Builder(
                   builder: (BuildContext context) {

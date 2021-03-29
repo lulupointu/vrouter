@@ -10,7 +10,7 @@ main() {
         routes: [
           VPage(
             path: '/',
-            pageBuilder: (Widget child) => MaterialPage(child: child),
+            pageBuilder: (LocalKey key, Widget child) => MaterialPage(key: key, child: child),
             widget: Builder(
               builder: (BuildContext context) => TextButton(
                 child: Text('VWidget1'),
@@ -20,7 +20,7 @@ main() {
             stackedRoutes: [
               VPage(
                 path: '/settings',
-                pageBuilder: (Widget child) => MaterialPage(child: child),
+                pageBuilder: (LocalKey key, Widget child) => MaterialPage(key: key, child: child),
                 widget: Text('VWidget2'),
               ),
             ],

@@ -8,7 +8,7 @@ class VPage extends VRouteElementWithPage {
   /// You must use [child] as the child of your page (though you can wrap it in other widgets)
   ///
   /// [child] will basically be whatever you put in [widget]
-  final Page Function(Widget child) pageBuilder;
+  final Page Function(LocalKey key, Widget child) pageBuilder;
 
   VPage({
     required String? path,
@@ -31,10 +31,11 @@ class VPage extends VRouteElementWithPage {
   Page buildPage({
     required Widget widget,
     required VPathRequestData vPathRequestData,
-    required pathParameters,
+    required Map<String, String> pathParameters,
     required VRouteElementNode vRouteElementNode,
   }) =>
       pageBuilder(
+        ValueKey(vRouteElementNode.localPath),
         LocalVRouterData(
           child: NotificationListener<VWidgetGuardMessage>(
             // This listen to [VWidgetGuardNotification] which is a notification

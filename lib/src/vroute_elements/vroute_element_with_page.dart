@@ -33,9 +33,11 @@ abstract class VRouteElementWithPage extends VRouteElementWithPath {
     required String? parentRemainingPath,
     required Map<String, String> parentPathParameters,
   }) {
-    VRoute? vRouteElementWithPathVRoute = super.buildRoute(vPathRequestData,
-        parentRemainingPath: parentRemainingPath,
-        parentPathParameters: parentPathParameters);
+    VRoute? vRouteElementWithPathVRoute = super.buildRoute(
+      vPathRequestData,
+      parentRemainingPath: parentRemainingPath,
+      parentPathParameters: parentPathParameters,
+    );
 
     // If the path did match, we add the page in the list of pages
     if (vRouteElementWithPathVRoute != null) {
@@ -46,8 +48,7 @@ abstract class VRouteElementWithPage extends VRouteElementWithPath {
                 widget: widget,
                 vPathRequestData: vPathRequestData,
                 pathParameters: vRouteElementWithPathVRoute.pathParameters,
-                vRouteElementNode:
-                    vRouteElementWithPathVRoute.vRouteElementNode,
+                vRouteElementNode: vRouteElementWithPathVRoute.vRouteElementNode,
               )
             ] +
             vRouteElementWithPathVRoute.pages,
@@ -64,7 +65,7 @@ abstract class VRouteElementWithPage extends VRouteElementWithPath {
   Page buildPage({
     required Widget widget,
     required VPathRequestData vPathRequestData,
-    required pathParameters,
+    required Map<String, String> pathParameters,
     required VRouteElementNode vRouteElementNode,
   });
 }

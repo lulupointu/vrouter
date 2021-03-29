@@ -14,7 +14,7 @@ class VNesterPage extends VPage {
 
   VNesterPage({
     required String? path,
-    required Page Function(Widget child) pageBuilder,
+    required Page Function(LocalKey key, Widget child) pageBuilder,
     required this.widgetBuilder,
     required this.nestedRoutes,
     String? name,
@@ -109,8 +109,11 @@ class VNesterPage extends VPage {
     );
 
     if (stackedRouteVRoute == null) {
-      final newVRouteElements = VRouteElementNode(this,
-          nestedVRouteElementNode: nestedRouteVRoute.vRouteElementNode);
+      final newVRouteElements = VRouteElementNode(
+        this,
+        localPath: pathGetPathMatchResult.localPath,
+        nestedVRouteElementNode: nestedRouteVRoute.vRouteElementNode,
+      );
 
       // If stackedRouteVRoute is null, create a VRoute with nestedRouteVRoute
       return VRoute(
@@ -124,18 +127,15 @@ class VNesterPage extends VPage {
                     pages: nestedRouteVRoute!.pages.isNotEmpty
                         ? nestedRouteVRoute.pages
                         : [
-                            MaterialPage(
-                                child:
-                                    Center(child: CircularProgressIndicator())),
+                            MaterialPage(child: Center(child: CircularProgressIndicator())),
                           ],
                     navigatorKey: navigatorKey,
                     observers: [heroController],
-                    backButtonDispatcher: ChildBackButtonDispatcher(
-                        Router.of(context).backButtonDispatcher!),
+                    backButtonDispatcher:
+                        ChildBackButtonDispatcher(Router.of(context).backButtonDispatcher!),
                     onPopPage: (_, __) {
                       RootVRouterData.of(context).pop(
-                        nestedRouteVRoute!.vRouteElementNode
-                            .getVRouteElementToPop(),
+                        nestedRouteVRoute!.vRouteElementNode.getVRouteElementToPop(),
                         pathParameters: VRouter.of(context).pathParameters,
                       );
 
@@ -144,8 +144,7 @@ class VNesterPage extends VPage {
                     },
                     onSystemPopPage: () async {
                       await RootVRouterData.of(context).systemPop(
-                        nestedRouteVRoute!.vRouteElementNode
-                            .getVRouteElementToPop(),
+                        nestedRouteVRoute!.vRouteElementNode.getVRouteElementToPop(),
                         pathParameters: VRouter.of(context).pathParameters,
                       );
 
@@ -162,8 +161,7 @@ class VNesterPage extends VPage {
           ),
         ],
         pathParameters: nestedRouteVRoute.pathParameters,
-        vRouteElements:
-            <VRouteElement>[this] + nestedRouteVRoute.vRouteElements,
+        vRouteElements: <VRouteElement>[this] + nestedRouteVRoute.vRouteElements,
       );
     } else {
       // If stackedRouteVRoute is NOT null, create a VRoute by mixing nestedRouteVRoute and stackedRouteVRoute
@@ -174,6 +172,7 @@ class VNesterPage extends VPage {
       };
       final newVRouteElementNode = VRouteElementNode(
         this,
+        localPath: pathGetPathMatchResult.localPath!,
         nestedVRouteElementNode: nestedRouteVRoute.vRouteElementNode,
         stackedVRouteElementNode: stackedRouteVRoute.vRouteElementNode,
       );
@@ -188,8 +187,8 @@ class VNesterPage extends VPage {
                   pages: nestedRouteVRoute!.pages,
                   navigatorKey: navigatorKey,
                   observers: [heroController],
-                  backButtonDispatcher: ChildBackButtonDispatcher(
-                      Router.of(context).backButtonDispatcher!),
+                  backButtonDispatcher:
+                      ChildBackButtonDispatcher(Router.of(context).backButtonDispatcher!),
                   onPopPage: (_, __) {
                     RootVRouterData.of(context).pop(
                       newVRouteElementNode.getVRouteElementToPop(),
@@ -237,13 +236,10 @@ class VNesterPage extends VPage {
 
     // Get the new parent path by taking this path into account
     newParentPathFromPath = getNewParentPath(parentPath,
-        path: path,
-        pathParametersKeys: pathParametersKeys,
-        pathParameters: pathParameters);
+        path: path, pathParametersKeys: pathParametersKeys, pathParameters: pathParameters);
 
-    newRemainingPathParametersFromPath =
-        Map<String, String>.from(remainingPathParameters)
-          ..removeWhere((key, value) => pathParametersKeys.contains(key));
+    newRemainingPathParametersFromPath = Map<String, String>.from(remainingPathParameters)
+      ..removeWhere((key, value) => pathParametersKeys.contains(key));
 
     // Check if any nested route matches the name using path
     for (var vRouteElement in nestedRoutes) {
@@ -315,8 +311,7 @@ class VNesterPage extends VPage {
     if (name == nameToMatch) {
       // Note that newParentPath will be null if this path can't be included so the return value
       // is the right one
-      if (newParentPathFromPath != null &&
-          newRemainingPathParametersFromPath.isEmpty) {
+      if (newParentPathFromPath != null && newRemainingPathParametersFromPath.isEmpty) {
         return newParentPathFromPath;
       }
       for (var i = 0; i < aliases.length; i++) {
@@ -375,8 +370,7 @@ class VNesterPage extends VPage {
             // if the nestedRoute popped, we should pop too
             return GetPathFromPopResult(path: parentPath, didPop: true);
           } else {
-            return GetPathFromPopResult(
-                path: childPopResult.path, didPop: false);
+            return GetPathFromPopResult(path: childPopResult.path, didPop: false);
           }
         }
       }
@@ -401,8 +395,7 @@ class VNesterPage extends VPage {
             parentPath: newParentPathFromAlias,
           );
           if (childPopResult != null) {
-            return GetPathFromPopResult(
-                path: childPopResult.path, didPop: false);
+            return GetPathFromPopResult(path: childPopResult.path, didPop: false);
           }
         }
 
@@ -418,8 +411,7 @@ class VNesterPage extends VPage {
               // if the nestedRoute popped, we should pop too
               return GetPathFromPopResult(path: parentPath, didPop: true);
             } else {
-              return GetPathFromPopResult(
-                  path: childPopResult.path, didPop: false);
+              return GetPathFromPopResult(path: childPopResult.path, didPop: false);
             }
           }
         }

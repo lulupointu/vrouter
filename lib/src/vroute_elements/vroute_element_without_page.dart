@@ -23,8 +23,11 @@ mixin VRouteElementWithoutPage on VRouteElement {
       );
       if (childVRoute != null) {
         return VRoute(
-          vRouteElementNode: VRouteElementNode(this,
-              stackedVRouteElementNode: childVRoute.vRouteElementNode),
+          vRouteElementNode: VRouteElementNode(
+            this,
+            localPath: null,
+            stackedVRouteElementNode: childVRoute.vRouteElementNode,
+          ),
           pages: childVRoute.pages,
           pathParameters: childVRoute.pathParameters,
           vRouteElements: <VRouteElement>[this] + childVRoute.vRouteElements,
