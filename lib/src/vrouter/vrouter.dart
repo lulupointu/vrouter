@@ -1211,13 +1211,9 @@ class VRouterState extends State<VRouter> {
     if (kIsWeb &&
         fromBrowser &&
         (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
-      print('_abortUpdateUrl IN CONDITION');
       _ignoreNextBrowserCalls = true;
       BrowserHelpers.browserGo(serialCount - newSerialCount!);
       await BrowserHelpers.onBrowserPopState.firstWhere((element) {
-        print(
-            'BrowserHelpers.getHistorySerialCount(): ${BrowserHelpers.getHistorySerialCount()}');
-        print('serialCount: $serialCount');
         return BrowserHelpers.getHistorySerialCount() == serialCount;
       });
       _ignoreNextBrowserCalls = false;
@@ -1417,8 +1413,6 @@ class VRouterState extends State<VRouter> {
   /// browser so we can't prevent him from leaving the page
   void _onBeforeUnload() async {
     if (url == null) return;
-
-    print('_onBeforeUnload');
 
     Map<String, String> historyStateToSave = {};
     void saveHistoryState(Map<String, String> historyState) {
