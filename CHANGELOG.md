@@ -1,3 +1,7 @@
+## \[1.1.0+8\] - 29/03/2021.
+
+* Fix url sync in edge case redirection situations
+
 ## \[1.1.0+7\] - 29/03/2021.
 
 * Code formatting using dartfmt
