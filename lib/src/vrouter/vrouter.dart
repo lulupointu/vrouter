@@ -1113,12 +1113,6 @@ class VRouterState extends State<VRouter> {
     ///   The state of the VRouter changes            ///
     final oldUrl = url;
 
-    _updateStateVariables(
-      newVRoute!,
-      newUri.toString(),
-      historyState: newHistoryState,
-      queryParameters: queryParameters,
-    );
     if (isReplacement) {
       _doReportBackUrlToBrowser = false;
       _ignoreNextBrowserCalls = true;
@@ -1139,9 +1133,20 @@ class VRouterState extends State<VRouter> {
       }));
       _ignoreNextBrowserCalls = false;
     } else {
-      _serialCount = newSerialCount ?? _serialCount + 1;
+      // If this comes from the browser, newSerialCount is not null
+      // If this comes from a user:
+      //    - If he/she pushes the same url+historyState, flutter does not create a new history entry so the serialCount remains the same
+      //    - Else the serialCount gets increased by 1
+      _serialCount = newSerialCount ?? _serialCount + ((newUrl != url || newHistoryState != historyState) ? 1 : 0);
     }
-    setState(() {});
+    setState(() {
+      _updateStateVariables(
+        newVRoute!,
+        newUri.toString(),
+        historyState: newHistoryState,
+        queryParameters: queryParameters,
+      );
+    });
 
     // We need to do this after rebuild as completed so that the user can have access
     // to the new state variables
@@ -1204,10 +1209,15 @@ class VRouterState extends State<VRouter> {
     if (kIsWeb &&
         fromBrowser &&
         (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
+      print('_abortUpdateUrl IN CONDITION');
       _ignoreNextBrowserCalls = true;
       BrowserHelpers.browserGo(serialCount - newSerialCount!);
       await BrowserHelpers.onBrowserPopState.firstWhere(
-          (element) => BrowserHelpers.getHistorySerialCount() == serialCount);
+          (element) {
+            print('BrowserHelpers.getHistorySerialCount(): ${BrowserHelpers.getHistorySerialCount()}');
+            print('serialCount: $serialCount');
+            return BrowserHelpers.getHistorySerialCount() == serialCount;
+          });
       _ignoreNextBrowserCalls = false;
     }
     return;
@@ -1405,6 +1415,8 @@ class VRouterState extends State<VRouter> {
   /// browser so we can't prevent him from leaving the page
   void _onBeforeUnload() async {
     if (url == null) return;
+
+    print('_onBeforeUnload');
 
     Map<String, String> historyStateToSave = {};
     void saveHistoryState(Map<String, String> historyState) {
