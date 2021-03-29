@@ -24,7 +24,7 @@ dependencies:
   flutter:
     sdk: flutter
   move_to_background: any
-  vrouter: ^1.1.0+3
+  vrouter: ^1.1.0+7
 
 dev_dependencies:
   flutter_test:
