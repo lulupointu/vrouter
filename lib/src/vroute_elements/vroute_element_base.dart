@@ -94,7 +94,8 @@ abstract class VRouteElement {
   /// Also see:
   ///   * [VRouter.beforeEnter] for router level beforeEnter
   ///   * [VRedirector] to known how to redirect and have access to route information
-  Future<void> Function(VRedirector vRedirector) get beforeEnter => _voidBeforeEnter;
+  Future<void> Function(VRedirector vRedirector) get beforeEnter =>
+      _voidBeforeEnter;
 
   /// This is called before the url is updated if this [VRouteElement] was in the previous
   /// route and is in the new route
@@ -109,7 +110,8 @@ abstract class VRouteElement {
   /// Also see:
   ///   * [VWidgetGuard.beforeUpdate] for widget level beforeUpdate
   ///   * [VRedirector] to known how to redirect and have access to route information
-  Future<void> Function(VRedirector vRedirector) get beforeUpdate => _voidBeforeUpdate;
+  Future<void> Function(VRedirector vRedirector) get beforeUpdate =>
+      _voidBeforeUpdate;
 
   /// Called when a url changes, before the url is updated
   /// Use [vRedirector] if you want to redirect or stop the navigation.
@@ -157,8 +159,8 @@ abstract class VRouteElement {
   ///
   /// Also see:
   ///   * [VWidgetGuard.afterUpdate] for widget level afterUpdate
-  void Function(BuildContext context, String? from, String to) get afterUpdate =>
-      _voidAfterUpdate;
+  void Function(BuildContext context, String? from, String to)
+      get afterUpdate => _voidAfterUpdate;
 
   /// Called when a pop event occurs
   /// A pop event can be called programmatically (with [VRouter.of(context).pop()])
@@ -195,7 +197,8 @@ abstract class VRouteElement {
   ///   * [VRouter.onSystemPop] for route level onSystemPop
   ///   * [VWidgetGuard.onSystemPop] for widget level onSystemPop
   ///   * [VRedirector] to known how to redirect and have access to route information
-  Future<void> Function(VRedirector vRedirector) get onSystemPop => _voidOnSystemPop;
+  Future<void> Function(VRedirector vRedirector) get onSystemPop =>
+      _voidOnSystemPop;
 
   /// Default function for [VRouteElement.beforeEnter]
   /// Basically does nothing
@@ -331,8 +334,8 @@ class VRouteElementNode {
 
     // Search if the VRouteElementNode containing the VRouteElement is in the nestedVRouteElementNode
     if (nestedVRouteElementNode != null) {
-      VRouteElementNode? vRouteElementNode =
-          nestedVRouteElementNode!.getChildVRouteElementNode(vRouteElement: vRouteElement);
+      VRouteElementNode? vRouteElementNode = nestedVRouteElementNode!
+          .getChildVRouteElementNode(vRouteElement: vRouteElement);
       if (vRouteElementNode != null) {
         return vRouteElementNode;
       }
@@ -340,8 +343,8 @@ class VRouteElementNode {
 
     // Search if the VRouteElementNode containing the VRouteElement is in the stackedVRouteElementNode
     if (stackedVRouteElementNode != null) {
-      VRouteElementNode? vRouteElementNode =
-          stackedVRouteElementNode!.getChildVRouteElementNode(vRouteElement: vRouteElement);
+      VRouteElementNode? vRouteElementNode = stackedVRouteElementNode!
+          .getChildVRouteElementNode(vRouteElement: vRouteElement);
       if (vRouteElementNode != null) {
         return vRouteElementNode;
       }

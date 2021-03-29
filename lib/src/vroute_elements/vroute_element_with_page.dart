@@ -48,7 +48,8 @@ abstract class VRouteElementWithPage extends VRouteElementWithPath {
                 widget: widget,
                 vPathRequestData: vPathRequestData,
                 pathParameters: vRouteElementWithPathVRoute.pathParameters,
-                vRouteElementNode: vRouteElementWithPathVRoute.vRouteElementNode,
+                vRouteElementNode:
+                    vRouteElementWithPathVRoute.vRouteElementNode,
               )
             ] +
             vRouteElementWithPathVRoute.pages,

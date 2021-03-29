@@ -1,20 +1,24 @@
-## \[1.1.0+5\] - 03/03/2021.
+## \[1.1.0+6\] - 29/03/2021.
 
 * Code formatting using dartfmt
 
-## \[1.1.0+4\] - 03/03/2021.
+## \[1.1.0+5\] - 28/03/2021.
+
+* Code formatting using dartfmt
+
+## \[1.1.0+4\] - 28/03/2021.
 
 * Change import to support desktop yet again
 
-## \[1.1.0+3\] - 03/03/2021.
+## \[1.1.0+3\] - 28/03/2021.
 
 * Update readme
 
-## \[1.1.0+2\] - 03/03/2021.
+## \[1.1.0+2\] - 28/03/2021.
 
 * Change import to support desktop
 
-## \[1.1.0+1\] - 03/03/2021.
+## \[1.1.0+1\] - 28/03/2021.
 
 * Change dependency constraints for null safety
 

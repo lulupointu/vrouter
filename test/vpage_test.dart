@@ -10,7 +10,8 @@ main() {
         routes: [
           VPage(
             path: '/',
-            pageBuilder: (LocalKey key, Widget child) => MaterialPage(key: key, child: child),
+            pageBuilder: (LocalKey key, Widget child) =>
+                MaterialPage(key: key, child: child),
             widget: Builder(
               builder: (BuildContext context) {
                 return Scaffold(
