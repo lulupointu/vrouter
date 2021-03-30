@@ -25,7 +25,7 @@ similar to the one in Vue.js (named vue router).
 The idea is to use the `VRouter` widget on top of you app, and use
 `VRouteElement` to create you routes.
 
-```
+```dart
 VRouter(
   routes: [
     // This matches the path '/login'
@@ -77,7 +77,7 @@ you nest them to create your routes.
 
 VWidget is used to display the given `widget` if the given `path` is matched
 
-```
+```dart
 VWidget(
   path: '/login', 
   widget: LoginScreen(),
@@ -94,7 +94,7 @@ Using `stackedRoutes`, you can stack widget from other `VRouteElement` on top of
 
 VNester can be used to created `nestedRoutes`. This will allow you to nest your `widgets`
 
-```
+```dart
 VNester(
   path: '/in',
   widgetBuilder: (child) => MyScaffold(child), // The child is from nestedRoutes
@@ -134,7 +134,7 @@ at the **[vrouter.dev](https://vrouter.dev)** website.
 
 Use VRouter to access methods which allow you to navigate:
 
-```
+```dart
 // Pushing a new url
 context.vRouter.push('/home');
 
@@ -158,7 +158,7 @@ path parameters. To use them you just need to insert
 :parameterName in the url.
 
 VRouter configuration
-```
+```dart
 VRouter(
   routes: [
     VWidget(
@@ -170,7 +170,7 @@ VRouter(
 ```
 
 Access the path parameters in you widgets:
-```
+```dart
 class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -187,7 +187,7 @@ You can either specify a default transition in VRouter, or a transition
 specific to a given route by specifying the transition in the last
 `VRouteElement` in the route
 
-```
+```dart
 VRouter(
   // This transition will be applied to every route
   buildTransition: (animation1, _, child) =>
@@ -219,7 +219,7 @@ Pop event are handled by default: The last `VRouteElement` of the `stackedRoutes
 
 But you can also handle a pop event by yourself, notably using the `VRouteElement` called `VPopHandler`:
 
-```
+```dart
 VRouter(
   // Every pop event will call this
   onPop: (vRedirector) async {
@@ -267,14 +267,14 @@ In every before.. function, you can use the first argument to stop the navigatio
 
 There are 3 main ways you can access those methods:
 1. `VRouter`
-```
+```dart
 VRouter(
   afterEnter: (context, String from, String to) => ...,
   routes: [...],
 )
 ```
 2. With a `VRouteElement`: `VGuard`
-```
+```dart
 VRouter(
   routes: [
     VGuard(
@@ -289,7 +289,7 @@ VRouter(
 )
 ```
 3. With a widget: `VWidgetGuard`
-```
+```dart
 class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -305,7 +305,7 @@ class UserScreen extends StatelessWidget {
 
 Maybe you want to redirect people to a certain part of your app when they first launch it. You can d just that with `initialUrl` from `VRouter`:
 
-```
+```dart
 VRouter(
   initialUrl: '/home',
   routes: [...],
@@ -335,7 +335,7 @@ Here is a quick guide of how to migrate:
 `VStacked` becomes `VWidget` and its `subroutes` becomes `stackedRoutes`
 
 *OLD*
-```
+```dart
 VStacked(
   path: '/yourPath',
   widget: YourScreen(),
@@ -344,7 +344,7 @@ VStacked(
 ```
 
 *NEW*
-```
+```dart
 VWidget(
   path: '/yourPath',
   widget: YourScreen(),
@@ -358,7 +358,7 @@ Replace your `VChild` by `VWidget` and wrap them in a `VNester` (a new `VRouteEl
 The easiest way is to look at an example:
 
 *OLD*
-```
+```dart
 VStacked(
   path: '/in',
   widget: MyScaffold(),
@@ -377,7 +377,7 @@ VStacked(
 ```
 
 *NEW*
-```
+```dart
 VNester(
   path: '/in',
   widgetBuilder: (child) => MyScaffold(child), // The child is from nestedRoutes
@@ -401,7 +401,7 @@ Note how `VNester` has `nestedRoutes` instead of `stackedRoutes`. This is becaus
 If you used `beforeEnter`, `beforeUpdate`, `beforeLeave`, `afterEnter` or `afterUpdate` in a `VStacked` or a `VChild`, you now have to extract this logic in a new `VRouteElement` called `VGuard`. Here is how to:
 
 *OLD*
-```
+```dart
 VStacked(
   beforeEnter: ...,
   path: '/yourPath',
@@ -410,7 +410,7 @@ VStacked(
 ```
 
 *NEW*
-```
+```dart
 VGuard(
   beforeEnter: ...,
   stackedRoutes[
@@ -427,7 +427,7 @@ Since `VGuard` uses `stackedRoutes`, it in now easy to wrap multiple routes in a
 If you used `onPop` or `onSystemPop`, apply the same logic as `VGuard` but with `VPopHandler`:
 
 *OLD*
-```
+```dart
 VStacked(
   onPop: ...,
   path: '/yourPath',
@@ -436,7 +436,7 @@ VStacked(
 ```
 
 *NEW*
-```
+```dart
 VPopHandler(
   onPop: ...,
   stackedRoutes[
@@ -451,7 +451,7 @@ VPopHandler(
 If you used `VNavigationGuard`, they have been renamed to `VWidgetGuard`:
 
 *OLD*
-```
+```dart
 class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -464,7 +464,7 @@ class UserScreen extends StatelessWidget {
 ```
 
 *NEW*
-```
+```dart
 class UserScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
