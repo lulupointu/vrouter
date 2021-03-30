@@ -1,3 +1,7 @@
+## \[1.1.0+10\] - 30/03/2021.
+
+* Solve pop issue when calling setState before popping
+
 ## \[1.1.0+9\] - 29/03/2021.
 
 * Remove prints

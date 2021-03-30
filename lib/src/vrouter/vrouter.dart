@@ -1356,7 +1356,8 @@ class VRouterState extends State<VRouter> {
     // This url will be not null if we find a route to go to
     String? newUrl;
 
-    final newPath = widget
+    // We don't use widget.getPathFromPop because widget.routes might have changed with a setState
+    final newPath = _vRoute.vRouteElementNode.vRouteElement
         .getPathFromPop(elementToPop,
             pathParameters: pathParameters, parentPath: null)
         ?.path;
