@@ -1,3 +1,7 @@
+## \[1.1.0+12\] - 30/03/2021.
+
+* Fix pop forming path when parent path end with '/'
+
 ## \[1.1.0+11\] - 30/03/2021.
 
 * Provide customizable key argument for VRouteElement with `widget` argument
