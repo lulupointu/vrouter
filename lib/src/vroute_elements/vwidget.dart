@@ -29,6 +29,7 @@ class VWidget extends VPage {
   VWidget({
     required String? path,
     required Widget widget,
+    LocalKey? key,
     String? name,
     List<VRouteElement> stackedRoutes = const [],
     List<String> aliases = const [],
@@ -45,6 +46,7 @@ class VWidget extends VPage {
             buildTransition: buildTransition,
           ),
           widget: widget,
+          key: key,
           path: path,
           name: name,
           stackedRoutes: stackedRoutes,

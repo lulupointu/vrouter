@@ -16,7 +16,8 @@ class VNesterPage extends VPage {
     required String? path,
     required Page Function(LocalKey key, Widget child) pageBuilder,
     required this.widgetBuilder,
-    required this.nestedRoutes,
+      required this.nestedRoutes,
+      LocalKey? key,
     String? name,
     List<VRouteElement> stackedRoutes = const [],
     List<String> aliases = const [],
@@ -28,6 +29,7 @@ class VNesterPage extends VPage {
         super(
           pageBuilder: pageBuilder,
           widget: widgetBuilder(Container()),
+          key: key,
           path: path,
           name: name,
           stackedRoutes: stackedRoutes,

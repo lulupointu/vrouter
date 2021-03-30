@@ -10,9 +10,13 @@ abstract class VRouteElementWithPage extends VRouteElementWithPath {
   /// The widget which will be displayed for the given [path]
   final Widget widget;
 
+  /// The key associated to the page
+  final LocalKey? key;
+
   VRouteElementWithPage({
     required String? path,
     required this.widget,
+    required this.key,
     required String? name,
     required List<VRouteElement> stackedRoutes,
     required List<String> aliases,

@@ -14,12 +14,14 @@ class VPage extends VRouteElementWithPage {
     required String? path,
     required this.pageBuilder,
     required Widget widget,
+    LocalKey? key,
     String? name,
     List<VRouteElement> stackedRoutes = const [],
     List<String> aliases = const [],
     bool mustMatchStackedRoute = false,
   }) : super(
           widget: widget,
+          key: key,
           path: path,
           name: name,
           stackedRoutes: stackedRoutes,
@@ -35,7 +37,10 @@ class VPage extends VRouteElementWithPage {
     required VRouteElementNode vRouteElementNode,
   }) =>
       pageBuilder(
-        ValueKey(vRouteElementNode.localPath),
+        key ??
+            ValueKey((vRouteElementNode.localPath != null)
+                ? vRouteElementNode.localPath
+                : getConstantLocalPath()),
         LocalVRouterData(
           child: NotificationListener<VWidgetGuardMessage>(
             // This listen to [VWidgetGuardNotification] which is a notification
@@ -62,4 +67,23 @@ class VPage extends VRouteElementWithPage {
           context: vPathRequestData.rootVRouterContext,
         ),
       );
+
+  /// If this [VRouteElement] is in the route but its localPath is null
+  /// we try to find a local path in [path, ...aliases]
+  ///
+  /// This is used in [buildPage] to form the LocalKey
+  /// Note that
+  ///   - We can't use this because animation won't play if path parameters change for example
+  ///   - Using null is not ideal because if we pop from a absolute path, this won't animate as expected
+  String? getConstantLocalPath() {
+    if (pathParametersKeys.isEmpty) {
+      return path;
+    }
+    for (var i = 0; i < aliasesPathParametersKeys.length; i++) {
+      if (aliasesPathParametersKeys[i].isEmpty) {
+        return aliases[i];
+      }
+    }
+    return null;
+  }
 }
