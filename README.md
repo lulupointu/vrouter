@@ -25,7 +25,7 @@ similar to the one in Vue.js (named vue router).
 The idea is to use the `VRouter` widget on top of you app, and use
 `VRouteElement` to create you routes.
 
-```
+```dart
 VRouter(
   routes: [
     // This matches the path '/login'
@@ -71,7 +71,7 @@ VRouter(
 VStacked is a VRouteElement which is stacked on the parent VRouteElement.
 For example:
 
-```
+```dart
 VStacked(
   path: '/login', widget: LoginWidget(),
   subroutes: [
@@ -89,7 +89,7 @@ VChild are useful when nesting widgets. You can access them using `VRouteElement
 
 For example, for the example above:
 
-```
+```dart
 class MyScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -113,7 +113,7 @@ at the **[vrouter.dev](https://vrouter.dev)** website.
 
 Use VRouterData to access VRouter methods which allow you to navigate:
 
-```
+```dart
 // Pushing a new url
 VRouterData.of(context).push('/home');
 
@@ -137,7 +137,7 @@ path parameters. To use them you just need to insert
 :parameterName in the url.
 
 VRouter configuration
-```
+```dart
 VRouter(
   routes: [
     VStacked(
@@ -149,7 +149,7 @@ VRouter(
 ```
 
 Access the path parameters in you widgets:
-```
+```dart
 class UserWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -168,7 +168,7 @@ You can either specify a default transition in VRouter, or a transition
 specific to a given route by specifying the transition in the last
 `VRouteElement` in the route
 
-```
+```dart
 VRouter(
   // This transition will be applied to every route
   buildTransition: (animation1, _, child) =>
@@ -205,7 +205,7 @@ is not null is remove.
 
 But you can also handle a pop event by yourself
 
-```
+```dart
 VRouter(
   // Every pop event will call this
   onPop: (vRedirector) async {
