@@ -1,3 +1,7 @@
+## \[1.1.0+13\] - 30/03/2021.
+
+* Fix default Page key value
+
 ## \[1.1.0+12\] - 30/03/2021.
 
 * Fix pop forming path when parent path end with '/'

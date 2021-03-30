@@ -262,16 +262,21 @@ abstract class VRouteElementWithPath extends VRouteElement {
 
     // remainingPath is null if there is no match
     late String? remainingPath;
+    // localPath is null if there is no match
+    final String? localPath;
     late final Map<String, String> newPathParameters;
     if (selfPath == null) {
       // This is ugly but the only way to return a non-null empty match...
       match = RegExp('').matchAsPrefix('');
       remainingPath = remainingPathFromParent;
+      localPath = '';
       newPathParameters = parentPathParameters;
     } else if ((selfPath.startsWith('/'))) {
       // If our path starts with '/', this is an absolute path
       match = selfPathRegExp!.matchAsPrefix(entirePath);
       remainingPath = (match != null) ? entirePath.substring(match.end) : null;
+      localPath =
+          (match != null) ? entirePath.substring(match.start, match.end) : null;
       newPathParameters =
           (match != null) ? extract(selfPathParametersKeys, match) : {}
             ..updateAll((key, value) => Uri.decodeComponent(value));
@@ -281,6 +286,9 @@ abstract class VRouteElementWithPath extends VRouteElement {
       match = selfPathRegExp!.matchAsPrefix(remainingPathFromParent);
       remainingPath =
           (match != null) ? remainingPathFromParent.substring(match.end) : null;
+      localPath = (match != null)
+          ? remainingPathFromParent.substring(match.start, match.end)
+          : null;
       newPathParameters = (match != null)
           ? {
               ...parentPathParameters,
@@ -293,6 +301,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
       // the parent did not match, so there is no match
       match = null;
       remainingPath = null;
+      localPath = null;
       newPathParameters = {};
     }
 
@@ -303,8 +312,7 @@ abstract class VRouteElementWithPath extends VRouteElement {
     return GetPathMatchResult(
       remainingPath: remainingPath,
       pathParameters: newPathParameters,
-      localPath:
-          (match != null) ? entirePath.substring(match.start, match.end) : null,
+      localPath: localPath,
     );
   }
 
