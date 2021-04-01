@@ -79,8 +79,8 @@ class VRedirector {
     Map<String, String> historyState = const {},
   }) {
     stopRedirection();
-    _redirectFunction = (_) => RootVRouterData.of(_context)
-        .push(newUrl, queryParameters: queryParameters, historyState: historyState);
+    _redirectFunction = (_) => RootVRouterData.of(_context).push(newUrl,
+        queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Prevent the current redirection and pushNamed a route instead
@@ -108,8 +108,10 @@ class VRedirector {
     Map<String, String> historyState = const {},
   }) {
     stopRedirection();
-    _redirectFunction = (_) => RootVRouterData.of(_context)
-        .pushReplacement(newUrl, queryParameters: queryParameters, historyState: historyState);
+    _redirectFunction = (_) => RootVRouterData.of(_context).pushReplacement(
+        newUrl,
+        queryParameters: queryParameters,
+        historyState: historyState);
   }
 
   /// Prevent the current redirection and pushReplacementNamed a route instead
@@ -122,12 +124,13 @@ class VRedirector {
     Map<String, String> historyState = const {},
   }) {
     stopRedirection();
-    _redirectFunction = (_) => RootVRouterData.of(_context).pushReplacementNamed(
-          name,
-          pathParameters: pathParameters,
-          queryParameters: queryParameters,
-          historyState: historyState,
-        );
+    _redirectFunction =
+        (_) => RootVRouterData.of(_context).pushReplacementNamed(
+              name,
+              pathParameters: pathParameters,
+              queryParameters: queryParameters,
+              historyState: historyState,
+            );
   }
 
   /// Prevent the current redirection and pushExternal instead
@@ -135,8 +138,8 @@ class VRedirector {
   /// See [VRouter.push] for more information on push
   void pushExternal(String newUrl, {bool openNewTab = false}) {
     stopRedirection();
-    _redirectFunction =
-        (_) => RootVRouterData.of(_context).pushExternal(newUrl, openNewTab: openNewTab);
+    _redirectFunction = (_) => RootVRouterData.of(_context)
+        .pushExternal(newUrl, openNewTab: openNewTab);
   }
 
   /// Prevent the current redirection and call pop instead
@@ -148,13 +151,13 @@ class VRedirector {
     Map<String, String> newHistoryState = const {},
   }) {
     stopRedirection();
-    _redirectFunction =
-        (VRouteElementNode vRouteElementNode) => RootVRouterData.of(_context).pop(
-              vRouteElementNode.getVRouteElementToPop(),
-              pathParameters: pathParameters,
-              queryParameters: queryParameters,
-              newHistoryState: newHistoryState,
-            );
+    _redirectFunction = (VRouteElementNode vRouteElementNode) =>
+        RootVRouterData.of(_context).pop(
+          vRouteElementNode.getVRouteElementToPop(),
+          pathParameters: pathParameters,
+          queryParameters: queryParameters,
+          newHistoryState: newHistoryState,
+        );
   }
 
   /// Prevent the current redirection and call systemPop instead
@@ -166,12 +169,12 @@ class VRedirector {
     Map<String, String> newHistoryState = const {},
   }) async {
     stopRedirection();
-    _redirectFunction =
-        (VRouteElementNode vRouteElementNode) => RootVRouterData.of(_context).systemPop(
-              vRouteElementNode.getVRouteElementToPop(),
-              pathParameters: pathParameters,
-              queryParameters: queryParameters,
-              newHistoryState: newHistoryState,
-            );
+    _redirectFunction = (VRouteElementNode vRouteElementNode) =>
+        RootVRouterData.of(_context).systemPop(
+          vRouteElementNode.getVRouteElementToPop(),
+          pathParameters: pathParameters,
+          queryParameters: queryParameters,
+          newHistoryState: newHistoryState,
+        );
   }
 }
