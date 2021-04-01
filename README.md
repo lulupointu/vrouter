@@ -381,7 +381,7 @@ VStacked(
 VNester(
   path: '/in',
   widgetBuilder: (child) => MyScaffold(child), // The child is from nestedRoutes
-  subroutes: [
+  nestedRoutes: [
     VWidget(
       path: 'profile',
       widget: ProfileScreen(),
@@ -395,6 +395,19 @@ VNester(
 ```
 
 Note how `VNester` has `nestedRoutes` instead of `stackedRoutes`. This is because you want the routes bellow to be nested and not stacked.
+
+Also note that `VRouteElementData.of(context).vChild` is not needed anymore since you have the child in the `widgetBuilder`.
+We therefore had to let go of `vChildName`, the new recommended way of knowing which child you have is to parse the url, here is an example:
+
+*OLD*
+```dart
+final index = (VRouteElementData.of(context).vChildName == 'profile') ? 0 : 1;
+```
+
+*NEW*
+```dart
+final index = context.vRouter.url.contains('profile') ? 0 : 1;
+```
 
 **Navigation control**
 
@@ -504,6 +517,10 @@ Now **everything is store in `VRouter`**, accessible even more easily using `con
 If you did use *historyState*:
 * it was previously a `String` which was different for `VRouterData`, `VRouteData`, `VRouteElementData`.
 * It is now a `Map<String, String>`, unique, and accessible using `context.vRouter.historyState`
+* There was some inconsistances in the naming, you now always use `historyState` and never `routerState`
+
+For example `context.vRouter.push('/settings', routerState: 'someUserName');` becomes `context.vRouter.push('/settings', historyState: {'username': 'someUserName');`
+And you have access to it using `context.vRouter.historyState['username']`.
 
 ### Help I can't migrate
 
