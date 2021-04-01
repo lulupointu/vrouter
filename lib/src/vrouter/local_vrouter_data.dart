@@ -115,12 +115,12 @@ class LocalVRouterData extends InheritedWidget {
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String? routerState,
+    Map<String, String> historyState = const {},
   }) =>
       RootVRouterData.of(_rootVRouterDataContext).pushNamed(name,
           pathParameters: pathParameters,
           queryParameters: queryParameters,
-          routerState: routerState);
+          historyState: historyState);
 
   /// Replace the current one by the new route corresponding to the given url
   /// The difference with [push] is that this overwrites the current browser history entry

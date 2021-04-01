@@ -88,12 +88,12 @@ class RootVRouterData extends InheritedWidget {
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String? routerState,
+    Map<String, String> historyState = const {},
   }) =>
       _state.pushNamed(name,
           pathParameters: pathParameters,
           queryParameters: queryParameters,
-          routerState: routerState);
+          historyState: historyState);
 
   /// See [VRouterState.pushReplacement]
   void pushReplacement(
