@@ -519,7 +519,7 @@ If you did use *historyState*:
 * It is now a `Map<String, String>`, unique, and accessible using `context.vRouter.historyState`
 * There was some inconsistances in the naming, you now always use `historyState` and never `routerState`
 
-For example `context.vRouter.push('/settings', routerState: 'someUserName');` becomes `context.vRouter.push('/settings', historyState: {'username': 'someUserName');`
+For example `context.vRouter.push('/settings', routerState: 'someUserName');` becomes `context.vRouter.push('/settings', historyState: {'username': 'someUserName'});`
 And you have access to it using `context.vRouter.historyState['username']`.
 
 ### Help I can't migrate
