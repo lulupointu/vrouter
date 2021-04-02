@@ -605,7 +605,7 @@ class VRouterState extends State<VRouter> {
       if (widget.initialUrl != '/') {
         // If we are deep-linking, do not use initial url
         if (!kIsWeb ||
-            BrowserHelpers.getPathAndQuery(routerMode: widget.mode) != '/') {
+            BrowserHelpers.getPathAndQuery(routerMode: widget.mode).isEmpty) {
           WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
             pushReplacement(widget.initialUrl);
           });
