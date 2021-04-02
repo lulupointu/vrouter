@@ -603,9 +603,13 @@ class VRouterState extends State<VRouter> {
     if (_serialCount == 0) {
       // If it is, navigate to initial url if this is not the default one
       if (widget.initialUrl != '/') {
-        WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-          pushReplacement(widget.initialUrl);
-        });
+        // If we are deep-linking, do not use initial url
+        if (!kIsWeb ||
+            BrowserHelpers.getPathAndQuery(routerMode: widget.mode) != '/') {
+          WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+            pushReplacement(widget.initialUrl);
+          });
+        }
       }
     }
 
