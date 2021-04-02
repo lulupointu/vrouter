@@ -1,3 +1,7 @@
+## \[1.1.0+15\] - 01/04/2021.
+
+* Fix initialUrl breaking deep-linking
+
 ## \[1.1.0+14\] - 01/04/2021.
 
 * Fix default pop onto path parameters
