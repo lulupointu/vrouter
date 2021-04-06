@@ -1,3 +1,16 @@
+## \[1.1.0+16\] - 06/04/2021.
+
+* Fix last onPop on MacOS, Linux and Windows
+
+## \[1.1.0+15\] - 01/04/2021.
+
+* Fix initialUrl breaking deep-linking
+
+## \[1.1.0+14\] - 01/04/2021.
+
+* Fix default pop onto path parameters
+* Add more migration doc
+
 ## \[1.1.0+13\] - 30/03/2021.
 
 * Fix default Page key value

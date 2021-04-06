@@ -603,9 +603,13 @@ class VRouterState extends State<VRouter> {
     if (_serialCount == 0) {
       // If it is, navigate to initial url if this is not the default one
       if (widget.initialUrl != '/') {
-        WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
-          pushReplacement(widget.initialUrl);
-        });
+        // If we are deep-linking, do not use initial url
+        if (!kIsWeb ||
+            BrowserHelpers.getPathAndQuery(routerMode: widget.mode).isEmpty) {
+          WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+            pushReplacement(widget.initialUrl);
+          });
+        }
       }
     }
 
@@ -1270,7 +1274,7 @@ class VRouterState extends State<VRouter> {
     if (vRedirector.newVRouterData != null) {
       _updateUrl(vRedirector.to!,
           queryParameters: queryParameters, newHistoryState: newHistoryState);
-    } else if (!kIsWeb) {
+    } else if (Platform.isAndroid || Platform.isIOS) {
       // If we didn't find a url to go to, we are at the start of the stack
       // so we close the app on mobile
       MoveToBackground.moveTaskToBack();
