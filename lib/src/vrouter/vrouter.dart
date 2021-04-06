@@ -1274,7 +1274,7 @@ class VRouterState extends State<VRouter> {
     if (vRedirector.newVRouterData != null) {
       _updateUrl(vRedirector.to!,
           queryParameters: queryParameters, newHistoryState: newHistoryState);
-    } else if (!kIsWeb) {
+    } else if (Platform.isAndroid || Platform.isIOS) {
       // If we didn't find a url to go to, we are at the start of the stack
       // so we close the app on mobile
       MoveToBackground.moveTaskToBack();

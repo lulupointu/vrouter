@@ -1,3 +1,7 @@
+## \[1.1.0+16\] - 06/04/2021.
+
+* Fix last onPop on MacOS, Linux and Windows
+
 ## \[1.1.0+15\] - 01/04/2021.
 
 * Fix initialUrl breaking deep-linking
