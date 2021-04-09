@@ -8,7 +8,7 @@ part of '../main.dart';
 ///   _  pop event based on where the [VRouteElement] is in the [VRoute]
 ///   2. When a [VRouteElement] is no longer in the route, it has a page animation out. During
 ///   _  this, the old VRouterData should be used, which this [LocalVRouterData] holds
-class LocalVRouterData extends InheritedWidget {
+class LocalVRouterData extends VRouterData {
   /// The [VRouteElementNode] of the associated [VRouteElement]
   final VRouteElementNode _vRouteElementNode;
 
@@ -195,7 +195,7 @@ class LocalVRouterData extends InheritedWidget {
     Map<String, String> queryParameters = const {},
     Map<String, String> newHistoryState = const {},
   }) =>
-      RootVRouterData.of(_rootVRouterDataContext).pop(
+      RootVRouterData.of(_rootVRouterDataContext).popFromElement(
         _vRouteElementNode.getVRouteElementToPop(),
         pathParameters: pathParameters,
         queryParameters: queryParameters,
@@ -217,7 +217,7 @@ class LocalVRouterData extends InheritedWidget {
     Map<String, String> queryParameters = const {},
     Map<String, String> newHistoryState = const {},
   }) =>
-      RootVRouterData.of(_rootVRouterDataContext).systemPop(
+      RootVRouterData.of(_rootVRouterDataContext).systemPopFromElement(
         _vRouteElementNode.getVRouteElementToPop(),
         pathParameters: pathParameters,
         queryParameters: queryParameters,

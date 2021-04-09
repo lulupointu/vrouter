@@ -138,7 +138,7 @@ class VNesterPage extends VPage {
                     backButtonDispatcher: ChildBackButtonDispatcher(
                         Router.of(context).backButtonDispatcher!),
                     onPopPage: (_, __) {
-                      RootVRouterData.of(context).pop(
+                      RootVRouterData.of(context).popFromElement(
                         nestedRouteVRoute!.vRouteElementNode
                             .getVRouteElementToPop(),
                         pathParameters: VRouter.of(context).pathParameters,
@@ -148,7 +148,7 @@ class VNesterPage extends VPage {
                       return false;
                     },
                     onSystemPopPage: () async {
-                      await RootVRouterData.of(context).systemPop(
+                      await RootVRouterData.of(context).systemPopFromElement(
                         nestedRouteVRoute!.vRouteElementNode
                             .getVRouteElementToPop(),
                         pathParameters: VRouter.of(context).pathParameters,
@@ -204,7 +204,7 @@ class VNesterPage extends VPage {
                     backButtonDispatcher: ChildBackButtonDispatcher(
                         Router.of(context).backButtonDispatcher!),
                     onPopPage: (_, __) {
-                      RootVRouterData.of(context).pop(
+                      RootVRouterData.of(context).popFromElement(
                         nestedRouteVRoute!.vRouteElementNode
                             .getVRouteElementToPop(),
                         pathParameters: VRouter.of(context).pathParameters,
@@ -214,7 +214,7 @@ class VNesterPage extends VPage {
                       return false;
                     },
                     onSystemPopPage: () async {
-                      await RootVRouterData.of(context).systemPop(
+                      await RootVRouterData.of(context).systemPopFromElement(
                         nestedRouteVRoute!.vRouteElementNode
                             .getVRouteElementToPop(),
                         pathParameters: VRouter.of(context).pathParameters,

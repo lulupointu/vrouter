@@ -3,7 +3,7 @@ part of '../main.dart';
 /// An [InheritedWidget] which should not be accessed by end developers
 ///
 /// [RootVRouterData] holds methods and parameters from [VRouterState]
-class RootVRouterData extends InheritedWidget {
+class RootVRouterData extends VRouterData {
   final VRouterState _state;
 
   RootVRouterData({
@@ -120,13 +120,43 @@ class RootVRouterData extends InheritedWidget {
   void pushExternal(String newUrl, {bool openNewTab = false}) =>
       _state.pushExternal(newUrl, openNewTab: openNewTab);
 
+
+
   /// See [VRouterState._pop]
   void pop(
-    VRouteElement itemToPop, {
-    Map<String, String> pathParameters = const {},
-    Map<String, String> queryParameters = const {},
-    Map<String, String> newHistoryState = const {},
-  }) =>
+      {
+        Map<String, String> pathParameters = const {},
+        Map<String, String> queryParameters = const {},
+        Map<String, String> newHistoryState = const {},
+      }) =>
+      _state._pop(
+        _state._vRoute.vRouteElementNode.getVRouteElementToPop(),
+        pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        newHistoryState: newHistoryState,
+      );
+
+  /// See [VRouterState._systemPop]
+  Future<void> systemPop(
+      {
+        Map<String, String> pathParameters = const {},
+        Map<String, String> queryParameters = const {},
+        Map<String, String> newHistoryState = const {},
+      }) =>
+      _state._systemPop(
+        _state._vRoute.vRouteElementNode.getVRouteElementToPop(),
+        pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        newHistoryState: newHistoryState,
+      );
+
+  /// See [VRouterState._pop]
+  void popFromElement(
+      VRouteElement itemToPop, {
+        Map<String, String> pathParameters = const {},
+        Map<String, String> queryParameters = const {},
+        Map<String, String> newHistoryState = const {},
+      }) =>
       _state._pop(
         itemToPop,
         pathParameters: pathParameters,
@@ -135,12 +165,12 @@ class RootVRouterData extends InheritedWidget {
       );
 
   /// See [VRouterState._systemPop]
-  Future<void> systemPop(
-    VRouteElement itemToPop, {
-    Map<String, String> pathParameters = const {},
-    Map<String, String> queryParameters = const {},
-    Map<String, String> newHistoryState = const {},
-  }) =>
+  Future<void> systemPopFromElement(
+      VRouteElement itemToPop, {
+        Map<String, String> pathParameters = const {},
+        Map<String, String> queryParameters = const {},
+        Map<String, String> newHistoryState = const {},
+      }) =>
       _state._systemPop(
         itemToPop,
         pathParameters: pathParameters,

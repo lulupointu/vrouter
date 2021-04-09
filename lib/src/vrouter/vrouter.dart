@@ -500,16 +500,30 @@ class VRouter extends StatefulWidget
   ///  * <https://material.io/design/layout/spacing-methods.html>
   final bool? debugShowMaterialGrid;
 
-  static LocalVRouterData of(BuildContext context) {
-    final localVRouterData =
+  static VRouterData of(BuildContext context) {
+    VRouterData? vRouterData;
+
+    // First try to get a local VRouterData
+    vRouterData =
         context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
-    if (localVRouterData == null) {
+    if (vRouterData != null) {
+      return vRouterData;
+    }
+
+    // Else try to get the root VRouterData
+    vRouterData =
+        context.dependOnInheritedWidgetOfExactType<RootVRouterData>();
+    if (vRouterData != null) {
+      return vRouterData;
+    }
+
+    if (vRouterData == null) {
       throw FlutterError(
           'VRouter.of(context) was called with a context which does not contain a VRouter.\n'
           'The context used to retrieve VRouter must be that of a widget that '
           'is a descendant of a VRouter widget.');
     }
-    return localVRouterData;
+    return vRouterData;
   }
 
   @override

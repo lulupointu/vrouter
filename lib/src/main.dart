@@ -30,6 +30,8 @@ part 'page.dart';
 
 part 'route.dart';
 
+part 'vrouter/vrouter_data.dart';
+
 part 'vrouter/local_vrouter_data.dart';
 
 part 'vrouter/root_vrouter_data.dart';
