@@ -1,3 +1,7 @@
+## \[1.1.0+14\] - 30/03/2021.
+
+* Fix vRedirector use in onPop which was only stopping the redirection
+
 ## \[1.1.0+13\] - 30/03/2021.
 
 * Fix default Page key value
