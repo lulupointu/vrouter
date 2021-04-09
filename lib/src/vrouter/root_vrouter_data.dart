@@ -120,15 +120,12 @@ class RootVRouterData extends VRouterData {
   void pushExternal(String newUrl, {bool openNewTab = false}) =>
       _state.pushExternal(newUrl, openNewTab: openNewTab);
 
-
-
   /// See [VRouterState._pop]
-  void pop(
-      {
-        Map<String, String> pathParameters = const {},
-        Map<String, String> queryParameters = const {},
-        Map<String, String> newHistoryState = const {},
-      }) =>
+  void pop({
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    Map<String, String> newHistoryState = const {},
+  }) =>
       _state._pop(
         _state._vRoute.vRouteElementNode.getVRouteElementToPop(),
         pathParameters: pathParameters,
@@ -137,12 +134,11 @@ class RootVRouterData extends VRouterData {
       );
 
   /// See [VRouterState._systemPop]
-  Future<void> systemPop(
-      {
-        Map<String, String> pathParameters = const {},
-        Map<String, String> queryParameters = const {},
-        Map<String, String> newHistoryState = const {},
-      }) =>
+  Future<void> systemPop({
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    Map<String, String> newHistoryState = const {},
+  }) =>
       _state._systemPop(
         _state._vRoute.vRouteElementNode.getVRouteElementToPop(),
         pathParameters: pathParameters,
@@ -152,11 +148,11 @@ class RootVRouterData extends VRouterData {
 
   /// See [VRouterState._pop]
   void popFromElement(
-      VRouteElement itemToPop, {
-        Map<String, String> pathParameters = const {},
-        Map<String, String> queryParameters = const {},
-        Map<String, String> newHistoryState = const {},
-      }) =>
+    VRouteElement itemToPop, {
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    Map<String, String> newHistoryState = const {},
+  }) =>
       _state._pop(
         itemToPop,
         pathParameters: pathParameters,
@@ -166,11 +162,11 @@ class RootVRouterData extends VRouterData {
 
   /// See [VRouterState._systemPop]
   Future<void> systemPopFromElement(
-      VRouteElement itemToPop, {
-        Map<String, String> pathParameters = const {},
-        Map<String, String> queryParameters = const {},
-        Map<String, String> newHistoryState = const {},
-      }) =>
+    VRouteElement itemToPop, {
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    Map<String, String> newHistoryState = const {},
+  }) =>
       _state._systemPop(
         itemToPop,
         pathParameters: pathParameters,

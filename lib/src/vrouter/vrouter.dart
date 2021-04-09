@@ -511,8 +511,7 @@ class VRouter extends StatefulWidget
     }
 
     // Else try to get the root VRouterData
-    vRouterData =
-        context.dependOnInheritedWidgetOfExactType<RootVRouterData>();
+    vRouterData = context.dependOnInheritedWidgetOfExactType<RootVRouterData>();
     if (vRouterData != null) {
       return vRouterData;
     }
