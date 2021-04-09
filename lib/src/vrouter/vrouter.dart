@@ -1258,7 +1258,9 @@ class VRouterState extends State<VRouter> {
       await vWidgetGuardMessageRoot.vWidgetGuard.onPop(vRedirector);
       if (!vRedirector.shouldUpdate) {
         vRedirector._redirectFunction?.call(_vRoute.vRouteElementNode
-            .getChildVRouteElementNode(vRouteElement: vWidgetGuardMessageRoot.associatedVRouteElement) ??
+                .getChildVRouteElementNode(
+                    vRouteElement:
+                        vWidgetGuardMessageRoot.associatedVRouteElement) ??
             _vRoute.vRouteElementNode);
         return;
       }
@@ -1270,7 +1272,7 @@ class VRouterState extends State<VRouter> {
       await vRouteElement.onPop(vRedirector);
       if (!vRedirector.shouldUpdate) {
         vRedirector._redirectFunction?.call(_vRoute.vRouteElementNode
-            .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
+                .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
             _vRoute.vRouteElementNode);
         return;
       }
@@ -1318,7 +1320,9 @@ class VRouterState extends State<VRouter> {
       }
       if (!vRedirector.shouldUpdate) {
         vRedirector._redirectFunction?.call(_vRoute.vRouteElementNode
-            .getChildVRouteElementNode(vRouteElement: vWidgetGuardMessageRoot.associatedVRouteElement) ??
+                .getChildVRouteElementNode(
+                    vRouteElement:
+                        vWidgetGuardMessageRoot.associatedVRouteElement) ??
             _vRoute.vRouteElementNode);
         return;
       }
@@ -1334,7 +1338,7 @@ class VRouterState extends State<VRouter> {
       }
       if (!vRedirector.shouldUpdate) {
         vRedirector._redirectFunction?.call(_vRoute.vRouteElementNode
-            .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
+                .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
             _vRoute.vRouteElementNode);
         return;
       }
