@@ -1,3 +1,7 @@
+## \[1.1.0+17\] - 06/04/2021.
+
+* Fix vRedirector use in onPop and onSystemPop which was only stopping the redirection"
+
 ## \[1.1.0+16\] - 06/04/2021.
 
 * Fix last onPop on MacOS, Linux and Windows
