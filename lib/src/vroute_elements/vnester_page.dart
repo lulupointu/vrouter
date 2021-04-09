@@ -188,30 +188,44 @@ class VNesterPage extends VPage {
         vRouteElementNode: newVRouteElementNode,
         pages: [
           buildPage(
-            widget: Builder(
-              builder: (BuildContext context) {
-                return VRouterHelper(
-                  pages: nestedRouteVRoute!.pages,
-                  navigatorKey: navigatorKey,
-                  observers: [heroController],
-                  backButtonDispatcher: ChildBackButtonDispatcher(
-                      Router.of(context).backButtonDispatcher!),
-                  onPopPage: (_, __) {
-                    RootVRouterData.of(context).pop(
-                      newVRouteElementNode.getVRouteElementToPop(),
-                      pathParameters: VRouter.of(context).pathParameters,
-                    );
-                    return false;
-                  },
-                  onSystemPopPage: () async {
-                    await RootVRouterData.of(context).systemPop(
-                      newVRouteElementNode.getVRouteElementToPop(),
-                      pathParameters: VRouter.of(context).pathParameters,
-                    );
-                    return true;
-                  },
-                );
-              },
+            widget: widgetBuilder(
+              Builder(
+                builder: (BuildContext context) {
+                  return VRouterHelper(
+                    pages: nestedRouteVRoute!.pages.isNotEmpty
+                        ? nestedRouteVRoute.pages
+                        : [
+                            MaterialPage(
+                                child:
+                                    Center(child: CircularProgressIndicator())),
+                          ],
+                    navigatorKey: navigatorKey,
+                    observers: [heroController],
+                    backButtonDispatcher: ChildBackButtonDispatcher(
+                        Router.of(context).backButtonDispatcher!),
+                    onPopPage: (_, __) {
+                      RootVRouterData.of(context).pop(
+                        nestedRouteVRoute!.vRouteElementNode
+                            .getVRouteElementToPop(),
+                        pathParameters: VRouter.of(context).pathParameters,
+                      );
+
+                      // We always prevent popping because we handle it in VRouter
+                      return false;
+                    },
+                    onSystemPopPage: () async {
+                      await RootVRouterData.of(context).systemPop(
+                        nestedRouteVRoute!.vRouteElementNode
+                            .getVRouteElementToPop(),
+                        pathParameters: VRouter.of(context).pathParameters,
+                      );
+
+                      // We always prevent popping because we handle it in VRouter
+                      return true;
+                    },
+                  );
+                },
+              ),
             ),
             vPathRequestData: vPathRequestData,
             pathParameters: allPathParameters,

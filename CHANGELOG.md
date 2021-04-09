@@ -1,6 +1,10 @@
+## \[1.1.0+18\] - 06/04/2021.
+
+* Fix stackedRoute in VNested which did not built VNester widget
+
 ## \[1.1.0+17\] - 06/04/2021.
 
-* Fix vRedirector use in onPop and onSystemPop which was only stopping the redirection"
+* Fix vRedirector use in onPop and onSystemPop which was only stopping the redirection
 
 ## \[1.1.0+16\] - 06/04/2021.
 
