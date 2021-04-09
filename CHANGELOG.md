@@ -1,8 +1,12 @@
-## \[1.1.0+18\] - 06/04/2021.
+## \[1.1.0+19\] - 09/04/2021.
+
+* Fix `VRouter.of` error when called from `VRouter.builder`
+
+## \[1.1.0+18\] - 09/04/2021.
 
 * Fix stackedRoute in VNested which did not built VNester widget
 
-## \[1.1.0+17\] - 06/04/2021.
+## \[1.1.0+17\] - 09/04/2021.
 
 * Fix vRedirector use in onPop and onSystemPop which was only stopping the redirection
 
