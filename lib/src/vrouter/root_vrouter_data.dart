@@ -128,7 +128,11 @@ class RootVRouterData extends VRouterData {
   }) =>
       _state._pop(
         _state._vRoute.vRouteElementNode.getVRouteElementToPop(),
-        pathParameters: pathParameters,
+        pathParameters: {
+          ...pathParameters,
+          ...this
+              .pathParameters, // Include the previous path parameters when poping
+        },
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
       );
@@ -141,7 +145,11 @@ class RootVRouterData extends VRouterData {
   }) =>
       _state._systemPop(
         _state._vRoute.vRouteElementNode.getVRouteElementToPop(),
-        pathParameters: pathParameters,
+        pathParameters: {
+          ...pathParameters,
+          ...this
+              .pathParameters, // Include the previous path parameters when poping
+        },
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
       );
