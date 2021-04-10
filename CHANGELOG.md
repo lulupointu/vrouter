@@ -1,3 +1,7 @@
+## \[1.1.0+20\] - 09/04/2021.
+
+* Changing `pop` and `systemPop` default behaviour to include previous path parameters
+
 ## \[1.1.0+19\] - 09/04/2021.
 
 * Fix `VRouter.of` error when called from `VRouter.builder`

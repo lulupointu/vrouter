@@ -126,13 +126,9 @@ class RootVRouterData extends VRouterData {
     Map<String, String> queryParameters = const {},
     Map<String, String> newHistoryState = const {},
   }) =>
-      _state._pop(
+      popFromElement(
         _state._vRoute.vRouteElementNode.getVRouteElementToPop(),
-        pathParameters: {
-          ...pathParameters,
-          ...this
-              .pathParameters, // Include the previous path parameters when poping
-        },
+        pathParameters: pathParameters,
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
       );
@@ -143,13 +139,9 @@ class RootVRouterData extends VRouterData {
     Map<String, String> queryParameters = const {},
     Map<String, String> newHistoryState = const {},
   }) =>
-      _state._systemPop(
+      systemPopFromElement(
         _state._vRoute.vRouteElementNode.getVRouteElementToPop(),
-        pathParameters: {
-          ...pathParameters,
-          ...this
-              .pathParameters, // Include the previous path parameters when poping
-        },
+        pathParameters: pathParameters,
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
       );
@@ -163,7 +155,11 @@ class RootVRouterData extends VRouterData {
   }) =>
       _state._pop(
         itemToPop,
-        pathParameters: pathParameters,
+        pathParameters: {
+          ...pathParameters,
+          ...this
+              .pathParameters, // Include the previous path parameters when poping
+        },
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
       );
@@ -177,7 +173,11 @@ class RootVRouterData extends VRouterData {
   }) =>
       _state._systemPop(
         itemToPop,
-        pathParameters: pathParameters,
+        pathParameters: {
+          ...pathParameters,
+          ...this
+              .pathParameters, // Include the previous path parameters when poping
+        },
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
       );
