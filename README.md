@@ -22,8 +22,8 @@ Here are a few things that this package will make easy:
 The goal of this package is to implement a routing system which is
 similar to the one in Vue.js (named vue router).
 
-The idea is to use the `VRouter` widget on top of you app, and use
-`VRouteElement` to create you routes.
+The idea is to use the `VRouter` widget on top of your app, and use
+`VRouteElement` to create your routes.
 
 ```dart
 VRouter(
@@ -70,7 +70,7 @@ VRouter(
 ```
 ## VRouteElements
 
-`VRouteElements` are the building blocs of your routes. Just like widgets,
+`VRouteElements` are the building blocks of your routes. Just like widgets,
 you nest them to create your routes.
 
 ### VWidget
@@ -169,7 +169,8 @@ VRouter(
 )
 ```
 
-Access the path parameters in you widgets:
+Access the path parameters in your widgets:
+
 ```dart
 class UserScreen extends StatelessWidget {
   @override
@@ -227,7 +228,7 @@ VRouter(
   },
   routes: [
     VPopHandler(
-      // popping the path path /login will call this
+      // popping the path /login will call this
       onPop: (vRedirector) async {
         vRedirector.stopRedirection(); // You can use vRedirector to stop the redirection
       },
@@ -317,7 +318,7 @@ Note that this will not break deep linking. If your user are on the web and laun
 ## Much more
 
 There is so much more that this package can do, check out the example
-or have a look at the **[vrouter.dev](https://vrouter.dev)** website
+or have a look at the **[vrouter.dev](https://vrouter.dev)** website.
 
 ## Migrate to >=1.1.0
 
