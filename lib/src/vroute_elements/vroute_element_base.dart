@@ -32,53 +32,108 @@ abstract class VRouteElement {
   ///
   /// The deeper nested the route the better
   /// The given path parameters have to include at least every path parameters of the final path
-  String? getPathFromName(
+  GetPathFromNameResult getPathFromName(
     String nameToMatch, {
     required Map<String, String> pathParameters,
-    required String? parentPath,
+    required GetNewParentPathResult parentPathResult,
     required Map<String, String> remainingPathParameters,
   }) {
+    final childNameResults = <GetPathFromNameResult>[];
+
     // Check if any subroute matches the name
     for (var vRouteElement in stackedRoutes) {
-      String? childPathFromName = vRouteElement.getPathFromName(
-        nameToMatch,
-        pathParameters: pathParameters,
-        parentPath: parentPath,
-        remainingPathParameters: remainingPathParameters,
+      childNameResults.add(
+        vRouteElement.getPathFromName(
+          nameToMatch,
+          pathParameters: pathParameters,
+          parentPathResult: parentPathResult,
+          remainingPathParameters: remainingPathParameters,
+        ),
       );
-      if (childPathFromName != null) {
-        return childPathFromName;
+      if (childNameResults.last is ValidNameResult) {
+        return childNameResults.last;
       }
     }
 
-    // Else we return null
-    return null;
+    // If we don't have any valid result
+
+    // If some stackedRoute returned PathParamsPopError, aggregate them
+    final pathParamsNameErrors = PathParamsErrorsNameResult(
+      name: nameToMatch,
+      values: childNameResults.fold<List<PathParamsError>>(
+        <PathParamsError>[],
+        (previousValue, element) {
+          return previousValue +
+              ((element is PathParamsErrorsNameResult) ? element.values : []);
+        },
+      ),
+    );
+
+    // If there was any PathParamsPopError, we have some pathParamsPopErrors.values
+    // and therefore should return this
+    if (pathParamsNameErrors.values.isNotEmpty) {
+      return pathParamsNameErrors;
+    }
+
+    // Else try to find a NullPathError
+    if (childNameResults.indexWhere(
+            (childNameResult) => childNameResult is NullPathErrorNameResult) !=
+        -1) {
+      return NullPathErrorNameResult(name: nameToMatch);
+    }
+
+    // Else return a NotFoundError
+    return NotFoundErrorNameResult(name: nameToMatch);
   }
 
   /// [GetPathFromPopResult.didPop] is true if this [VRouteElement] popped
-  /// [GetPathFromPopResult.path] is null if this path can't be the right one according to
+  /// [GetPathFromPopResult.extendedPath] is null if this path can't be the right one according to
   ///                                                                     the path parameters
   /// [GetPathFromPopResult] is null when this [VRouteElement] does not pop AND none of
   ///                                                                     its stackedRoutes popped
-  GetPathFromPopResult? getPathFromPop(
+  GetPathFromPopResult getPathFromPop(
     VRouteElement elementToPop, {
     required Map<String, String> pathParameters,
-    required String? parentPath,
+    required GetNewParentPathResult parentPathResult,
   }) {
+    final childPopResults = <GetPathFromPopResult>[];
+
     // Try to pop from the stackedRoutes
     for (var vRouteElement in stackedRoutes) {
-      final childPopResult = vRouteElement.getPathFromPop(
-        elementToPop,
-        pathParameters: pathParameters,
-        parentPath: parentPath,
+      childPopResults.add(
+        vRouteElement.getPathFromPop(
+          elementToPop,
+          pathParameters: pathParameters,
+          parentPathResult: parentPathResult,
+        ),
       );
-      if (childPopResult != null) {
-        return childPopResult;
+      if (childPopResults.last is ValidPopResult) {
+        return childPopResults.last;
       }
     }
 
-    // If none of the stackedRoutes popped and this did not pop, return a null result
-    return null;
+    // If we don't have any valid result
+
+    // If some stackedRoute returned PathParamsPopError, aggregate them
+    final pathParamsPopErrors = PathParamsPopErrors(
+      values: childPopResults.fold<List<MissingPathParamsError>>(
+        <MissingPathParamsError>[],
+        (previousValue, element) {
+          return previousValue +
+              ((element is PathParamsPopErrors) ? element.values : []);
+        },
+      ),
+    );
+
+    // If there was any PathParamsPopError, we have some pathParamsPopErrors.values
+    // and therefore should return this
+    if (pathParamsPopErrors.values.isNotEmpty) {
+      return pathParamsPopErrors;
+    }
+
+    // If none of the stackedRoutes popped, this did not pop, and there was no path parameters issue, return not found
+    // This should never happen
+    return ErrorNotFoundGetPathFromPopResult();
   }
 
   /// This is called before the url is updated if this [VRouteElement] was NOT in the
@@ -233,18 +288,143 @@ abstract class VRouteElement {
 }
 
 /// Return type of [VRouteElement.getPathFromPop]
-class GetPathFromPopResult {
-  /// [path] should be deducted from the parent path, [VRouteElement.path] and the path parameters,
+abstract class GetPathFromPopResult {}
+
+class ValidPopResult extends GetPathFromPopResult {
+  /// [extendedPath] should be deducted from the parent path, [VRouteElement.path] and the path parameters,
   ///  Note the it should be null if the path can not be deduced from the said parameters
   final String? path;
 
   /// [didPop] should be true if this [VRouteElement] is to be popped
   final bool didPop;
 
-  GetPathFromPopResult({
+  ValidPopResult({
     required this.path,
     required this.didPop,
   });
+}
+
+abstract class ErrorGetPathFromPopResult extends GetPathFromPopResult
+    implements Exception {}
+
+class ErrorNotFoundGetPathFromPopResult extends ErrorGetPathFromPopResult {
+  @override
+  String toString() =>
+      'The VRouteElement to pop was not found. Please open an issue, this should never happen.';
+}
+
+// class PathParamsPopError {
+//   /// Set of pathParameterKey which would have lead to a valid pop
+//   final List<String> pathParams;
+//
+//   /// Subset of [missingPathParams] which contains the missing pathParameter
+//   final List<String> missingPathParams;
+//
+//   // /// Whether the [VRouteElement] which is returning this has an absolute path
+//   // final bool isAbsolute;
+//
+//   PathParamsPopError({
+//     required this.pathParams,
+//     required this.missingPathParams,
+//   });
+// }
+
+class PathParamsPopErrors extends ErrorGetPathFromPopResult {
+  final List<MissingPathParamsError> values;
+
+  PathParamsPopErrors({
+    required this.values,
+  });
+
+  @override
+  String toString() =>
+      'Could not pop because some path parameters where missing. \n'
+          'Here are the possible path parameters that were expected and the missing ones:\n' +
+      [
+        for (var value in values)
+          '  - Path parameters: ${value.pathParams}, missing ones: ${value.missingPathParams}'
+      ].join('\n');
+}
+
+/// Return type of [VRouteElement.getPathFromName]
+abstract class GetPathFromNameResult {}
+
+class ValidNameResult extends GetPathFromNameResult {
+  /// [extendedPath] should be deducted from the parent path, [VRouteElement.path] and the path parameters,
+  ///  Note the it should be null if the path can not be deduced from the said parameters
+  final String path;
+
+  ValidNameResult({required this.path});
+}
+
+abstract class ErrorGetPathFromNameResult extends GetPathFromNameResult
+    implements Exception {
+  String get error;
+
+  @override
+  String toString() => error;
+}
+
+class NotFoundErrorNameResult extends ErrorGetPathFromNameResult {
+  final String name;
+
+  NotFoundErrorNameResult({required this.name});
+
+  String get error => 'Could not find the VRouteElement named $name.';
+}
+
+class NullPathErrorNameResult extends ErrorGetPathFromNameResult {
+  final String name;
+
+  NullPathErrorNameResult({required this.name});
+
+  String get error =>
+      'The VRouteElement named $name as a null path but no parent VRouteElement with a path.\n'
+      'No valid path can therefore be formed.';
+}
+
+abstract class PathParamsError {
+  List<String> get pathParams;
+
+  String get error;
+
+  @override
+  String toString() => error;
+}
+
+class MissingPathParamsError extends PathParamsError {
+  final List<String> missingPathParams;
+  final List<String> pathParams;
+
+  MissingPathParamsError(
+      {required this.pathParams, required this.missingPathParams});
+
+  String get error =>
+      'Path parameters given: $pathParams, missing: $missingPathParams';
+}
+
+class OverlyPathParamsError extends PathParamsError {
+  final List<String> expectedPathParams;
+  final List<String> pathParams;
+
+  OverlyPathParamsError(
+      {required this.pathParams, required this.expectedPathParams});
+
+  String get error =>
+      'Path parameters given: $pathParams, expected: $expectedPathParams';
+}
+
+class PathParamsErrorsNameResult extends ErrorGetPathFromNameResult {
+  final List<PathParamsError> values;
+  final String name;
+
+  PathParamsErrorsNameResult({required this.name, required this.values});
+
+  @override
+  String get error =>
+      'Could not find value route for name $name because of path parameters. \n'
+          'Here are the possible path parameters that were expected compared to what you gave:\n' +
+      [for (var value in values) '  - ${value.error}'].join('\n');
 }
 
 /// Hold every information of the current route we are building

@@ -806,17 +806,18 @@ class VRouterState extends State<VRouter> {
         .map((key, value) => MapEntry(key, Uri.encodeComponent(value)));
 
     // We use VRouteElement.getPathFromName
-    String? newPath = widget.getPathFromName(
+    final getPathFromNameResult = widget.getPathFromName(
       name,
       pathParameters: pathParameters,
-      parentPath: null,
+      parentPathResult: ValidParentPathResult(path: null, pathParameters: {}),
       remainingPathParameters: pathParameters,
     );
 
-    if (newPath == null) {
-      throw Exception(
-          'No route correspond to the name $name given the pathParameters $pathParameters');
+    if (getPathFromNameResult is ErrorGetPathFromNameResult) {
+      throw getPathFromNameResult;
     }
+
+    var newPath = (getPathFromNameResult as ValidNameResult).path;
 
     // Encode the path parameters
     final encodedPathParameters = pathParameters.map<String, String>(
@@ -1391,18 +1392,26 @@ class VRouterState extends State<VRouter> {
     pathParameters = pathParameters
         .map((key, value) => MapEntry(key, Uri.encodeComponent(value)));
 
-    // This url will be not null if we find a route to go to
-    String? newUrl;
-
     // We don't use widget.getPathFromPop because widget.routes might have changed with a setState
-    final newPath = _vRoute.vRouteElementNode.vRouteElement
-        .getPathFromPop(elementToPop,
-            pathParameters: pathParameters, parentPath: null)
-        ?.path;
+    final getPathFromPopResult =
+        _vRoute.vRouteElementNode.vRouteElement.getPathFromPop(
+      elementToPop,
+      pathParameters: pathParameters,
+      parentPathResult: ValidParentPathResult(path: null, pathParameters: {}),
+    );
 
+    if (getPathFromPopResult is ErrorGetPathFromPopResult) {
+      throw getPathFromPopResult;
+    }
+
+    final newPath = (getPathFromPopResult as ValidPopResult).path;
+
+    // This url will be not null if we find a route to go to
+    late final String? newUrl;
     late final RootVRouterData? newVRouterData;
-    // If newPath is empty then the VRouteElement to pop is VRouter
-    if (newPath != null && newPath.isNotEmpty) {
+
+    // If newPath is empty then the app should be put in the background (for mobile)
+    if (newPath != null) {
       // Integrate the given query parameters
       newUrl = Uri.tryParse(newPath)
           ?.replace(
@@ -1420,6 +1429,7 @@ class VRouterState extends State<VRouter> {
         state: this,
       );
     } else {
+      newUrl = null;
       newVRouterData = null;
     }
 
