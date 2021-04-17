@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:test/test.dart';
+import 'package:vrouter/src/main.dart';
 import 'package:vrouter/vrouter.dart';
 
 void main() {
@@ -28,10 +29,12 @@ void main() {
           'home',
           remainingPathParameters: {},
           pathParameters: {},
-          parentPath: null,
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
         );
 
-        expect(newPath, '/home');
+        expect(newPath.runtimeType, ValidNameResult);
+        expect((newPath as ValidNameResult).path, '/home');
       });
 
       test('Nested named', () {
@@ -67,10 +70,12 @@ void main() {
           'other',
           remainingPathParameters: {},
           pathParameters: {},
-          parentPath: null,
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
         );
 
-        expect(newPath, '/home/other');
+        expect(newPath.runtimeType, ValidNameResult);
+        expect((newPath as ValidNameResult).path, '/home/other');
       });
 
       test('Named with path parameters', () {
@@ -95,13 +100,78 @@ void main() {
           'settings',
           remainingPathParameters: {'id': '2', 'settingsId': '3'},
           pathParameters: {'id': '2', 'settingsId': '3'},
-          parentPath: null,
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
         );
 
-        expect(newPath, '/home/2/settings/3');
+        expect(newPath.runtimeType, ValidNameResult);
+        expect((newPath as ValidNameResult).path, '/home/2/settings/3');
       });
 
-      test('Named with wrong path parameters', () {
+      test('Named with missing path parameters', () {
+        final vRouter = VRouter(
+          routes: [
+            VWidget(
+              widget: Container(),
+              path: '/home/:id',
+              name: 'home',
+            ),
+          ],
+        );
+
+        final newPath = vRouter.getPathFromName(
+          'home',
+          remainingPathParameters: {},
+          pathParameters: {},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
+
+        expect(newPath.runtimeType, PathParamsErrorsNameResult);
+        expect((newPath as PathParamsErrorsNameResult).values.length, 1);
+        expect(newPath.values.first.runtimeType, MissingPathParamsError);
+        expect((newPath.values.first as MissingPathParamsError).pathParams, []);
+        expect(
+            (newPath.values.first as MissingPathParamsError).missingPathParams,
+            ['id']);
+      });
+
+      test('Named with missing path parameters in two stacked VRouteElement',
+          () {
+        final vRouter = VRouter(
+          routes: [
+            VWidget(
+              widget: Container(),
+              path: '/home/:id',
+              stackedRoutes: [
+                VWidget(
+                    widget: Container(),
+                    path: '/settings/:otherId',
+                    name: 'settings'),
+              ],
+            ),
+          ],
+        );
+
+        final newPath = vRouter.getPathFromName(
+          'settings',
+          remainingPathParameters: {'id': '2'},
+          pathParameters: {'id': '2'},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
+
+        expect(newPath.runtimeType, PathParamsErrorsNameResult);
+        expect((newPath as PathParamsErrorsNameResult).values.length, 1);
+        expect(newPath.values.first.runtimeType, MissingPathParamsError);
+        expect((newPath.values.first as MissingPathParamsError).pathParams,
+            ['id']);
+        expect(
+            (newPath.values.first as MissingPathParamsError).missingPathParams,
+            ['otherId']);
+      });
+
+      test('Named with too much path parameters', () {
         final vRouter = VRouter(
           routes: [
             VWidget(
@@ -116,12 +186,23 @@ void main() {
           'home',
           remainingPathParameters: {'id': '2'},
           pathParameters: {'id': '2'},
-          parentPath: null,
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
         );
 
-        expect(newPath, null);
+        expect(newPath.runtimeType, PathParamsErrorsNameResult);
+        expect((newPath as PathParamsErrorsNameResult).values.length, 1);
+        expect(newPath.values.first.runtimeType, OverlyPathParamsError);
+        expect(
+            (newPath.values.first as OverlyPathParamsError).pathParams, ['id']);
+        expect(
+            (newPath.values.first as OverlyPathParamsError).expectedPathParams,
+            []);
+      });
 
-        final vRouter2 = VRouter(
+      test('Named with too much path parameters with absolute stacked route',
+          () {
+        final vRouter = VRouter(
           routes: [
             VWidget(
               widget: Container(),
@@ -138,14 +219,25 @@ void main() {
           ],
         );
 
-        final newPath2 = vRouter2.getPathFromName(
+        final newPath = vRouter.getPathFromName(
           'settings',
           remainingPathParameters: {'id': '2', 'settingsId': '3'},
           pathParameters: {'id': '2', 'settingsId': '3'},
-          parentPath: null,
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
         );
 
-        expect(newPath2, null);
+        expect(newPath.runtimeType, PathParamsErrorsNameResult);
+        expect((newPath as PathParamsErrorsNameResult).values.length, 1);
+        expect(newPath.values.first.runtimeType, OverlyPathParamsError);
+        expect(
+          (newPath.values.first as OverlyPathParamsError).pathParams,
+          ['id', 'settingsId'],
+        );
+        expect(
+          (newPath.values.first as OverlyPathParamsError).expectedPathParams,
+          ['settingsId'],
+        );
       });
 
       test('Named and aliases', () {
@@ -164,10 +256,12 @@ void main() {
           'home',
           remainingPathParameters: {'id': '2'},
           pathParameters: {'id': '2'},
-          parentPath: null,
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
         );
 
-        expect(newPath, '/2');
+        expect(newPath.runtimeType, ValidNameResult);
+        expect((newPath as ValidNameResult).path, '/2');
       });
 
       test('Absent name', () {
@@ -185,10 +279,11 @@ void main() {
           'random',
           remainingPathParameters: {'id': '2'},
           pathParameters: {'id': '2'},
-          parentPath: null,
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
         );
 
-        expect(newPath, null);
+        expect(newPath.runtimeType, NotFoundErrorNameResult);
       });
     },
   );
