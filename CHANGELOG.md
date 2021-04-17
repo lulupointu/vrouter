@@ -1,3 +1,7 @@
+## \[1.1.0+21\] - 09/04/2021.
+
+* New `pop` and `pushNamed` error system
+
 ## \[1.1.0+20\] - 09/04/2021.
 
 * Changing `pop` and `systemPop` default behaviour to include previous path parameters
