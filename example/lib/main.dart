@@ -114,7 +114,7 @@ class _LoginWidgetState extends State<LoginWidget> {
             FloatingActionButton(
               heroTag: 'FAB',
               onPressed: () {
-                setState(() => (_formKey.currentState.validate())
+                setState(() => (_formKey.currentState!.validate())
                     ? VRouter.of(context).push('/profile/$name')
                     : null);
               },
@@ -133,13 +133,13 @@ class MyScaffold extends StatelessWidget {
 
   const MyScaffold(
     this.vChild, {
-    Key key,
-    @required this.title,
+    Key? key,
+    required this.title,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = (VRouter.of(context).url.contains('profile')) ? 0 : 1;
+    final currentIndex = (VRouter.of(context).url!.contains('profile')) ? 0 : 1;
 
     return Scaffold(
       appBar: AppBar(
@@ -168,7 +168,7 @@ class MyScaffold extends StatelessWidget {
               // We push the settings and store the username in the VRouter history state
               // We can access this username via the global path parameters (stored in VRoute)
               VRouter.of(context).push('/settings', historyState: {
-                'username': VRouter.of(context).pathParameters['username']
+                'username': VRouter.of(context).pathParameters['username']!
               });
             }
           }
@@ -211,7 +211,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               Text(
                 // We can access this username via the local path parameters (stored in VRouteElement)
                 'Hello ${VRouter.of(context).pathParameters['username'] ?? 'stranger'}',
-                style: textStyle.copyWith(fontSize: textStyle.fontSize + 2),
+                style: textStyle.copyWith(fontSize: textStyle.fontSize! + 2),
               ),
               SizedBox(height: 50),
               TextButton(
@@ -250,7 +250,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
     setState(() {
       count = (VRouter.of(context).historyState['count'] == null)
           ? 0
-          : int.tryParse(VRouter.of(context).historyState['count'] ?? '0');
+          : int.tryParse(VRouter.of(context).historyState['count'] ?? '') ?? 0;
     });
   }
 }
@@ -267,12 +267,12 @@ class InfoWidget extends StatelessWidget {
             Text(
               // We can access this username via the history state (stored in VRouter)
               'Here are you empty info, ${VRouter.of(context).historyState['username'] ?? 'stranger'}',
-              style: textStyle.copyWith(fontSize: textStyle.fontSize + 2),
+              style: textStyle.copyWith(fontSize: textStyle.fontSize! + 2),
             ),
             SizedBox(height: 50),
             Text(
               'As you could see, the custom animation played when you went here',
-              style: textStyle.copyWith(fontSize: textStyle.fontSize + 2),
+              style: textStyle.copyWith(fontSize: textStyle.fontSize! + 2),
             ),
           ],
         ),
