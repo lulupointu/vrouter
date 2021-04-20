@@ -505,7 +505,6 @@ class VNesterPage extends VPage {
             );
           }
         } else {
-          print('Found ValidPopResult in VNester nesting route, path: $path');
           return ValidPopResult(path: childPopResult.path, didPop: false);
         }
       } else {
@@ -545,9 +544,6 @@ class VNesterPage extends VPage {
           parentPathResult: newParentPathFromAlias,
         );
         if (childPopResult is ValidPopResult) {
-          print(
-              'Found ValidPopResult in VNester nested routes, alias: ${aliases[i]}');
-          print('childPopResult.path: ${childPopResult.path}');
           if (childPopResult.didPop) {
             // if the nestedRoute popped, we should pop too
             if (parentPathResult is ValidParentPathResult) {

@@ -558,7 +558,6 @@ abstract class VRouteElementWithPath extends VRouteElement {
     // If vRouteElement is this, then this is the element to pop so we return null
     if (elementToPop == this) {
       if (parentPathResult is ValidParentPathResult) {
-        print('return ValidPopResult from path $path');
         return ValidPopResult(path: parentPathResult.path, didPop: true);
       } else if (parentPathResult is PathParamsErrorNewParentPath) {
         return PathParamsPopErrors(
