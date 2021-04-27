@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+part of '../main.dart';
 
 class VRouteInformationParser extends RouteInformationParser<RouteInformation> {
   // Url to navigation state

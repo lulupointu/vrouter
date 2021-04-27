@@ -10,7 +10,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:url_strategy/url_strategy.dart';
-import 'package:vrouter/src/vrouter/vroute_information_parser.dart';
 import '../wrappers/browser_helpers/fake_browser_helpers.dart'
     if (dart.library.js) '../wrappers/browser_helpers/browser_helpers.dart';
 import '../wrappers/move_to_background.dart';
@@ -39,6 +38,8 @@ part 'vrouter/widgets_vrouter.dart';
 part 'vrouter/vrouter_data.dart';
 
 part 'vrouter/vrouter_delegate.dart';
+
+part 'vrouter/vroute_information_parser.dart';
 
 part 'vrouter/vback_button_dispatcher.dart';
 
