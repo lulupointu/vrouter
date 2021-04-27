@@ -30,11 +30,11 @@ main() {
 
     // We should have been redirected to '/login' so only VWidget 1 should be visible
 
-    final vWidget1Finder1 = find.text('VWidget1');
-    final vWidget2Finder1 = find.text('VWidget2');
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
 
-    expect(vWidget1Finder1, findsOneWidget);
-    expect(vWidget2Finder1, findsNothing);
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vWidget2Finder, findsNothing);
   });
 
   testWidgets('VRouteRedirector used in a stackedRoute',
@@ -76,11 +76,11 @@ main() {
 
     // At first we are on "/" so only VWidget1 should be shown
 
-    final vWidget1Finder1 = find.text('VWidget1');
-    final vWidget2Finder1 = find.text('VWidget2');
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
 
-    expect(vWidget1Finder1, findsOneWidget);
-    expect(vWidget2Finder1, findsNothing);
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vWidget2Finder, findsNothing);
 
     // Navigate to 'settings'
     // Tap the add button.
@@ -88,11 +88,8 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder2 = find.text('VWidget1');
-    final vWidget2Finder2 = find.text('VWidget2');
-
-    expect(vWidget1Finder2, findsNothing);
-    expect(vWidget2Finder2, findsOneWidget);
+    expect(vWidget1Finder, findsNothing);
+    expect(vWidget2Finder, findsOneWidget);
 
     // Navigate to '/other', and since no match be redirected to '/settings'
     // Tap the add button.
@@ -100,10 +97,7 @@ main() {
     await tester.pumpAndSettle();
 
     // Only VWidget2 should be visible
-    final vWidget1Finder3 = find.text('VWidget1');
-    final vWidget2Finder3 = find.text('VWidget2');
-
-    expect(vWidget1Finder3, findsNothing);
-    expect(vWidget2Finder3, findsOneWidget);
+    expect(vWidget1Finder, findsNothing);
+    expect(vWidget2Finder, findsOneWidget);
   });
 }

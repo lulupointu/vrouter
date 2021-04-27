@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
 
-final key = GlobalKey<VRouterState>();
-
 void main() {
   runApp(
     VRouter(
       debugShowCheckedModeBanner: false, // VRouter acts as a MaterialApp
-      // mode: VRouterModes.history, // Remove the '#' from the url
+      mode: VRouterModes.history, // Remove the '#' from the url
       routes: [
         VWidget(
           path: '/login',

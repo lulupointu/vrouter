@@ -534,6 +534,42 @@ void main() {
         expect(newPathResult.runtimeType, ValidPopResult);
         expect((newPathResult as ValidPopResult).path, '/settings');
       });
+
+      test('Pop VNester', () {
+        final elementToPop = VNester(
+          widgetBuilder: (child) => Container(),
+          path: null,
+          nestedRoutes: [
+            VWidget(path: '/settings', widget: Container()),
+          ],
+        );
+
+        final vRouter = VRouter(
+          routes: [
+            VWidget(
+              widget: Container(),
+              path: '/',
+              stackedRoutes: [
+                elementToPop,
+                VWidget(
+                  widget: Container(),
+                  path: '/other',
+                ),
+              ],
+            ),
+          ],
+        );
+
+        final newPathResult = vRouter.getPathFromPop(
+          elementToPop,
+          pathParameters: {},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
+
+        expect(newPathResult.runtimeType, ValidPopResult);
+        expect((newPathResult as ValidPopResult).path, '/');
+      });
     },
   );
 }

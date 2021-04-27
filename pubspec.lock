@@ -311,13 +311,6 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.1"
-  simple_url_handler:
-    dependency: "direct main"
-    description:
-      name: simple_url_handler
-      url: "https://pub.dartlang.org"
-    source: hosted
-    version: "1.0.0"
   sky_engine:
     dependency: transitive
     description: flutter

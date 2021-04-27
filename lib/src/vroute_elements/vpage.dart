@@ -1,89 +1,95 @@
 part of '../main.dart';
 
-/// A [VRouteElement] similar to [VWidget] but which allows you to specify your own page
-/// thanks to [pageBuilder]
-class VPage extends VRouteElementWithPage {
-  /// A function which allows you to use your own custom page
+class VPage extends VRouteElementBuilder {
+  /// The path (relative or absolute) or this [VRouteElement]
   ///
-  /// You must use [child] as the child of your page (though you can wrap it in other widgets)
+  /// If the path of a subroute is exactly matched, this will be used in
+  /// the route but might be covered by another [VRouteElement._rootVRouter]
+  /// The value of the path ca have three form:
+  ///     * starting with '/': The path will be treated as a route path,
+  ///       this is useful to take full advantage of nested routes while
+  ///       conserving the freedom of path naming
+  ///     * not starting with '/': The path corresponding to this route
+  ///       will be the path of the parent route + this path. If this is used
+  ///       directly in the [VRouter] routes, a '/' will be added anyway
+  ///     * be null: In this case this path will match the parent path
   ///
-  /// [child] will basically be whatever you put in [widget]
-  final Page Function(LocalKey key, Widget child) pageBuilder;
+  /// Note we use the package [path_to_regexp](https://pub.dev/packages/path_to_regexp)
+  /// so you can use naming such as /user/:id to get the id (see [VRouteElementData.pathParameters]
+  /// You can also use more advance technique using regexp directly in your path, for example
+  /// '.*' will match any route, '/user/:id(\d+)' will match any route starting with user
+  /// and followed by a digit. Here is a recap:
+  /// |     pattern 	  | matched path | 	[VRouter.pathParameters]
+  /// | /user/:username |  /user/evan  | 	 { username: 'evan' }
+  /// | /user/:id(\d+)  |  /user/123   | 	     { id: '123' }
+  /// |     .*          |  every path  |             -
+  final String? path;
+
+  /// A name for the route which will allow you to easily navigate to it
+  /// using [VRouter.of(context).pushNamed]
+  ///
+  /// Note that [name] should be unique w.r.t every [VRouteElement]
+  final String? name;
+
+  /// Alternative paths that will be matched to this route
+  ///
+  /// Note that path is match first, then every aliases in order
+  final List<String> aliases;
+
+  /// A boolean to indicate whether this can be a valid [VRouteElement] of the [VRoute] if no
+  /// [VRouteElement] in its [stackedRoute] is matched
+  ///
+  /// This is mainly useful for [VRouteElement]s which are NOT [VRouteElementWithPage]
+  final bool mustMatchStackedRoute;
+
+  final List<VRouteElement> stackedRoutes;
+
+  /// Function which returns a page that will wrap [widget]
+  ///   - key and name should be given to your [Page]
+  ///   - child should be placed as the last child in [Route]
+  final Page Function(LocalKey key, Widget child, String? name) pageBuilder;
+
+  /// The widget which will be displayed for this [VRouteElement]
+  /// inside the given page
+  final Widget widget;
+
+  /// A LocalKey that will be given to the page which contains the given [widget]
+  ///
+  /// This key mostly controls the page animation. If a page remains the same but the key is changes,
+  /// the page gets animated
+  /// The key is by default the value of the current [path] (or [aliases]) with
+  /// the path parameters replaced
+  ///
+  /// Do provide a constant [key] if you don't want this page to animate even if [path] or
+  /// [aliases] path parameters change
+  final LocalKey? key;
 
   VPage({
-    required String? path,
+    required this.path,
     required this.pageBuilder,
-    required Widget widget,
-    LocalKey? key,
-    String? name,
-    List<VRouteElement> stackedRoutes = const [],
-    List<String> aliases = const [],
-    bool mustMatchStackedRoute = false,
-  }) : super(
-          widget: widget,
-          key: key,
-          path: path,
-          name: name,
-          stackedRoutes: stackedRoutes,
-          aliases: aliases,
-          mustMatchStackedRoute: mustMatchStackedRoute,
-        );
+    required this.widget,
+    this.stackedRoutes = const [],
+    this.key,
+    this.name,
+    this.aliases = const [],
+    this.mustMatchStackedRoute = false,
+  });
 
   @override
-  Page buildPage({
-    required Widget widget,
-    required VPathRequestData vPathRequestData,
-    required Map<String, String> pathParameters,
-    required VRouteElementNode vRouteElementNode,
-  }) =>
-      pageBuilder(
-        key ??
-            ValueKey((vRouteElementNode.localPath != null)
-                ? vRouteElementNode.localPath
-                : getConstantLocalPath()),
-        LocalVRouterData(
-          child: NotificationListener<VWidgetGuardMessage>(
-            // This listen to [VWidgetGuardNotification] which is a notification
-            // that a [VWidgetGuard] sends when it is created
-            // When this happens, we store the VWidgetGuard and its context
-            // This will be used to call its afterUpdate and beforeLeave in particular.
-            onNotification: (VWidgetGuardMessage vWidgetGuardMessage) {
-              VWidgetGuardMessageRoot(
-                vWidgetGuard: vWidgetGuardMessage.vWidgetGuard,
-                localContext: vWidgetGuardMessage.localContext,
-                associatedVRouteElement: this,
-              ).dispatch(vPathRequestData.rootVRouterContext);
-
-              return true;
-            },
-            child: widget,
-          ),
-          vRouteElementNode: vRouteElementNode,
-          url: vPathRequestData.url,
-          previousUrl: vPathRequestData.previousUrl,
-          historyState: vPathRequestData.historyState,
-          pathParameters: pathParameters,
-          queryParameters: vPathRequestData.queryParameters,
-          context: vPathRequestData.rootVRouterContext,
-        ),
-      );
-
-  /// If this [VRouteElement] is in the route but its localPath is null
-  /// we try to find a local path in [path, ...aliases]
-  ///
-  /// This is used in [buildPage] to form the LocalKey
-  /// Note that
-  ///   - We can't use this because animation won't play if path parameters change for example
-  ///   - Using null is not ideal because if we pop from a absolute path, this won't animate as expected
-  String? getConstantLocalPath() {
-    if (pathParametersKeys.isEmpty) {
-      return path;
-    }
-    for (var i = 0; i < aliasesPathParametersKeys.length; i++) {
-      if (aliasesPathParametersKeys[i].isEmpty) {
-        return aliases[i];
-      }
-    }
-    return null;
-  }
+  List<VRouteElement> buildRoutes() => [
+        VPath(
+          path: path,
+          aliases: aliases,
+          mustMatchStackedRoute: mustMatchStackedRoute,
+          stackedRoutes: [
+            VPageBase(
+              pageBuilder: pageBuilder,
+              widget: widget,
+              key: key,
+              name: name,
+              stackedRoutes: stackedRoutes,
+            ),
+          ],
+        )
+      ];
 }

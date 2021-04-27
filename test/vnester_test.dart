@@ -69,15 +69,15 @@ main() {
 
     // At first we are on "/" so only VWidget1 should be shown
 
-    final vWidget1Finder1 = find.text('VWidget1');
-    final vWidget2Finder1 = find.text('VWidget2');
-    final vWidget3Finder1 = find.text('VWidget3');
-    final vNesterFinder1 = find.text('Scaffold VNester');
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNester');
 
-    expect(vWidget1Finder1, findsOneWidget);
-    expect(vNesterFinder1, findsNothing);
-    expect(vWidget2Finder1, findsNothing);
-    expect(vWidget3Finder1, findsNothing);
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
 
     // Navigate to '/other'
     // Tap the add button.
@@ -85,15 +85,10 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder2 = find.text('VWidget1');
-    final vWidget2Finder2 = find.text('VWidget2');
-    final vWidget3Finder2 = find.text('VWidget3');
-    final vNesterFinder2 = find.text('Scaffold VNester');
-
-    expect(vWidget1Finder2, findsNothing);
-    expect(vNesterFinder2, findsOneWidget);
-    expect(vWidget2Finder2, findsNothing);
-    expect(vWidget3Finder2, findsOneWidget);
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsOneWidget);
 
     // Pop to '/settings'
     // Tap the add button.
@@ -101,15 +96,10 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder3 = find.text('VWidget1');
-    final vWidget2Finder3 = find.text('VWidget2');
-    final vWidget3Finder3 = find.text('VWidget3');
-    final vNesterFinder3 = find.text('Scaffold VNester');
-
-    expect(vWidget1Finder3, findsNothing);
-    expect(vNesterFinder3, findsOneWidget);
-    expect(vWidget2Finder3, findsOneWidget);
-    expect(vWidget3Finder3, findsNothing);
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+    expect(vWidget3Finder, findsNothing);
 
     // Pop to '/'
     // Tap the add button.
@@ -117,15 +107,95 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder4 = find.text('VWidget1');
-    final vWidget2Finder4 = find.text('VWidget2');
-    final vWidget3Finder4 = find.text('VWidget3');
-    final vNesterFinder4 = find.text('Scaffold VNester');
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
+  });
 
-    expect(vWidget1Finder4, findsOneWidget);
-    expect(vNesterFinder4, findsNothing);
-    expect(vWidget2Finder4, findsNothing);
-    expect(vWidget3Finder4, findsNothing);
+  testWidgets('VNester systemPop', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      VRouter(
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Builder(
+              builder: (BuildContext context) {
+                return Scaffold(
+                  body: Text('VWidget1'),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () => VRouter.of(context).push('/settings'),
+                  ),
+                );
+              },
+            ),
+            stackedRoutes: [
+              VNester(
+                path: null,
+                aliases: ['scaffold'],
+                widgetBuilder: (child) => Builder(
+                  builder: (BuildContext context) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Scaffold VNester')),
+                      body: child,
+                    );
+                  },
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: '/settings',
+                    widget: Builder(
+                      builder: (BuildContext context) {
+                        return OutlinedButton(
+                          onPressed: () => VRouter.of(context).systemPop(),
+                          child: Text('VWidget2'),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // At first we are on "/" so only VWidget1 should be shown
+
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNester');
+
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
+
+    // Navigate to '/settings'
+    // Tap the add button.
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+    expect(vWidget3Finder, findsNothing);
+
+    // systemPop to '/'
+    // Tap the add button.
+    await tester.tap(find.byType(OutlinedButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
   });
 
   testWidgets('VNester pop on alias', (WidgetTester tester) async {
@@ -147,6 +217,7 @@ main() {
             stackedRoutes: [
               VNester(
                 path: ':id(\d+)',
+                // key: ValueKey('/settings'),
                 aliases: ['/settings'],
                 widgetBuilder: (child) => Builder(
                   builder: (BuildContext context) {
@@ -193,15 +264,15 @@ main() {
 
     // At first we are on "/" so only VWidget1 should be shown
 
-    final vWidget1Finder1 = find.text('VWidget1');
-    final vWidget2Finder1 = find.text('VWidget2');
-    final vWidget3Finder1 = find.text('VWidget3');
-    final vNesterFinder1 = find.text('Scaffold VNester');
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNester');
 
-    expect(vWidget1Finder1, findsOneWidget);
-    expect(vNesterFinder1, findsNothing);
-    expect(vWidget2Finder1, findsNothing);
-    expect(vWidget3Finder1, findsNothing);
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
 
     // Navigate to '/other'
     // Tap the add button.
@@ -209,15 +280,10 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder2 = find.text('VWidget1');
-    final vWidget2Finder2 = find.text('VWidget2');
-    final vWidget3Finder2 = find.text('VWidget3');
-    final vNesterFinder2 = find.text('Scaffold VNester');
-
-    expect(vWidget1Finder2, findsNothing);
-    expect(vNesterFinder2, findsOneWidget);
-    expect(vWidget2Finder2, findsNothing);
-    expect(vWidget3Finder2, findsOneWidget);
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsOneWidget);
 
     // Pop to '/settings'
     // Tap the add button.
@@ -225,15 +291,10 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder3 = find.text('VWidget1');
-    final vWidget2Finder3 = find.text('VWidget2');
-    final vWidget3Finder3 = find.text('VWidget3');
-    final vNesterFinder3 = find.text('Scaffold VNester');
-
-    expect(vWidget1Finder3, findsNothing);
-    expect(vNesterFinder3, findsOneWidget);
-    expect(vWidget2Finder3, findsOneWidget);
-    expect(vWidget3Finder3, findsNothing);
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+    expect(vWidget3Finder, findsNothing);
 
     // Pop to '/'
     // Tap the add button.
@@ -241,15 +302,10 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder4 = find.text('VWidget1');
-    final vWidget2Finder4 = find.text('VWidget2');
-    final vWidget3Finder4 = find.text('VWidget3');
-    final vNesterFinder4 = find.text('Scaffold VNester');
-
-    expect(vWidget1Finder4, findsOneWidget);
-    expect(vNesterFinder4, findsNothing);
-    expect(vWidget2Finder4, findsNothing);
-    expect(vWidget3Finder4, findsNothing);
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
   });
 
   testWidgets('VNester with stacked route', (WidgetTester tester) async {
@@ -318,31 +374,26 @@ main() {
 
     // At first we are on "/" so only VWidget1 should be shown
 
-    final vWidget1Finder1 = find.text('VWidget1');
-    final vWidget2Finder1 = find.text('VWidget2');
-    final vWidget3Finder1 = find.text('VWidget3');
-    final vNesterFinder1 = find.text('Scaffold VNester');
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNester');
 
-    expect(vWidget1Finder1, findsOneWidget);
-    expect(vNesterFinder1, findsNothing);
-    expect(vWidget2Finder1, findsNothing);
-    expect(vWidget3Finder1, findsNothing);
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
 
-    // Navigate to '/other'
+    // Navigate to '/settings/other'
     // Tap the add button.
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder2 = find.text('VWidget1');
-    final vWidget2Finder2 = find.text('VWidget2');
-    final vWidget3Finder2 = find.text('VWidget3');
-    final vNesterFinder2 = find.text('Scaffold VNester');
-
-    expect(vWidget1Finder2, findsNothing);
-    expect(vNesterFinder2, findsNothing);
-    expect(vWidget2Finder2, findsNothing);
-    expect(vWidget3Finder2, findsOneWidget);
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsOneWidget);
 
     // Pop to '/settings'
     // Tap the add button.
@@ -350,15 +401,10 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder3 = find.text('VWidget1');
-    final vWidget2Finder3 = find.text('VWidget2');
-    final vWidget3Finder3 = find.text('VWidget3');
-    final vNesterFinder3 = find.text('Scaffold VNester');
-
-    expect(vWidget1Finder3, findsNothing);
-    expect(vNesterFinder3, findsOneWidget);
-    expect(vWidget2Finder3, findsOneWidget);
-    expect(vWidget3Finder3, findsNothing);
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+    expect(vWidget3Finder, findsNothing);
 
     // Pop to '/'
     // Tap the add button.
@@ -366,15 +412,10 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder4 = find.text('VWidget1');
-    final vWidget2Finder4 = find.text('VWidget2');
-    final vWidget3Finder4 = find.text('VWidget3');
-    final vNesterFinder4 = find.text('Scaffold VNester');
-
-    expect(vWidget1Finder4, findsOneWidget);
-    expect(vNesterFinder4, findsNothing);
-    expect(vWidget2Finder4, findsNothing);
-    expect(vWidget3Finder4, findsNothing);
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
   });
 
   testWidgets('VNester named', (WidgetTester tester) async {
@@ -422,13 +463,13 @@ main() {
 
     // At first we are on "/" so only VWidget1 should be shown
 
-    final vWidget1Finder1 = find.text('VWidget1');
-    final vWidget2Finder1 = find.text('VWidget2');
-    final vNesterFinder1 = find.text('Scaffold VNester');
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vNesterFinder = find.text('Scaffold VNester');
 
-    expect(vWidget1Finder1, findsOneWidget);
-    expect(vNesterFinder1, findsNothing);
-    expect(vWidget2Finder1, findsNothing);
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
 
     // Navigate to '/settings' by name
     // Tap the add button.
@@ -436,13 +477,9 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder2 = find.text('VWidget1');
-    final vWidget2Finder2 = find.text('VWidget2');
-    final vNesterFinder2 = find.text('Scaffold VNester');
-
-    expect(vWidget1Finder2, findsNothing);
-    expect(vNesterFinder2, findsOneWidget);
-    expect(vWidget2Finder2, findsOneWidget);
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
   });
 
   testWidgets('VNester named with alias default', (WidgetTester tester) async {
@@ -491,13 +528,13 @@ main() {
 
     // At first we are on "/" so only VWidget1 should be shown
 
-    final vWidget1Finder1 = find.text('VWidget1');
-    final vWidget2Finder1 = find.text('VWidget2');
-    final vNesterFinder1 = find.text('Scaffold VNester');
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vNesterFinder = find.text('Scaffold VNester');
 
-    expect(vWidget1Finder1, findsOneWidget);
-    expect(vNesterFinder1, findsNothing);
-    expect(vWidget2Finder1, findsNothing);
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
 
     // Navigate to '/settings' by name
     // Tap the add button.
@@ -505,13 +542,9 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder2 = find.text('VWidget1');
-    final vWidget2Finder2 = find.text('VWidget2');
-    final vNesterFinder2 = find.text('Scaffold VNester');
-
-    expect(vWidget1Finder2, findsNothing);
-    expect(vNesterFinder2, findsOneWidget);
-    expect(vWidget2Finder2, findsOneWidget);
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
   });
 
   testWidgets('VNester with alias', (WidgetTester tester) async {
@@ -559,13 +592,13 @@ main() {
 
     // At first we are on "/" so only VWidget1 should be shown
 
-    final vWidget1Finder1 = find.text('VWidget1');
-    final vWidget2Finder1 = find.text('VWidget2');
-    final vNesterFinder1 = find.text('Scaffold VNester');
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vNesterFinder = find.text('Scaffold VNester');
 
-    expect(vWidget1Finder1, findsOneWidget);
-    expect(vNesterFinder1, findsNothing);
-    expect(vWidget2Finder1, findsNothing);
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
 
     // Navigate to '/settings/2' by push
     // Tap the add button.
@@ -573,12 +606,8 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder2 = find.text('VWidget1');
-    final vWidget2Finder2 = find.text('VWidget2');
-    final vNesterFinder2 = find.text('Scaffold VNester');
-
-    expect(vWidget1Finder2, findsNothing);
-    expect(vNesterFinder2, findsOneWidget);
-    expect(vWidget2Finder2, findsOneWidget);
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
   });
 }

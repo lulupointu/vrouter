@@ -128,12 +128,12 @@ class VWidgetGuard extends StatefulWidget {
 
   const VWidgetGuard({
     Key? key,
-    this.afterEnter = VRouteElement._voidAfterEnter,
-    this.afterUpdate = VRouteElement._voidAfterUpdate,
-    this.beforeUpdate = VRouteElement._voidBeforeUpdate,
-    this.beforeLeave = VRouteElement._voidBeforeLeave,
-    this.onPop = VRouteElement._voidOnPop,
-    this.onSystemPop = VRouteElement._voidOnSystemPop,
+    this.afterEnter = VGuard._voidAfterEnter,
+    this.afterUpdate = VGuard._voidAfterUpdate,
+    this.beforeUpdate = VGuard._voidBeforeUpdate,
+    this.beforeLeave = VGuard._voidBeforeLeave,
+    this.onPop = VPopHandler._voidOnPop,
+    this.onSystemPop = VPopHandler._voidOnSystemPop,
     required this.child,
   }) : super(key: key);
 
@@ -182,7 +182,7 @@ class VWidgetGuardMessage extends Notification {
 class VWidgetGuardMessageRoot extends Notification {
   final VWidgetGuard vWidgetGuard;
   final BuildContext localContext;
-  final VRouteElementWithPage associatedVRouteElement;
+  final VRouteElement associatedVRouteElement;
 
   VWidgetGuardMessageRoot(
       {required this.vWidgetGuard,

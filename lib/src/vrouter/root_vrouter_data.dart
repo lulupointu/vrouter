@@ -4,12 +4,12 @@ part of '../main.dart';
 ///
 /// [RootVRouterData] holds methods and parameters from [VRouterState]
 class RootVRouterData extends VRouterData {
-  final VRouterState _state;
+  final VRouterDelegate _state;
 
   RootVRouterData({
     Key? key,
     required Widget child,
-    required VRouterState state,
+    required VRouterDelegate state,
     required this.url,
     required this.previousUrl,
     required this.historyState,
@@ -57,22 +57,22 @@ class RootVRouterData extends VRouterData {
   /// is put in the widget tree
   ///
   /// This should be the default one, i.e. the one of [VRouter]
-  Duration? get _defaultPageTransitionDuration =>
-      _state.widget.transitionDuration;
+  Duration? get _defaultPageTransitionDuration => _state.transitionDuration;
 
   /// The duration of the transition which happens when this page
   /// is removed from the widget tree
   ///
   /// This should be the default one, i.e. the one of [VRouter]
   Duration? get _defaultPageReverseTransitionDuration =>
-      _state.widget.reverseTransitionDuration;
+      _state.reverseTransitionDuration;
 
   /// A function to build the transition to or from this route
   ///
   /// This should be the default one, i.e. the one of [VRouter]git
-  Widget Function(Animation<double> animation,
-          Animation<double> secondaryAnimation, Widget child)?
-      get _defaultPageBuildTransition => _state.widget.buildTransition;
+  Widget Function(
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child)? get _defaultPageBuildTransition => _state.buildTransition;
 
   /// See [VRouterState.push]
   void push(

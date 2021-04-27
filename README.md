@@ -252,16 +252,17 @@ cycle to know in which order they happen:
 3. Call *beforeLeave* in the \[VRouter\]
 4. Call *beforeEnter* in the \[VRouter\]
 5. Call *beforeEnter* in all initialized \[VRouteElement\] of the new route
-6. Call *beforeUpdate* in all reused \[VRouteElement\]
+6. Call beforeUpdate in all reused \[VWidgetGuard\]
+7. Call *beforeUpdate* in all reused \[VRouteElement\]
 
 \#\# The history state got in beforeLeave are stored  
 \#\# The state is updated
 
-7. Call *afterEnter* in all initialized \[VNavigationGuard\]
-8. Call *afterEnter* all initialized \[VRouteElement\]
-9. Call *afterEnter* in the \[VRouter\]
-10. Call *afterUpdate* in all reused \[VNavigationGuard\]
-11. Call *afterUpdate* in all reused \[VRouteElement\]
+8. Call *afterEnter* in all initialized \[VNavigationGuard\]
+9. Call *afterEnter* all initialized \[VRouteElement\]
+10. Call *afterEnter* in the \[VRouter\]
+11. Call *afterUpdate* in all reused \[VNavigationGuard\]
+12. Call *afterUpdate* in all reused \[VRouteElement\]
 
 In every before.. function, you can use the first argument to stop the navigation using .stopNavigation()
 

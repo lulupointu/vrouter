@@ -4,20 +4,24 @@ part of '../main.dart';
 ///
 /// Note that this uses [pushReplacement] so if you are on the web, [path] will not
 /// appear in the web history once redirected
-class VRouteRedirector extends VRouteElementWithPath {
+class VRouteRedirector extends VRouteElementBuilder {
+  /// The path that should be matched
+  final String path;
+
+  /// The path where the user will be redirected
   final String redirectTo;
 
   VRouteRedirector({
-    required String path,
+    required this.path,
     required this.redirectTo,
-  }) : super(path: path);
+  });
 
   @override
-  List<VRouteElement> get stackedRoutes => [];
+  Future<void> beforeEnter(VRedirector vRedirector) async =>
+      vRedirector.pushReplacement(redirectTo);
 
   @override
-  Future<void> Function(VRedirector vRedirector) get beforeEnter =>
-      (vRedirector) async {
-        vRedirector.pushReplacement(redirectTo);
-      };
+  List<VRouteElement> buildRoutes() => [
+        VPath(path: path, stackedRoutes: []),
+      ];
 }

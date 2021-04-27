@@ -10,8 +10,8 @@ main() {
         routes: [
           VPage(
             path: '/',
-            pageBuilder: (LocalKey key, Widget child) =>
-                MaterialPage(key: key, child: child),
+            pageBuilder: (LocalKey key, Widget child, String? name) =>
+                MaterialPage(key: key, child: child, name: name),
             widget: Builder(
               builder: (BuildContext context) => TextButton(
                 child: Text('VWidget1'),
@@ -21,8 +21,8 @@ main() {
             stackedRoutes: [
               VPage(
                 path: '/settings',
-                pageBuilder: (LocalKey key, Widget child) =>
-                    MaterialPage(key: key, child: child),
+                pageBuilder: (LocalKey key, Widget child, String? name) =>
+                    MaterialPage(key: key, child: child, name: name),
                 widget: Text('VWidget2'),
               ),
             ],
@@ -35,11 +35,11 @@ main() {
 
     // We should start at '/'
 
-    final vWidget1Finder1 = find.text('VWidget1');
-    final vWidget2Finder1 = find.text('VWidget2');
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
 
-    expect(vWidget1Finder1, findsOneWidget);
-    expect(vWidget2Finder1, findsNothing);
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vWidget2Finder, findsNothing);
 
     // Try navigating to '/settings'
     // Tap the add button.
@@ -48,10 +48,7 @@ main() {
 
     // The navigation should have been redirected to / because we popped instead
     // So only VWidget should be visible
-    final vWidget1Finder2 = find.text('VWidget1');
-    final vWidget2Finder2 = find.text('VWidget2');
-
-    expect(vWidget1Finder2, findsNothing);
-    expect(vWidget2Finder2, findsOneWidget);
+    expect(vWidget1Finder, findsNothing);
+    expect(vWidget2Finder, findsOneWidget);
   });
 }

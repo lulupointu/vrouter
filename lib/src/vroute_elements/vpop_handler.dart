@@ -2,37 +2,36 @@ part of '../main.dart';
 
 /// A [VRouteElement] which allows you to intercept and react to pop events
 /// See [onPop] and [onSystemPop] for more detailed explanations
-class VPopHandler with VRouteElement, VRouteElementWithoutPage {
+class VPopHandler extends VRouteElement
+    with VRouteElementSingleSubRoute, VoidVGuard {
   VPopHandler({
-    this.onPop = VRouteElement._voidOnPop,
-    this.onSystemPop = VRouteElement._voidOnSystemPop,
+    Future<void> Function(VRedirector vRedirector) onPop =
+        VPopHandler._voidOnPop,
+    Future<void> Function(VRedirector vRedirector) onSystemPop =
+        VPopHandler._voidOnSystemPop,
     required this.stackedRoutes,
-  });
+  })   : _onPop = onPop,
+        _onSystemPop = onSystemPop;
 
-  /// See [VRouteElement.stackedRoutes]
+  /// See [VRouteElement.buildRoutes]
   final List<VRouteElement> stackedRoutes;
 
-  /// When [onPop] is called, you are given a [VRedirector] with which you can:
-  ///   - Interrupt the navigation using [VRedirector.stopRedirection]
-  ///   - Change the navigation destination using [VRedirector.push], [VRedirector.pushNamed] ...
-  ///   - Get information about where you are navigating from using [VRedirector.previousVRouterData]
-  ///   - Get information about where you are navigating to using [VRedirector.newVRouterData]. Where you are navigating to is determined by [VRouterState._defaultPop]
-  ///
-  /// [onPop] can be called in multiple cases:
-  ///   - If you call [VRouter.of(context).pop]
-  ///   - If you call [Navigator.of(context).pop]
-  ///   - When the back button of an AppBar is used (or any other material component which uses
-  ///       [Navigator.of(context).pop] under the hood)
-  final Future<void> Function(VRedirector vRedirector) onPop;
+  List<VRouteElement> buildRoutes() => stackedRoutes;
 
-  /// When [onSystemPop] is called, you are given a [VRedirector] with which you can:
-  ///   - Interrupt the navigation using [VRedirector.stopRedirection]
-  ///   - Change the navigation destination using [VRedirector.push], [VRedirector.pushNamed] ...
-  ///   - Get information about where you are navigating from using [VRedirector.previousVRouterData]
-  ///   - Get information about where you are navigating to using [VRedirector.newVRouterData]. Where you are navigating to is determined by [VRouterState._defaultPop]
-  ///
-  /// [onSystemPop] is called when android back button is used
-  ///
-  /// Note that if [onSystemPop] is not implemented, [onPop] will be called instead
-  final Future<void> Function(VRedirector vRedirector) onSystemPop;
+  @override
+  Future<void> onPop(VRedirector vRedirector) => _onPop(vRedirector);
+  final Future<void> Function(VRedirector vRedirector) _onPop;
+
+  @override
+  Future<void> onSystemPop(VRedirector vRedirector) =>
+      _onSystemPop(vRedirector);
+  final Future<void> Function(VRedirector vRedirector) _onSystemPop;
+
+  /// Default function for [onPop]
+  /// Basically does nothing
+  static Future<void> _voidOnPop(VRedirector vRedirector) async {}
+
+  /// Default function for [onSystemPop]
+  /// Basically does nothing
+  static Future<void> _voidOnSystemPop(VRedirector vRedirector) async {}
 }

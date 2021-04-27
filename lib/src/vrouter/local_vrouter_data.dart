@@ -2,7 +2,7 @@ part of '../main.dart';
 
 /// An [InheritedWidget] accessible via [VRouter.of(context)]
 ///
-/// [LocalVRouterData] is placed on top of each [VRouteElement.widget], the main goal of having
+/// [LocalVRouterData] is placed on top of each [VRouteElement._rootVRouter], the main goal of having
 /// local classes compared to a single one is that:
 ///   1. [_vRouteElementNode] is specific to the local [VRouteElement] to allow a different
 ///   _  pop event based on where the [VRouteElement] is in the [VRoute]
@@ -160,7 +160,7 @@ class LocalVRouterData extends VRouterData {
   /// After finding the url and taking charge of the path parameters
   /// it updates the url
   ///
-  /// To specify a name, see [VRouteElementWithPath.name]
+  /// To specify a name, see [VPath.name]
   void pushReplacementNamed(
     String name, {
     Map<String, String> pathParameters = const {},

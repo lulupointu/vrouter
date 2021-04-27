@@ -1,51 +1,68 @@
+## \[1.1.1\] - 27/04/2021.
+
+* \[**BREAKING**\]: `onPop` and `onSystemPop` are not called ONLY when the `VRouteElement` are popped (not as long as they are in the route)
+* \[**BREAKING**\]: `pageBuilder` now gives you a `name` parameter that you can give to your `Page`. Change `(key, child) => YourPage(key, child)` to `(key, child, name) => YourPage(key, child, name)`
+* \[**FIX**\]: `VWidgetGuard` is now disposed properly when it is no longer in the route
+* \[**FIX**\]: `VWidgetGuard.beforeUpdate` is now called properly
+* \[**NEW**\]: Support for extending `VRouteElementBuilder` to create custom `VRouteElement`
+* \[**NEW**\]: `VPath` which only constrains the path, without the need to given a widget or a page
+* \[**NEW**\]: `VPageBase` which is the same as `VPage` without the argument relative to the path
+* \[**NEW**\]: `VWidgetBase` which is the same as `VWidget` without the argument relative to the path
+* \[**NEW**\]: `VNesterBase` which is the same as `VNester` without the argument relative to the path
+* \[**NEW**\]: `VNesterPageBase` which is the same as `VNesterPage` without the argument relative to the path
+* \[**NEW**\]: `MaterialApp.router` `CupertinoApp.router` or `WidgetApp.router` can now be used using `VRouterDelegate`, `VRouteInformationParser` and `VBackButtonDispatcher`
+* \[**NEW**\]: `navigatorObservers` can now be passed to `VRouter` and will be passed to every `Navigator`
+* Refactor to use the new `VRouteElementBuilder`
+* Removed dependency on SimpleUrlHandler
+
 ## \[1.1.0+22\] - 20/04/2021.
 
 * Remove prints
 
 ## \[1.1.0+21\] - 17/04/2021.
 
-* New `pop` and `pushNamed` error system
+* \[**NEW**\]: `pop` and `pushNamed` now return errors when needed
 
 ## \[1.1.0+20\] - 09/04/2021.
 
-* Changing `pop` and `systemPop` default behaviour to include previous path parameters
+* \[**BREAKING**\]: Changing `pop` and `systemPop` default behaviour to include previous path parameters
 
 ## \[1.1.0+19\] - 09/04/2021.
 
-* Fix `VRouter.of` error when called from `VRouter.builder`
+* \[**FIX**\]: `VRouter.of` error when called from `VRouter.builder`
 
 ## \[1.1.0+18\] - 09/04/2021.
 
-* Fix stackedRoute in VNested which did not built VNester widget
+* \[**FIX**\]: stackedRoute in VNested which did not built VNester widget
 
 ## \[1.1.0+17\] - 09/04/2021.
 
-* Fix vRedirector use in onPop and onSystemPop which was only stopping the redirection
+* \[**FIX**\]: vRedirector use in onPop and onSystemPop which was only stopping the redirection
 
 ## \[1.1.0+16\] - 06/04/2021.
 
-* Fix last onPop on MacOS, Linux and Windows
+* \[**FIX**\]: last onPop on MacOS, Linux and Windows
 
 ## \[1.1.0+15\] - 01/04/2021.
 
-* Fix initialUrl breaking deep-linking
+* \[**FIX**\]: initialUrl breaking deep-linking
 
 ## \[1.1.0+14\] - 01/04/2021.
 
-* Fix default pop onto path parameters
+* \[**FIX**\]: default pop onto path parameters
 * Add more migration doc
 
 ## \[1.1.0+13\] - 30/03/2021.
 
-* Fix default Page key value
+* \[**FIX**\]: default Page key value
 
 ## \[1.1.0+12\] - 30/03/2021.
 
-* Fix pop forming path when parent path end with '/'
+* \[**FIX**\]: pop forming path when parent path end with '/'
 
 ## \[1.1.0+11\] - 30/03/2021.
 
-* Provide customizable key argument for VRouteElement with `widget` argument
+* \[**NEW**\]: Provide customizable key argument for VRouteElement with `widget` argument
 
 ## \[1.1.0+10\] - 30/03/2021.
 
@@ -57,7 +74,7 @@
 
 ## \[1.1.0+8\] - 29/03/2021.
 
-* Fix url sync in edge case redirection situations
+* \[**FIX**\]: url sync in edge case redirection situations
 
 ## \[1.1.0+7\] - 29/03/2021.
 
@@ -65,7 +82,7 @@
 
 ## \[1.1.0+6\] - 29/03/2021.
 
-* Adding LocalKey to VPage.buildPage, helping animations
+* \[**BREAKING**\]: Adding LocalKey to VPage.buildPage, helping animations
 
 ## \[1.1.0+5\] - 28/03/2021.
 
@@ -144,13 +161,13 @@ See the migration guide at the end of the README to migrate!
 
 ## \[1.0.0-nullsafety.5\] - 19/02/2021.
 
-* Add widgetBuilder to VChild and VStack
+* \[**NEW**\]: widgetBuilder to VChild and VStack
 
 ## \[1.0.0-nullsafety.4\] - 18/02/2021.
 
 * \[**NEW**\]: add vRouteData in beforeLeave and beforeEnter
-* Fix error when replacing path parameters in pushNamed
-* Fix error with pushReplace on the web
+* \[**FIX**\]: error when replacing path parameters in pushNamed
+* \[**FIX**\]: error with pushReplace on the web
 
 ## \[1.0.0-nullsafety.3\] - 16/02/2021.
 
