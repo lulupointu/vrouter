@@ -1,3 +1,7 @@
+## \[1.1.1+2\] - 28/04/2021.
+
+* \[**FIX**\]: Remove `scrollBehavior` from `CupertinoVRouter`
+
 ## \[1.1.1+1\] - 28/04/2021.
 
 * \[**FIX**\]: Make `VRouteInformationParser` and `VBackButtonDispatcher` visible

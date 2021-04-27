@@ -97,8 +97,8 @@ class _LoginWidgetState extends State<LoginWidget> {
                           return (name == '')
                               ? 'Please enter your name'
                               : name.contains('/')
-                                  ? 'Please don\'t put \'\\ in your name'
-                                  : null;
+                              ? 'Please don\'t put \'\\ in your name'
+                              : null;
                         }),
                   ),
                 ),
@@ -147,10 +147,8 @@ class MyScaffold extends StatelessWidget {
         // We check the vChild name to known where we are
         currentIndex: currentIndex,
         items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline), label: 'Profile'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.info_outline), label: 'Info'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'Info'),
         ],
         onTap: (int index) {
           if (currentIndex != index) {
@@ -159,15 +157,13 @@ class MyScaffold extends StatelessWidget {
               // We can specify the username in a map
               // Since we are on settings, the username is stored in the VRouter history state
               VRouter.of(context).pushNamed('profile', pathParameters: {
-                'username':
-                    VRouter.of(context).historyState['username'] ?? 'stranger'
+                'username': VRouter.of(context).historyState['username'] ?? 'stranger'
               });
             } else if (index == 1 && currentIndex != 1) {
               // We push the settings and store the username in the VRouter history state
               // We can access this username via the global path parameters (stored in VRoute)
-              VRouter.of(context).push('/settings', historyState: {
-                'username': VRouter.of(context).pathParameters['username']!
-              });
+              VRouter.of(context).push('/settings',
+                  historyState: {'username': VRouter.of(context).pathParameters['username']!});
             }
           }
         },
@@ -214,8 +210,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               SizedBox(height: 50),
               TextButton(
                 onPressed: () {
-                  VRouter.of(context)
-                      .replaceHistoryState({'count': '${count + 1}'});
+                  VRouter.of(context).replaceHistoryState({'count': '${count + 1}'});
                   setState(() => count++);
                 },
                 child: Container(
@@ -223,8 +218,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     borderRadius: BorderRadius.circular(50),
                     color: Colors.blueAccent,
                   ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                   child: Text(
                     'Your pressed this button $count times',
                     style: buttonTextStyle,
@@ -281,3 +275,36 @@ class InfoWidget extends StatelessWidget {
 
 final textStyle = TextStyle(color: Colors.black, fontSize: 16);
 final buttonTextStyle = textStyle.copyWith(color: Colors.white);
+
+class VWidgetGuarded extends VRouteElementBuilder {
+  final String? path;
+  final Widget widget;
+  final Future<void> Function(VRedirector vRedirector)? _beforeEnter;
+
+  VWidgetGuarded({
+    required this.path,
+    required this.widget,
+    Future<void> Function(VRedirector vRedirector)? beforeEnter,
+  }) : _beforeEnter = beforeEnter;
+
+  @override
+  List<VRouteElement> buildRoutes() => [
+        VWidget(
+          path: path,
+          widget: widget,
+        ),
+      ];
+
+  @override
+  Future<void> beforeEnter(VRedirector vRedirector) async => _beforeEnter?.call(vRedirector);
+}
+
+final a = VRouter(
+  routes: [
+    VWidgetGuarded(
+      beforeEnter: (_) async => print('beforeEnter in home!'),
+      path: '/home',
+      widget: Text('home'),
+    ),
+  ],
+);

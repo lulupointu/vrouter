@@ -112,7 +112,6 @@ class CupertinoVRouter extends StatefulWidget
     this.shortcuts,
     this.actions,
     this.restorationScopeId,
-    this.scrollBehavior,
   })  : _beforeEnter = beforeEnter,
         _beforeLeave = beforeLeave,
         _afterEnter = afterEnter,
@@ -369,16 +368,6 @@ class CupertinoVRouter extends StatefulWidget
   /// {@macro flutter.widgets.widgetsApp.restorationScopeId}
   final String? restorationScopeId;
 
-  /// {@macro flutter.material.materialApp.scrollBehavior}
-  ///
-  /// When null, defaults to [CupertinoScrollBehavior].
-  ///
-  /// See also:
-  ///
-  ///  * [ScrollConfiguration], which controls how [Scrollable] widgets behave
-  ///    in a subtree.
-  final ScrollBehavior? scrollBehavior;
-
   static VRouterData of(BuildContext context) {
     VRouterData? vRouterData;
 
@@ -454,7 +443,6 @@ class CupertinoVRouterState extends State<CupertinoVRouter> {
       shortcuts: widget.shortcuts,
       actions: widget.actions,
       restorationScopeId: widget.restorationScopeId,
-      scrollBehavior: widget.scrollBehavior,
     );
   }
 
