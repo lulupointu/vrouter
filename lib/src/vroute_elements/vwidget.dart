@@ -73,9 +73,8 @@ class VWidget extends VRouteElementBuilder {
   ///
   /// Also see:
   ///   * [VRouter.buildTransition] for default transitions for all routes
-  final Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
-      buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child)? buildTransition;
 
   /// Whether this page route is a full-screen dialog.
   ///
