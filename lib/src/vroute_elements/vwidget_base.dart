@@ -62,7 +62,7 @@ class VWidgetBase extends VRouteElementBuilder {
   @override
   List<VRouteElement> buildRoutes() => [
         VPageBase(
-          pageBuilder: (key, child, name) => VBasePage.fromPlatform(
+          pageBuilder: (key, child, name) => VDefaultPage.fromPlatform(
             key: key,
             child: child,
             name: name,

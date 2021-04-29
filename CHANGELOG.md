@@ -1,3 +1,7 @@
+## \[1.1.1+5\] - 29/04/2021.
+
+* \[**MIGRATION**\]: Please use `VDefaultPage` instead of `VBasePage`
+
 ## \[1.1.1+4\] - 29/04/2021.
 
 * \[**NEW**\]: Add `fullscreenDialog` option to `VWidget` and `VWidgetBase`

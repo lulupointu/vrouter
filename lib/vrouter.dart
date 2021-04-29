@@ -4,6 +4,7 @@ export 'src/main.dart'
     show
         VPage,
         VPageBase,
+        VDefaultPage,
         VWidget,
         VWidgetBase,
         VNester,
