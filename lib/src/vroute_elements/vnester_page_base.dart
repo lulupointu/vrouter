@@ -37,6 +37,14 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
   ///   - child should be placed as the last child in [Route]
   final Page Function(LocalKey key, Widget child, String? name) pageBuilder;
 
+  /// A key for the nested navigator
+  /// It is created automatically
+  ///
+  /// Using this is useful if you create two different [VNesterPageBase] that should
+  /// actually be the same. This happens if you use two different [VRouteElementBuilder]
+  /// to represent two different routes which should share a common [VNesterPageBase]
+  late final GlobalKey<NavigatorState> navigatorKey;
+
   VNesterPageBase({
     required this.nestedRoutes,
     required this.widgetBuilder,
@@ -44,15 +52,14 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
     this.stackedRoutes = const [],
     this.key,
     this.name,
-  }) {
-    assert(nestedRoutes.isNotEmpty,
-        'The nestedRoutes of a VNester should not be null, otherwise it can\'t nest');
+    GlobalKey<NavigatorState>? navigatorKey,
+  }) : assert(nestedRoutes.isNotEmpty,
+            'The nestedRoutes of a VNester should not be null, otherwise it can\'t nest') {
+    this.navigatorKey = navigatorKey ??
+        GlobalKey<NavigatorState>(
+          debugLabel: '$runtimeType of name $name and key $key navigatorKey',
+        );
   }
-
-  /// A key for the navigator
-  /// It is created automatically
-  late final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>(
-      debugLabel: 'This is the key of VNesterBase with key $key');
 
   /// A hero controller for the navigator
   /// It is created automatically
@@ -162,7 +169,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
                       onSystemPopPage: () async {
                         await RootVRouterData.of(context).systemPopFromElement(
                           nestedRouteVRoute!.vRouteElementNode
-                              .getVRouteElementToPop(),
+                              .getVRouteElementToSystemPop(),
                           pathParameters: VRouter.of(context).pathParameters,
                         );
 

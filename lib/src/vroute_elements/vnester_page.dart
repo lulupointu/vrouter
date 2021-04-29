@@ -78,6 +78,14 @@ class VNesterPage extends VRouteElementBuilder {
   /// [aliases] path parameters change
   final LocalKey? key;
 
+  /// A key for the nested navigator
+  /// It is created automatically
+  ///
+  /// Using this is useful if you create two different [VNesterPageBase] that should
+  /// actually be the same. This happens if you use two different [VRouteElementBuilder]
+  /// to represent two different routes which should share a common [VNesterPageBase]
+  final GlobalKey<NavigatorState>? navigatorKey;
+
   VNesterPage({
     required this.path,
     required this.pageBuilder,
@@ -88,6 +96,7 @@ class VNesterPage extends VRouteElementBuilder {
     this.stackedRoutes = const [],
     this.aliases = const [],
     this.mustMatchStackedRoute = false,
+    this.navigatorKey,
   });
 
   @override
@@ -104,6 +113,7 @@ class VNesterPage extends VRouteElementBuilder {
               stackedRoutes: stackedRoutes,
               widgetBuilder: widgetBuilder,
               pageBuilder: pageBuilder,
+              navigatorKey: navigatorKey,
             ),
           ],
         ),

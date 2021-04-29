@@ -1,3 +1,8 @@
+## \[1.1.1+6\] - 29/04/2021.
+
+* \[**FIX**\]: `onSystemPop` will now pop by also looking in nestedRoutes
+* \[**NEW**\]: `VNester` now supports `navigatorKey`, see the documentation for more details
+
 ## \[1.1.1+5\] - 29/04/2021.
 
 * \[**MIGRATION**\]: Please use `VDefaultPage` instead of `VBasePage`

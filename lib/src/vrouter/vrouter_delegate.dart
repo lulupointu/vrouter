@@ -1039,7 +1039,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     Map<String, String> newHistoryState = const {},
   }) async {
     _systemPop(
-      _vRoute.vRouteElementNode.getVRouteElementToPop(),
+      _vRoute.vRouteElementNode.getVRouteElementToSystemPop(),
       pathParameters: pathParameters,
       queryParameters: queryParameters,
       newHistoryState: newHistoryState,
@@ -1189,7 +1189,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
   @override
   Future<bool> popRoute() async {
     await _systemPop(
-      _vRoute.vRouteElementNode.getVRouteElementToPop(),
+      _vRoute.vRouteElementNode.getVRouteElementToSystemPop(),
       pathParameters: pathParameters,
     );
     return true;

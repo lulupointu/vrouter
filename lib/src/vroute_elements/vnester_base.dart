@@ -100,6 +100,14 @@ class VNesterBase extends VRouteElementBuilder {
   final Widget Function(Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child)? buildTransition;
 
+  /// A key for the nested navigator
+  /// It is created automatically
+  ///
+  /// Using this is useful if you create two different [VNesterPageBase] that should
+  /// actually be the same. This happens if you use two different [VRouteElementBuilder]
+  /// to represent two different routes which should share a common [VNesterPageBase]
+  final GlobalKey<NavigatorState>? navigatorKey;
+
   VNesterBase({
     required this.widgetBuilder,
     required this.nestedRoutes,
@@ -109,6 +117,7 @@ class VNesterBase extends VRouteElementBuilder {
     this.key,
     this.name,
     this.stackedRoutes = const [],
+    this.navigatorKey,
   });
 
   @override
@@ -119,8 +128,9 @@ class VNesterBase extends VRouteElementBuilder {
           nestedRoutes: nestedRoutes,
           stackedRoutes: stackedRoutes,
           widgetBuilder: widgetBuilder,
+          navigatorKey: navigatorKey,
           pageBuilder: (LocalKey key, Widget child, String? name) =>
-              VBasePage.fromPlatform(
+              VDefaultPage.fromPlatform(
             key: key,
             child: child,
             name: name,

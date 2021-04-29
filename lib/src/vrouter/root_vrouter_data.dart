@@ -140,7 +140,7 @@ class RootVRouterData extends VRouterData {
     Map<String, String> newHistoryState = const {},
   }) =>
       systemPopFromElement(
-        _state._vRoute.vRouteElementNode.getVRouteElementToPop(),
+        _state._vRoute.vRouteElementNode.getVRouteElementToSystemPop(),
         pathParameters: pathParameters,
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,

@@ -376,6 +376,18 @@ class VRouteElementNode {
     return vRouteElement;
   }
 
+  /// Finding the element to pop for a [VRouteElementNode] means finding which one is at the
+  /// end of the chain of stackedVRouteElementNode (if none then this should be popped)
+  VRouteElement getVRouteElementToSystemPop() {
+    if (stackedVRouteElementNode != null) {
+      return stackedVRouteElementNode!.getVRouteElementToSystemPop();
+    }
+    if (nestedVRouteElementNode != null) {
+      return nestedVRouteElementNode!.getVRouteElementToSystemPop();
+    }
+    return vRouteElement;
+  }
+
   /// Get the [VRouteElementNode] associated to the given [VRouteElement]
   /// returns null if the [VRouteElement] is not his nor in the stackedRoutes or the subroutes
   VRouteElementNode? getVRouteElementNodeFromVRouteElement(

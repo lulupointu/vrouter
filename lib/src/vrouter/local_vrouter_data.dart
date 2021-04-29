@@ -218,7 +218,7 @@ class LocalVRouterData extends VRouterData {
     Map<String, String> newHistoryState = const {},
   }) =>
       RootVRouterData.of(_rootVRouterDataContext).systemPopFromElement(
-        _vRouteElementNode.getVRouteElementToPop(),
+        _vRouteElementNode.getVRouteElementToSystemPop(),
         pathParameters: pathParameters,
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,

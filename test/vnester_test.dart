@@ -610,4 +610,69 @@ main() {
     expect(vNesterFinder, findsOneWidget);
     expect(vWidget2Finder, findsOneWidget);
   });
+
+  testWidgets(
+      'systemPop with stack in nested stacked.\n The last element of nested stack should pop',
+      (WidgetTester tester) async {
+    final vRouterKey = GlobalKey<VRouterState>();
+
+    await tester.pumpWidget(
+      VRouter(
+        key: vRouterKey,
+        initialUrl: '/other',
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Text('VWidget1'),
+            stackedRoutes: [
+              VNester(
+                path: null,
+                aliases: ['scaffold'],
+                widgetBuilder: (child) => Scaffold(
+                  appBar: AppBar(title: Text('Scaffold VNester')),
+                  body: child,
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: '/settings',
+                    widget: Text('VWidget2'),
+                    stackedRoutes: [
+                      VWidget(
+                        path: '/other',
+                        widget: Text('VWidget3'),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNester');
+
+    await tester.pumpAndSettle();
+
+    // At first we are on '/other' so only VWidget3 should be visible
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsOneWidget);
+
+    // Pop to '/settings'
+    // Tap the add button.
+    vRouterKey.currentState!.systemPop();
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+    expect(vWidget3Finder, findsNothing);
+  });
 }
