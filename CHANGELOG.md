@@ -1,3 +1,7 @@
+## \[1.1.1+4\] - 29/04/2021.
+
+* \[**NEW**\]: added `fullscreenDialog` option to `VWidget` and `VWidgetBase`
+
 ## \[1.1.1+3\] - 29/04/2021.
 
 * \[**FIX**\]: `onPop` and `onSystemPop` are now called when needed, even if deeply nested

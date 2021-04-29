@@ -41,6 +41,13 @@ class VWidgetBase extends VRouteElementBuilder {
   final Widget Function(Animation<double> animation,
       Animation<double> secondaryAnimation, Widget child)? buildTransition;
 
+  /// Whether this page route is a full-screen dialog.
+  ///
+  /// In Material and Cupertino, being fullscreen has the effects of making the app bars
+  /// have a close button instead of a back button. On iOS, dialogs transitions animate
+  /// differently and are also not closeable with the back swipe gesture.
+  final bool fullscreenDialog;
+
   VWidgetBase({
     required this.widget,
     this.stackedRoutes = const [],
@@ -49,6 +56,7 @@ class VWidgetBase extends VRouteElementBuilder {
     this.transitionDuration,
     this.reverseTransitionDuration,
     this.buildTransition,
+    this.fullscreenDialog = false,
   });
 
   @override
@@ -61,6 +69,7 @@ class VWidgetBase extends VRouteElementBuilder {
             buildTransition: buildTransition,
             transitionDuration: transitionDuration,
             reverseTransitionDuration: reverseTransitionDuration,
+            fullscreenDialog: fullscreenDialog,
           ),
           widget: widget,
           key: key,
