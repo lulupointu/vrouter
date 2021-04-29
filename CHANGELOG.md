@@ -1,6 +1,6 @@
 ## \[1.1.1+4\] - 29/04/2021.
 
-* \[**NEW**\]: added `fullscreenDialog` option to `VWidget` and `VWidgetBase`
+* \[**NEW**\]: Add `fullscreenDialog` option to `VWidget` and `VWidgetBase`
 
 ## \[1.1.1+3\] - 29/04/2021.
 
