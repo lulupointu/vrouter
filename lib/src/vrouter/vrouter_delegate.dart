@@ -903,6 +903,30 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       newVRouterData = null;
     }
 
+    final vNodeToPop = _vRoute.vRouteElementNode
+        .getVRouteElementNodeFromVRouteElement(elementToPop);
+
+    assert(vNodeToPop != null);
+
+    // This is the list of [VRouteElement]s that where not necessary expected to pop but did because of
+    // the pop of [elementToPop]
+    final poppedVRouteElementsFromPopResult =
+        getPathFromPopResult.poppedVRouteElements;
+
+    // This is predictable list of [VRouteElement]s that are expected to pop because they are
+    // in the nestedRoutes or stackedRoutes of [elementToPop] [VRouteElementNode]
+    // We take the reversed because we when to call onPop in the deepest nested
+    // [VRouteElement] first
+    final poppedVRouteElementsFromVNode =
+        vNodeToPop!.getVRouteElements().reversed.toList();
+
+    // This is the list of every [VRouteElement] which should pop
+    final poppedVRouteElements =
+        poppedVRouteElementsFromVNode + poppedVRouteElementsFromPopResult;
+
+    // elementToPop should have a duplicate so we remove it
+    poppedVRouteElements.removeAt(poppedVRouteElements.indexOf(elementToPop));
+
     return DefaultPopResult(
       vRedirector: VRedirector(
         context: _rootVRouterContext,
@@ -919,7 +943,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         ),
         newVRouterData: newVRouterData,
       ),
-      poppedVRouteElements: getPathFromPopResult.poppedVRouteElements,
+      poppedVRouteElements: poppedVRouteElements,
     );
   }
 

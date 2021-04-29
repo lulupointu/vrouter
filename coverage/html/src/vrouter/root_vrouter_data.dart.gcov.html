@@ -32,12 +32,12 @@
             <td></td>
             <td class="headerItem">Lines:</td>
             <td class="headerCovTableEntry">25</td>
-            <td class="headerCovTableEntry">45</td>
-            <td class="headerCovTableEntryLo">55.6 %</td>
+            <td class="headerCovTableEntry">44</td>
+            <td class="headerCovTableEntryLo">56.8 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-26 23:10:51</td>
+            <td class="headerValue">2021-04-29 14:25:52</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -66,12 +66,12 @@
 <a name="4"><span class="lineNum">       4 </span>            : ///</a>
 <a name="5"><span class="lineNum">       5 </span>            : /// [RootVRouterData] holds methods and parameters from [VRouterState]</a>
 <a name="6"><span class="lineNum">       6 </span>            : class RootVRouterData extends VRouterData {</a>
-<a name="7"><span class="lineNum">       7 </span>            :   final VRouterState _state;</a>
+<a name="7"><span class="lineNum">       7 </span>            :   final VRouterDelegate _state;</a>
 <a name="8"><span class="lineNum">       8 </span>            : </a>
 <a name="9"><span class="lineNum">       9 </span><span class="lineCov">         12 :   RootVRouterData({</span></a>
 <a name="10"><span class="lineNum">      10 </span>            :     Key? key,</a>
 <a name="11"><span class="lineNum">      11 </span>            :     required Widget child,</a>
-<a name="12"><span class="lineNum">      12 </span>            :     required VRouterState state,</a>
+<a name="12"><span class="lineNum">      12 </span>            :     required VRouterDelegate state,</a>
 <a name="13"><span class="lineNum">      13 </span>            :     required this.url,</a>
 <a name="14"><span class="lineNum">      14 </span>            :     required this.previousUrl,</a>
 <a name="15"><span class="lineNum">      15 </span>            :     required this.historyState,</a>
@@ -119,22 +119,22 @@
 <a name="57"><span class="lineNum">      57 </span>            :   /// is put in the widget tree</a>
 <a name="58"><span class="lineNum">      58 </span>            :   ///</a>
 <a name="59"><span class="lineNum">      59 </span>            :   /// This should be the default one, i.e. the one of [VRouter]</a>
-<a name="60"><span class="lineNum">      60 </span><span class="lineNoCov">          0 :   Duration? get _defaultPageTransitionDuration =&gt;</span></a>
-<a name="61"><span class="lineNum">      61 </span><span class="lineNoCov">          0 :       _state.widget.transitionDuration;</span></a>
-<a name="62"><span class="lineNum">      62 </span>            : </a>
-<a name="63"><span class="lineNum">      63 </span>            :   /// The duration of the transition which happens when this page</a>
-<a name="64"><span class="lineNum">      64 </span>            :   /// is removed from the widget tree</a>
-<a name="65"><span class="lineNum">      65 </span>            :   ///</a>
-<a name="66"><span class="lineNum">      66 </span>            :   /// This should be the default one, i.e. the one of [VRouter]</a>
-<a name="67"><span class="lineNum">      67 </span><span class="lineNoCov">          0 :   Duration? get _defaultPageReverseTransitionDuration =&gt;</span></a>
-<a name="68"><span class="lineNum">      68 </span><span class="lineNoCov">          0 :       _state.widget.reverseTransitionDuration;</span></a>
-<a name="69"><span class="lineNum">      69 </span>            : </a>
-<a name="70"><span class="lineNum">      70 </span>            :   /// A function to build the transition to or from this route</a>
-<a name="71"><span class="lineNum">      71 </span>            :   ///</a>
-<a name="72"><span class="lineNum">      72 </span>            :   /// This should be the default one, i.e. the one of [VRouter]git</a>
-<a name="73"><span class="lineNum">      73 </span><span class="lineCov">         11 :   Widget Function(Animation&lt;double&gt; animation,</span></a>
-<a name="74"><span class="lineNum">      74 </span>            :           Animation&lt;double&gt; secondaryAnimation, Widget child)?</a>
-<a name="75"><span class="lineNum">      75 </span><span class="lineCov">         33 :       get _defaultPageBuildTransition =&gt; _state.widget.buildTransition;</span></a>
+<a name="60"><span class="lineNum">      60 </span><span class="lineNoCov">          0 :   Duration? get _defaultPageTransitionDuration =&gt; _state.transitionDuration;</span></a>
+<a name="61"><span class="lineNum">      61 </span>            : </a>
+<a name="62"><span class="lineNum">      62 </span>            :   /// The duration of the transition which happens when this page</a>
+<a name="63"><span class="lineNum">      63 </span>            :   /// is removed from the widget tree</a>
+<a name="64"><span class="lineNum">      64 </span>            :   ///</a>
+<a name="65"><span class="lineNum">      65 </span>            :   /// This should be the default one, i.e. the one of [VRouter]</a>
+<a name="66"><span class="lineNum">      66 </span><span class="lineNoCov">          0 :   Duration? get _defaultPageReverseTransitionDuration =&gt;</span></a>
+<a name="67"><span class="lineNum">      67 </span><span class="lineNoCov">          0 :       _state.reverseTransitionDuration;</span></a>
+<a name="68"><span class="lineNum">      68 </span>            : </a>
+<a name="69"><span class="lineNum">      69 </span>            :   /// A function to build the transition to or from this route</a>
+<a name="70"><span class="lineNum">      70 </span>            :   ///</a>
+<a name="71"><span class="lineNum">      71 </span>            :   /// This should be the default one, i.e. the one of [VRouter]git</a>
+<a name="72"><span class="lineNum">      72 </span><span class="lineCov">         11 :   Widget Function(</span></a>
+<a name="73"><span class="lineNum">      73 </span>            :       Animation&lt;double&gt; animation,</a>
+<a name="74"><span class="lineNum">      74 </span>            :       Animation&lt;double&gt; secondaryAnimation,</a>
+<a name="75"><span class="lineNum">      75 </span><span class="lineCov">         22 :       Widget child)? get _defaultPageBuildTransition =&gt; _state.buildTransition;</span></a>
 <a name="76"><span class="lineNum">      76 </span>            : </a>
 <a name="77"><span class="lineNum">      77 </span>            :   /// See [VRouterState.push]</a>
 <a name="78"><span class="lineNum">      78 </span><span class="lineCov">          9 :   void push(</span></a>

@@ -37,7 +37,7 @@
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-26 23:10:51</td>
+            <td class="headerValue">2021-04-29 14:25:52</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -66,7 +66,7 @@
 <a name="4"><span class="lineNum">       4 </span>            :   /// The path (relative or absolute) or this [VRouteElement]</a>
 <a name="5"><span class="lineNum">       5 </span>            :   ///</a>
 <a name="6"><span class="lineNum">       6 </span>            :   /// If the path of a subroute is exactly matched, this will be used in</a>
-<a name="7"><span class="lineNum">       7 </span>            :   /// the route but might be covered by another [VRouteElement.widget]</a>
+<a name="7"><span class="lineNum">       7 </span>            :   /// the route but might be covered by another [VRouteElement._rootVRouter]</a>
 <a name="8"><span class="lineNum">       8 </span>            :   /// The value of the path ca have three form:</a>
 <a name="9"><span class="lineNum">       9 </span>            :   ///     * starting with '/': The path will be treated as a route path,</a>
 <a name="10"><span class="lineNum">      10 </span>            :   ///       this is useful to take full advantage of nested routes while</a>
@@ -106,41 +106,55 @@
 <a name="44"><span class="lineNum">      44 </span>            : </a>
 <a name="45"><span class="lineNum">      45 </span>            :   final List&lt;VRouteElement&gt; stackedRoutes;</a>
 <a name="46"><span class="lineNum">      46 </span>            : </a>
-<a name="47"><span class="lineNum">      47 </span>            :   final Page Function(LocalKey key, Widget child) pageBuilder;</a>
-<a name="48"><span class="lineNum">      48 </span>            : </a>
-<a name="49"><span class="lineNum">      49 </span>            :   final Widget widget;</a>
-<a name="50"><span class="lineNum">      50 </span>            : </a>
-<a name="51"><span class="lineNum">      51 </span>            :   final LocalKey? key;</a>
-<a name="52"><span class="lineNum">      52 </span>            : </a>
-<a name="53"><span class="lineNum">      53 </span><span class="lineCov">          2 :   VPage({</span></a>
-<a name="54"><span class="lineNum">      54 </span>            :     required this.path,</a>
-<a name="55"><span class="lineNum">      55 </span>            :     required this.pageBuilder,</a>
-<a name="56"><span class="lineNum">      56 </span>            :     required this.widget,</a>
-<a name="57"><span class="lineNum">      57 </span>            :     this.stackedRoutes = const [],</a>
-<a name="58"><span class="lineNum">      58 </span>            :     this.key,</a>
-<a name="59"><span class="lineNum">      59 </span>            :     this.name,</a>
-<a name="60"><span class="lineNum">      60 </span>            :     this.aliases = const [],</a>
-<a name="61"><span class="lineNum">      61 </span>            :     this.mustMatchStackedRoute = false,</a>
-<a name="62"><span class="lineNum">      62 </span>            :   });</a>
-<a name="63"><span class="lineNum">      63 </span>            : </a>
-<a name="64"><span class="lineNum">      64 </span><span class="lineCov">          2 :   @override</span></a>
-<a name="65"><span class="lineNum">      65 </span><span class="lineCov">          2 :   List&lt;VRouteElement&gt;  buildRoutes() =&gt; [</span></a>
-<a name="66"><span class="lineNum">      66 </span><span class="lineCov">          2 :         VPath(</span></a>
-<a name="67"><span class="lineNum">      67 </span><span class="lineCov">          2 :           path: path,</span></a>
-<a name="68"><span class="lineNum">      68 </span><span class="lineCov">          2 :           name: name,</span></a>
-<a name="69"><span class="lineNum">      69 </span><span class="lineCov">          2 :           aliases: aliases,</span></a>
-<a name="70"><span class="lineNum">      70 </span><span class="lineCov">          2 :           mustMatchStackedRoute: mustMatchStackedRoute,</span></a>
-<a name="71"><span class="lineNum">      71 </span><span class="lineCov">          2 :           stackedRoutes: [</span></a>
-<a name="72"><span class="lineNum">      72 </span><span class="lineCov">          2 :             VPageBase(</span></a>
-<a name="73"><span class="lineNum">      73 </span><span class="lineCov">          2 :               pageBuilder: pageBuilder,</span></a>
-<a name="74"><span class="lineNum">      74 </span><span class="lineCov">          2 :               widget: widget,</span></a>
-<a name="75"><span class="lineNum">      75 </span><span class="lineCov">          2 :               key: key,</span></a>
-<a name="76"><span class="lineNum">      76 </span><span class="lineCov">          2 :               stackedRoutes: stackedRoutes,</span></a>
-<a name="77"><span class="lineNum">      77 </span>            :             ),</a>
-<a name="78"><span class="lineNum">      78 </span>            :           ],</a>
-<a name="79"><span class="lineNum">      79 </span>            :         )</a>
-<a name="80"><span class="lineNum">      80 </span>            :       ];</a>
-<a name="81"><span class="lineNum">      81 </span>            : }</a>
+<a name="47"><span class="lineNum">      47 </span>            :   /// Function which returns a page that will wrap [widget]</a>
+<a name="48"><span class="lineNum">      48 </span>            :   ///   - key and name should be given to your [Page]</a>
+<a name="49"><span class="lineNum">      49 </span>            :   ///   - child should be placed as the last child in [Route]</a>
+<a name="50"><span class="lineNum">      50 </span>            :   final Page Function(LocalKey key, Widget child, String? name) pageBuilder;</a>
+<a name="51"><span class="lineNum">      51 </span>            : </a>
+<a name="52"><span class="lineNum">      52 </span>            :   /// The widget which will be displayed for this [VRouteElement]</a>
+<a name="53"><span class="lineNum">      53 </span>            :   /// inside the given page</a>
+<a name="54"><span class="lineNum">      54 </span>            :   final Widget widget;</a>
+<a name="55"><span class="lineNum">      55 </span>            : </a>
+<a name="56"><span class="lineNum">      56 </span>            :   /// A LocalKey that will be given to the page which contains the given [widget]</a>
+<a name="57"><span class="lineNum">      57 </span>            :   ///</a>
+<a name="58"><span class="lineNum">      58 </span>            :   /// This key mostly controls the page animation. If a page remains the same but the key is changes,</a>
+<a name="59"><span class="lineNum">      59 </span>            :   /// the page gets animated</a>
+<a name="60"><span class="lineNum">      60 </span>            :   /// The key is by default the value of the current [path] (or [aliases]) with</a>
+<a name="61"><span class="lineNum">      61 </span>            :   /// the path parameters replaced</a>
+<a name="62"><span class="lineNum">      62 </span>            :   ///</a>
+<a name="63"><span class="lineNum">      63 </span>            :   /// Do provide a constant [key] if you don't want this page to animate even if [path] or</a>
+<a name="64"><span class="lineNum">      64 </span>            :   /// [aliases] path parameters change</a>
+<a name="65"><span class="lineNum">      65 </span>            :   final LocalKey? key;</a>
+<a name="66"><span class="lineNum">      66 </span>            : </a>
+<a name="67"><span class="lineNum">      67 </span><span class="lineCov">          2 :   VPage({</span></a>
+<a name="68"><span class="lineNum">      68 </span>            :     required this.path,</a>
+<a name="69"><span class="lineNum">      69 </span>            :     required this.pageBuilder,</a>
+<a name="70"><span class="lineNum">      70 </span>            :     required this.widget,</a>
+<a name="71"><span class="lineNum">      71 </span>            :     this.stackedRoutes = const [],</a>
+<a name="72"><span class="lineNum">      72 </span>            :     this.key,</a>
+<a name="73"><span class="lineNum">      73 </span>            :     this.name,</a>
+<a name="74"><span class="lineNum">      74 </span>            :     this.aliases = const [],</a>
+<a name="75"><span class="lineNum">      75 </span>            :     this.mustMatchStackedRoute = false,</a>
+<a name="76"><span class="lineNum">      76 </span>            :   });</a>
+<a name="77"><span class="lineNum">      77 </span>            : </a>
+<a name="78"><span class="lineNum">      78 </span><span class="lineCov">          2 :   @override</span></a>
+<a name="79"><span class="lineNum">      79 </span><span class="lineCov">          2 :   List&lt;VRouteElement&gt; buildRoutes() =&gt; [</span></a>
+<a name="80"><span class="lineNum">      80 </span><span class="lineCov">          2 :         VPath(</span></a>
+<a name="81"><span class="lineNum">      81 </span><span class="lineCov">          2 :           path: path,</span></a>
+<a name="82"><span class="lineNum">      82 </span><span class="lineCov">          2 :           aliases: aliases,</span></a>
+<a name="83"><span class="lineNum">      83 </span><span class="lineCov">          2 :           mustMatchStackedRoute: mustMatchStackedRoute,</span></a>
+<a name="84"><span class="lineNum">      84 </span><span class="lineCov">          2 :           stackedRoutes: [</span></a>
+<a name="85"><span class="lineNum">      85 </span><span class="lineCov">          2 :             VPageBase(</span></a>
+<a name="86"><span class="lineNum">      86 </span><span class="lineCov">          2 :               pageBuilder: pageBuilder,</span></a>
+<a name="87"><span class="lineNum">      87 </span><span class="lineCov">          2 :               widget: widget,</span></a>
+<a name="88"><span class="lineNum">      88 </span><span class="lineCov">          2 :               key: key,</span></a>
+<a name="89"><span class="lineNum">      89 </span><span class="lineCov">          2 :               name: name,</span></a>
+<a name="90"><span class="lineNum">      90 </span><span class="lineCov">          2 :               stackedRoutes: stackedRoutes,</span></a>
+<a name="91"><span class="lineNum">      91 </span>            :             ),</a>
+<a name="92"><span class="lineNum">      92 </span>            :           ],</a>
+<a name="93"><span class="lineNum">      93 </span>            :         )</a>
+<a name="94"><span class="lineNum">      94 </span>            :       ];</a>
+<a name="95"><span class="lineNum">      95 </span>            : }</a>
 </pre>
       </td>
     </tr>

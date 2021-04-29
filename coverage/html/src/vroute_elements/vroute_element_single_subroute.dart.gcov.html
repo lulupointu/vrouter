@@ -31,13 +31,13 @@
             <td class="headerValue">lcov.info</td>
             <td></td>
             <td class="headerItem">Lines:</td>
-            <td class="headerCovTableEntry">61</td>
-            <td class="headerCovTableEntry">68</td>
-            <td class="headerCovTableEntryMed">89.7 %</td>
+            <td class="headerCovTableEntry">63</td>
+            <td class="headerCovTableEntry">70</td>
+            <td class="headerCovTableEntryHi">90.0 %</td>
           </tr>
           <tr>
             <td class="headerItem">Date:</td>
-            <td class="headerValue">2021-04-26 23:10:51</td>
+            <td class="headerValue">2021-04-29 14:25:52</td>
             <td></td>
             <td class="headerItem">Functions:</td>
             <td class="headerCovTableEntry">0</td>
@@ -70,7 +70,7 @@
 <a name="8"><span class="lineNum">       8 </span>            :   /// Only one will be chosen to be displayed</a>
 <a name="9"><span class="lineNum">       9 </span>            :   List&lt;VRouteElement&gt; buildRoutes();</a>
 <a name="10"><span class="lineNum">      10 </span>            : </a>
-<a name="11"><span class="lineNum">      11 </span><span class="lineCov">         80 :   late final List&lt;VRouteElement&gt; _subroutes = buildRoutes();</span></a>
+<a name="11"><span class="lineNum">      11 </span><span class="lineCov">         78 :   late final List&lt;VRouteElement&gt; _subroutes = buildRoutes();</span></a>
 <a name="12"><span class="lineNum">      12 </span>            : </a>
 <a name="13"><span class="lineNum">      13 </span>            :   /// Describes whether we should we pop this [VRouteElement]</a>
 <a name="14"><span class="lineNum">      14 </span>            :   /// if the [VRouteElement] of the subroute pops</a>
@@ -128,58 +128,58 @@
 <a name="66"><span class="lineNum">      66 </span>            :   ///</a>
 <a name="67"><span class="lineNum">      67 </span>            :   /// The deeper nested the route the better</a>
 <a name="68"><span class="lineNum">      68 </span>            :   /// The given path parameters have to include at least every path parameters of the final path</a>
-<a name="69"><span class="lineNum">      69 </span><span class="lineCov">         21 :   GetPathFromNameResult getPathFromName(</span></a>
+<a name="69"><span class="lineNum">      69 </span><span class="lineCov">         14 :   GetPathFromNameResult getPathFromName(</span></a>
 <a name="70"><span class="lineNum">      70 </span>            :     String nameToMatch, {</a>
 <a name="71"><span class="lineNum">      71 </span>            :     required Map&lt;String, String&gt; pathParameters,</a>
 <a name="72"><span class="lineNum">      72 </span>            :     required GetNewParentPathResult parentPathResult,</a>
 <a name="73"><span class="lineNum">      73 </span>            :     required Map&lt;String, String&gt; remainingPathParameters,</a>
 <a name="74"><span class="lineNum">      74 </span>            :   }) {</a>
-<a name="75"><span class="lineNum">      75 </span><span class="lineCov">         21 :     final childNameResults = &lt;GetPathFromNameResult&gt;[];</span></a>
+<a name="75"><span class="lineNum">      75 </span><span class="lineCov">         14 :     final childNameResults = &lt;GetPathFromNameResult&gt;[];</span></a>
 <a name="76"><span class="lineNum">      76 </span>            : </a>
 <a name="77"><span class="lineNum">      77 </span>            :     // Check if any subroute matches the name</a>
-<a name="78"><span class="lineNum">      78 </span><span class="lineCov">         41 :     for (var vRouteElement in _subroutes) {</span></a>
-<a name="79"><span class="lineNum">      79 </span><span class="lineCov">         20 :       childNameResults.add(</span></a>
-<a name="80"><span class="lineNum">      80 </span><span class="lineCov">         20 :         vRouteElement.getPathFromName(</span></a>
+<a name="78"><span class="lineNum">      78 </span><span class="lineCov">         28 :     for (var vRouteElement in _subroutes) {</span></a>
+<a name="79"><span class="lineNum">      79 </span><span class="lineCov">         14 :       childNameResults.add(</span></a>
+<a name="80"><span class="lineNum">      80 </span><span class="lineCov">         14 :         vRouteElement.getPathFromName(</span></a>
 <a name="81"><span class="lineNum">      81 </span>            :           nameToMatch,</a>
 <a name="82"><span class="lineNum">      82 </span>            :           pathParameters: pathParameters,</a>
 <a name="83"><span class="lineNum">      83 </span>            :           parentPathResult: parentPathResult,</a>
 <a name="84"><span class="lineNum">      84 </span>            :           remainingPathParameters: remainingPathParameters,</a>
 <a name="85"><span class="lineNum">      85 </span>            :         ),</a>
 <a name="86"><span class="lineNum">      86 </span>            :       );</a>
-<a name="87"><span class="lineNum">      87 </span><span class="lineCov">         40 :       if (childNameResults.last is ValidNameResult) {</span></a>
-<a name="88"><span class="lineNum">      88 </span><span class="lineCov">         18 :         return childNameResults.last;</span></a>
+<a name="87"><span class="lineNum">      87 </span><span class="lineCov">         28 :       if (childNameResults.last is ValidNameResult) {</span></a>
+<a name="88"><span class="lineNum">      88 </span><span class="lineCov">         12 :         return childNameResults.last;</span></a>
 <a name="89"><span class="lineNum">      89 </span>            :       }</a>
 <a name="90"><span class="lineNum">      90 </span>            :     }</a>
 <a name="91"><span class="lineNum">      91 </span>            : </a>
 <a name="92"><span class="lineNum">      92 </span>            :     // If we don't have any valid result</a>
 <a name="93"><span class="lineNum">      93 </span>            : </a>
 <a name="94"><span class="lineNum">      94 </span>            :     // If some stackedRoute returned PathParamsPopError, aggregate them</a>
-<a name="95"><span class="lineNum">      95 </span><span class="lineCov">         16 :     final pathParamsNameErrors = PathParamsErrorsNameResult(</span></a>
+<a name="95"><span class="lineNum">      95 </span><span class="lineCov">          7 :     final pathParamsNameErrors = PathParamsErrorsNameResult(</span></a>
 <a name="96"><span class="lineNum">      96 </span>            :       name: nameToMatch,</a>
-<a name="97"><span class="lineNum">      97 </span><span class="lineCov">         16 :       values: childNameResults.fold&lt;List&lt;PathParamsError&gt;&gt;(</span></a>
-<a name="98"><span class="lineNum">      98 </span><span class="lineCov">         16 :         &lt;PathParamsError&gt;[],</span></a>
-<a name="99"><span class="lineNum">      99 </span><span class="lineCov">         10 :         (previousValue, element) {</span></a>
-<a name="100"><span class="lineNum">     100 </span><span class="lineCov">         10 :           return previousValue +</span></a>
-<a name="101"><span class="lineNum">     101 </span><span class="lineCov">         25 :               ((element is PathParamsErrorsNameResult) ? element.values : []);</span></a>
+<a name="97"><span class="lineNum">      97 </span><span class="lineCov">          7 :       values: childNameResults.fold&lt;List&lt;PathParamsError&gt;&gt;(</span></a>
+<a name="98"><span class="lineNum">      98 </span><span class="lineCov">          7 :         &lt;PathParamsError&gt;[],</span></a>
+<a name="99"><span class="lineNum">      99 </span><span class="lineCov">          7 :         (previousValue, element) {</span></a>
+<a name="100"><span class="lineNum">     100 </span><span class="lineCov">          7 :           return previousValue +</span></a>
+<a name="101"><span class="lineNum">     101 </span><span class="lineCov">         19 :               ((element is PathParamsErrorsNameResult) ? element.values : []);</span></a>
 <a name="102"><span class="lineNum">     102 </span>            :         },</a>
 <a name="103"><span class="lineNum">     103 </span>            :       ),</a>
 <a name="104"><span class="lineNum">     104 </span>            :     );</a>
 <a name="105"><span class="lineNum">     105 </span>            : </a>
 <a name="106"><span class="lineNum">     106 </span>            :     // If there was any PathParamsPopError, we have some pathParamsPopErrors.values</a>
 <a name="107"><span class="lineNum">     107 </span>            :     // and therefore should return this</a>
-<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         32 :     if (pathParamsNameErrors.values.isNotEmpty) {</span></a>
+<a name="108"><span class="lineNum">     108 </span><span class="lineCov">         14 :     if (pathParamsNameErrors.values.isNotEmpty) {</span></a>
 <a name="109"><span class="lineNum">     109 </span>            :       return pathParamsNameErrors;</a>
 <a name="110"><span class="lineNum">     110 </span>            :     }</a>
 <a name="111"><span class="lineNum">     111 </span>            : </a>
 <a name="112"><span class="lineNum">     112 </span>            :     // Else try to find a NullPathError</a>
-<a name="113"><span class="lineNum">     113 </span>            :     if (childNameResults</a>
-<a name="114"><span class="lineNum">     114 </span><span class="lineCov">         52 :             .indexWhere((childNameResult) =&gt; childNameResult is NullPathErrorNameResult) !=</span></a>
-<a name="115"><span class="lineNum">     115 </span><span class="lineCov">         16 :         -1) {</span></a>
+<a name="113"><span class="lineNum">     113 </span><span class="lineCov">          7 :     if (childNameResults.indexWhere(</span></a>
+<a name="114"><span class="lineNum">     114 </span><span class="lineCov">         21 :             (childNameResult) =&gt; childNameResult is NullPathErrorNameResult) !=</span></a>
+<a name="115"><span class="lineNum">     115 </span><span class="lineCov">          7 :         -1) {</span></a>
 <a name="116"><span class="lineNum">     116 </span><span class="lineCov">          2 :       return NullPathErrorNameResult(name: nameToMatch);</span></a>
 <a name="117"><span class="lineNum">     117 </span>            :     }</a>
 <a name="118"><span class="lineNum">     118 </span>            : </a>
 <a name="119"><span class="lineNum">     119 </span>            :     // Else return a NotFoundError</a>
-<a name="120"><span class="lineNum">     120 </span><span class="lineCov">         16 :     return NotFoundErrorNameResult(name: nameToMatch);</span></a>
+<a name="120"><span class="lineNum">     120 </span><span class="lineCov">          7 :     return NotFoundErrorNameResult(name: nameToMatch);</span></a>
 <a name="121"><span class="lineNum">     121 </span>            :   }</a>
 <a name="122"><span class="lineNum">     122 </span>            : </a>
 <a name="123"><span class="lineNum">     123 </span>            :   /// [GetPathFromPopResult.didPop] is true if this [VRouteElement] popped</a>
@@ -200,87 +200,91 @@
 <a name="138"><span class="lineNum">     138 </span>            :           didPop: true,</a>
 <a name="139"><span class="lineNum">     139 </span><span class="lineCov">          9 :           poppedVRouteElements: [this],</span></a>
 <a name="140"><span class="lineNum">     140 </span>            :         );</a>
-<a name="141"><span class="lineNum">     141 </span>            :       }  else {</a>
+<a name="141"><span class="lineNum">     141 </span>            :       } else {</a>
 <a name="142"><span class="lineNum">     142 </span><span class="lineCov">          3 :         assert(parentPathResult is PathParamsErrorNewParentPath);</span></a>
 <a name="143"><span class="lineNum">     143 </span><span class="lineCov">          3 :         return PathParamsPopErrors(</span></a>
 <a name="144"><span class="lineNum">     144 </span><span class="lineCov">          3 :           values: [</span></a>
 <a name="145"><span class="lineNum">     145 </span><span class="lineCov">          3 :             MissingPathParamsError(</span></a>
 <a name="146"><span class="lineNum">     146 </span><span class="lineCov">          6 :               pathParams: pathParameters.keys.toList(),</span></a>
-<a name="147"><span class="lineNum">     147 </span><span class="lineCov">          3 :               missingPathParams: (parentPathResult as PathParamsErrorNewParentPath).pathParameters,</span></a>
-<a name="148"><span class="lineNum">     148 </span>            :             ),</a>
-<a name="149"><span class="lineNum">     149 </span>            :           ],</a>
-<a name="150"><span class="lineNum">     150 </span>            :         );</a>
-<a name="151"><span class="lineNum">     151 </span>            :       }</a>
-<a name="152"><span class="lineNum">     152 </span>            :     }</a>
-<a name="153"><span class="lineNum">     153 </span>            : </a>
-<a name="154"><span class="lineNum">     154 </span><span class="lineCov">         29 :     final popErrorResults = &lt;GetPathFromPopResult&gt;[];</span></a>
+<a name="147"><span class="lineNum">     147 </span>            :               missingPathParams:</a>
+<a name="148"><span class="lineNum">     148 </span>            :                   (parentPathResult as PathParamsErrorNewParentPath)</a>
+<a name="149"><span class="lineNum">     149 </span><span class="lineCov">          3 :                       .pathParameters,</span></a>
+<a name="150"><span class="lineNum">     150 </span>            :             ),</a>
+<a name="151"><span class="lineNum">     151 </span>            :           ],</a>
+<a name="152"><span class="lineNum">     152 </span>            :         );</a>
+<a name="153"><span class="lineNum">     153 </span>            :       }</a>
+<a name="154"><span class="lineNum">     154 </span>            :     }</a>
 <a name="155"><span class="lineNum">     155 </span>            : </a>
-<a name="156"><span class="lineNum">     156 </span>            :     // Try to pop from the stackedRoutes</a>
-<a name="157"><span class="lineNum">     157 </span><span class="lineCov">         58 :     for (var vRouteElement in _subroutes) {</span></a>
-<a name="158"><span class="lineNum">     158 </span><span class="lineCov">         29 :       GetPathFromPopResult childPopResult = vRouteElement.getPathFromPop(</span></a>
-<a name="159"><span class="lineNum">     159 </span>            :         elementToPop,</a>
-<a name="160"><span class="lineNum">     160 </span>            :         pathParameters: pathParameters,</a>
-<a name="161"><span class="lineNum">     161 </span>            :         parentPathResult: parentPathResult,</a>
-<a name="162"><span class="lineNum">     162 </span>            :       );</a>
-<a name="163"><span class="lineNum">     163 </span><span class="lineCov">         29 :       if (childPopResult is ValidPopResult) {</span></a>
-<a name="164"><span class="lineNum">     164 </span><span class="lineCov">         46 :         if (popWithSubRoute &amp;&amp; childPopResult.didPop) {</span></a>
-<a name="165"><span class="lineNum">     165 </span>            :           // if the nestedRoute popped, we should pop too</a>
-<a name="166"><span class="lineNum">     166 </span><span class="lineCov">         12 :           if (parentPathResult is ValidParentPathResult) {</span></a>
-<a name="167"><span class="lineNum">     167 </span><span class="lineCov">         12 :             return ValidPopResult(</span></a>
-<a name="168"><span class="lineNum">     168 </span><span class="lineCov">         12 :               path: parentPathResult.path,</span></a>
-<a name="169"><span class="lineNum">     169 </span>            :               didPop: true,</a>
-<a name="170"><span class="lineNum">     170 </span>            :               poppedVRouteElements:</a>
-<a name="171"><span class="lineNum">     171 </span><span class="lineCov">         36 :                   &lt;VRouteElement&gt;[this] + childPopResult.poppedVRouteElements,</span></a>
-<a name="172"><span class="lineNum">     172 </span>            :             );</a>
-<a name="173"><span class="lineNum">     173 </span>            :           } else {</a>
-<a name="174"><span class="lineNum">     174 </span><span class="lineNoCov">          0 :             assert(parentPathResult is PathParamsErrorNewParentPath);</span></a>
-<a name="175"><span class="lineNum">     175 </span><span class="lineNoCov">          0 :             popErrorResults.add(</span></a>
-<a name="176"><span class="lineNum">     176 </span><span class="lineNoCov">          0 :               PathParamsPopErrors(</span></a>
-<a name="177"><span class="lineNum">     177 </span><span class="lineNoCov">          0 :                 values: [</span></a>
-<a name="178"><span class="lineNum">     178 </span><span class="lineNoCov">          0 :                   MissingPathParamsError(</span></a>
-<a name="179"><span class="lineNum">     179 </span><span class="lineNoCov">          0 :                     pathParams: pathParameters.keys.toList(),</span></a>
-<a name="180"><span class="lineNum">     180 </span>            :                     missingPathParams:</a>
-<a name="181"><span class="lineNum">     181 </span><span class="lineNoCov">          0 :                         (parentPathResult as PathParamsErrorNewParentPath).pathParameters,</span></a>
-<a name="182"><span class="lineNum">     182 </span>            :                   ),</a>
-<a name="183"><span class="lineNum">     183 </span>            :                 ],</a>
-<a name="184"><span class="lineNum">     184 </span>            :               ),</a>
-<a name="185"><span class="lineNum">     185 </span>            :             );</a>
-<a name="186"><span class="lineNum">     186 </span>            :           }</a>
-<a name="187"><span class="lineNum">     187 </span>            :         } else {</a>
-<a name="188"><span class="lineNum">     188 </span><span class="lineCov">         25 :           return ValidPopResult(</span></a>
-<a name="189"><span class="lineNum">     189 </span><span class="lineCov">         25 :             path: childPopResult.path,</span></a>
-<a name="190"><span class="lineNum">     190 </span>            :             didPop: false,</a>
-<a name="191"><span class="lineNum">     191 </span><span class="lineCov">         25 :             poppedVRouteElements: childPopResult.poppedVRouteElements,</span></a>
-<a name="192"><span class="lineNum">     192 </span>            :           );</a>
-<a name="193"><span class="lineNum">     193 </span>            :         }</a>
-<a name="194"><span class="lineNum">     194 </span>            :       } else {</a>
-<a name="195"><span class="lineNum">     195 </span><span class="lineCov">         10 :         popErrorResults.add(childPopResult);</span></a>
-<a name="196"><span class="lineNum">     196 </span>            :       }</a>
-<a name="197"><span class="lineNum">     197 </span>            :     }</a>
-<a name="198"><span class="lineNum">     198 </span>            : </a>
-<a name="199"><span class="lineNum">     199 </span>            :     // If we don't have any valid result</a>
-<a name="200"><span class="lineNum">     200 </span>            : </a>
-<a name="201"><span class="lineNum">     201 </span>            :     // If some stackedRoute returned PathParamsPopError, aggregate them</a>
-<a name="202"><span class="lineNum">     202 </span><span class="lineCov">         10 :     final pathParamsPopErrors = PathParamsPopErrors(</span></a>
-<a name="203"><span class="lineNum">     203 </span><span class="lineCov">         10 :       values: popErrorResults.fold&lt;List&lt;MissingPathParamsError&gt;&gt;(</span></a>
-<a name="204"><span class="lineNum">     204 </span><span class="lineCov">         10 :         &lt;MissingPathParamsError&gt;[],</span></a>
-<a name="205"><span class="lineNum">     205 </span><span class="lineCov">         10 :         (previousValue, element) {</span></a>
-<a name="206"><span class="lineNum">     206 </span><span class="lineCov">         34 :           return previousValue + ((element is PathParamsPopErrors) ? element.values : []);</span></a>
-<a name="207"><span class="lineNum">     207 </span>            :         },</a>
-<a name="208"><span class="lineNum">     208 </span>            :       ),</a>
-<a name="209"><span class="lineNum">     209 </span>            :     );</a>
-<a name="210"><span class="lineNum">     210 </span>            : </a>
-<a name="211"><span class="lineNum">     211 </span>            :     // If there was any PathParamsPopError, we have some pathParamsPopErrors.values</a>
-<a name="212"><span class="lineNum">     212 </span>            :     // and therefore should return this</a>
-<a name="213"><span class="lineNum">     213 </span><span class="lineCov">         20 :     if (pathParamsPopErrors.values.isNotEmpty) {</span></a>
-<a name="214"><span class="lineNum">     214 </span>            :       return pathParamsPopErrors;</a>
-<a name="215"><span class="lineNum">     215 </span>            :     }</a>
-<a name="216"><span class="lineNum">     216 </span>            : </a>
-<a name="217"><span class="lineNum">     217 </span>            :     // If none of the stackedRoutes popped, this did not pop, and there was no path parameters issue, return not found</a>
-<a name="218"><span class="lineNum">     218 </span>            :     // This should never happen</a>
-<a name="219"><span class="lineNum">     219 </span><span class="lineCov">          6 :     return ErrorNotFoundGetPathFromPopResult();</span></a>
-<a name="220"><span class="lineNum">     220 </span>            :   }</a>
-<a name="221"><span class="lineNum">     221 </span>            : }</a>
+<a name="156"><span class="lineNum">     156 </span><span class="lineCov">         29 :     final popErrorResults = &lt;GetPathFromPopResult&gt;[];</span></a>
+<a name="157"><span class="lineNum">     157 </span>            : </a>
+<a name="158"><span class="lineNum">     158 </span>            :     // Try to pop from the stackedRoutes</a>
+<a name="159"><span class="lineNum">     159 </span><span class="lineCov">         58 :     for (var vRouteElement in _subroutes) {</span></a>
+<a name="160"><span class="lineNum">     160 </span><span class="lineCov">         29 :       GetPathFromPopResult childPopResult = vRouteElement.getPathFromPop(</span></a>
+<a name="161"><span class="lineNum">     161 </span>            :         elementToPop,</a>
+<a name="162"><span class="lineNum">     162 </span>            :         pathParameters: pathParameters,</a>
+<a name="163"><span class="lineNum">     163 </span>            :         parentPathResult: parentPathResult,</a>
+<a name="164"><span class="lineNum">     164 </span>            :       );</a>
+<a name="165"><span class="lineNum">     165 </span><span class="lineCov">         29 :       if (childPopResult is ValidPopResult) {</span></a>
+<a name="166"><span class="lineNum">     166 </span><span class="lineCov">         46 :         if (popWithSubRoute &amp;&amp; childPopResult.didPop) {</span></a>
+<a name="167"><span class="lineNum">     167 </span>            :           // if the nestedRoute popped, we should pop too</a>
+<a name="168"><span class="lineNum">     168 </span><span class="lineCov">         12 :           if (parentPathResult is ValidParentPathResult) {</span></a>
+<a name="169"><span class="lineNum">     169 </span><span class="lineCov">         12 :             return ValidPopResult(</span></a>
+<a name="170"><span class="lineNum">     170 </span><span class="lineCov">         12 :               path: parentPathResult.path,</span></a>
+<a name="171"><span class="lineNum">     171 </span>            :               didPop: true,</a>
+<a name="172"><span class="lineNum">     172 </span>            :               poppedVRouteElements:</a>
+<a name="173"><span class="lineNum">     173 </span><span class="lineCov">         36 :                   &lt;VRouteElement&gt;[this] + childPopResult.poppedVRouteElements,</span></a>
+<a name="174"><span class="lineNum">     174 </span>            :             );</a>
+<a name="175"><span class="lineNum">     175 </span>            :           } else {</a>
+<a name="176"><span class="lineNum">     176 </span><span class="lineNoCov">          0 :             assert(parentPathResult is PathParamsErrorNewParentPath);</span></a>
+<a name="177"><span class="lineNum">     177 </span><span class="lineNoCov">          0 :             popErrorResults.add(</span></a>
+<a name="178"><span class="lineNum">     178 </span><span class="lineNoCov">          0 :               PathParamsPopErrors(</span></a>
+<a name="179"><span class="lineNum">     179 </span><span class="lineNoCov">          0 :                 values: [</span></a>
+<a name="180"><span class="lineNum">     180 </span><span class="lineNoCov">          0 :                   MissingPathParamsError(</span></a>
+<a name="181"><span class="lineNum">     181 </span><span class="lineNoCov">          0 :                     pathParams: pathParameters.keys.toList(),</span></a>
+<a name="182"><span class="lineNum">     182 </span>            :                     missingPathParams:</a>
+<a name="183"><span class="lineNum">     183 </span>            :                         (parentPathResult as PathParamsErrorNewParentPath)</a>
+<a name="184"><span class="lineNum">     184 </span><span class="lineNoCov">          0 :                             .pathParameters,</span></a>
+<a name="185"><span class="lineNum">     185 </span>            :                   ),</a>
+<a name="186"><span class="lineNum">     186 </span>            :                 ],</a>
+<a name="187"><span class="lineNum">     187 </span>            :               ),</a>
+<a name="188"><span class="lineNum">     188 </span>            :             );</a>
+<a name="189"><span class="lineNum">     189 </span>            :           }</a>
+<a name="190"><span class="lineNum">     190 </span>            :         } else {</a>
+<a name="191"><span class="lineNum">     191 </span><span class="lineCov">         25 :           return ValidPopResult(</span></a>
+<a name="192"><span class="lineNum">     192 </span><span class="lineCov">         25 :             path: childPopResult.path,</span></a>
+<a name="193"><span class="lineNum">     193 </span>            :             didPop: false,</a>
+<a name="194"><span class="lineNum">     194 </span><span class="lineCov">         25 :             poppedVRouteElements: childPopResult.poppedVRouteElements,</span></a>
+<a name="195"><span class="lineNum">     195 </span>            :           );</a>
+<a name="196"><span class="lineNum">     196 </span>            :         }</a>
+<a name="197"><span class="lineNum">     197 </span>            :       } else {</a>
+<a name="198"><span class="lineNum">     198 </span><span class="lineCov">         10 :         popErrorResults.add(childPopResult);</span></a>
+<a name="199"><span class="lineNum">     199 </span>            :       }</a>
+<a name="200"><span class="lineNum">     200 </span>            :     }</a>
+<a name="201"><span class="lineNum">     201 </span>            : </a>
+<a name="202"><span class="lineNum">     202 </span>            :     // If we don't have any valid result</a>
+<a name="203"><span class="lineNum">     203 </span>            : </a>
+<a name="204"><span class="lineNum">     204 </span>            :     // If some stackedRoute returned PathParamsPopError, aggregate them</a>
+<a name="205"><span class="lineNum">     205 </span><span class="lineCov">         10 :     final pathParamsPopErrors = PathParamsPopErrors(</span></a>
+<a name="206"><span class="lineNum">     206 </span><span class="lineCov">         10 :       values: popErrorResults.fold&lt;List&lt;MissingPathParamsError&gt;&gt;(</span></a>
+<a name="207"><span class="lineNum">     207 </span><span class="lineCov">         10 :         &lt;MissingPathParamsError&gt;[],</span></a>
+<a name="208"><span class="lineNum">     208 </span><span class="lineCov">         10 :         (previousValue, element) {</span></a>
+<a name="209"><span class="lineNum">     209 </span><span class="lineCov">         10 :           return previousValue +</span></a>
+<a name="210"><span class="lineNum">     210 </span><span class="lineCov">         24 :               ((element is PathParamsPopErrors) ? element.values : []);</span></a>
+<a name="211"><span class="lineNum">     211 </span>            :         },</a>
+<a name="212"><span class="lineNum">     212 </span>            :       ),</a>
+<a name="213"><span class="lineNum">     213 </span>            :     );</a>
+<a name="214"><span class="lineNum">     214 </span>            : </a>
+<a name="215"><span class="lineNum">     215 </span>            :     // If there was any PathParamsPopError, we have some pathParamsPopErrors.values</a>
+<a name="216"><span class="lineNum">     216 </span>            :     // and therefore should return this</a>
+<a name="217"><span class="lineNum">     217 </span><span class="lineCov">         20 :     if (pathParamsPopErrors.values.isNotEmpty) {</span></a>
+<a name="218"><span class="lineNum">     218 </span>            :       return pathParamsPopErrors;</a>
+<a name="219"><span class="lineNum">     219 </span>            :     }</a>
+<a name="220"><span class="lineNum">     220 </span>            : </a>
+<a name="221"><span class="lineNum">     221 </span>            :     // If none of the stackedRoutes popped, this did not pop, and there was no path parameters issue, return not found</a>
+<a name="222"><span class="lineNum">     222 </span>            :     // This should never happen</a>
+<a name="223"><span class="lineNum">     223 </span><span class="lineCov">          6 :     return ErrorNotFoundGetPathFromPopResult();</span></a>
+<a name="224"><span class="lineNum">     224 </span>            :   }</a>
+<a name="225"><span class="lineNum">     225 </span>            : }</a>
 </pre>
       </td>
     </tr>

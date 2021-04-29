@@ -376,6 +376,32 @@ class VRouteElementNode {
     return vRouteElement;
   }
 
+  /// Get the [VRouteElementNode] associated to the given [VRouteElement]
+  /// returns null if the [VRouteElement] is not his nor in the stackedRoutes or the subroutes
+  VRouteElementNode? getVRouteElementNodeFromVRouteElement(
+      VRouteElement vRouteElement) {
+    if (vRouteElement == this.vRouteElement) return this;
+    if (stackedVRouteElementNode != null) {
+      final vRouteElementNode = stackedVRouteElementNode!
+          .getVRouteElementNodeFromVRouteElement(vRouteElement);
+      if (vRouteElementNode != null) return vRouteElementNode;
+    }
+    if (nestedVRouteElementNode != null) {
+      final vRouteElementNode = nestedVRouteElementNode!
+          .getVRouteElementNodeFromVRouteElement(vRouteElement);
+      if (vRouteElementNode != null) return vRouteElementNode;
+    }
+    return null;
+  }
+
+  /// Get a flatten list of the [VRouteElement] from this + all those contained in
+  /// stackedRoutes and subRoutes.
+  List<VRouteElement> getVRouteElements() {
+    return [vRouteElement] +
+        (stackedVRouteElementNode?.getVRouteElements() ?? []) +
+        (nestedVRouteElementNode?.getVRouteElements() ?? []);
+  }
+
   /// This function will search this node and the nested and sub nodes to try to find the node
   /// that hosts [vRouteElement]
   VRouteElementNode? getChildVRouteElementNode({

@@ -1,3 +1,7 @@
+## \[1.1.1+3\] - 29/04/2021.
+
+* \[**FIX**\]: `onPop` and `onSystemPop` are now called when needed, even if deeply nested
+
 ## \[1.1.1+2\] - 28/04/2021.
 
 * \[**FIX**\]: Remove `scrollBehavior` from `CupertinoVRouter`
@@ -6,7 +10,7 @@
 
 * \[**FIX**\]: Make `VRouteInformationParser` and `VBackButtonDispatcher` visible
 
-\## \[1.1.1\] - 27/04/2021.
+## \[1.1.1\] - 27/04/2021.
 
 * \[**BREAKING**\]: `onPop` and `onSystemPop` are not called ONLY when the `VRouteElement` are popped (not as long as they are in the route)
 * \[**BREAKING**\]: `pageBuilder` now gives you a `name` parameter that you can give to your `Page`. Change `(key, child) => YourPage(key, child)` to `(key, child, name) => YourPage(key, child, name)`
