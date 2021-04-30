@@ -174,8 +174,7 @@ void main() {
               ValidParentPathResult(path: null, pathParameters: {}),
         );
 
-        expect(newPathResult.runtimeType, ValidPopResult);
-        expect((newPathResult as ValidPopResult).path, null);
+        expect(newPathResult.runtimeType, PoppingPopResult);
       });
 
       test('Pop with right pathParameters', () {

@@ -553,163 +553,75 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
     );
   }
 
-  GetPathFromPopResult getPathFromPop(
+  VPopResult getPathFromPop(
     VRouteElement elementToPop, {
     required Map<String, String> pathParameters,
     required GetNewParentPathResult parentPathResult,
   }) {
     // If vRouteElement is this, then this is the element to pop so we return null
     if (elementToPop == this) {
-      if (parentPathResult is ValidParentPathResult) {
-        return ValidPopResult(
-            path: parentPathResult.path,
-            didPop: true,
-            poppedVRouteElements: [this]);
-      } else {
-        assert(parentPathResult is PathParamsErrorNewParentPath);
-        return PathParamsPopErrors(
-          values: [
-            MissingPathParamsError(
-              pathParams: pathParameters.keys.toList(),
-              missingPathParams:
-                  (parentPathResult as PathParamsErrorNewParentPath)
-                      .pathParameters,
-            ),
-          ],
-        );
-      }
+      return PoppingPopResult(poppedVRouteElements: [this]);
     }
 
-    final List<GetPathFromPopResult> popErrorResults = [];
-
-    // Try to match the path given the path parameters
-    final newParentPathResult = getNewParentPath(
-      parentPathResult,
-      thisPath: path,
-      thisPathParametersKeys: pathParametersKeys,
-      pathParameters: pathParameters,
-    );
-
-    // If the path matched and produced a non null newParentPath, try to pop from the stackedRoutes
-    for (var vRouteElement in stackedRoutes) {
-      final childPopResult = vRouteElement.getPathFromPop(
-        elementToPop,
-        pathParameters: pathParameters,
-        parentPathResult: newParentPathResult,
-      );
-      if (childPopResult is ValidPopResult) {
-        if (childPopResult.didPop) {
-          // if the nestedRoute popped, we should pop too
-          if (parentPathResult is ValidParentPathResult) {
-            return ValidPopResult(
-              path: parentPathResult.path,
-              didPop: true,
-              poppedVRouteElements:
-                  <VRouteElement>[this] + childPopResult.poppedVRouteElements,
-            );
-          } else {
-            assert(parentPathResult is PathParamsErrorNewParentPath);
-            popErrorResults.add(
-              PathParamsPopErrors(
-                values: [
-                  MissingPathParamsError(
-                    pathParams: pathParameters.keys.toList(),
-                    missingPathParams:
-                        (parentPathResult as PathParamsErrorNewParentPath)
-                            .pathParameters,
-                  ),
-                ],
-              ),
-            );
-          }
-        } else {
-          return ValidPopResult(
-            path: childPopResult.path,
-            didPop: false,
-            poppedVRouteElements: childPopResult.poppedVRouteElements,
-          );
-        }
-      } else {
-        popErrorResults.add(childPopResult);
-      }
-    }
-
-    // Try to match the aliases given the path parameters
-    for (var i = 0; i < aliases.length; i++) {
-      final newParentPathResultFromAlias = getNewParentPath(
+    final List<GetNewParentPathResult> newParentPaths = [
+      getNewParentPath(
         parentPathResult,
-        thisPath: aliases[i],
-        thisPathParametersKeys: aliasesPathParametersKeys[i],
+        thisPath: path,
+        thisPathParametersKeys: pathParametersKeys,
         pathParameters: pathParameters,
-      );
+      ),
+      for (var i = 0; i < aliases.length; i++)
+        getNewParentPath(
+          parentPathResult,
+          thisPath: aliases[i],
+          thisPathParametersKeys: aliasesPathParametersKeys[i],
+          pathParameters: pathParameters,
+        ),
+    ];
 
-      // If an alias matched and produced a non null newParentPath, try to pop from the stackedRoutes
-      // Try to pop from the stackedRoutes
-      for (var vRouteElement in stackedRoutes) {
+    for (var vRouteElement in stackedRoutes) {
+      final List<MissingPathParamsError> missingPathParamsErrors = [];
+
+      for (var newParentPath in newParentPaths) {
         final childPopResult = vRouteElement.getPathFromPop(
           elementToPop,
           pathParameters: pathParameters,
-          parentPathResult: newParentPathResultFromAlias,
+          parentPathResult: newParentPath,
         );
-        if (childPopResult is ValidPopResult) {
-          if (childPopResult.didPop) {
-            // if the nestedRoute popped, we should pop too
-            if (parentPathResult is ValidParentPathResult) {
-              return ValidPopResult(
-                path: parentPathResult.path,
-                didPop: true,
-                poppedVRouteElements:
-                    <VRouteElement>[this] + childPopResult.poppedVRouteElements,
-              );
-            } else {
-              assert(parentPathResult is PathParamsErrorNewParentPath);
-              popErrorResults.add(
-                PathParamsPopErrors(
-                  values: [
-                    MissingPathParamsError(
-                      pathParams: pathParameters.keys.toList(),
-                      missingPathParams:
-                          (parentPathResult as PathParamsErrorNewParentPath)
-                              .pathParameters,
-                    ),
-                  ],
-                ),
-              );
-            }
-          } else {
-            return ValidPopResult(
-              path: childPopResult.path,
-              didPop: false,
-              poppedVRouteElements: childPopResult.poppedVRouteElements,
+        if (!(childPopResult is NotFoundPopResult)) {
+          // If the VRouteElement to pop has been found
+
+          // If it pops, we should pop
+          if (childPopResult is PoppingPopResult) {
+            // Add ourselves to the poppedVRouteElements in a PoppingPopResult
+            return PoppingPopResult(
+              poppedVRouteElements:
+                  childPopResult.poppedVRouteElements + [this],
             );
           }
-        } else {
-          popErrorResults.add(childPopResult);
+
+          // If ValidPopResult, return as is
+          if (childPopResult is ValidPopResult) {
+            return childPopResult;
+          }
+
+          // Else the childPopResult should be a PathParamsPopErrors
+          missingPathParamsErrors
+              .addAll((childPopResult as PathParamsPopErrors).values);
         }
+      }
+
+      // If missingPathParamsErrors is not empty, it means that we did found the VRouteElement
+      // to pop in the current route but no ValidPopResult (only PathParamsPopErrors)
+      // So return a PathParamsPopErrors with the aggregated missingPathParamsErrors
+      if (missingPathParamsErrors.isNotEmpty) {
+        return PathParamsPopErrors(values: missingPathParamsErrors);
       }
     }
 
-    // If we don't have any valid result
-
-    // If some stackedRoute returned PathParamsPopError, aggregate them
-    final pathParamsPopErrors = PathParamsPopErrors(
-      values: popErrorResults.fold<List<MissingPathParamsError>>(
-        <MissingPathParamsError>[],
-        (previousValue, element) {
-          return previousValue +
-              ((element is PathParamsPopErrors) ? element.values : []);
-        },
-      ),
-    );
-
-    // If there was any PathParamsPopError, we have some pathParamsPopErrors.values
-    // and therefore should return this
-    if (pathParamsPopErrors.values.isNotEmpty) {
-      return pathParamsPopErrors;
-    }
-
-    // If none of the stackedRoutes popped, this did not pop, and there was no path parameters issue, return not found
-    return ErrorNotFoundGetPathFromPopResult();
+    // If none of the stackedRoutes popped and this did not pop, return a NotValidPopResult
+    // This should never reach RootVRouter
+    return NotFoundPopResult();
   }
 
   /// If this [VRouteElement] is in the route but its localPath is null

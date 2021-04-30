@@ -675,4 +675,59 @@ main() {
     expect(vWidget2Finder, findsOneWidget);
     expect(vWidget3Finder, findsNothing);
   });
+
+  testWidgets('Pop on VNester from VNester.stackedRoutes',
+      (WidgetTester tester) async {
+    late final BuildContext context;
+
+    await tester.pumpWidget(
+      VRouter(
+        initialUrl: '/lists/0',
+        routes: [
+          VNesterPage(
+            path: '/lists',
+            pageBuilder: (key, child, name) =>
+                MaterialPage(key: key, child: child, name: name),
+            widgetBuilder: (child) => child,
+            nestedRoutes: [
+              VWidget(
+                path: null,
+                aliases: [r':_(.+)'],
+                widget: Text('/lists'),
+                key: ValueKey('lists'),
+              ),
+            ],
+            stackedRoutes: [
+              VPage(
+                path: '/lists/:listName',
+                pageBuilder: (_, child, ___) => MaterialPage(child: child),
+                widget: Builder(
+                  builder: (ctx) {
+                    context = ctx;
+                    return Text('/lists/:listName');
+                  },
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    final vWidget1Finder = find.text('/lists');
+    final vWidget2Finder = find.text('/lists/:listName');
+
+    await tester.pumpAndSettle();
+
+    expect(vWidget1Finder, findsNothing);
+    expect(vWidget2Finder, findsOneWidget);
+
+    // Pop with VNester stackedRoutes context
+    Navigator.of(context).pop();
+
+    await tester.pumpAndSettle();
+
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vWidget2Finder, findsNothing);
+  });
 }

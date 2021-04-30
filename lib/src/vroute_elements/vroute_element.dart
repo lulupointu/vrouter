@@ -41,12 +41,12 @@ abstract class VRouteElement {
     required Map<String, String> remainingPathParameters,
   });
 
-  /// [GetPathFromPopResult.didPop] is true if this [VRouteElement] popped
-  /// [GetPathFromPopResult.extendedPath] is null if this path can't be the right one according to
+  /// [VPopResult.didPop] is true if this [VRouteElement] popped
+  /// [VPopResult.extendedPath] is null if this path can't be the right one according to
   ///                                                                     the path parameters
-  /// [GetPathFromPopResult] is null when this [VRouteElement] does not pop AND none of
+  /// [VPopResult] is null when this [VRouteElement] does not pop AND none of
   ///                                                                     its stackedRoutes popped
-  GetPathFromPopResult getPathFromPop(
+  VPopResult getPathFromPop(
     VRouteElement elementToPop, {
     required Map<String, String> pathParameters,
     required GetNewParentPathResult parentPathResult,
@@ -168,36 +168,59 @@ abstract class VRouteElement {
 }
 
 /// Return type of [VRouteElement.getPathFromPop]
-abstract class GetPathFromPopResult {}
+abstract class VPopResult {}
 
-class ValidPopResult extends GetPathFromPopResult {
-  /// [extendedPath] should be deducted from the parent path, [VRouteElement.path] and the path parameters,
-  ///  Note the it should be null if the path can not be deduced from the said parameters
+/// This is to be returned if the [VPopResult] is valid
+abstract class FoundPopResult extends VPopResult {
+  /// List of every popping [VRouteElement]
+  List<VRouteElement> get poppedVRouteElements;
+}
+
+/// Return from [VRouteElement.getPathFromPop] when the [VRouteElement] is being popped
+/// due to the pop event
+class PoppingPopResult extends FoundPopResult {
+  /// List of every popping [VRouteElement]
+  ///
+  /// The [VRouteElement] returning this should be part of [poppedVRouteElements]
+  final List<VRouteElement> poppedVRouteElements;
+
+  PoppingPopResult({required this.poppedVRouteElements});
+}
+
+/// Return from [VRouteElement.getPathFromPop] when the [VRouteElement] to pop has been found
+/// but this [VRouteElement] won't pop
+class ValidPopResult extends FoundPopResult {
+  /// [extendedPath] should be deducted from the parent path, [VRouteElement.path]
+  /// and the path parameters
+  ///
+  /// If [path] is null, the app will be put in the background on IOS and Android
   final String? path;
 
-  /// [didPop] should be true if this [VRouteElement] is to be popped
-  final bool didPop;
-
   /// List of every popping [VRouteElement]
+  ///
+  /// This should either be passed from [PoppingPopResult] or [ValidPopResult] but never changed
   final List<VRouteElement> poppedVRouteElements;
 
   ValidPopResult({
     required this.path,
-    required this.didPop,
     required this.poppedVRouteElements,
   });
 }
 
-abstract class ErrorGetPathFromPopResult extends GetPathFromPopResult
-    implements Exception {}
+/// This is to be returned if the [VPopResult] is NOT valid
+abstract class ErrorPopResult extends VPopResult implements Exception {}
 
-class ErrorNotFoundGetPathFromPopResult extends ErrorGetPathFromPopResult {
+/// Return from [VRouteElement.getPathFromPop] if the [VRouteElement] to pop was
+/// NOT found (it is not this and not in subroutes)
+class NotFoundPopResult extends ErrorPopResult {
   @override
   String toString() =>
       'The VRouteElement to pop was not found. Please open an issue, this should never happen.';
 }
 
-class PathParamsPopErrors extends ErrorGetPathFromPopResult {
+/// Return from [VRouteElement.getPathFromPop] if the [VRouteElement] to pop was
+/// found but the deduced path is not valid due to missing path parameters
+class PathParamsPopErrors extends ErrorPopResult {
   final List<MissingPathParamsError> values;
 
   PathParamsPopErrors({
@@ -210,7 +233,7 @@ class PathParamsPopErrors extends ErrorGetPathFromPopResult {
           'Here are the possible path parameters that were expected and the missing ones:\n' +
       [
         for (var value in values)
-          '  - Path parameters: ${value.pathParams}, missing ones: ${value.missingPathParams}'
+          '  - Expected path parameters: ${value.pathParams}, missing ones: ${value.missingPathParams}'
       ].join('\n');
 }
 

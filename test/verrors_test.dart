@@ -226,7 +226,7 @@ main() {
             error.toString(),
             'Could not pop because some path parameters where missing. \n'
             'Here are the possible path parameters that were expected and the missing ones:\n'
-            '  - Path parameters: [], missing ones: [id]');
+            '  - Expected path parameters: [], missing ones: [id]');
       });
     });
   });

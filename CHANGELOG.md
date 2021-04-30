@@ -1,42 +1,53 @@
+## Emojis codes
+- 🛠️ : **FIX** A bug has been fixed
+- ✨ : **NEW** New features have been added. Those are non breaking.
+- 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
+- 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
+
+## \[1.1.1+7\] - 30/04/2021.
+
+* 🛠️ : `pathParameters` will be passed properly in `VNester`
+* 🛠️ : A edge in `onPop` of `VNesterPageBase` has been solved
+
 ## \[1.1.1+6\] - 29/04/2021.
 
-* \[**FIX**\]: `onSystemPop` will now pop by also looking in nestedRoutes
-* \[**NEW**\]: `VNester` now supports `navigatorKey`, see the documentation for more details
+* 🛠️ : `onSystemPop` will now pop by also looking in nestedRoutes
+* ✨ : `VNester` now supports `navigatorKey`, see the documentation for more details
 
 ## \[1.1.1+5\] - 29/04/2021.
 
-* \[**MIGRATION**\]: Please use `VDefaultPage` instead of `VBasePage`
+* 🔁 : Please use `VDefaultPage` instead of `VBasePage`
 
 ## \[1.1.1+4\] - 29/04/2021.
 
-* \[**NEW**\]: Add `fullscreenDialog` option to `VWidget` and `VWidgetBase`
+* ✨ : Add `fullscreenDialog` option to `VWidget` and `VWidgetBase`
 
 ## \[1.1.1+3\] - 29/04/2021.
 
-* \[**FIX**\]: `onPop` and `onSystemPop` are now called when needed, even if deeply nested
+* 🛠️ : `onPop` and `onSystemPop` are now called when needed, even if deeply nested
 
 ## \[1.1.1+2\] - 28/04/2021.
 
-* \[**FIX**\]: Remove `scrollBehavior` from `CupertinoVRouter`
+* 🛠️ : Remove `scrollBehavior` from `CupertinoVRouter`
 
 ## \[1.1.1+1\] - 28/04/2021.
 
-* \[**FIX**\]: Make `VRouteInformationParser` and `VBackButtonDispatcher` visible
+* 🛠️ : Make `VRouteInformationParser` and `VBackButtonDispatcher` visible
 
 ## \[1.1.1\] - 27/04/2021.
 
-* \[**BREAKING**\]: `onPop` and `onSystemPop` are not called ONLY when the `VRouteElement` are popped (not as long as they are in the route)
-* \[**BREAKING**\]: `pageBuilder` now gives you a `name` parameter that you can give to your `Page`. Change `(key, child) => YourPage(key, child)` to `(key, child, name) => YourPage(key, child, name)`
-* \[**FIX**\]: `VWidgetGuard` is now disposed properly when it is no longer in the route
-* \[**FIX**\]: `VWidgetGuard.beforeUpdate` is now called properly
-* \[**NEW**\]: Support for extending `VRouteElementBuilder` to create custom `VRouteElement`
-* \[**NEW**\]: `VPath` which only constrains the path, without the need to given a widget or a page
-* \[**NEW**\]: `VPageBase` which is the same as `VPage` without the argument relative to the path
-* \[**NEW**\]: `VWidgetBase` which is the same as `VWidget` without the argument relative to the path
-* \[**NEW**\]: `VNesterBase` which is the same as `VNester` without the argument relative to the path
-* \[**NEW**\]: `VNesterPageBase` which is the same as `VNesterPage` without the argument relative to the path
-* \[**NEW**\]: `MaterialApp.router` `CupertinoApp.router` or `WidgetApp.router` can now be used using `VRouterDelegate`, `VRouteInformationParser` and `VBackButtonDispatcher`
-* \[**NEW**\]: `navigatorObservers` can now be passed to `VRouter` and will be passed to every `Navigator`
+* 🚨 : `onPop` and `onSystemPop` are not called ONLY when the `VRouteElement` are popped (not as long as they are in the route)
+* 🚨 : `pageBuilder` now gives you a `name` parameter that you can give to your `Page`. Change `(key, child) => YourPage(key, child)` to `(key, child, name) => YourPage(key, child, name)`
+* 🛠️ : `VWidgetGuard` is now disposed properly when it is no longer in the route
+* 🛠️ : `VWidgetGuard.beforeUpdate` is now called properly
+* ✨ : Support for extending `VRouteElementBuilder` to create custom `VRouteElement`
+* ✨ : `VPath` which only constrains the path, without the need to given a widget or a page
+* ✨ : `VPageBase` which is the same as `VPage` without the argument relative to the path
+* ✨ : `VWidgetBase` which is the same as `VWidget` without the argument relative to the path
+* ✨ : `VNesterBase` which is the same as `VNester` without the argument relative to the path
+* ✨ : `VNesterPageBase` which is the same as `VNesterPage` without the argument relative to the path
+* ✨ : `MaterialApp.router` `CupertinoApp.router` or `WidgetApp.router` can now be used using `VRouterDelegate`, `VRouteInformationParser` and `VBackButtonDispatcher`
+* ✨ : `navigatorObservers` can now be passed to `VRouter` and will be passed to every `Navigator`
 * Refactor to use the new `VRouteElementBuilder`
 * Removed dependency on SimpleUrlHandler
 
@@ -46,48 +57,48 @@
 
 ## \[1.1.0+21\] - 17/04/2021.
 
-* \[**NEW**\]: `pop` and `pushNamed` now return errors when needed
+* ✨ : `pop` and `pushNamed` now return errors when needed
 
 ## \[1.1.0+20\] - 09/04/2021.
 
-* \[**BREAKING**\]: Changing `pop` and `systemPop` default behaviour to include previous path parameters
+* 🚨 : Changing `pop` and `systemPop` default behaviour to include previous path parameters
 
 ## \[1.1.0+19\] - 09/04/2021.
 
-* \[**FIX**\]: `VRouter.of` error when called from `VRouter.builder`
+* 🛠️ : `VRouter.of` error when called from `VRouter.builder`
 
 ## \[1.1.0+18\] - 09/04/2021.
 
-* \[**FIX**\]: stackedRoute in VNested which did not built VNester widget
+* 🛠️ : stackedRoute in VNested which did not built VNester widget
 
 ## \[1.1.0+17\] - 09/04/2021.
 
-* \[**FIX**\]: vRedirector use in onPop and onSystemPop which was only stopping the redirection
+* 🛠️ : vRedirector use in onPop and onSystemPop which was only stopping the redirection
 
 ## \[1.1.0+16\] - 06/04/2021.
 
-* \[**FIX**\]: last onPop on MacOS, Linux and Windows
+* 🛠️ : last onPop on MacOS, Linux and Windows
 
 ## \[1.1.0+15\] - 01/04/2021.
 
-* \[**FIX**\]: initialUrl breaking deep-linking
+* 🛠️ : initialUrl breaking deep-linking
 
 ## \[1.1.0+14\] - 01/04/2021.
 
-* \[**FIX**\]: default pop onto path parameters
+* 🛠️ : default pop onto path parameters
 * Add more migration doc
 
 ## \[1.1.0+13\] - 30/03/2021.
 
-* \[**FIX**\]: default Page key value
+* 🛠️ : default Page key value
 
 ## \[1.1.0+12\] - 30/03/2021.
 
-* \[**FIX**\]: pop forming path when parent path end with '/'
+* 🛠️ : pop forming path when parent path end with '/'
 
 ## \[1.1.0+11\] - 30/03/2021.
 
-* \[**NEW**\]: Provide customizable key argument for VRouteElement with `widget` argument
+* ✨ : Provide customizable key argument for VRouteElement with `widget` argument
 
 ## \[1.1.0+10\] - 30/03/2021.
 
@@ -99,7 +110,7 @@
 
 ## \[1.1.0+8\] - 29/03/2021.
 
-* \[**FIX**\]: url sync in edge case redirection situations
+* 🛠️ : url sync in edge case redirection situations
 
 ## \[1.1.0+7\] - 29/03/2021.
 
@@ -107,7 +118,7 @@
 
 ## \[1.1.0+6\] - 29/03/2021.
 
-* \[**BREAKING**\]: Adding LocalKey to VPage.buildPage, helping animations
+* 🚨 : Adding LocalKey to VPage.buildPage, helping animations
 
 ## \[1.1.0+5\] - 28/03/2021.
 
@@ -131,24 +142,24 @@
 
 ## \[1.1.0\] - 28/03/2021.
 
-* Add description to packages classes, example of class uses can now be found there
-* \[**DEPRECIATED**\]: VRouteData should not be used anymore, use VRouterData to access the current route data
-* \[**DEPRECIATED**\]: VRouterData should not be used to get the navigation methods (push, ...), use VRouter instead
-* \[**NEW**\]: Use VRouterData to access route information (url, path params, ...)
-* \[**NEW**\]: Use VRouter to access navigation methods (push, ...)
-* \[**NEW**\]: Use context.VRouter instead of VRouter.of(context)
-* \[**NEW**\]: Use context.VRouterData instead of VRouterData.of(context)
-* \[**NEW**\]: Use context.VRouteElementData instead of VRouteElementData.of(context)
-* \[**NEW**\]: You can now set a initial url using VRouter.initialUrl and the InitialUrl class
-* \[**BREAKING**\]: Navigation control methods inside VRouteElement (beforeLeave, beforeEnter, ...) are now called even if the VRouteElement is not the last element of the route
-* \[**NEW**\]: VRouteElements now have beforeUpdate method called when the route changes but it remains in the route
-* \[**NEW**\]: widgetBuilder (from VChild and VStack) have a new attribute which gives you access to the current vChild in its stackedRoutes if any
+* 🚨 : VRouteData should not be used anymore, use VRouterData to access the current route data
+* 🚨 : VRouterData should not be used to get the navigation methods (push, ...), use VRouter instead
+* 🚨 : Navigation control methods inside VRouteElement (beforeLeave, beforeEnter, ...) are now called even if the VRouteElement is not the last element of the route
+* ✨ : New description in classes comment, example of class uses can now be found there
+* ✨ : Use VRouterData to access route information (url, path params, ...)
+* ✨ : Use VRouter to access navigation methods (push, ...)
+* ✨ : Use context.VRouter instead of VRouter.of(context)
+* ✨ : Use context.VRouterData instead of VRouterData.of(context)
+* ✨ : Use context.VRouteElementData instead of VRouteElementData.of(context)
+* ✨ : You can now set a initial url using VRouter.initialUrl and the InitialUrl class
+* ✨ : VRouteElements now have beforeUpdate method called when the route changes but it remains in the route
+* ✨ : widgetBuilder (from VChild and VStack) have a new attribute which gives you access to the current vChild in its stackedRoutes if any
 
 See the migration guide at the end of the README to migrate!
 
 ## \[1.0.0-nullsafety.11\] - 27/02/2021.
 
-* \[**NEW**\]: Enable access to VRouterState to enable navigation without context
+* ✨ : Enable access to VRouterState to enable navigation without context
 
 ## \[1.0.0-nullsafety.10+1\] - 24/02/2021.
 
@@ -160,16 +171,16 @@ See the migration guide at the end of the README to migrate!
 
 ## \[1.0.0-nullsafety.9\] - 23/02/2021.
 
-* \[**NEW**\]: Enable CupertinoPage when on IOS (https://github.com/lulupointu/vrouter/issues/3)
+* ✨ : Enable CupertinoPage when on IOS (https://github.com/lulupointu/vrouter/issues/3)
 
 ## \[1.0.0-nullsafety.8\] - 23/02/2021.
 
-* Fix Map type error (https://github.com/lulupointu/vrouter/issues/4)
+* 🛠️ : Map type error (https://github.com/lulupointu/vrouter/issues/4)
 
 ## \[1.0.0-nullsafety.7\] - 21/02/2021.
 
 * Path parameters given in pushNamed are now encoded
-* \[**NEW**\]: pushNamed will now also search in aliases and pick the right path depending on the given pathParameters
+* ✨ : pushNamed will now also search in aliases and pick the right path depending on the given pathParameters
 
 ## \[1.0.0-nullsafety.6+1\] - 20/02/2021.
 
@@ -177,8 +188,8 @@ See the migration guide at the end of the README to migrate!
 
 ## \[1.0.0-nullsafety.6\] - 20/02/2021.
 
-* \[**NEW**\]: give a vRedirector when handling pop events
-* \[**Breaking change**\]: pop events don't have (context, from to). See VRedirector for the new argument
+* ✨ : give a vRedirector when handling pop events
+* 🚨 : pop events don't have (context, from to). See VRedirector for the new argument
 
 ## \[1.0.0-nullsafety.5+1\] - 19/02/2021.
 
@@ -186,17 +197,17 @@ See the migration guide at the end of the README to migrate!
 
 ## \[1.0.0-nullsafety.5\] - 19/02/2021.
 
-* \[**NEW**\]: widgetBuilder to VChild and VStack
+* ✨ : widgetBuilder to VChild and VStack
 
 ## \[1.0.0-nullsafety.4\] - 18/02/2021.
 
-* \[**NEW**\]: add vRouteData in beforeLeave and beforeEnter
-* \[**FIX**\]: error when replacing path parameters in pushNamed
-* \[**FIX**\]: error with pushReplace on the web
+* ✨ : add vRouteData in beforeLeave and beforeEnter
+* 🛠️ : error when replacing path parameters in pushNamed
+* 🛠️ : error with pushReplace on the web
 
 ## \[1.0.0-nullsafety.3\] - 16/02/2021.
 
-* Fix error when pushing a url which does not start with '/'
+* 🛠️ :Fix error when pushing a url which does not start with '/'
 
 ## \[1.0.0-nullsafety.2\] - 16/02/2021.
 

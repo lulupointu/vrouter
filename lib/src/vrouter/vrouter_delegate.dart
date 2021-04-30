@@ -863,18 +863,21 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         .map((key, value) => MapEntry(key, Uri.encodeComponent(value)));
 
     // We don't use widget.getPathFromPop because widget.routes might have changed with a setState
-    final getPathFromPopResult =
-        _vRoute.vRouteElementNode.vRouteElement.getPathFromPop(
+    final popResult = _vRoute.vRouteElementNode.vRouteElement.getPathFromPop(
       elementToPop,
       pathParameters: pathParameters,
       parentPathResult: ValidParentPathResult(path: null, pathParameters: {}),
     );
 
-    if (getPathFromPopResult is ErrorGetPathFromPopResult) {
-      throw getPathFromPopResult;
+    // The result should not be an error
+    // If it is, it should be fixed by the dev
+    if (popResult is ErrorPopResult) {
+      throw popResult;
     }
 
-    final newPath = (getPathFromPopResult as ValidPopResult).path;
+    // If popResult is not ErrorPopResult, it is either
+    // ValidPopResult or PoppingPopResult
+    final newPath = (popResult is ValidPopResult) ? popResult.path : null;
 
     // This url will be not null if we find a route to go to
     late final String? newUrl;
@@ -910,8 +913,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
 
     // This is the list of [VRouteElement]s that where not necessary expected to pop but did because of
     // the pop of [elementToPop]
-    final poppedVRouteElementsFromPopResult =
-        getPathFromPopResult.poppedVRouteElements;
+    final List<VRouteElement> poppedVRouteElementsFromPopResult =
+        (popResult is FoundPopResult) ? popResult.poppedVRouteElements : [];
 
     // This is predictable list of [VRouteElement]s that are expected to pop because they are
     // in the nestedRoutes or stackedRoutes of [elementToPop] [VRouteElementNode]

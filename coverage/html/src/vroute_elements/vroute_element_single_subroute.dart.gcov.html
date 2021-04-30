@@ -195,7 +195,7 @@
 <a name="133"><span class="lineNum">     133 </span>            :     // If vRouteElement is this, then this is the element to pop so we return null</a>
 <a name="134"><span class="lineNum">     134 </span><span class="lineCov">         29 :     if (elementToPop == this) {</span></a>
 <a name="135"><span class="lineNum">     135 </span><span class="lineCov">          9 :       if (parentPathResult is ValidParentPathResult) {</span></a>
-<a name="136"><span class="lineNum">     136 </span><span class="lineCov">          9 :         return ValidPopResult(</span></a>
+<a name="136"><span class="lineNum">     136 </span><span class="lineCov">          9 :         return FoundPopResult(</span></a>
 <a name="137"><span class="lineNum">     137 </span><span class="lineCov">          9 :           path: parentPathResult.path,</span></a>
 <a name="138"><span class="lineNum">     138 </span>            :           didPop: true,</a>
 <a name="139"><span class="lineNum">     139 </span><span class="lineCov">          9 :           poppedVRouteElements: [this],</span></a>
@@ -224,11 +224,11 @@
 <a name="162"><span class="lineNum">     162 </span>            :         pathParameters: pathParameters,</a>
 <a name="163"><span class="lineNum">     163 </span>            :         parentPathResult: parentPathResult,</a>
 <a name="164"><span class="lineNum">     164 </span>            :       );</a>
-<a name="165"><span class="lineNum">     165 </span><span class="lineCov">         29 :       if (childPopResult is ValidPopResult) {</span></a>
+<a name="165"><span class="lineNum">     165 </span><span class="lineCov">         29 :       if (childPopResult is FoundPopResult) {</span></a>
 <a name="166"><span class="lineNum">     166 </span><span class="lineCov">         46 :         if (popWithSubRoute &amp;&amp; childPopResult.didPop) {</span></a>
 <a name="167"><span class="lineNum">     167 </span>            :           // if the nestedRoute popped, we should pop too</a>
 <a name="168"><span class="lineNum">     168 </span><span class="lineCov">         12 :           if (parentPathResult is ValidParentPathResult) {</span></a>
-<a name="169"><span class="lineNum">     169 </span><span class="lineCov">         12 :             return ValidPopResult(</span></a>
+<a name="169"><span class="lineNum">     169 </span><span class="lineCov">         12 :             return FoundPopResult(</span></a>
 <a name="170"><span class="lineNum">     170 </span><span class="lineCov">         12 :               path: parentPathResult.path,</span></a>
 <a name="171"><span class="lineNum">     171 </span>            :               didPop: true,</a>
 <a name="172"><span class="lineNum">     172 </span>            :               poppedVRouteElements:</a>
@@ -250,7 +250,7 @@
 <a name="188"><span class="lineNum">     188 </span>            :             );</a>
 <a name="189"><span class="lineNum">     189 </span>            :           }</a>
 <a name="190"><span class="lineNum">     190 </span>            :         } else {</a>
-<a name="191"><span class="lineNum">     191 </span><span class="lineCov">         25 :           return ValidPopResult(</span></a>
+<a name="191"><span class="lineNum">     191 </span><span class="lineCov">         25 :           return FoundPopResult(</span></a>
 <a name="192"><span class="lineNum">     192 </span><span class="lineCov">         25 :             path: childPopResult.path,</span></a>
 <a name="193"><span class="lineNum">     193 </span>            :             didPop: false,</a>
 <a name="194"><span class="lineNum">     194 </span><span class="lineCov">         25 :             poppedVRouteElements: childPopResult.poppedVRouteElements,</span></a>

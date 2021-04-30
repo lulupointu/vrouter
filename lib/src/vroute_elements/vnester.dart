@@ -145,6 +145,13 @@ class VNester extends VRouteElementBuilder {
   /// to represent two different routes which should share a common [VNesterPageBase]
   final GlobalKey<NavigatorState>? navigatorKey;
 
+  /// Whether this page route is a full-screen dialog.
+  ///
+  /// In Material and Cupertino, being fullscreen has the effects of making the app bars
+  /// have a close button instead of a back button. On iOS, dialogs transitions animate
+  /// differently and are also not closeable with the back swipe gesture.
+  final bool fullscreenDialog;
+
   VNester({
     required this.path,
     required this.widgetBuilder,
@@ -158,6 +165,7 @@ class VNester extends VRouteElementBuilder {
     this.aliases = const [],
     this.mustMatchStackedRoute = false,
     this.navigatorKey,
+    this.fullscreenDialog = false,
   });
 
   @override
@@ -177,6 +185,7 @@ class VNester extends VRouteElementBuilder {
               transitionDuration: transitionDuration,
               reverseTransitionDuration: reverseTransitionDuration,
               navigatorKey: navigatorKey,
+              fullscreenDialog: fullscreenDialog,
             ),
           ],
         ),
