@@ -81,9 +81,11 @@ class VNesterPage extends VRouteElementBuilder {
   /// A key for the nested navigator
   /// It is created automatically
   ///
-  /// Using this is useful if you create two different [VNesterPageBase] that should
+  /// Using this is useful if you create two different [VNesterPage] that should
   /// actually be the same. This happens if you use two different [VRouteElementBuilder]
-  /// to represent two different routes which should share a common [VNesterPageBase]
+  /// to represent two different routes which should share a common [VNesterPage]
+  /// In that case give the [VNesterPage]s the same [key] and the same [navigatorKey]
+  /// and the animations will be as expected
   final GlobalKey<NavigatorState>? navigatorKey;
 
   VNesterPage({
