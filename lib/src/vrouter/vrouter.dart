@@ -477,9 +477,9 @@ class VRouter extends StatefulWidget
 
     if (vRouterData == null) {
       throw FlutterError(
-          'MaterialVRouter.of(context) was called with a context which does not contain a MaterialVRouter.\n'
-          'The context used to retrieve MaterialVRouter must be that of a widget that '
-          'is a descendant of a MaterialVRouter widget.');
+          'VRouter.of(context) was called with a context which does not contain a VRouter.\n'
+          'The context used to retrieve VRouter must be that of a widget that '
+          'is a descendant of a VRouter widget.');
     }
     return vRouterData;
   }
