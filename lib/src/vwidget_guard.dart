@@ -86,8 +86,7 @@ class VWidgetGuard extends StatefulWidget {
   ///
   /// Note that you should consider the navigation cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
-  final void Function(BuildContext context, String? from, String to)
-      afterUpdate;
+  final void Function(BuildContext context, String? from, String to) afterUpdate;
 
   /// Called when a pop event occurs.
   /// A pop event can be called programmatically (with [VRouter.of(context).pop()])
@@ -142,15 +141,11 @@ class VWidgetGuard extends StatefulWidget {
 }
 
 class _VWidgetGuardState extends State<VWidgetGuard> {
+
   @override
-  void initState() {
-    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context)
-        .dispatch(context);
-    super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      widget.afterEnter(
-          context, VRouter.of(context).previousUrl, VRouter.of(context).url!);
-    });
+  void didChangeDependencies() {
+    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context).dispatch(context);
+    super.didChangeDependencies();
   }
 
   // This is used to try to support hot restart
@@ -158,13 +153,13 @@ class _VWidgetGuardState extends State<VWidgetGuard> {
   // are necessary when changes to VWidgetGuard are made
   @override
   void reassemble() {
-    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context)
-        .dispatch(context);
+    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context).dispatch(context);
     super.reassemble();
   }
 
   @override
   Widget build(BuildContext context) {
+    VRouter.of(context); // Makes didChangeDependencies be called when VRouterData changes
     return widget.child;
   }
 }
@@ -184,8 +179,9 @@ class VWidgetGuardMessageRoot extends Notification {
   final BuildContext localContext;
   final VRouteElement associatedVRouteElement;
 
-  VWidgetGuardMessageRoot(
-      {required this.vWidgetGuard,
-      required this.localContext,
-      required this.associatedVRouteElement});
+  VWidgetGuardMessageRoot({
+    required this.vWidgetGuard,
+    required this.localContext,
+    required this.associatedVRouteElement,
+  });
 }
