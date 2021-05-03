@@ -3,13 +3,13 @@ part of '../main.dart';
 /// An [InheritedWidget] which should not be accessed by end developers
 ///
 /// [RootVRouterData] holds methods and parameters from [VRouterState]
-class RootVRouterData extends InheritedWidget {
-  final VRouterState _state;
+class RootVRouterData extends VRouterData {
+  final VRouterDelegate _state;
 
   RootVRouterData({
     Key? key,
     required Widget child,
-    required VRouterState state,
+    required VRouterDelegate state,
     required this.url,
     required this.previousUrl,
     required this.historyState,
@@ -57,22 +57,22 @@ class RootVRouterData extends InheritedWidget {
   /// is put in the widget tree
   ///
   /// This should be the default one, i.e. the one of [VRouter]
-  Duration? get _defaultPageTransitionDuration =>
-      _state.widget.transitionDuration;
+  Duration? get _defaultPageTransitionDuration => _state.transitionDuration;
 
   /// The duration of the transition which happens when this page
   /// is removed from the widget tree
   ///
   /// This should be the default one, i.e. the one of [VRouter]
   Duration? get _defaultPageReverseTransitionDuration =>
-      _state.widget.reverseTransitionDuration;
+      _state.reverseTransitionDuration;
 
   /// A function to build the transition to or from this route
   ///
   /// This should be the default one, i.e. the one of [VRouter]git
-  Widget Function(Animation<double> animation,
-          Animation<double> secondaryAnimation, Widget child)?
-      get _defaultPageBuildTransition => _state.widget.buildTransition;
+  Widget Function(
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child)? get _defaultPageBuildTransition => _state.buildTransition;
 
   /// See [VRouterState.push]
   void push(
@@ -121,7 +121,33 @@ class RootVRouterData extends InheritedWidget {
       _state.pushExternal(newUrl, openNewTab: openNewTab);
 
   /// See [VRouterState._pop]
-  void pop(
+  void pop({
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    Map<String, String> newHistoryState = const {},
+  }) =>
+      popFromElement(
+        _state._vRoute.vRouteElementNode.getVRouteElementToPop(),
+        pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        newHistoryState: newHistoryState,
+      );
+
+  /// See [VRouterState._systemPop]
+  Future<void> systemPop({
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    Map<String, String> newHistoryState = const {},
+  }) =>
+      systemPopFromElement(
+        _state._vRoute.vRouteElementNode.getVRouteElementToSystemPop(),
+        pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        newHistoryState: newHistoryState,
+      );
+
+  /// See [VRouterState._pop]
+  void popFromElement(
     VRouteElement itemToPop, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
@@ -129,13 +155,17 @@ class RootVRouterData extends InheritedWidget {
   }) =>
       _state._pop(
         itemToPop,
-        pathParameters: pathParameters,
+        pathParameters: {
+          ...pathParameters,
+          ...this
+              .pathParameters, // Include the previous path parameters when poping
+        },
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
       );
 
   /// See [VRouterState._systemPop]
-  Future<void> systemPop(
+  Future<void> systemPopFromElement(
     VRouteElement itemToPop, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
@@ -143,7 +173,11 @@ class RootVRouterData extends InheritedWidget {
   }) =>
       _state._systemPop(
         itemToPop,
-        pathParameters: pathParameters,
+        pathParameters: {
+          ...pathParameters,
+          ...this
+              .pathParameters, // Include the previous path parameters when poping
+        },
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
       );

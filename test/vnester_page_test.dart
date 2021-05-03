@@ -4,7 +4,202 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:vrouter/vrouter.dart';
 
 main() {
-  testWidgets('VNesterPage test', (WidgetTester tester) async {
+  testWidgets('VNesterPage pop', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      VRouter(
+        initialUrl: '/settings',
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Text('VWidget1'),
+            stackedRoutes: [
+              VNesterPage(
+                path: null,
+                aliases: ['scaffold'],
+                pageBuilder: (key, child, name) =>
+                    MaterialPage(key: key, child: child, name: name),
+                widgetBuilder: (child) => Scaffold(
+                  appBar: AppBar(title: Text('Scaffold VNesterPage')),
+                  body: child,
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: '/settings',
+                    widget: Builder(
+                      builder: (BuildContext context) {
+                        return OutlinedButton(
+                          onPressed: () => VRouter.of(context).pop(),
+                          child: Text('VWidget2'),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNesterPage');
+
+    // At first we are on '/other'
+
+    // Now, only VWidget2 should be visible
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+    expect(vWidget3Finder, findsNothing);
+
+    // Pop to '/'
+    // Tap the add button.
+    await tester.tap(find.byType(OutlinedButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
+  });
+  testWidgets('VNesterPage vanilla navigator pop', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      VRouter(
+        initialUrl: '/settings',
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Text('VWidget1'),
+            stackedRoutes: [
+              VNesterPage(
+                path: null,
+                aliases: ['scaffold'],
+                pageBuilder: (key, child, name) =>
+                    MaterialPage(key: key, child: child, name: name),
+                widgetBuilder: (child) => Scaffold(
+                  appBar: AppBar(title: Text('Scaffold VNesterPage')),
+                  body: child,
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: '/settings',
+                    widget: Builder(
+                      builder: (BuildContext context) {
+                        return OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('VWidget2'),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // At first we are on '/other'
+
+    // Now, only VWidget2 should be visible
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNesterPage');
+
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+    expect(vWidget3Finder, findsNothing);
+
+    // Pop to '/'
+    // Tap the add button.
+    await tester.tap(find.byType(OutlinedButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
+  });
+
+  testWidgets('VNesterPage systemPop', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      VRouter(
+        initialUrl: '/settings',
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Text('VWidget1'),
+            stackedRoutes: [
+              VNesterPage(
+                path: null,
+                aliases: ['scaffold'],
+                pageBuilder: (key, child, name) =>
+                    MaterialPage(key: key, child: child, name: name),
+                widgetBuilder: (child) => Scaffold(
+                  appBar: AppBar(title: Text('Scaffold VNesterPage')),
+                  body: child,
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: '/settings',
+                    widget: Builder(
+                      builder: (BuildContext context) {
+                        return OutlinedButton(
+                          onPressed: () => VRouter.of(context).systemPop(),
+                          child: Text('VWidget2'),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // At first we are on '/other'
+
+    // Now, only VWidget2 should be visible
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNesterPage');
+
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+    expect(vWidget3Finder, findsNothing);
+
+    // Pop to '/'
+    // Tap the add button.
+    await tester.tap(find.byType(OutlinedButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
+  });
+
+  testWidgets('VNesterPage pop on alias', (WidgetTester tester) async {
     await tester.pumpWidget(
       VRouter(
         routes: [
@@ -22,20 +217,21 @@ main() {
             ),
             stackedRoutes: [
               VNesterPage(
-                pageBuilder: (LocalKey key, Widget child) =>
-                    MaterialPage(key: key, child: child),
-                path: null,
+                path: ':id(\d+)',
+                aliases: ['/settings'],
+                pageBuilder: (key, child, name) =>
+                    MaterialPage(key: key, child: child, name: name),
                 widgetBuilder: (child) => Builder(
                   builder: (BuildContext context) {
                     return Scaffold(
-                      appBar: AppBar(title: Text('Scaffold VNester')),
+                      appBar: AppBar(title: Text('Scaffold VNesterPage')),
                       body: child,
                     );
                   },
                 ),
                 nestedRoutes: [
                   VWidget(
-                    path: '/settings',
+                    path: null,
                     widget: Builder(
                       builder: (BuildContext context) {
                         return OutlinedButton(
@@ -50,7 +246,7 @@ main() {
                         widget: Builder(
                           builder: (BuildContext context) {
                             return OutlinedButton(
-                              onPressed: () => VRouter.of(context).pop(),
+                              onPressed: () => Navigator.of(context).pop(),
                               child: Text('VWidget3'),
                             );
                           },
@@ -70,15 +266,15 @@ main() {
 
     // At first we are on "/" so only VWidget1 should be shown
 
-    final vWidget1Finder1 = find.text('VWidget1');
-    final vWidget2Finder1 = find.text('VWidget2');
-    final vWidget3Finder1 = find.text('VWidget3');
-    final vNesterFinder1 = find.text('Scaffold VNester');
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNesterPage');
 
-    expect(vWidget1Finder1, findsOneWidget);
-    expect(vNesterFinder1, findsNothing);
-    expect(vWidget2Finder1, findsNothing);
-    expect(vWidget3Finder1, findsNothing);
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
 
     // Navigate to '/other'
     // Tap the add button.
@@ -86,15 +282,11 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder2 = find.text('VWidget1');
-    final vWidget2Finder2 = find.text('VWidget2');
-    final vWidget3Finder2 = find.text('VWidget3');
-    final vNesterFinder2 = find.text('Scaffold VNester');
 
-    expect(vWidget1Finder2, findsNothing);
-    expect(vNesterFinder2, findsOneWidget);
-    expect(vWidget2Finder2, findsNothing);
-    expect(vWidget3Finder2, findsOneWidget);
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsOneWidget);
 
     // Pop to '/settings'
     // Tap the add button.
@@ -102,15 +294,11 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder3 = find.text('VWidget1');
-    final vWidget2Finder3 = find.text('VWidget2');
-    final vWidget3Finder3 = find.text('VWidget3');
-    final vNesterFinder3 = find.text('Scaffold VNester');
 
-    expect(vWidget1Finder3, findsNothing);
-    expect(vNesterFinder3, findsOneWidget);
-    expect(vWidget2Finder3, findsOneWidget);
-    expect(vWidget3Finder3, findsNothing);
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+    expect(vWidget3Finder, findsNothing);
 
     // Pop to '/'
     // Tap the add button.
@@ -118,14 +306,682 @@ main() {
     await tester.pumpAndSettle();
 
     // Now, only VWidget2 should be visible
-    final vWidget1Finder4 = find.text('VWidget1');
-    final vWidget2Finder4 = find.text('VWidget2');
-    final vWidget3Finder4 = find.text('VWidget3');
-    final vNesterFinder4 = find.text('Scaffold VNester');
 
-    expect(vWidget1Finder4, findsOneWidget);
-    expect(vNesterFinder4, findsNothing);
-    expect(vWidget2Finder4, findsNothing);
-    expect(vWidget3Finder4, findsNothing);
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
+  });
+
+  testWidgets('VNesterPage with stacked route', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      VRouter(
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Builder(
+              builder: (BuildContext context) {
+                return Scaffold(
+                  body: Text('VWidget1'),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () =>
+                        VRouter.of(context).push('/settings/other'),
+                  ),
+                );
+              },
+            ),
+            stackedRoutes: [
+              VNesterPage(
+                path: '/settings',
+                pageBuilder: (key, child, name) =>
+                    MaterialPage(key: key, child: child, name: name),
+                widgetBuilder: (child) => Builder(
+                  builder: (BuildContext context) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Scaffold VNesterPage')),
+                      body: child,
+                    );
+                  },
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: null,
+                    aliases: [':_(.*)'],
+                    widget: Builder(
+                      builder: (BuildContext context) {
+                        return OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: Text('VWidget2'),
+                        );
+                      },
+                    ),
+                  ),
+                ],
+                stackedRoutes: [
+                  VWidget(
+                    path: 'other',
+                    widget: Builder(
+                      builder: (BuildContext context) {
+                        return OutlinedButton(
+                          onPressed: () => VRouter.of(context).pop(),
+                          child: Text('VWidget3'),
+                        );
+                      },
+                    ),
+                  )
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // At first we are on "/" so only VWidget1 should be shown
+
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNesterPage');
+
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
+
+    // Navigate to '/settings/other'
+    // Tap the add button.
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsOneWidget);
+
+    // Pop to '/settings'
+    // Tap the add button.
+    await tester.tap(find.byType(OutlinedButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+    expect(vWidget3Finder, findsNothing);
+
+    // Pop to '/'
+    // Tap the add button.
+    await tester.tap(find.byType(OutlinedButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
+  });
+
+  testWidgets('VNesterPage named', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      VRouter(
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Builder(
+              builder: (BuildContext context) {
+                return Scaffold(
+                  body: Text('VWidget1'),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () => VRouter.of(context).pushNamed('settings'),
+                  ),
+                );
+              },
+            ),
+            stackedRoutes: [
+              VNesterPage(
+                path: '/settings',
+                name: 'settings',
+                pageBuilder: (key, child, name) =>
+                    MaterialPage(key: key, child: child, name: name),
+                widgetBuilder: (child) => Builder(
+                  builder: (BuildContext context) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Scaffold VNesterPage')),
+                      body: child,
+                    );
+                  },
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: null,
+                    widget: Text('VWidget2'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // At first we are on "/" so only VWidget1 should be shown
+
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vNesterFinder = find.text('Scaffold VNesterPage');
+
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+
+    // Navigate to '/settings' by name
+    // Tap the add button.
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+  });
+
+  testWidgets('VNesterPage name in nestedRoutes', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      VRouter(
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Builder(
+              builder: (BuildContext context) {
+                return Scaffold(
+                  body: Text('VWidget1'),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () => VRouter.of(context).pushNamed('settings'),
+                  ),
+                );
+              },
+            ),
+            stackedRoutes: [
+              VNesterPage(
+                path: '/settings',
+                pageBuilder: (key, child, name) =>
+                    MaterialPage(key: key, child: child, name: name),
+                widgetBuilder: (child) => Builder(
+                  builder: (BuildContext context) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Scaffold VNesterPage')),
+                      body: child,
+                    );
+                  },
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: null,
+                    name: 'settings',
+                    widget: Text('VWidget2'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // At first we are on "/" so only VWidget1 should be shown
+
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vNesterFinder = find.text('Scaffold VNesterPage');
+
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+
+    // Navigate to '/settings' by name
+    // Tap the add button.
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+  });
+
+  testWidgets('VNesterPage name in stackedRoutes', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      VRouter(
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Builder(
+              builder: (BuildContext context) {
+                return Scaffold(
+                  body: Text('VWidget1'),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () => VRouter.of(context).pushNamed('settings'),
+                  ),
+                );
+              },
+            ),
+            stackedRoutes: [
+              VNesterPage(
+                path: '/settings',
+                pageBuilder: (key, child, name) =>
+                    MaterialPage(key: key, child: child, name: name),
+                widgetBuilder: (child) => Builder(
+                  builder: (BuildContext context) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Scaffold VNesterPage')),
+                      body: child,
+                    );
+                  },
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: null,
+                    widget: Text('VWidget2'),
+                  ),
+                ],
+                stackedRoutes: [
+                  VWidget(
+                    path: null,
+                    name: 'settings',
+                    widget: Text('VWidget3'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNesterPage');
+
+    // At first we are on "/" so only VWidget1 should be shown
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsNothing);
+
+    // Navigate to '/settings' by name
+    // Tap the add button.
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsOneWidget);
+  });
+
+  testWidgets('VNesterPage named with alias default',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      VRouter(
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Builder(
+              builder: (BuildContext context) {
+                return Scaffold(
+                  body: Text('VWidget1'),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () => VRouter.of(context).pushNamed('settings'),
+                  ),
+                );
+              },
+            ),
+            stackedRoutes: [
+              VNesterPage(
+                path: '/:id',
+                name: 'settings',
+                aliases: ['/settings'],
+                pageBuilder: (key, child, name) =>
+                    MaterialPage(key: key, child: child, name: name),
+                widgetBuilder: (child) => Builder(
+                  builder: (BuildContext context) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Scaffold VNesterPage')),
+                      body: child,
+                    );
+                  },
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: null,
+                    widget: Text('VWidget2'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // At first we are on "/" so only VWidget1 should be shown
+
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vNesterFinder = find.text('Scaffold VNesterPage');
+
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+
+    // Navigate to '/settings' by name
+    // Tap the add button.
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+  });
+
+  testWidgets('VNesterPage with alias', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      VRouter(
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Builder(
+              builder: (BuildContext context) {
+                return Scaffold(
+                  body: Text('VWidget1'),
+                  floatingActionButton: FloatingActionButton(
+                    onPressed: () => VRouter.of(context).push('/settings/2'),
+                  ),
+                );
+              },
+            ),
+            stackedRoutes: [
+              VNesterPage(
+                path: '/settings',
+                aliases: ['/settings/:id'],
+                pageBuilder: (key, child, name) =>
+                    MaterialPage(key: key, child: child, name: name),
+                widgetBuilder: (child) => Builder(
+                  builder: (BuildContext context) {
+                    return Scaffold(
+                      appBar: AppBar(title: Text('Scaffold VNesterPage')),
+                      body: child,
+                    );
+                  },
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: null,
+                    widget: Text('VWidget2'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // At first we are on "/" so only VWidget1 should be shown
+
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vNesterFinder = find.text('Scaffold VNesterPage');
+
+    expect(vWidget1Finder, findsOneWidget);
+    expect(vNesterFinder, findsNothing);
+    expect(vWidget2Finder, findsNothing);
+
+    // Navigate to '/settings/2' by push
+    // Tap the add button.
+    await tester.tap(find.byType(FloatingActionButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+  });
+
+  testWidgets('VNesterPage pop in nested route', (WidgetTester tester) async {
+    await tester.pumpWidget(
+      VRouter(
+        initialUrl: '/other',
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Text('VWidget1'),
+            stackedRoutes: [
+              VNesterPage(
+                path: null,
+                aliases: ['scaffold'],
+                pageBuilder: (key, child, name) =>
+                    MaterialPage(key: key, child: child, name: name),
+                widgetBuilder: (child) => Scaffold(
+                  appBar: AppBar(title: Text('Scaffold VNesterPage')),
+                  body: child,
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: '/settings',
+                    widget: Text('VWidget2'),
+                    stackedRoutes: [
+                      VWidget(
+                        path: '/other',
+                        widget: Builder(
+                          builder: (BuildContext context) {
+                            return OutlinedButton(
+                              onPressed: () => context.vRouter.pop(),
+                              child: Text('VWidget3'),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // '/other' is the initial url
+
+    // Now, only VWidget2 should be visible
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNesterPage');
+
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsOneWidget);
+
+    // Pop to '/settings'
+    // Tap the add button.
+    await tester.tap(find.byType(OutlinedButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+    expect(vWidget3Finder, findsNothing);
+  });
+
+  testWidgets('VNesterPage vanilla Navigator pop in nested route',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      VRouter(
+        initialUrl: '/other',
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Text('VWidget1'),
+            stackedRoutes: [
+              VNesterPage(
+                path: null,
+                aliases: ['scaffold'],
+                pageBuilder: (key, child, name) =>
+                    MaterialPage(key: key, child: child, name: name),
+                widgetBuilder: (child) => Scaffold(
+                  appBar: AppBar(title: Text('Scaffold VNesterPage')),
+                  body: child,
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: '/settings',
+                    widget: Text('VWidget2'),
+                    stackedRoutes: [
+                      VWidget(
+                        path: '/other',
+                        widget: Builder(
+                          builder: (BuildContext context) {
+                            return OutlinedButton(
+                              onPressed: () => Navigator.of(context).pop(),
+                              child: Text('VWidget3'),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // '/other' is the initial url
+
+    // Now, only VWidget2 should be visible
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNesterPage');
+
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsOneWidget);
+
+    // Pop to '/settings'
+    // Tap the add button.
+    await tester.tap(find.byType(OutlinedButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+    expect(vWidget3Finder, findsNothing);
+  });
+
+  testWidgets('VNesterPage systemPop in nested route',
+      (WidgetTester tester) async {
+    await tester.pumpWidget(
+      VRouter(
+        initialUrl: '/other',
+        routes: [
+          VWidget(
+            path: '/',
+            widget: Text('VWidget1'),
+            stackedRoutes: [
+              VNesterPage(
+                path: null,
+                aliases: ['scaffold'],
+                pageBuilder: (key, child, name) =>
+                    MaterialPage(key: key, child: child, name: name),
+                widgetBuilder: (child) => Scaffold(
+                  appBar: AppBar(title: Text('Scaffold VNesterPage')),
+                  body: child,
+                ),
+                nestedRoutes: [
+                  VWidget(
+                    path: '/settings',
+                    widget: Text('VWidget2'),
+                    stackedRoutes: [
+                      VWidget(
+                        path: '/other',
+                        widget: Builder(
+                          builder: (BuildContext context) {
+                            return OutlinedButton(
+                              onPressed: () => context.vRouter.systemPop(),
+                              child: Text('VWidget3'),
+                            );
+                          },
+                        ),
+                      )
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // '/other' is the initial url
+
+    // Now, only VWidget2 should be visible
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+    final vWidget3Finder = find.text('VWidget3');
+    final vNesterFinder = find.text('Scaffold VNesterPage');
+
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsNothing);
+    expect(vWidget3Finder, findsOneWidget);
+
+    // Pop to '/settings'
+    // Tap the add button.
+    await tester.tap(find.byType(OutlinedButton));
+    await tester.pumpAndSettle();
+
+    // Now, only VWidget2 should be visible
+    expect(vWidget1Finder, findsNothing);
+    expect(vNesterFinder, findsOneWidget);
+    expect(vWidget2Finder, findsOneWidget);
+    expect(vWidget3Finder, findsNothing);
   });
 }

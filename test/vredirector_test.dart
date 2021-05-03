@@ -33,11 +33,11 @@ main() {
 
       // At first we are on "/" so only VWidget1 should be shown
 
-      final vWidget1Finder1 = find.text('VWidget1');
-      final vWidget2Finder1 = find.text('VWidget2');
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
 
-      expect(vWidget1Finder1, findsOneWidget);
-      expect(vWidget2Finder1, findsNothing);
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
 
       // Try navigating to 'settings'
       // Tap the add button.
@@ -46,11 +46,8 @@ main() {
 
       // The navigation should have been stopped
       // so still only VWidget1 should be visible
-      final vWidget1Finder2 = find.text('VWidget1');
-      final vWidget2Finder2 = find.text('VWidget2');
-
-      expect(vWidget1Finder2, findsOneWidget);
-      expect(vWidget2Finder2, findsNothing);
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
     });
 
     testWidgets('vRedirector.push', (WidgetTester tester) async {
@@ -86,13 +83,13 @@ main() {
 
       // At first we are on "/" so only VWidget1 should be shown
 
-      final vWidget1Finder1 = find.text('VWidget1');
-      final vWidget2Finder1 = find.text('VWidget2');
-      final vWidget3Finder1 = find.text('VWidget3');
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
+      final vWidget3Finder = find.text('VWidget3');
 
-      expect(vWidget1Finder1, findsOneWidget);
-      expect(vWidget2Finder1, findsNothing);
-      expect(vWidget3Finder1, findsNothing);
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
+      expect(vWidget3Finder, findsNothing);
 
       // Try navigating to 'settings'
       // Tap the add button.
@@ -101,13 +98,9 @@ main() {
 
       // The navigation should have been redirected to /other
       // So only VWidget3 should be visible
-      final vWidget1Finder2 = find.text('VWidget1');
-      final vWidget2Finder2 = find.text('VWidget2');
-      final vWidget3Finder2 = find.text('VWidget3');
-
-      expect(vWidget1Finder2, findsNothing);
-      expect(vWidget2Finder2, findsNothing);
-      expect(vWidget3Finder2, findsOneWidget);
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsNothing);
+      expect(vWidget3Finder, findsOneWidget);
     });
 
     testWidgets('vRedirector.pop', (WidgetTester tester) async {
@@ -145,13 +138,13 @@ main() {
       // At first we are on "/settings" (because we set initialUrl)
       // so only VWidget should be shown
 
-      final vWidget1Finder1 = find.text('VWidget1');
-      final vWidget2Finder1 = find.text('VWidget2');
-      final vWidget3Finder1 = find.text('VWidget3');
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
+      final vWidget3Finder = find.text('VWidget3');
 
-      expect(vWidget1Finder1, findsNothing);
-      expect(vWidget2Finder1, findsOneWidget);
-      expect(vWidget3Finder1, findsNothing);
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsOneWidget);
+      expect(vWidget3Finder, findsNothing);
 
       // Try navigating to '/other'
       // Tap the add button.
@@ -160,13 +153,9 @@ main() {
 
       // The navigation should have been redirected to / because we popped instead
       // So only VWidget should be visible
-      final vWidget1Finder2 = find.text('VWidget1');
-      final vWidget2Finder2 = find.text('VWidget2');
-      final vWidget3Finder2 = find.text('VWidget3');
-
-      expect(vWidget1Finder2, findsOneWidget);
-      expect(vWidget2Finder2, findsNothing);
-      expect(vWidget3Finder2, findsNothing);
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
+      expect(vWidget3Finder, findsNothing);
     });
 
     testWidgets('vRedirector.systemPop', (WidgetTester tester) async {
@@ -204,13 +193,13 @@ main() {
       // At first we are on "/settings" (because we set initialUrl)
       // so only VWidget should be shown
 
-      final vWidget1Finder1 = find.text('VWidget1');
-      final vWidget2Finder1 = find.text('VWidget2');
-      final vWidget3Finder1 = find.text('VWidget3');
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
+      final vWidget3Finder = find.text('VWidget3');
 
-      expect(vWidget1Finder1, findsNothing);
-      expect(vWidget2Finder1, findsOneWidget);
-      expect(vWidget3Finder1, findsNothing);
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsOneWidget);
+      expect(vWidget3Finder, findsNothing);
 
       // Try navigating to '/other'
       // Tap the add button.
@@ -219,13 +208,9 @@ main() {
 
       // The navigation should have been redirected to / because we popped instead
       // So only VWidget1 should be visible
-      final vWidget1Finder2 = find.text('VWidget1');
-      final vWidget2Finder2 = find.text('VWidget2');
-      final vWidget3Finder2 = find.text('VWidget3');
-
-      expect(vWidget1Finder2, findsOneWidget);
-      expect(vWidget2Finder2, findsNothing);
-      expect(vWidget3Finder2, findsNothing);
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
+      expect(vWidget3Finder, findsNothing);
     });
 
     testWidgets('vRedirector.pushNamed', (WidgetTester tester) async {
@@ -262,13 +247,13 @@ main() {
       // At first we are on "/settings" (because we set initialUrl)
       // so only VWidget should be shown
 
-      final vWidget1Finder1 = find.text('VWidget1');
-      final vWidget2Finder1 = find.text('VWidget2');
-      final vWidget3Finder1 = find.text('VWidget3');
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
+      final vWidget3Finder = find.text('VWidget3');
 
-      expect(vWidget1Finder1, findsNothing);
-      expect(vWidget2Finder1, findsOneWidget);
-      expect(vWidget3Finder1, findsNothing);
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsOneWidget);
+      expect(vWidget3Finder, findsNothing);
 
       // Try navigating to '/'
       // Tap the add button.
@@ -277,13 +262,9 @@ main() {
 
       // The navigation should have been redirected to '/other'
       // So only VWidget should be visible
-      final vWidget1Finder2 = find.text('VWidget1');
-      final vWidget2Finder2 = find.text('VWidget2');
-      final vWidget3Finder2 = find.text('VWidget3');
-
-      expect(vWidget1Finder2, findsNothing);
-      expect(vWidget2Finder2, findsNothing);
-      expect(vWidget3Finder2, findsOneWidget);
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsNothing);
+      expect(vWidget3Finder, findsOneWidget);
     });
   });
 }

@@ -30,11 +30,11 @@ main() {
 
       // At first we are on "/" so only VWidget1 should be shown
 
-      final vWidget1Finder1 = find.text('VWidget1');
-      final vWidget2Finder1 = find.text('VWidget2');
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
 
-      expect(vWidget1Finder1, findsOneWidget);
-      expect(vWidget2Finder1, findsNothing);
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
 
       // Navigate to 'settings'
       // Tap the add button.
@@ -42,11 +42,49 @@ main() {
       await tester.pumpAndSettle();
 
       // Now, only VWidget2 should be visible
-      final vWidget1Finder2 = find.text('VWidget1');
-      final vWidget2Finder2 = find.text('VWidget2');
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsOneWidget);
+    });
 
-      expect(vWidget1Finder2, findsNothing);
-      expect(vWidget2Finder2, findsOneWidget);
+    testWidgets('VRouter push relative', (WidgetTester tester) async {
+      final vRouterKey = GlobalKey<VRouterState>();
+
+      await tester.pumpWidget(
+        VRouter(
+          key: vRouterKey,
+          routes: [
+            VWidget(
+              path: '/',
+              widget: Text('VWidget1'),
+              stackedRoutes: [
+                VWidget(
+                  path: '/settings',
+                  widget: Text('VWidget2'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // At first we are on "/" so only VWidget1 should be shown
+
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
+
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
+
+      // Navigate to 'settings'
+      // Tap the add button.
+      vRouterKey.currentState!.push('settings');
+      await tester.pumpAndSettle();
+
+      // Now, only VWidget2 should be visible
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsOneWidget);
     });
 
     testWidgets('VRouter pop', (WidgetTester tester) async {
@@ -57,10 +95,12 @@ main() {
           key: vRouterKey,
           routes: [
             VWidget(
+              key: ValueKey('VWidget1'),
               path: '/settings',
               widget: Text('VWidget1'),
               stackedRoutes: [
                 VWidget(
+                  key: ValueKey('VWidget2'),
                   path: '/',
                   widget: Text('VWidget2'),
                 ),
@@ -74,11 +114,11 @@ main() {
 
       // At first we are on "/" so only VWidget2 should be shown
 
-      final vWidget1Finder1 = find.text('VWidget1');
-      final vWidget2Finder1 = find.text('VWidget2');
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
 
-      expect(vWidget1Finder1, findsNothing);
-      expect(vWidget2Finder1, findsOneWidget);
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsOneWidget);
 
       // Navigate to 'settings'
       // Tap the add button.
@@ -86,11 +126,8 @@ main() {
       await tester.pumpAndSettle();
 
       // Now, only VWidget2 should be visible
-      final vWidget1Finder2 = find.text('VWidget1');
-      final vWidget2Finder2 = find.text('VWidget2');
-
-      expect(vWidget1Finder2, findsOneWidget);
-      expect(vWidget2Finder2, findsNothing);
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
     });
 
     testWidgets('VRouter systemPop', (WidgetTester tester) async {
@@ -118,11 +155,11 @@ main() {
 
       // At first we are on "/" so only VWidget2 should be shown
 
-      final vWidget1Finder1 = find.text('VWidget1');
-      final vWidget2Finder1 = find.text('VWidget2');
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
 
-      expect(vWidget1Finder1, findsNothing);
-      expect(vWidget2Finder1, findsOneWidget);
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsOneWidget);
 
       // Navigate to 'settings'
       // Tap the add button.
@@ -130,11 +167,8 @@ main() {
       await tester.pumpAndSettle();
 
       // Now, only VWidget2 should be visible
-      final vWidget1Finder2 = find.text('VWidget1');
-      final vWidget2Finder2 = find.text('VWidget2');
-
-      expect(vWidget1Finder2, findsOneWidget);
-      expect(vWidget2Finder2, findsNothing);
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
     });
 
     testWidgets('VRouter pushNamed', (WidgetTester tester) async {
@@ -162,11 +196,11 @@ main() {
 
       // At first we are on "/" so only VWidget1 should be shown
 
-      final vWidget1Finder1 = find.text('VWidget1');
-      final vWidget2Finder1 = find.text('VWidget2');
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
 
-      expect(vWidget1Finder1, findsOneWidget);
-      expect(vWidget2Finder1, findsNothing);
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
 
       // Navigate to 'settings'
       // Tap the add button.
@@ -174,11 +208,8 @@ main() {
       await tester.pumpAndSettle();
 
       // Now, only VWidget2 should be visible
-      final vWidget1Finder2 = find.text('VWidget1');
-      final vWidget2Finder2 = find.text('VWidget2');
-
-      expect(vWidget1Finder2, findsNothing);
-      expect(vWidget2Finder2, findsOneWidget);
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsOneWidget);
     });
 
     testWidgets('VRouter pushNamed with path parameters',
@@ -208,11 +239,11 @@ main() {
 
       // At first we are on "/" so only VWidget1 should be shown
 
-      final vWidget1Finder1 = find.text('VWidget1');
-      final vWidget2Finder1 = find.text('VWidget2');
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
 
-      expect(vWidget1Finder1, findsOneWidget);
-      expect(vWidget2Finder1, findsNothing);
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
 
       // Navigate to 'settings'
       // Tap the add button.
@@ -221,11 +252,8 @@ main() {
       await tester.pumpAndSettle();
 
       // Now, only VWidget2 should be visible
-      final vWidget1Finder2 = find.text('VWidget1');
-      final vWidget2Finder2 = find.text('VWidget2');
-
-      expect(vWidget1Finder2, findsNothing);
-      expect(vWidget2Finder2, findsOneWidget);
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsOneWidget);
     });
 
     testWidgets('VRouter push with queryParameters',

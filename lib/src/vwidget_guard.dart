@@ -128,12 +128,12 @@ class VWidgetGuard extends StatefulWidget {
 
   const VWidgetGuard({
     Key? key,
-    this.afterEnter = VRouteElement._voidAfterEnter,
-    this.afterUpdate = VRouteElement._voidAfterUpdate,
-    this.beforeUpdate = VRouteElement._voidBeforeUpdate,
-    this.beforeLeave = VRouteElement._voidBeforeLeave,
-    this.onPop = VRouteElement._voidOnPop,
-    this.onSystemPop = VRouteElement._voidOnSystemPop,
+    this.afterEnter = VGuard._voidAfterEnter,
+    this.afterUpdate = VGuard._voidAfterUpdate,
+    this.beforeUpdate = VGuard._voidBeforeUpdate,
+    this.beforeLeave = VGuard._voidBeforeLeave,
+    this.onPop = VPopHandler._voidOnPop,
+    this.onSystemPop = VPopHandler._voidOnSystemPop,
     required this.child,
   }) : super(key: key);
 
@@ -143,14 +143,10 @@ class VWidgetGuard extends StatefulWidget {
 
 class _VWidgetGuardState extends State<VWidgetGuard> {
   @override
-  void initState() {
+  void didChangeDependencies() {
     VWidgetGuardMessage(vWidgetGuard: widget, localContext: context)
         .dispatch(context);
-    super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      widget.afterEnter(
-          context, VRouter.of(context).previousUrl, VRouter.of(context).url!);
-    });
+    super.didChangeDependencies();
   }
 
   // This is used to try to support hot restart
@@ -165,6 +161,8 @@ class _VWidgetGuardState extends State<VWidgetGuard> {
 
   @override
   Widget build(BuildContext context) {
+    VRouter.of(
+        context); // Makes didChangeDependencies be called when VRouterData changes
     return widget.child;
   }
 }
@@ -182,10 +180,11 @@ class VWidgetGuardMessage extends Notification {
 class VWidgetGuardMessageRoot extends Notification {
   final VWidgetGuard vWidgetGuard;
   final BuildContext localContext;
-  final VRouteElementWithPage associatedVRouteElement;
+  final VRouteElement associatedVRouteElement;
 
-  VWidgetGuardMessageRoot(
-      {required this.vWidgetGuard,
-      required this.localContext,
-      required this.associatedVRouteElement});
+  VWidgetGuardMessageRoot({
+    required this.vWidgetGuard,
+    required this.localContext,
+    required this.associatedVRouteElement,
+  });
 }

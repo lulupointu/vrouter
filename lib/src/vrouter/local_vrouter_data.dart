@@ -2,13 +2,13 @@ part of '../main.dart';
 
 /// An [InheritedWidget] accessible via [VRouter.of(context)]
 ///
-/// [LocalVRouterData] is placed on top of each [VRouteElement.widget], the main goal of having
+/// [LocalVRouterData] is placed on top of each [VRouteElement._rootVRouter], the main goal of having
 /// local classes compared to a single one is that:
 ///   1. [_vRouteElementNode] is specific to the local [VRouteElement] to allow a different
 ///   _  pop event based on where the [VRouteElement] is in the [VRoute]
 ///   2. When a [VRouteElement] is no longer in the route, it has a page animation out. During
 ///   _  this, the old VRouterData should be used, which this [LocalVRouterData] holds
-class LocalVRouterData extends InheritedWidget {
+class LocalVRouterData extends VRouterData {
   /// The [VRouteElementNode] of the associated [VRouteElement]
   final VRouteElementNode _vRouteElementNode;
 
@@ -160,7 +160,7 @@ class LocalVRouterData extends InheritedWidget {
   /// After finding the url and taking charge of the path parameters
   /// it updates the url
   ///
-  /// To specify a name, see [VRouteElementWithPath.name]
+  /// To specify a name, see [VPath.name]
   void pushReplacementNamed(
     String name, {
     Map<String, String> pathParameters = const {},
@@ -195,7 +195,7 @@ class LocalVRouterData extends InheritedWidget {
     Map<String, String> queryParameters = const {},
     Map<String, String> newHistoryState = const {},
   }) =>
-      RootVRouterData.of(_rootVRouterDataContext).pop(
+      RootVRouterData.of(_rootVRouterDataContext).popFromElement(
         _vRouteElementNode.getVRouteElementToPop(),
         pathParameters: pathParameters,
         queryParameters: queryParameters,
@@ -217,8 +217,8 @@ class LocalVRouterData extends InheritedWidget {
     Map<String, String> queryParameters = const {},
     Map<String, String> newHistoryState = const {},
   }) =>
-      RootVRouterData.of(_rootVRouterDataContext).systemPop(
-        _vRouteElementNode.getVRouteElementToPop(),
+      RootVRouterData.of(_rootVRouterDataContext).systemPopFromElement(
+        _vRouteElementNode.getVRouteElementToSystemPop(),
         pathParameters: pathParameters,
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,

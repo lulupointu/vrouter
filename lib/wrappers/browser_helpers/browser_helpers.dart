@@ -57,7 +57,9 @@ class BrowserHelpers {
   /// in sync with [VRouterData.url]
   static String getPathAndQuery({required VRouterModes routerMode}) {
     return (routerMode == VRouterModes.hash)
-        ? html.window.location.hash.substring(1)
+        ? html.window.location.hash.isEmpty
+            ? html.window.location.hash
+            : html.window.location.hash.substring(1)
         : ((html.window.location.pathname ?? '') +
             (html.window.location.search ?? '') +
             html.window.location.hash);

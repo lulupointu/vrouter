@@ -1,3 +1,1 @@
-// TODO: Add tests
-// TODO: Write more examples
-// TODO: Rewrite main example
+// TODO: Document VRouteElementBuilder on vrouter.dev

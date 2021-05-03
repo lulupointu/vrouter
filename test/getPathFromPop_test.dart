@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:test/test.dart';
+import 'package:vrouter/src/main.dart';
 import 'package:vrouter/vrouter.dart';
 
 void main() {
@@ -28,15 +29,15 @@ void main() {
           ],
         );
 
-        final newPath = vRouter
-            .getPathFromPop(
-              elementToPop,
-              pathParameters: {},
-              parentPath: null,
-            )
-            ?.path;
+        final newPathResult = vRouter.getPathFromPop(
+          elementToPop,
+          pathParameters: {},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
 
-        expect(newPath, '/');
+        expect(newPathResult.runtimeType, ValidPopResult);
+        expect((newPathResult as ValidPopResult).path, '/');
       });
 
       test('Pop from relative path to absolute path', () {
@@ -61,15 +62,15 @@ void main() {
           ],
         );
 
-        final newPath = vRouter
-            .getPathFromPop(
-              elementToPop,
-              pathParameters: {},
-              parentPath: null,
-            )
-            ?.path;
+        final newPathResult = vRouter.getPathFromPop(
+          elementToPop,
+          pathParameters: {},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
 
-        expect(newPath, '/home');
+        expect(newPathResult.runtimeType, ValidPopResult);
+        expect((newPathResult as ValidPopResult).path, '/home');
       });
 
       test('Pop from absolute path to relative path', () {
@@ -100,15 +101,15 @@ void main() {
           ],
         );
 
-        final newPath = vRouter
-            .getPathFromPop(
-              elementToPop,
-              pathParameters: {},
-              parentPath: null,
-            )
-            ?.path;
+        final newPathResult = vRouter.getPathFromPop(
+          elementToPop,
+          pathParameters: {},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
 
-        expect(newPath, '/home/profile');
+        expect(newPathResult.runtimeType, ValidPopResult);
+        expect((newPathResult as ValidPopResult).path, '/home/profile');
       });
 
       test('Pop from relative path to relative path', () {
@@ -139,15 +140,15 @@ void main() {
           ],
         );
 
-        final newPath = vRouter
-            .getPathFromPop(
-              elementToPop,
-              pathParameters: {},
-              parentPath: null,
-            )
-            ?.path;
+        final newPathResult = vRouter.getPathFromPop(
+          elementToPop,
+          pathParameters: {},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
 
-        expect(newPath, '/home/profile');
+        expect(newPathResult.runtimeType, ValidPopResult);
+        expect((newPathResult as ValidPopResult).path, '/home/profile');
       });
 
       test('Pop last element', () {
@@ -166,15 +167,14 @@ void main() {
           ],
         );
 
-        final newPath = vRouter
-            .getPathFromPop(
-              elementToPop,
-              pathParameters: {},
-              parentPath: null,
-            )
-            ?.path;
+        final newPathResult = vRouter.getPathFromPop(
+          elementToPop,
+          pathParameters: {},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
 
-        expect(newPath, null);
+        expect(newPathResult.runtimeType, PoppingPopResult);
       });
 
       test('Pop with right pathParameters', () {
@@ -205,15 +205,15 @@ void main() {
           ],
         );
 
-        final newPath = vRouter
-            .getPathFromPop(
-              elementToPop,
-              pathParameters: {'profileId': '2'},
-              parentPath: null,
-            )
-            ?.path;
+        final newPathResult = vRouter.getPathFromPop(
+          elementToPop,
+          pathParameters: {'profileId': '2'},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
 
-        expect(newPath, '/home/2');
+        expect(newPathResult.runtimeType, ValidPopResult);
+        expect((newPathResult as ValidPopResult).path, '/home/2');
       });
 
       test('Pop with wrong pathParameters', () {
@@ -244,15 +244,58 @@ void main() {
           ],
         );
 
-        final newPath = vRouter
-            .getPathFromPop(
-              elementToPop,
-              pathParameters: {},
-              parentPath: null,
-            )
-            ?.path;
+        final newPathResult = vRouter.getPathFromPop(
+          elementToPop,
+          pathParameters: {},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
 
-        expect(newPath, null);
+        expect(newPathResult.runtimeType, PathParamsPopErrors);
+        expect((newPathResult as PathParamsPopErrors).values.length, 1);
+        expect(newPathResult.values.first.pathParams, []);
+        expect(newPathResult.values.first.missingPathParams, ['profileId']);
+      });
+
+      test('Pop through VNester with wrong pathParameters', () {
+        final elementToPop = VWidget(
+          widget: Container(),
+          path: 'settings',
+        );
+
+        final vRouter = VRouter(
+          routes: [
+            VWidget(
+              widget: Container(),
+              path: ':userId',
+              stackedRoutes: [
+                VNester(
+                  widgetBuilder: (_) => Container(),
+                  path: '/home',
+                  nestedRoutes: [
+                    elementToPop,
+                  ],
+                ),
+                VWidget(
+                  widget: Container(),
+                  path: '/other',
+                ),
+              ],
+            ),
+          ],
+        );
+
+        final newPathResult = vRouter.getPathFromPop(
+          elementToPop,
+          pathParameters: {},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
+
+        expect(newPathResult.runtimeType, PathParamsPopErrors);
+        expect((newPathResult as PathParamsPopErrors).values.length, 1);
+        expect(newPathResult.values.first.pathParams, []);
+        expect(newPathResult.values.first.missingPathParams, ['userId']);
       });
 
       test(
@@ -284,15 +327,15 @@ void main() {
             ],
           );
 
-          final newPath = vRouter
-              .getPathFromPop(
-                elementToPop,
-                pathParameters: {},
-                parentPath: null,
-              )
-              ?.path;
+          final newPathResult = vRouter.getPathFromPop(
+            elementToPop,
+            pathParameters: {},
+            parentPathResult:
+                ValidParentPathResult(path: null, pathParameters: {}),
+          );
 
-          expect(newPath, '/home');
+          expect(newPathResult.runtimeType, ValidPopResult);
+          expect((newPathResult as ValidPopResult).path, '/home');
         },
       );
 
@@ -325,15 +368,15 @@ void main() {
             ],
           );
 
-          final newPath = vRouter
-              .getPathFromPop(
-                elementToPop,
-                pathParameters: {},
-                parentPath: null,
-              )
-              ?.path;
+          final newPathResult = vRouter.getPathFromPop(
+            elementToPop,
+            pathParameters: {},
+            parentPathResult:
+                ValidParentPathResult(path: null, pathParameters: {}),
+          );
 
-          expect(newPath, '/home');
+          expect(newPathResult.runtimeType, ValidPopResult);
+          expect((newPathResult as ValidPopResult).path, '/home');
         },
       );
 
@@ -368,15 +411,15 @@ void main() {
             ],
           );
 
-          final newPath = vRouter
-              .getPathFromPop(
-                elementToPop,
-                pathParameters: {},
-                parentPath: null,
-              )
-              ?.path;
+          final newPathResult = vRouter.getPathFromPop(
+            elementToPop,
+            pathParameters: {},
+            parentPathResult:
+                ValidParentPathResult(path: null, pathParameters: {}),
+          );
 
-          expect(newPath, '/home');
+          expect(newPathResult.runtimeType, ValidPopResult);
+          expect((newPathResult as ValidPopResult).path, '/home');
         },
       );
 
@@ -403,15 +446,15 @@ void main() {
           ],
         );
 
-        final newPath = vRouter
-            .getPathFromPop(
-              elementToPop,
-              pathParameters: {},
-              parentPath: null,
-            )
-            ?.path;
+        final newPathResult = vRouter.getPathFromPop(
+          elementToPop,
+          pathParameters: {},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
 
-        expect(newPath, '/home');
+        expect(newPathResult.runtimeType, ValidPopResult);
+        expect((newPathResult as ValidPopResult).path, '/home');
       });
 
       test('Pop and pathParameters', () {
@@ -437,15 +480,15 @@ void main() {
           ],
         );
 
-        final newPath = vRouter
-            .getPathFromPop(
-              elementToPop,
-              pathParameters: {'id': '1'},
-              parentPath: null,
-            )
-            ?.path;
+        final newPathResult = vRouter.getPathFromPop(
+          elementToPop,
+          pathParameters: {'id': '1'},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
 
-        expect(newPath, '/1');
+        expect(newPathResult.runtimeType, ValidPopResult);
+        expect((newPathResult as ValidPopResult).path, '/1');
       });
 
       test('Pop which includes a null path', () {
@@ -480,15 +523,51 @@ void main() {
           ],
         );
 
-        final newPath = vRouter
-            .getPathFromPop(
-              elementToPop,
-              pathParameters: {},
-              parentPath: null,
-            )
-            ?.path;
+        final newPathResult = vRouter.getPathFromPop(
+          elementToPop,
+          pathParameters: {},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
 
-        expect(newPath, '/settings');
+        expect(newPathResult.runtimeType, ValidPopResult);
+        expect((newPathResult as ValidPopResult).path, '/settings');
+      });
+
+      test('Pop VNester', () {
+        final elementToPop = VNester(
+          widgetBuilder: (child) => Container(),
+          path: null,
+          nestedRoutes: [
+            VWidget(path: '/settings', widget: Container()),
+          ],
+        );
+
+        final vRouter = VRouter(
+          routes: [
+            VWidget(
+              widget: Container(),
+              path: '/',
+              stackedRoutes: [
+                elementToPop,
+                VWidget(
+                  widget: Container(),
+                  path: '/other',
+                ),
+              ],
+            ),
+          ],
+        );
+
+        final newPathResult = vRouter.getPathFromPop(
+          elementToPop,
+          pathParameters: {},
+          parentPathResult:
+              ValidParentPathResult(path: null, pathParameters: {}),
+        );
+
+        expect(newPathResult.runtimeType, ValidPopResult);
+        expect((newPathResult as ValidPopResult).path, '/');
       });
     },
   );

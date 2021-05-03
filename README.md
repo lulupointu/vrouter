@@ -1,8 +1,16 @@
-<p align="center" xmlns="http://www.w3.org/1999/html">
+<p align="center" style="padding: 20px;" xmlns="http://www.w3.org/1999/html">
 <img src="https://raw.githubusercontent.com/lulupointu/vrouter_website/master/assets/logo_whole.svg" alt="VRouter logo" height="100"/>
 </p>
 
+<p align="center">
+<a style="padding: 10px;" href="https://vrouter.dev"><img alt="VRouter website" src="https://img.shields.io/badge/doc-online-brightgreen?link=https://vrouter.dev&logo=data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADIAAAAyCAYAAAAeP4ixAAAACXBIWXMAAACdAAAAtQHSL0nEAAAAGXRFWHRTb2Z0d2FyZQB3d3cuaW5rc2NhcGUub3Jnm+48GgAABGJJREFUaIHNmstvG1UUh787xeM7DlGEFKTWIcFOUhUFlCZ2Xn5EaZoEsaGrpPwFSIUFCFQeCx4thSUbJIQq1D0ibhds0qZpS9t4gSh9BcQ/gkpQiC+LxGkeHt8z4xmJn2TJnjn3nPvzpzP3zthqfnV9CcU4jeUAHYD56bsf/tzY2BjwiQPAGM7y45tfN4vZ0envP1eKc81CXNf9/fUzb7wiyHbXAb4BnvN5dWwHqsGp0b9s2ZTiYxa+fdZaduFih1K8awvLzRY2rLkAhTnnVMp6CaV+sQVnBvrGEsnEH5awTg4lz1grH3LeY+uL8lVCJ9a6+nuGbamUobpY8m46ANTMeWtxYHBy5Ik9sfmoKZWFix3K8I4tT36m+K9kTijzGWz1AJWyXlKGqm1MZqB/VETFcd/yPSul0SenAdtGAAx8ZRsIcHxq3E4FPmxIRUhjZLa0KZnLJubT+vsdI1IqL76UHU24IakIaLg6sZbu7R6yzUMZqlfK3q36Z2fPWYcvbQkAhk4IqZy61L5zQNobc8FpwD4ji0V9FVi1JemRUtHmKRURjeTjdDY4DdhPBFBK1itD02N/Wwsq8wGnLrXLr1QFI6ltjPlk/7EDRsRUjvWOJHRizRLWSWrzbcdR72Oj4bkP033dx211laFamfR+3n/8gBEIQGVq4h97YXXWoKyr+MjspKRkQxrgY0ROJTPi6uRjS1gnT7c6DaW1fnAkmxb1RiMa4GMEglAZFe2Hmik3V/Sdx2750YAmRqRUuo9l8wIqvtKp5IMj2S57b8AtPxrQxAiAUcJ1ZXoiNJXcTElEA9V8P9g0yeWivoaEytGevJt0A1PRKe++lMZi0bvdLMb6bYipnByX7VZ3KT9beEYUaKEBAiNyKplcECra0/cPZ7oGbXESGiAwAnIqwwGo5OeKkdEAoREplReOZnKul3xki9Nt3m8SGsBNCQ0QGtnWBUnQ8Ikx6+41P1NISHIpZb6QxEEAI5WSXgbu2uJsVOKgAcGIALJeyU1P1PzOSWnUkPVGXYGMSKl09fcMN6LitaXuCWncuFLy7gSZW1AiIKVy8iCV0ddKnmRsDXlv1BXYiJhK314qXlvq3vNdh18WlAhMA8IRASGV3Xd8cdKAkEakVNK93UOu1g+99tSvEhrKsBKGBoBsdW1c9IJRLNvi8jMTKuG6KVnWYFeqPfMJOxBgvrp+B5Ddo9omYlhZLOu5sOPD9ki9uGi1l2hTmZZytUQEIqNyvVLSr7aSoCUiEBEV0xoNiIAItEylZRoQAREA4xDq2r81uHUaEJGRywW9oiDM9f96pexZ1yOJIjECUHNC9EpENCBCIyGoLEdFAyI0AgGpGCPar0kVqZEAVCKlAREbARkVFWFv1BW5ERsVBdcWy571iUxQRW4EwDR7+hFxb9QVi5FK0bvRiEpcNCAmI+BDJSYaEKORA1QMV+OiATEagb1UFEb0C9j/VgvV9dvzq+tLcdcJfc8ulzlfw1j/KdGq/gO/0V+vSHNXPQAAAABJRU5ErkJggg=="></a>
+<a style="padding: 10px;" href="https://discord.gg/aVnpYZVx"><img alt="Join our discord" src="https://img.shields.io/discord/837286025775808543?logo=discord&link=https://discord.gg/aVnpYZVx"></a>
+<a style="padding: 10px;" href="https://github.com/lulupointu/vrouter"><img alt="Github repo" src="https://img.shields.io/github/stars/lulupointu/vrouter?label=stars&logo=github&link=https://github.com/lulupointu/vrouter"></a>
+<a style="padding: 10px;" href="https://pub.dev/packages/vrouter"><img alt="pub package" src="https://img.shields.io/badge/dynamic/json?link=https://pub.dev/packages/vrouter&label=likes&query=%24.likeCount&url=https://pub.dev/api/packages/vrouter/score&logo=data:image/png;base64,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oAgv3LohwJZfBSATgAOIBSL9dtJN586K+fIrASQCsNvqqmJoDeSbVXuAMb8aQCyAAZBnkRtIt6huEgtw5tcACAUA9xaH5REgqB489+grvP/bTgMgEkACqEPBq7Ee73/30wEIBLAAPAKp9Vj/w6MWoCiABmAgyC7HKaAHKAgQAEwF8ssx7gUAgLwABcCIQLAanwAEICdAA6ATCBdj2wtAAFkBKgCNQLYWlwAMICNAB8ATKJZiEgACpAXGb4HfC5gRaFbiOQ5AAVICx40AoAaAdVgEwACJwNjsdTMAvQFwFY69AA6QCNw2B1AgYJZgEEAA1AUm714/xQGQgyBta74XYADmBKbvXr/JCWBUxgIogJrA9L3rN3znTspUAAdQFZh8cicgANPjABKgIjB9+V/6mZCFMhPAAlQExpj+DHCV0V6ABogF4oNAOEfBSpkI4AFigan/QjoIjBrtBQSAWOAu5nNhF0UXoACUut9/FFgL0AVIAKXufXcCawGyAA2g1L03rMPgKFmACFD65r3QWoAoQAUofb2H9vbFYpEEyAClw3t8By4URYAOUDr8ou/AhSIIGACUXmkFAROAlhAwAmgFATOAFhAwBAhU4HdEGQIEKfDPkz8QZQgQC/wirFO2Svx0mfr7k2fg9WWvGUBp8cJjwjphqcTPlq1Fhpl4BGwQQNI7B5ALcBMA4zsHUAhwEoDjuwdQCXAZIOJ7AFALmBOg0nsB0AgYGWDT+wHQChANCOk9AQAE0Aa09L4AQAJwBXJ4fwBgAY2CUXSvACgBq+ULIBgBbwChCPgDCETAI0AYAj4BghDwChCCgF+AAAQ8A/gX8A3gXcA7gG8B/wCeBQIA8CsQAoBXgSAAfAqEAeBRIBAAfwKhAHgTCAbAl0A4AJ4EAgLwIxASgBeBoAB8CIQF4EEgMAD3AqEBOBcIDsC1QHgAjgUCBHArECKAU4EgAVwKhAngUCBQgNJXPR1uaqfvpLIaODLPSQ34Dvq0mqz+ByXWaMhJ5IvkAAAAAElFTkSuQmCCICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIA=="></a>
+</p>
+
 ---
+
 
 A Flutter package that makes navigation and routing easy.
 
@@ -17,512 +25,291 @@ Here are a few things that this package will make easy:
 * Customizable pop events
 * And much more...
 
-## Overview
+# Index
 
-The goal of this package is to implement a routing system which is
-similar to the one in Vue.js (named vue router).
+- [Index](#index)
+- [Getting started](#getting-started)
+  - [VRouter](#vrouter)
+  - [VRouteElements](#vrouteelements)
+    - [VWidget](#vwidget)
+    - [VGuard](#vguard)
+    - [VRouteRedirector](#vrouteredirector)
+    - [VNester](#vnester)
+    - [VPopHandler](#vpophandler)
+  - [Navigation](#navigation)
+- [Useful notions](#useful-notions)
+  - [Composition](#composition)
+    - [Compose VRouteElements](#compose-vrouteelements)
+    - [Create custom VRouteElements](#create-custom-vrouteelements)
+  - [Path](#path)
+    - [Relative path](#relative-path)
+    - [Path parameters](#path-parameters)
+    - [Path parameters regexp](#path-parameters-regexp)
+    - [Aliases](#aliases)
+  - [VRedirector](#vredirector)
+- [Go Beyond](#go-beyond)
+  - [Initial url](#initial-url)
+  - [Named route](#named-route)
+  - [Transitions](#transitions)
+- [Much more](#much-more)
 
-The idea is to use the `VRouter` widget on top of your app, and use
-`VRouteElement` to create your routes.
+
+# Getting started
+
+## VRouter
+
+**VRouter** is a widget which handles the navigation, it acts as a MaterialApp but also takes a *routes* arguments.
 
 ```dart
 VRouter(
-  routes: [
-    // This matches the path '/login'
-    VWidget(
-      path: '/login',
-      widget: LoginScreen(),
-    ),
-    
-    VGuard(
-      beforeEnter: (vRedirector) => (isConnected) ? null : vRedirector.push('/login'),
-      stackedRoutes: [
-        VNester(
-          // This matches the path '/in'
-          path: '/in',
-          widgetBuilder: (child) => MyScaffold(child), // The child is from nestedRoutes
-          nestedRoutes: [
-            
-            VWidget(
-              // This matches the path '/in/profile/:id'
-              // :id can be any word and will by accessible as a path parameter
-              path: 'profile/:id',
-              widget: ProfileScreen(),
-            ),
-            VWidget(
-              // This matches the path '/settings'
-              path: '/settings',
-              widget: SettingsScreen(),
-            ),
-          ],
-        ),
-      ],
-    ),
-
-    VRouteRedirector(
-      // This matches any path
-      path: ':_(.+)',
-      // We redirect to /login
-      redirectTo: '/login',
-    )
-  ],
+ debugShowCheckedModeBanner: false, // VRouter acts as a MaterialApp
+ routes: [...], // Put your VRouteElements here
 )
 ```
+
 ## VRouteElements
 
-`VRouteElements` are the building blocks of your routes. Just like widgets,
-you nest them to create your routes.
+`VRouteElements` are the building blocs of your routes.
+
+Note that they are **not** widgets but the way you use them is *very similar* to widgets.
 
 ### VWidget
 
-VWidget is used to display the given `widget` if the given `path` is matched
+**VWidget** maps a path to a widget:
 
 ```dart
-VWidget(
-  path: '/login', 
-  widget: LoginScreen(),
-  stackedRoutes: [
-    VWidget(path: '/home', widget: HomeScreen()),
-  ],
-)
+VWidget(path: '/login', widget: LoginScreen())
 ```
-
-Using `stackedRoutes`, you can stack widget from other `VRouteElement` on top of the given `widget`: Here the `HomeScreen` will be stacked on top of the `LoginScreen`.
-
-
-### VNester
-
-VNester can be used to created `nestedRoutes`. This will allow you to nest your `widgets`
-
-```dart
-VNester(
-  path: '/in',
-  widgetBuilder: (child) => MyScaffold(child), // The child is from nestedRoutes
-  nestedRoutes: [
-    VWidget(
-      path: 'profile',
-      widget: ProfileScreen(),
-    ),
-    VWidget(
-      path: 'settings',
-      widget: ProfileScreen(),
-    ),
-  ],
-)
-```
-
-In the example above, if you have MyScaffold and want to use a different body for different paths, you can use a `VNester`. Here:
-  - In `/in/profile` MyScaffold will have `ProfileScreen` as a `child`
-  - In `/in/settings` MyScaffold will have `SettingsScreen` as a `child`
 
 ### VGuard
 
-`VGuard` helps you control the navigation changes. You can use many methods like `beforeEnter` which will be called at different times to respond to precise navigation events.
-
-In the overview example, `vRedirector` is used to redirect if we are not connected.
-
-### VRouteRedirector
-
-This is useful when you want a `VRouteElement` which only redirects
-
-## Useful notions
-
-If you want detailed explanations of the notions bellow, please have a look
-at the **[vrouter.dev](https://vrouter.dev)** website.
-
-### Programmatic Navigation
-
-Use VRouter to access methods which allow you to navigate:
+**VGuard** allows you to take actions when the route is accessed/leaved:
 
 ```dart
-// Pushing a new url
-context.vRouter.push('/home');
-
-// Pushing a named route
-context.vRouter.pushNamed('home');
-
-// Pushing an external route
-context.vRouter.pushExternal('google.com');
-```
-
-### Named route
-
-Naming a route is simple and allows for simpler navigation,
-just use the `name` attribute of any `VRouteElement` having a path.
-
-### Path parameters
-
-You will often need to match with a certain path pattern
-to the same route. To easily achieve this, you can use
-path parameters. To use them you just need to insert
-:parameterName in the url.
-
-VRouter configuration
-```dart
-VRouter(
-  routes: [
-    VWidget(
-      path: '/user/:id',
-      widget: UserScreen(),
-    ),
-  ],
-)
-```
-
-Access the path parameters in your widgets:
-
-```dart
-class UserScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final id = context.vRouter.pathParameters['id'];
-    
-    ...
-  }
-}
-```
-
-### Transitions
-
-You can either specify a default transition in VRouter, or a transition
-specific to a given route by specifying the transition in the last
-`VRouteElement` in the route
-
-```dart
-VRouter(
-  // This transition will be applied to every route
-  buildTransition: (animation1, _, child) =>
-      FadeTransition(opacity: animation1, child: child),
-  routes: [
-    // No transition is specified, so the default one will play for '/user'
-    VWidget(
-      path: '/user',
-      widget: ProfileScreen(),
-      stackedRoutes: [
-        // The custom transition will be played when accessing '/user/likes'
-        VWidget(
-          path: 'likes',
-          widget: LikesScreen(),
-          buildTransition: (animation1, _, child) =>
-              ScaleTransition(scale: animation1, child: child),
-        )
-      ],
-    ),
-    // No transition is specified, so the default one will play
-    VStacked(path: '/settings', widget: SettingsScreen()),
-  ],
+VGuard(
+ beforeEnter: (vRedirector) async => , // Triggered when a route in stackedRoutes is first displayed
+ beforeUpdate: (vRedirector) async => , // Triggered when a route in stackedRoutes is displayed but changes
+ beforeLeave: (vRedirector, _) async => , // Triggered when VGuard is not part of a new route
+ stackedRoutes: [...],
 );
 ```
 
-### Pop events
+### VRouteRedirector
 
-Pop event are handled by default: The last `VRouteElement` of the `stackedRoutes` of the `context` is popped
-
-But you can also handle a pop event by yourself, notably using the `VRouteElement` called `VPopHandler`:
-
+**VRouteRedirector** redirects from a route to another:
 ```dart
-VRouter(
-  // Every pop event will call this
-  onPop: (vRedirector) async {
-    return vRedirector.push('/other'); // You can use vRedirector to redirect
-  },
-  routes: [
-    VPopHandler(
-      // popping the path /login will call this
-      onPop: (vRedirector) async {
-        vRedirector.stopRedirection(); // You can use vRedirector to stop the redirection
-      },
-      stackedRoutes: [
-        VWidget(path: 'profile', widget: ProfileScreen()),  
-      ],
-    ),
-  ],
-)
+VRouteRedirector(path: '/old/home', redirectTo: '/home')
 ```
 
-### Navigation control
+### VNester
 
-VRouter allows you to have a fine grain control over
-navigation events.
-
-Use the `beforeLeave`, `beforeEnter`, `beforeUpdate`, `afterEnter` or `afterUpdate` to
-catch navigation events, referring to the following navigation
-cycle to know in which order they happen:
-1. Call *beforeLeave* in all deactivated \[VNavigationGuard\]
-2. Call *beforeLeave* in all deactivated \[VRouteElement\]
-3. Call *beforeLeave* in the \[VRouter\]
-4. Call *beforeEnter* in the \[VRouter\]
-5. Call *beforeEnter* in all initialized \[VRouteElement\] of the new route
-6. Call *beforeUpdate* in all reused \[VRouteElement\]
-
-\#\# The history state got in beforeLeave are stored  
-\#\# The state is updated
-
-7. Call *afterEnter* in all initialized \[VNavigationGuard\]
-8. Call *afterEnter* all initialized \[VRouteElement\]
-9. Call *afterEnter* in the \[VRouter\]
-10. Call *afterUpdate* in all reused \[VNavigationGuard\]
-11. Call *afterUpdate* in all reused \[VRouteElement\]
-
-In every before.. function, you can use the first argument to stop the navigation using .stopNavigation()
-
-There are 3 main ways you can access those methods:
-1. `VRouter`
-```dart
-VRouter(
-  afterEnter: (context, String from, String to) => ...,
-  routes: [...],
-)
-```
-2. With a `VRouteElement`: `VGuard`
-```dart
-VRouter(
-  routes: [
-    VGuard(
-      beforeEnter: (vRedirector) => ...,
-      
-      // If any of the stackedRoutes are entered, VGuard.beforeEnter is called
-      stackedRoutes: [
-        ...
-      ],
-    ),
-  ],
-)
-```
-3. With a widget: `VWidgetGuard`
-```dart
-class UserScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return VWidgetGuard(
-      beforeLeave: (vRedirector, _) => ...,
-      child: ...,
-    );
-  }
-}
-```
-
-### Initial url
-
-Maybe you want to redirect people to a certain part of your app when they first launch it. You can d just that with `initialUrl` from `VRouter`:
-
-```dart
-VRouter(
-  initialUrl: '/home',
-  routes: [...],
-)
-```
-
-Note that this will not break deep linking. If your user are on the web and launch `/user` they won't be redirected.
-
-## Much more
-
-There is so much more that this package can do, check out the example
-or have a look at the **[vrouter.dev](https://vrouter.dev)** website.
-
-## Migrate to >=1.1.0
-
-1.1.0 introduces new concept and simplify other, and the cost of breaking changes.
-Here is a quick guide of how to migrate:
-
-### Building routes
-
-**About subroutes**
-
-`subroutes` changed its name. The easiest way is to first change all of them to `stackedRoutes`, then use the indications on `VStacked` and `VChild` to change it to something else if needed.
-
-**VStacked**
-
-`VStacked` becomes `VWidget` and its `subroutes` becomes `stackedRoutes`
-
-*OLD*
-```dart
-VStacked(
-  path: '/yourPath',
-  widget: YourScreen(),
-  subroutes: [...],
-)
-```
-
-*NEW*
-```dart
-VWidget(
-  path: '/yourPath',
-  widget: YourScreen(),
-  stackedRoutes: [...],
-)
-```
-
-**VChild**
-
-Replace your `VChild` by `VWidget` and wrap them in a `VNester` (a new `VRouteElement`) to nest them.
-The easiest way is to look at an example:
-
-*OLD*
-```dart
-VStacked(
-  path: '/in',
-  widget: MyScaffold(),
-  nestedRoutes: [
-    // VChild are accessible via VRouteElementData.vChild
-    VChild(
-      path: 'profile',
-      widget: ProfileScreen(),
-    ),
-    VChild(
-      path: 'settings',
-      widget: SettingsScreen(),
-    ),
-  ],
-)
-```
-
-*NEW*
+**VNester** are used when you need to nested widgets instead of stacking them:
 ```dart
 VNester(
-  path: '/in',
-  widgetBuilder: (child) => MyScaffold(child), // The child is from nestedRoutes
-  nestedRoutes: [
-    VWidget(
-      path: 'profile',
-      widget: ProfileScreen(),
-    ),
-    VWidget(
-      path: 'settings',
-      widget: SettingsScreen(),
-    ),
-  ],
+ path: '/home',
+ widgetBuilder: (child) => MyScaffold(body: child), // child will take the value of the widget in nestedRoutes
+ nestedRoutes: [
+   VWidget(path: 'profile', widget: ProfileScreen()), // path '/home/profile'
+   VWidget(path: 'settings', widget: SettingsScreen()), // path '/home/settings'
+ ],
 )
 ```
 
-Note how `VNester` has `nestedRoutes` instead of `stackedRoutes`. This is because you want the routes bellow to be nested and not stacked.
+### VPopHandler
 
-Also note that `VRouteElementData.of(context).vChild` is not needed anymore since you have the child in the `widgetBuilder`.
-We therefore had to let go of `vChildName`, the new recommended way of knowing which child you have is to parse the url, here is an example:
-
-*OLD*
-```dart
-final index = (VRouteElementData.of(context).vChildName == 'profile') ? 0 : 1;
-```
-
-*NEW*
-```dart
-final index = context.vRouter.url.contains('profile') ? 0 : 1;
-```
-
-**Navigation control**
-
-If you used `beforeEnter`, `beforeUpdate`, `beforeLeave`, `afterEnter` or `afterUpdate` in a `VStacked` or a `VChild`, you now have to extract this logic in a new `VRouteElement` called `VGuard`. Here is how to:
-
-*OLD*
-```dart
-VStacked(
-  beforeEnter: ...,
-  path: '/yourPath',
-  widget: YourScreen(),
-)
-```
-
-*NEW*
-```dart
-VGuard(
-  beforeEnter: ...,
-  stackedRoutes[
-    VWidget(
-      path: '/yourPath',
-      widget: YourScreen(),
-    ),
-  ],
-)
-```
-
-Since `VGuard` uses `stackedRoutes`, it in now easy to wrap multiple routes in a single `VGuard`
-
-If you used `onPop` or `onSystemPop`, apply the same logic as `VGuard` but with `VPopHandler`:
-
-*OLD*
-```dart
-VStacked(
-  onPop: ...,
-  path: '/yourPath',
-  widget: YourScreen(),
-)
-```
-
-*NEW*
+**VPopHandler** helps you control pop events:
 ```dart
 VPopHandler(
-  onPop: ...,
-  stackedRoutes[
-    VWidget(
-      path: '/yourPath',
-      widget: YourScreen(),
-    ),
-  ],
+ onPop: (vRedirector) async =>, // Called when this VRouteElement is popped
+ onSystemPop: (vRedirector) async =>, // Called when this VRouteElement is popped by android back button
+ stackedRoutes: [...],
 )
 ```
 
-If you used `VNavigationGuard`, they have been renamed to `VWidgetGuard`:
+## Navigation
 
-*OLD*
+Navigating is easy, just access `VRouter` with `context.vRouter` and navigate:
+
 ```dart
-class UserScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return VNavigationGuard(
-      beforeLeave: (vRedirector, _) => ...,
-      child: ...,
-    );
-  }
+context.vRouter.push('/home'); // Pushing a new url
+```
+
+# Useful notions
+
+## Composition
+
+`VRouteElement`s are designed like widgets: compose them to create the route you need.
+
+### Compose VRouteElements
+
+To compose `VRouteElement`s, use the **stackedRoutes** attribute (or the **nestedRoutes** attribute for `VNester`):
+
+```dart
+// Composing a VGuard and a VWidget
+VGuard(
+ beforeEnter: (vRedirector) async => !isLoggedIn ? vRedirector.push('/login') : null,
+ stackedRoutes: [
+   VWidget(path: '/home', widget: HomeScreen()),
+ ],
+)
+```
+
+### Create custom VRouteElements
+
+You can even create your own `VRouteElement`, as you extend `VWidget`. You just need to extends `VRouteElementBuilder`:
+
+```dart
+class HomeRoute extends VRouteElementBuilder {
+ static String home = '/home';
+
+ @override
+ List<VRouteElement> buildRoutes() {
+   return [
+     VGuard(
+       // LoginRoute.login = '/login' for example
+       beforeEnter: (vRedirector) async => !isLoggedIn ? vRedirector.push(LoginRoute.login) : null,
+       stackedRoutes: [
+         VWidget(path: home, widget: HomeScreen()),
+       ],
+     ),
+   ];
+ }
 }
 ```
 
-*NEW*
+and then use this `VRouteElement` as any other:
+
 ```dart
-class UserScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return VWidgetGuard(
-      beforeLeave: (vRedirector, _) => ...,
-      child: ...,
-    );
-  }
-}
+VRouter(
+ routes: [
+   HomeRoute(),
+   ...
+ ],
+)
 ```
 
-**About paths**:
-* If you ever used a null path to match the parent, you can still do so but it has to be specified by using `path: null`
-* Every path in `VRouter.routes` have to start with '/'
+This can be used to:
+ * Separate you different routes in different VRouteElement
+ * Create reusable VRouteElement
+ * Use `static String` to organise your paths
 
-### Navigation
+Note: you often want to use a shared `VNester` in different `VRouteElementBuilder`s, for this specific use case, see [vrouter.dev/Custom VRouteElement And Scaling](https://vrouter.dev/guide/Advanced/Custom%20VRouteElement%20And%20Scaling)
 
-`VRouterData` is replaced by `VRouter` so:
-* When you did `VRouterData.of(context).push`
-* You can do `VRouter.of(context).push`
+## Path
 
-You can also use the easier access to VRouter: `context.vRouter`
-So `VRouterData.of(context).push` will become `context.vRouter.push`.
+### Relative path
 
-### Accessing data
+**Paths can be relative**: if you don’t start your path with `/`. If you use `null`, the path will be the one of the parent:
 
-Previously there was 3 ways to access data:
-* `VRouterData`
-* `VRouteData`
-* `VRouteElementData`
+```dart
+VNester(
+ path: '/home',
+ widgetBuilder: (child) => MyScaffold(body: child),
+ nestedRoutes: [
+   VWidget(path: null, widget: HomeScreen()), // Matches '/home'
+   VWidget(path: 'settings', widget: SettingsScreen()), // Matches '/home/settings'
+ ]
+)
+```
 
-Now **everything is store in `VRouter`**, accessible even more easily using `context.vRouter`:
-* `context.vRouter.pathParameters`
-* `context.vRouter.queryParameters`
-* `context.vRouter.historyState`
+### Path parameters
 
-If you did use *historyState*:
-* it was previously a `String` which was different for `VRouterData`, `VRouteData`, `VRouteElementData`.
-* It is now a `Map<String, String>`, unique, and accessible using `context.vRouter.historyState`
-* There was some inconsistances in the naming, you now always use `historyState` and never `routerState`
+**Paths can have path parameters**, just use “:” in front of the path parameter’s name:
+```dart
+VWidget(path: '/user/:id', widget: UserScreen())
+```
 
-For example `context.vRouter.push('/settings', routerState: 'someUserName');` becomes `context.vRouter.push('/settings', historyState: {'username': 'someUserName');`
-And you have access to it using `context.vRouter.historyState['username']`.
+And access it in your widgets using:
+```dart
+context.vRouter.pathParameters['id'];
+```
 
-### Help I can't migrate
+### Path parameters regexp
 
-If despite this guide, you are having trouble migrating, feel free to open [a new issue on github](https://github.com/lulupointu/vrouter/issues/new).
+**Path parameters can use regex**, just put the regex in parentheses. This is often used in VRedirector to redirect any unknown route:
+
+```dart
+// The path parameter name is “_” and it uses the regex “.+” to match every path
+VRouteRedirector(path: ':_(.+)', redirectTo: '/unknown')
+```
+
+Note that such a `VRedirector` should be used as your last `route` otherwise it will always be matched.
+
+### Aliases
+
+**Use aliases for multiple paths**:
+
+```dart
+// Matches '/settings' and '/other'
+VWidget(path: '/settings', aliases: ['/other'], widget: SettingsScreen())
+```
+
+
+## VRedirector
+
+You often want to redirect or stop the current redirection in `VGuard` and `VPopHandler`. For that purpose, you get a `VRedirector`:
+
+```dart
+VGuard(
+ beforeEnter: (vRedirector) async => !isLoggedIn ? vRedirector.push('/login') : null,
+ stackedRoutes: [...],
+)
+```
+
+
+
+# Go Beyond
+
+We have just scratched the surface of what VRouter can do. Here are a few other things which you might like.
+
+
+## Initial url
+
+Maybe you want to redirect people to a certain part of your app when they first launch it, then use `initialUrl`:
+
+```dart
+VRouter(
+ initialUrl: '/home',
+ routes: [...],
+)
+```
+
+## Named route
+
+You might have to access a deeply nested VRouteElement and don’t want to have to write the full url. Just give a name to this VRouteElement:
+```dart
+VWidget(path: 'something', widget: SomeWidget(), name: 'deep')
+```
+
+And navigate using `pushNamed`:
+```dart
+context.vRouter.pushNamed('deep');
+```
+
+## Transitions
+
+You can either specify a default transition in `VRouter`, or a custom one in `VWidget` or `VNester`
+
+```dart
+VRouter(
+ // Default transition
+ buildTransition: (animation1, _, child) => FadeTransition(opacity: animation1, child: child),
+ routes: [
+   // The custom ScaleTransition will play for '/user'
+   VWidget(
+     path: '/user',
+     widget: UsersScreen(),
+     buildTransition: (animation1, _, child) => ScaleTransition(scale: animation1, child: child),
+   )
+   // The default FadeTransition will play for '/settings'
+   VStacked(path: '/settings', widget: SettingsScreen()),
+ ],
+)
+```
+
+# Much more
+
+There is so much more that this package can do, check out the example
+or have a look at the **[vrouter.dev](https://vrouter.dev)** website for more documentation and more examples.
+
+Also don’t hesitate to [join us on discord](https://discord.gg/aVnpYZVx) !

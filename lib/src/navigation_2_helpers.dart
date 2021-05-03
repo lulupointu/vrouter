@@ -40,8 +40,8 @@ class VMaterialApp<T extends Object> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      routerDelegate: VRouterDelegate<T>(child: child),
-      routeInformationParser: SimpleRouteInformationParser(),
+      routerDelegate: VRouterDelegateHelper<T>(child: child),
+      routeInformationParser: VRouteInformationParser(),
       backButtonDispatcher: backButtonDispatcher,
       builder: builder,
       title: title ?? '',
@@ -400,16 +400,16 @@ class VMaterialApp<T extends Object> extends StatelessWidget {
 }
 
 /// This is a helper to create a router in which we nest
-/// a [VRouterDelegate]
+/// a [VRouterDelegateHelper]
 class VRouterHelper extends StatelessWidget {
-  /// The pages that will be displayed in the [VRouterDelegate]
+  /// The pages that will be displayed in the [VRouterDelegateHelper]
   /// Navigator
   final List<Page> pages;
 
-  /// The key of the [VRouterDelegate] navigator
+  /// The key of the [VRouterDelegateHelper] navigator
   final GlobalKey<NavigatorState>? navigatorKey;
 
-  /// The observers of the [VRouterDelegate] navigator
+  /// The observers of the [VRouterDelegateHelper] navigator
   final List<NavigatorObserver>? observers;
 
   /// The [BackButtonDispatcher] of the router
@@ -438,7 +438,7 @@ class VRouterHelper extends StatelessWidget {
   Widget build(BuildContext context) {
     return Router(
       backButtonDispatcher: backButtonDispatcher,
-      routerDelegate: VRouterDelegate(
+      routerDelegate: VRouterDelegateHelper(
         pages: pages,
         navigatorKey: navigatorKey,
         observers: observers,
@@ -451,7 +451,7 @@ class VRouterHelper extends StatelessWidget {
 
 /// A routerDelegate which automatically creates a Navigator
 /// See the details of each attribute to see what they can be used for
-class VRouterDelegate<T extends Object> extends RouterDelegate<T>
+class VRouterDelegateHelper<T extends Object> extends RouterDelegate<T>
     with ChangeNotifier {
   final GlobalKey<NavigatorState>? navigatorKey;
   final List<NavigatorObserver>? observers;
@@ -460,7 +460,7 @@ class VRouterDelegate<T extends Object> extends RouterDelegate<T>
   final bool Function(Route<dynamic>, dynamic)? onPopPage;
   final Future<bool> Function()? onSystemPopPage;
 
-  VRouterDelegate({
+  VRouterDelegateHelper({
     this.child,
     this.pages,
     this.navigatorKey,

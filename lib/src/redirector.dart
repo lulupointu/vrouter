@@ -152,7 +152,7 @@ class VRedirector {
   }) {
     stopRedirection();
     _redirectFunction = (VRouteElementNode vRouteElementNode) =>
-        RootVRouterData.of(_context).pop(
+        RootVRouterData.of(_context).popFromElement(
           vRouteElementNode.getVRouteElementToPop(),
           pathParameters: pathParameters,
           queryParameters: queryParameters,
@@ -170,7 +170,7 @@ class VRedirector {
   }) async {
     stopRedirection();
     _redirectFunction = (VRouteElementNode vRouteElementNode) =>
-        RootVRouterData.of(_context).systemPop(
+        RootVRouterData.of(_context).systemPopFromElement(
           vRouteElementNode.getVRouteElementToPop(),
           pathParameters: pathParameters,
           queryParameters: queryParameters,

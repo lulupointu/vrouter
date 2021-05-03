@@ -4,8 +4,6 @@ part of '../main.dart';
 /// or nestedRoutes
 @immutable
 abstract class VRouteElement {
-  List<VRouteElement> get stackedRoutes;
-
   /// [buildRoute] must return [VRoute] if it constitute (which its subroutes or not) a valid
   /// route given the input parameters
   /// [VRoute] should describe this valid route
@@ -21,10 +19,14 @@ abstract class VRouteElement {
   ///
   /// [parentPathParameters] are the path parameters of every [VRouteElement] above this
   /// one in the route
+  ///
+  /// [buildRoute] basically just checks for a match in stackedRoutes and if any
+  /// adds this [VRouteElement] to the [VRoute]
+  ///
+  /// For more info on buildRoute, see [VRouteElement.buildRoute]
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
-    required String? parentRemainingPath,
-    required Map<String, String> parentPathParameters,
+    required VPathMatch parentVPathMatch,
   });
 
   /// This function takes a name and tries to find the path corresponding to
@@ -32,54 +34,23 @@ abstract class VRouteElement {
   ///
   /// The deeper nested the route the better
   /// The given path parameters have to include at least every path parameters of the final path
-  String? getPathFromName(
+  GetPathFromNameResult getPathFromName(
     String nameToMatch, {
     required Map<String, String> pathParameters,
-    required String? parentPath,
+    required GetNewParentPathResult parentPathResult,
     required Map<String, String> remainingPathParameters,
-  }) {
-    // Check if any subroute matches the name
-    for (var vRouteElement in stackedRoutes) {
-      String? childPathFromName = vRouteElement.getPathFromName(
-        nameToMatch,
-        pathParameters: pathParameters,
-        parentPath: parentPath,
-        remainingPathParameters: remainingPathParameters,
-      );
-      if (childPathFromName != null) {
-        return childPathFromName;
-      }
-    }
+  });
 
-    // Else we return null
-    return null;
-  }
-
-  /// [GetPathFromPopResult.didPop] is true if this [VRouteElement] popped
-  /// [GetPathFromPopResult.path] is null if this path can't be the right one according to
+  /// [VPopResult.didPop] is true if this [VRouteElement] popped
+  /// [VPopResult.extendedPath] is null if this path can't be the right one according to
   ///                                                                     the path parameters
-  /// [GetPathFromPopResult] is null when this [VRouteElement] does not pop AND none of
+  /// [VPopResult] is null when this [VRouteElement] does not pop AND none of
   ///                                                                     its stackedRoutes popped
-  GetPathFromPopResult? getPathFromPop(
+  VPopResult getPathFromPop(
     VRouteElement elementToPop, {
     required Map<String, String> pathParameters,
-    required String? parentPath,
-  }) {
-    // Try to pop from the stackedRoutes
-    for (var vRouteElement in stackedRoutes) {
-      final childPopResult = vRouteElement.getPathFromPop(
-        elementToPop,
-        pathParameters: pathParameters,
-        parentPath: parentPath,
-      );
-      if (childPopResult != null) {
-        return childPopResult;
-      }
-    }
-
-    // If none of the stackedRoutes popped and this did not pop, return a null result
-    return null;
-  }
+    required GetNewParentPathResult parentPathResult,
+  });
 
   /// This is called before the url is updated if this [VRouteElement] was NOT in the
   /// previous route but is in the new route
@@ -94,8 +65,7 @@ abstract class VRouteElement {
   /// Also see:
   ///   * [VRouter.beforeEnter] for router level beforeEnter
   ///   * [VRedirector] to known how to redirect and have access to route information
-  Future<void> Function(VRedirector vRedirector) get beforeEnter =>
-      _voidBeforeEnter;
+  Future<void> beforeEnter(VRedirector vRedirector);
 
   /// This is called before the url is updated if this [VRouteElement] was in the previous
   /// route and is in the new route
@@ -110,8 +80,7 @@ abstract class VRouteElement {
   /// Also see:
   ///   * [VWidgetGuard.beforeUpdate] for widget level beforeUpdate
   ///   * [VRedirector] to known how to redirect and have access to route information
-  Future<void> Function(VRedirector vRedirector) get beforeUpdate =>
-      _voidBeforeUpdate;
+  Future<void> beforeUpdate(VRedirector vRedirector);
 
   /// Called when a url changes, before the url is updated
   /// Use [vRedirector] if you want to redirect or stop the navigation.
@@ -130,10 +99,10 @@ abstract class VRouteElement {
   ///   * [VRouteElement.beforeLeave] for route level beforeLeave
   ///   * [VWidgetGuard.beforeLeave] for widget level beforeLeave
   ///   * [VRedirector] to known how to redirect and have access to route information
-  Future<void> Function(
+  Future<void> beforeLeave(
     VRedirector vRedirector,
     void Function(Map<String, String> state) saveHistoryState,
-  ) get beforeLeave => _voidBeforeLeave;
+  );
 
   /// This is called after the url and the historyState are updated and this [VRouteElement]
   /// was NOT in the previous route and is in the new route
@@ -146,8 +115,7 @@ abstract class VRouteElement {
   /// Also see:
   ///   * [VRouter.afterEnter] for router level afterEnter
   ///   * [VWidgetGuard.afterEnter] for widget level afterEnter
-  void Function(BuildContext context, String? from, String to) get afterEnter =>
-      _voidAfterEnter;
+  void afterEnter(BuildContext context, String? from, String to);
 
   /// This is called after the url and the historyState are updated and this [VRouteElement]
   /// was in the previous route and is in the new route
@@ -159,8 +127,7 @@ abstract class VRouteElement {
   ///
   /// Also see:
   ///   * [VWidgetGuard.afterUpdate] for widget level afterUpdate
-  void Function(BuildContext context, String? from, String to)
-      get afterUpdate => _voidAfterUpdate;
+  void afterUpdate(BuildContext context, String? from, String to);
 
   /// Called when a pop event occurs
   /// A pop event can be called programmatically (with [VRouter.of(context).pop()])
@@ -179,7 +146,7 @@ abstract class VRouteElement {
   ///   * [VRouter.onPop] for router level onPop
   ///   * [VWidgetGuard.onPop] for widget level onPop
   ///   * [VRedirector] to known how to redirect and have access to route information
-  Future<void> Function(VRedirector vRedirector) get onPop => _voidOnPop;
+  Future<void> onPop(VRedirector vRedirector);
 
   /// Called when a system pop event occurs.
   /// This happens on android when the system back button is pressed.
@@ -197,54 +164,164 @@ abstract class VRouteElement {
   ///   * [VRouter.onSystemPop] for route level onSystemPop
   ///   * [VWidgetGuard.onSystemPop] for widget level onSystemPop
   ///   * [VRedirector] to known how to redirect and have access to route information
-  Future<void> Function(VRedirector vRedirector) get onSystemPop =>
-      _voidOnSystemPop;
-
-  /// Default function for [VRouteElement.beforeEnter]
-  /// Basically does nothing
-  static Future<void> _voidBeforeEnter(VRedirector vRedirector) async {}
-
-  /// Default function for [VRouteElement.beforeUpdate]
-  /// Basically does nothing
-  static Future<void> _voidBeforeUpdate(VRedirector vRedirector) async {}
-
-  /// Default function for [VRouteElement.beforeLeave]
-  /// Basically does nothing
-  static Future<void> _voidBeforeLeave(
-    VRedirector? vRedirector,
-    void Function(Map<String, String> state) saveHistoryState,
-  ) async {}
-
-  /// Default function for [VRouteElement.afterEnter]
-  /// Basically does nothing
-  static void _voidAfterEnter(BuildContext context, String? from, String to) {}
-
-  /// Default function for [VRouteElement.afterUpdate]
-  /// Basically does nothing
-  static void _voidAfterUpdate(BuildContext context, String? from, String to) {}
-
-  /// Default function for [VRouteElement.onPop]
-  /// Basically does nothing
-  static Future<void> _voidOnPop(VRedirector vRedirector) async {}
-
-  /// Default function for [VRouteElement.pnSystemPop]
-  /// Basically does nothing
-  static Future<void> _voidOnSystemPop(VRedirector vRedirector) async {}
+  Future<void> onSystemPop(VRedirector vRedirector);
 }
 
 /// Return type of [VRouteElement.getPathFromPop]
-class GetPathFromPopResult {
-  /// [path] should be deducted from the parent path, [VRouteElement.path] and the path parameters,
-  ///  Note the it should be null if the path can not be deduced from the said parameters
+abstract class VPopResult {}
+
+/// This is to be returned if the [VPopResult] is valid
+abstract class FoundPopResult extends VPopResult {
+  /// List of every popping [VRouteElement]
+  List<VRouteElement> get poppedVRouteElements;
+}
+
+/// Return from [VRouteElement.getPathFromPop] when the [VRouteElement] is being popped
+/// due to the pop event
+class PoppingPopResult extends FoundPopResult {
+  /// List of every popping [VRouteElement]
+  ///
+  /// The [VRouteElement] returning this should be part of [poppedVRouteElements]
+  final List<VRouteElement> poppedVRouteElements;
+
+  PoppingPopResult({required this.poppedVRouteElements});
+}
+
+/// Return from [VRouteElement.getPathFromPop] when the [VRouteElement] to pop has been found
+/// but this [VRouteElement] won't pop
+class ValidPopResult extends FoundPopResult {
+  /// [extendedPath] should be deducted from the parent path, [VRouteElement.path]
+  /// and the path parameters
+  ///
+  /// If [path] is null, the app will be put in the background on IOS and Android
   final String? path;
 
-  /// [didPop] should be true if this [VRouteElement] is to be popped
-  final bool didPop;
+  /// List of every popping [VRouteElement]
+  ///
+  /// This should either be passed from [PoppingPopResult] or [ValidPopResult] but never changed
+  final List<VRouteElement> poppedVRouteElements;
 
-  GetPathFromPopResult({
+  ValidPopResult({
     required this.path,
-    required this.didPop,
+    required this.poppedVRouteElements,
   });
+}
+
+/// This is to be returned if the [VPopResult] is NOT valid
+abstract class ErrorPopResult extends VPopResult implements Exception {}
+
+/// Return from [VRouteElement.getPathFromPop] if the [VRouteElement] to pop was
+/// NOT found (it is not this and not in subroutes)
+class NotFoundPopResult extends ErrorPopResult {
+  @override
+  String toString() =>
+      'The VRouteElement to pop was not found. Please open an issue, this should never happen.';
+}
+
+/// Return from [VRouteElement.getPathFromPop] if the [VRouteElement] to pop was
+/// found but the deduced path is not valid due to missing path parameters
+class PathParamsPopErrors extends ErrorPopResult {
+  final List<MissingPathParamsError> values;
+
+  PathParamsPopErrors({
+    required this.values,
+  });
+
+  @override
+  String toString() =>
+      'Could not pop because some path parameters where missing. \n'
+          'Here are the possible path parameters that were expected and the missing ones:\n' +
+      [
+        for (var value in values)
+          '  - Expected path parameters: ${value.pathParams}, missing ones: ${value.missingPathParams}'
+      ].join('\n');
+}
+
+/// Return type of [VRouteElement.getPathFromName]
+abstract class GetPathFromNameResult {}
+
+class ValidNameResult extends GetPathFromNameResult {
+  /// [extendedPath] should be deducted from the parent path, [VRouteElement.path] and the path parameters,
+  ///  Note the it should be null if the path can not be deduced from the said parameters
+  final String path;
+
+  ValidNameResult({required this.path});
+}
+
+abstract class ErrorGetPathFromNameResult extends GetPathFromNameResult
+    implements Error {
+  String get error;
+
+  @override
+  String toString() => error;
+
+  @override
+  StackTrace? get stackTrace => StackTrace.current;
+}
+
+class NotFoundErrorNameResult extends ErrorGetPathFromNameResult {
+  final String name;
+
+  NotFoundErrorNameResult({required this.name});
+
+  String get error => 'Could not find the VRouteElement named $name.';
+}
+
+class NullPathErrorNameResult extends ErrorGetPathFromNameResult {
+  final String name;
+
+  NullPathErrorNameResult({required this.name});
+
+  String get error =>
+      'The VRouteElement named $name as a null path but no parent VRouteElement with a path.\n'
+      'No valid path can therefore be formed.';
+}
+
+abstract class PathParamsError implements Error {
+  List<String> get pathParams;
+
+  String get error;
+
+  @override
+  String toString() => error;
+
+  @override
+  StackTrace? get stackTrace => StackTrace.current;
+}
+
+class MissingPathParamsError extends PathParamsError {
+  final List<String> missingPathParams;
+  final List<String> pathParams;
+
+  MissingPathParamsError(
+      {required this.pathParams, required this.missingPathParams});
+
+  String get error =>
+      'Path parameters given: $pathParams, missing: $missingPathParams';
+}
+
+class OverlyPathParamsError extends PathParamsError {
+  final List<String> expectedPathParams;
+  final List<String> pathParams;
+
+  OverlyPathParamsError(
+      {required this.pathParams, required this.expectedPathParams});
+
+  String get error =>
+      'Path parameters given: $pathParams, expected: $expectedPathParams';
+}
+
+class PathParamsErrorsNameResult extends ErrorGetPathFromNameResult {
+  final List<PathParamsError> values;
+  final String name;
+
+  PathParamsErrorsNameResult({required this.name, required this.values});
+
+  @override
+  String get error =>
+      'Could not find value route for name $name because of path parameters. \n'
+          'Here are the possible path parameters that were expected compared to what you gave:\n' +
+      [for (var value in values) '  - ${value.error}'].join('\n');
 }
 
 /// Hold every information of the current route we are building
@@ -322,6 +399,44 @@ class VRouteElementNode {
     return vRouteElement;
   }
 
+  /// Finding the element to pop for a [VRouteElementNode] means finding which one is at the
+  /// end of the chain of stackedVRouteElementNode (if none then this should be popped)
+  VRouteElement getVRouteElementToSystemPop() {
+    if (stackedVRouteElementNode != null) {
+      return stackedVRouteElementNode!.getVRouteElementToSystemPop();
+    }
+    if (nestedVRouteElementNode != null) {
+      return nestedVRouteElementNode!.getVRouteElementToSystemPop();
+    }
+    return vRouteElement;
+  }
+
+  /// Get the [VRouteElementNode] associated to the given [VRouteElement]
+  /// returns null if the [VRouteElement] is not his nor in the stackedRoutes or the subroutes
+  VRouteElementNode? getVRouteElementNodeFromVRouteElement(
+      VRouteElement vRouteElement) {
+    if (vRouteElement == this.vRouteElement) return this;
+    if (stackedVRouteElementNode != null) {
+      final vRouteElementNode = stackedVRouteElementNode!
+          .getVRouteElementNodeFromVRouteElement(vRouteElement);
+      if (vRouteElementNode != null) return vRouteElementNode;
+    }
+    if (nestedVRouteElementNode != null) {
+      final vRouteElementNode = nestedVRouteElementNode!
+          .getVRouteElementNodeFromVRouteElement(vRouteElement);
+      if (vRouteElementNode != null) return vRouteElementNode;
+    }
+    return null;
+  }
+
+  /// Get a flatten list of the [VRouteElement] from this + all those contained in
+  /// stackedRoutes and subRoutes.
+  List<VRouteElement> getVRouteElements() {
+    return [vRouteElement] +
+        (stackedVRouteElementNode?.getVRouteElements() ?? []) +
+        (nestedVRouteElementNode?.getVRouteElements() ?? []);
+  }
+
   /// This function will search this node and the nested and sub nodes to try to find the node
   /// that hosts [vRouteElement]
   VRouteElementNode? getChildVRouteElementNode({
@@ -353,4 +468,44 @@ class VRouteElementNode {
     // If the VRouteElement was not find anywhere, return null
     return null;
   }
+}
+
+/// Part of [VRouteElement.buildRoute] that must be passed down but can be modified
+abstract class VPathMatch {
+  /// The local path is the one of the current VRouteElement
+  /// If the path has path parameters, those should be replaced
+  String? get localPath;
+}
+
+class ValidVPathMatch extends VPathMatch {
+  /// The remaining of the path after having remove the part of the path that this
+  /// [VPath] has matched
+  final String remainingPath;
+
+  /// The path parameters of the valid [VRoute] which are
+  ///   - Empty if no valid [VRoute] has been found
+  ///   - This [VPath.pathParameters] if [VRouteElement.extendedPath] is absolute
+  ///   - This [VPath.pathParameters] and the parent pathParameters if  [VRouteElement.extendedPath] is relative
+  final Map<String, String> pathParameters;
+
+  /// The local path is the one of the current VRouteElement
+  /// If the path has path parameters, those should be replaced
+  final String? localPath;
+
+  ValidVPathMatch({
+    required this.remainingPath,
+    required this.pathParameters,
+    required this.localPath,
+  });
+}
+
+class InvalidVPathMatch extends VPathMatch implements Error {
+  /// If there is no pathMatch but a VRouteElement needs a ValueKey
+  /// use a constant path (which the user is likely to pop on)
+  final String? localPath;
+
+  InvalidVPathMatch({required this.localPath});
+
+  @override
+  StackTrace? get stackTrace => StackTrace.current;
 }
