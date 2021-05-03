@@ -4,6 +4,11 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.1.1+8\] - 03/05/2021.
+
+* 🛠️ : `VWidgetGuard` was not disposed properly
+* ✨ : Redesigned README: more readable and added `VRouteElementBuilder` info
+
 ## \[1.1.1+7\] - 30/04/2021.
 
 * 🛠️ : `pathParameters` will be passed properly in `VNester`
