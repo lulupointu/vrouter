@@ -4,6 +4,10 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.1.1+9\] - 03/05/2021.
+
+* 🛠️ : pub.dev like count shield was not disposed properly on package updates
+
 ## \[1.1.1+8\] - 03/05/2021.
 
 * 🛠️ : `VWidgetGuard` was not disposed properly
