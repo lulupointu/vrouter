@@ -403,7 +403,6 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     if (url != null) {
       ///   1. Call beforeLeave in all deactivated [VWidgetGuard]
       for (var vWidgetGuardMessageRoot in deactivatedVWidgetGuardsMessagesRoot) {
-        print(vWidgetGuardMessageRoot.vWidgetGuard.key);
         await vWidgetGuardMessageRoot.vWidgetGuard.beforeLeave(vRedirector, saveHistoryState);
         if (!vRedirector._shouldUpdate) {
           await _abortUpdateUrl(
