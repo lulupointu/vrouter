@@ -11,54 +11,58 @@ void main() {
           path: '/login',
           widget: LoginWidget(),
           stackedRoutes: [
-            VPopHandler(
-              onPop: (_) async => print('POP'),
-              stackedRoutes: [
-                VNester(
-                  path: null,
-                  name: 'VNester1',
-                  widgetBuilder: (child) => MyScaffold(
-                    child,
-                    title: 'VNester1',
-                  ),
-                  nestedRoutes: [
-                    VWidget(
-                      path: '/profile/:username',
-                      // :username is a path parameter and can be any value
-                      name: 'profile',
-                      // We also give a name for easier navigation
-                      widget: ProfileWidget(),
-
-                      // The path '/profile' might also match this path
-                      // In this case, we must handle the empty pathParameter
-                      aliases: ['/profile'],
-                    ),
-                    VWidget(
-                      path: '/settings',
-                      widget: InfoWidget(),
-
-                      // Custom transition
-                      buildTransition: (animation, ___, child) {
-                        return ScaleTransition(
-                          scale: animation,
-                          child: child,
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
+            ConnectedRoutes(), // Custom VRouteElement
           ],
         ),
         // This redirect every unknown routes to /login
         VRouteRedirector(
           redirectTo: '/login',
-          path: r':_(.*)',
+          path: r':_(.*)', // .* is a regexp which matching every paths
         ),
       ],
     ),
   );
+}
+
+// Extend VRouteElementBuilder to create your own VRouteElement
+class ConnectedRoutes extends VRouteElementBuilder {
+  static final String profile = 'profile';
+
+  static void toProfile(BuildContext context, String username) =>
+      context.vRouter.push('/$username/$profile');
+
+  static final String settings = 'settings';
+
+  static void toSettings(BuildContext context, String username) =>
+      context.vRouter.push('/$username/$settings');
+
+  @override
+  List<VRouteElement> buildRoutes() {
+    return [
+      VNester(
+        path: '/:username', // :username is a path parameter and can be any value
+        widgetBuilder: (child) => MyScaffold(child),
+        nestedRoutes: [
+          VWidget(
+            path: profile,
+            widget: ProfileWidget(),
+          ),
+          VWidget(
+            path: settings,
+            widget: SettingsWidget(),
+
+            // Custom transition
+            buildTransition: (animation, ___, child) {
+              return ScaleTransition(
+                scale: animation,
+                child: child,
+              );
+            },
+          ),
+        ],
+      ),
+    ];
+  }
 }
 
 class LoginWidget extends StatefulWidget {
@@ -90,16 +94,10 @@ class _LoginWidgetState extends State<LoginWidget> {
                   child: Form(
                     key: _formKey,
                     child: TextFormField(
-                        textAlign: TextAlign.center,
-                        onChanged: (value) => name = value,
-                        initialValue: 'bob',
-                        validator: (_) {
-                          return (name == '')
-                              ? 'Please enter your name'
-                              : name.contains('/')
-                                  ? 'Please don\'t put \'\\ in your name'
-                                  : null;
-                        }),
+                      textAlign: TextAlign.center,
+                      onChanged: (value) => name = value,
+                      initialValue: 'bob',
+                    ),
                   ),
                 ),
               ],
@@ -113,7 +111,7 @@ class _LoginWidgetState extends State<LoginWidget> {
               heroTag: 'FAB',
               onPressed: () {
                 setState(() => (_formKey.currentState!.validate())
-                    ? VRouter.of(context).push('/profile/$name')
+                    ? ConnectedRoutes.toProfile(context, name)
                     : null);
               },
               child: Icon(Icons.login),
@@ -126,53 +124,34 @@ class _LoginWidgetState extends State<LoginWidget> {
 }
 
 class MyScaffold extends StatelessWidget {
-  final Widget vChild;
-  final String title;
+  final Widget child;
 
-  const MyScaffold(
-    this.vChild, {
-    Key? key,
-    required this.title,
-  }) : super(key: key);
+  const MyScaffold(this.child);
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = (VRouter.of(context).url!.contains('profile')) ? 0 : 1;
-
     return Scaffold(
       appBar: AppBar(
-        title: Text('You are connected | $title'),
+        title: Text('You are connected'),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        // We check the vChild name to known where we are
-        currentIndex: currentIndex,
+        // We can access the url with VRouter.of(context).url
+        currentIndex: (VRouter.of(context).url!.contains(ConnectedRoutes.profile)) ? 0 : 1,
         items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline), label: 'Profile'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.info_outline), label: 'Info'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'Info'),
         ],
         onTap: (int index) {
-          if (currentIndex != index) {
-            if (index == 0) {
-              // We use the name to navigate
-              // We can specify the username in a map
-              // Since we are on settings, the username is stored in the VRouter history state
-              VRouter.of(context).pushNamed('profile', pathParameters: {
-                'username':
-                    VRouter.of(context).historyState['username'] ?? 'stranger'
-              });
-            } else if (index == 1 && currentIndex != 1) {
-              // We push the settings and store the username in the VRouter history state
-              // We can access this username via the global path parameters (stored in VRoute)
-              VRouter.of(context).push('/settings', historyState: {
-                'username': VRouter.of(context).pathParameters['username']!
-              });
-            }
+          // We can access this username via the local path parameters (stored in VRouteElement)
+          final username = VRouter.of(context).pathParameters['username']!;
+          if (index == 0) {
+            ConnectedRoutes.toProfile(context, username);
+          } else {
+            ConnectedRoutes.toSettings(context, username);
           }
         },
       ),
-      body: vChild,
+      body: child,
 
       // This FAB is shared with login and shows hero animations working with no issues
       floatingActionButton: FloatingActionButton(
@@ -206,16 +185,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                // We can access this username via the local path parameters (stored in VRouteElement)
-                'Hello ${VRouter.of(context).pathParameters['username'] ?? 'stranger'}',
-                style: textStyle.copyWith(fontSize: textStyle.fontSize! + 2),
-              ),
-              SizedBox(height: 50),
               TextButton(
                 onPressed: () {
-                  VRouter.of(context)
-                      .replaceHistoryState({'count': '${count + 1}'});
+                  VRouter.of(context).replaceHistoryState({'count': '${count + 1}'});
                   setState(() => count++);
                 },
                 child: Container(
@@ -223,8 +195,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     borderRadius: BorderRadius.circular(50),
                     color: Colors.blueAccent,
                   ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                   child: Text(
                     'Your pressed this button $count times',
                     style: buttonTextStyle,
@@ -253,7 +224,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   }
 }
 
-class InfoWidget extends StatelessWidget {
+class SettingsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -263,13 +234,7 @@ class InfoWidget extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              // We can access this username via the history state (stored in VRouter)
-              'Here are you empty info, ${VRouter.of(context).historyState['username'] ?? 'stranger'}',
-              style: textStyle.copyWith(fontSize: textStyle.fontSize! + 2),
-            ),
-            SizedBox(height: 50),
-            Text(
-              'As you could see, the custom animation played when you went here',
+              'Did you see the custom animation when coming here?',
               style: textStyle.copyWith(fontSize: textStyle.fontSize! + 2),
             ),
           ],
@@ -281,37 +246,3 @@ class InfoWidget extends StatelessWidget {
 
 final textStyle = TextStyle(color: Colors.black, fontSize: 16);
 final buttonTextStyle = textStyle.copyWith(color: Colors.white);
-
-class VWidgetGuarded extends VRouteElementBuilder {
-  final String? path;
-  final Widget widget;
-  final Future<void> Function(VRedirector vRedirector)? _beforeEnter;
-
-  VWidgetGuarded({
-    required this.path,
-    required this.widget,
-    Future<void> Function(VRedirector vRedirector)? beforeEnter,
-  }) : _beforeEnter = beforeEnter;
-
-  @override
-  List<VRouteElement> buildRoutes() => [
-        VWidget(
-          path: path,
-          widget: widget,
-        ),
-      ];
-
-  @override
-  Future<void> beforeEnter(VRedirector vRedirector) async =>
-      _beforeEnter?.call(vRedirector);
-}
-
-final a = VRouter(
-  routes: [
-    VWidgetGuarded(
-      beforeEnter: (_) async => print('beforeEnter in home!'),
-      path: '/home',
-      widget: Text('home'),
-    ),
-  ],
-);
