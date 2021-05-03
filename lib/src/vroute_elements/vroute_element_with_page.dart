@@ -15,7 +15,15 @@ mixin VRouteElementWithPage on VRouteElement {
   /// The widget which will be put inside the page
   Widget get widget;
 
-  /// The key associated to the page
+  /// A LocalKey that will be given to the page which contains the given [_rootVRouter]
+  ///
+  /// This key mostly controls the page animation. If a page remains the same but the key is changes,
+  /// the page gets animated
+  /// The key is by default the value of the current [path] (or [aliases]) with
+  /// the path parameters replaced
+  ///
+  /// Do provide a constant [key] if you don't want this page to animate even if [path] or
+  /// [aliases] path parameters change
   LocalKey? get key;
 
   /// A name for the route which will allow you to easily navigate to it
