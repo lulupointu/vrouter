@@ -71,7 +71,7 @@ main() {
                   widget: Builder(
                     builder: (BuildContext context) => TextButton(
                       child: Text('VWidget2'),
-                      onPressed: () => VRouter.of(context).pushSegments(['']),
+                      onPressed: () => VRouter.of(context).pushSegments([]),
                     ),
                   ),
                 ),

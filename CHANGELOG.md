@@ -6,6 +6,10 @@
 
 ## \[1.1.2\] - 07/05/2021.
 
+* 🛠️ : Fix pushSegments: it was missing a '/' at the start of the url given to push
+
+## \[1.1.2\] - 07/05/2021.
+
 * ✨ : Adding pushSegments which encodes the different part of the url for you
 
 ## \[1.1.1+9\] - 03/05/2021.

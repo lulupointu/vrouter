@@ -102,7 +102,7 @@ class RootVRouterData extends VRouterData {
     final newUrl = segments.map((segment) => Uri.encodeComponent(segment)).join('/');
 
     // Calling push with this newly formed url
-    return push(newUrl, queryParameters: queryParameters, historyState: historyState);
+    return push('/$newUrl', queryParameters: queryParameters, historyState: historyState);
   }
 
   /// See [VRouterState.pushNamed]

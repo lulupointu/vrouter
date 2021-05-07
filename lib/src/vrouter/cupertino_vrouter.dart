@@ -551,7 +551,7 @@ class CupertinoVRouterState extends State<CupertinoVRouter> {
     final newUrl = segments.map((segment) => Uri.encodeComponent(segment)).join('/');
 
     // Calling push with this newly formed url
-    return push(newUrl, queryParameters: queryParameters, historyState: historyState);
+    return push('/$newUrl', queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Updates the url given a [VRouteElement] name

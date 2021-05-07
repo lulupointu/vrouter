@@ -102,7 +102,7 @@ class VRedirector {
     final newUrl = segments.map((segment) => Uri.encodeComponent(segment)).join('/');
 
     // Calling push with this newly formed url
-    return push(newUrl, queryParameters: queryParameters, historyState: historyState);
+    return push('/$newUrl', queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Prevent the current redirection and pushNamed a route instead
