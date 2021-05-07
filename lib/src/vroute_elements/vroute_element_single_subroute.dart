@@ -37,12 +37,14 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
     required VPathMatch parentVPathMatch,
+        required bool parentCanPop,
   }) {
     VRoute? childVRoute;
     for (var vRouteElement in _subroutes) {
       childVRoute = vRouteElement.buildRoute(
         vPathRequestData,
         parentVPathMatch: parentVPathMatch,
+        parentCanPop: parentCanPop,
       );
       if (childVRoute != null) {
         return VRoute(

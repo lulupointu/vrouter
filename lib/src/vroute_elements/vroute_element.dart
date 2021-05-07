@@ -27,6 +27,7 @@ abstract class VRouteElement {
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
     required VPathMatch parentVPathMatch,
+    required bool parentCanPop,
   });
 
   /// This function takes a name and tries to find the path corresponding to
@@ -248,8 +249,7 @@ class ValidNameResult extends GetPathFromNameResult {
   ValidNameResult({required this.path});
 }
 
-abstract class ErrorGetPathFromNameResult extends GetPathFromNameResult
-    implements Error {
+abstract class ErrorGetPathFromNameResult extends GetPathFromNameResult implements Error {
   String get error;
 
   @override
@@ -293,22 +293,18 @@ class MissingPathParamsError extends PathParamsError {
   final List<String> missingPathParams;
   final List<String> pathParams;
 
-  MissingPathParamsError(
-      {required this.pathParams, required this.missingPathParams});
+  MissingPathParamsError({required this.pathParams, required this.missingPathParams});
 
-  String get error =>
-      'Path parameters given: $pathParams, missing: $missingPathParams';
+  String get error => 'Path parameters given: $pathParams, missing: $missingPathParams';
 }
 
 class OverlyPathParamsError extends PathParamsError {
   final List<String> expectedPathParams;
   final List<String> pathParams;
 
-  OverlyPathParamsError(
-      {required this.pathParams, required this.expectedPathParams});
+  OverlyPathParamsError({required this.pathParams, required this.expectedPathParams});
 
-  String get error =>
-      'Path parameters given: $pathParams, expected: $expectedPathParams';
+  String get error => 'Path parameters given: $pathParams, expected: $expectedPathParams';
 }
 
 class PathParamsErrorsNameResult extends ErrorGetPathFromNameResult {
@@ -413,17 +409,16 @@ class VRouteElementNode {
 
   /// Get the [VRouteElementNode] associated to the given [VRouteElement]
   /// returns null if the [VRouteElement] is not his nor in the stackedRoutes or the subroutes
-  VRouteElementNode? getVRouteElementNodeFromVRouteElement(
-      VRouteElement vRouteElement) {
+  VRouteElementNode? getVRouteElementNodeFromVRouteElement(VRouteElement vRouteElement) {
     if (vRouteElement == this.vRouteElement) return this;
     if (stackedVRouteElementNode != null) {
-      final vRouteElementNode = stackedVRouteElementNode!
-          .getVRouteElementNodeFromVRouteElement(vRouteElement);
+      final vRouteElementNode =
+          stackedVRouteElementNode!.getVRouteElementNodeFromVRouteElement(vRouteElement);
       if (vRouteElementNode != null) return vRouteElementNode;
     }
     if (nestedVRouteElementNode != null) {
-      final vRouteElementNode = nestedVRouteElementNode!
-          .getVRouteElementNodeFromVRouteElement(vRouteElement);
+      final vRouteElementNode =
+          nestedVRouteElementNode!.getVRouteElementNodeFromVRouteElement(vRouteElement);
       if (vRouteElementNode != null) return vRouteElementNode;
     }
     return null;
@@ -449,8 +444,8 @@ class VRouteElementNode {
 
     // Search if the VRouteElementNode containing the VRouteElement is in the nestedVRouteElementNode
     if (nestedVRouteElementNode != null) {
-      VRouteElementNode? vRouteElementNode = nestedVRouteElementNode!
-          .getChildVRouteElementNode(vRouteElement: vRouteElement);
+      VRouteElementNode? vRouteElementNode =
+          nestedVRouteElementNode!.getChildVRouteElementNode(vRouteElement: vRouteElement);
       if (vRouteElementNode != null) {
         return vRouteElementNode;
       }
@@ -458,8 +453,8 @@ class VRouteElementNode {
 
     // Search if the VRouteElementNode containing the VRouteElement is in the stackedVRouteElementNode
     if (stackedVRouteElementNode != null) {
-      VRouteElementNode? vRouteElementNode = stackedVRouteElementNode!
-          .getChildVRouteElementNode(vRouteElement: vRouteElement);
+      VRouteElementNode? vRouteElementNode =
+          stackedVRouteElementNode!.getChildVRouteElementNode(vRouteElement: vRouteElement);
       if (vRouteElementNode != null) {
         return vRouteElementNode;
       }

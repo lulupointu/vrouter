@@ -322,6 +322,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
           pathParameters: {},
           localPath: null,
         ),
+        parentCanPop: false,
       );
 
       if (newVRoute == null) {

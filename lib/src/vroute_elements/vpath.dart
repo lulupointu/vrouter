@@ -101,6 +101,7 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
     required VPathMatch parentVPathMatch,
+        required bool parentCanPop,
   }) {
     // This will hold the GetPathMatchResult for the path so that we compute it only once
     late final VPathMatch pathMatch;
@@ -122,6 +123,7 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
       vPathRequestData,
       routes: stackedRoutes,
       vPathMatch: pathMatch,
+      parentCanPop: parentCanPop,
     );
     if (stackedRouteVRoute != null) {
       return VRoute(
@@ -152,6 +154,7 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
         vPathRequestData,
         routes: stackedRoutes,
         vPathMatch: aliasesMatch[i],
+        parentCanPop: parentCanPop,
       );
       if (stackedRouteVRoute != null) {
         return VRoute(
@@ -199,11 +202,13 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
     VPathRequestData vPathRequestData, {
     required List<VRouteElement> routes,
     required VPathMatch vPathMatch,
+        required bool parentCanPop,
   }) {
     for (var vRouteElement in routes) {
       final childVRoute = vRouteElement.buildRoute(
         vPathRequestData,
         parentVPathMatch: vPathMatch,
+        parentCanPop: parentCanPop,
       );
       if (childVRoute != null) return childVRoute;
     }

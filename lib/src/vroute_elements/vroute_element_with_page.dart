@@ -38,6 +38,7 @@ mixin VRouteElementWithPage on VRouteElement {
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
     required VPathMatch parentVPathMatch,
+        required bool parentCanPop,
   }) {
     // Set localPath to null since a VRouteElementWithPage marks a limit between localPaths
     VPathMatch newVPathMatch = (parentVPathMatch is ValidVPathMatch)
@@ -53,6 +54,7 @@ mixin VRouteElementWithPage on VRouteElement {
       childVRoute = vRouteElement.buildRoute(
         vPathRequestData,
         parentVPathMatch: newVPathMatch,
+        parentCanPop: true,
       );
       if (childVRoute != null) {
         break;

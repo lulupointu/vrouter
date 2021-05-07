@@ -69,6 +69,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
     required VPathMatch parentVPathMatch,
+    required bool parentCanPop,
   }) {
     // Set localPath to null since a VNesterPageBase marks a limit between localPaths
     VPathMatch newVPathMatch = (parentVPathMatch is ValidVPathMatch)
@@ -85,6 +86,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
       nestedRouteVRoute = vRouteElement.buildRoute(
         vPathRequestData,
         parentVPathMatch: newVPathMatch,
+        parentCanPop: parentCanPop,
       );
       if (nestedRouteVRoute != null) {
         break;
@@ -102,6 +104,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
       stackedRouteVRoute = vRouteElement.buildRoute(
         vPathRequestData,
         parentVPathMatch: newVPathMatch,
+        parentCanPop: true,
       );
       if (stackedRouteVRoute != null) {
         break;
@@ -144,22 +147,24 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
                 Builder(
                   builder: (BuildContext context) {
                     return VRouterHelper(
-                      pages: nestedRouteVRoute!.pages.isNotEmpty
-                          ? nestedRouteVRoute.pages
-                          : [
-                              MaterialPage(
-                                  child: Center(
-                                      child: CircularProgressIndicator())),
-                            ],
+                      pages: <Page>[if (parentCanPop) MaterialPage(child: Container())] +
+                          (nestedRouteVRoute!.pages.isNotEmpty
+                              ? nestedRouteVRoute.pages
+                              : [
+                                  MaterialPage(
+                                    child: Center(
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                  ),
+                                ]),
                       navigatorKey: navigatorKey,
                       observers: <NavigatorObserver>[heroController] +
                           RootVRouterData.of(context)._state.navigatorObservers,
-                      backButtonDispatcher: ChildBackButtonDispatcher(
-                          Router.of(context).backButtonDispatcher!),
+                      backButtonDispatcher:
+                          ChildBackButtonDispatcher(Router.of(context).backButtonDispatcher!),
                       onPopPage: (_, __) {
                         RootVRouterData.of(context).popFromElement(
-                          nestedRouteVRoute!.vRouteElementNode
-                              .getVRouteElementToPop(),
+                          nestedRouteVRoute!.vRouteElementNode.getVRouteElementToPop(),
                           pathParameters: VRouter.of(context).pathParameters,
                         );
 
@@ -168,8 +173,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
                       },
                       onSystemPopPage: () async {
                         await RootVRouterData.of(context).systemPopFromElement(
-                          nestedRouteVRoute!.vRouteElementNode
-                              .getVRouteElementToSystemPop(),
+                          nestedRouteVRoute!.vRouteElementNode.getVRouteElementToSystemPop(),
                           pathParameters: VRouter.of(context).pathParameters,
                         );
 
@@ -193,8 +197,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
         ),
         ...stackedRouteVRoute?.pages ?? [],
       ],
-      pathParameters:
-          nestedRouteVRoute.pathParameters, // TODO: Change to pathParameters
+      pathParameters: pathParameters,
       vRouteElements: <VRouteElement>[this] +
           nestedRouteVRoute.vRouteElements +
           (stackedRouteVRoute?.vRouteElements ?? []),
@@ -255,8 +258,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
                 values: [
                   OverlyPathParamsError(
                     pathParams: pathParameters.keys.toList(),
-                    expectedPathParams:
-                        parentPathResult.pathParameters.keys.toList(),
+                    expectedPathParams: parentPathResult.pathParameters.keys.toList(),
                   ),
                 ],
               ),
@@ -275,8 +277,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
               MissingPathParamsError(
                 pathParams: pathParameters.keys.toList(),
                 missingPathParams:
-                    (parentPathResult as PathParamsErrorNewParentPath)
-                        .pathParameters,
+                    (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
               ),
             ],
           ),
@@ -305,8 +306,8 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
     }
 
     // Else try to find a NullPathError
-    if (childNameResults.indexWhere(
-            (childNameResult) => childNameResult is NullPathErrorNameResult) !=
+    if (childNameResults
+            .indexWhere((childNameResult) => childNameResult is NullPathErrorNameResult) !=
         -1) {
       return NullPathErrorNameResult(name: nameToMatch);
     }
@@ -382,8 +383,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
             MissingPathParamsError(
               pathParams: pathParameters.keys.toList(),
               missingPathParams:
-                  (parentPathResult as PathParamsErrorNewParentPath)
-                      .pathParameters,
+                  (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
             ),
           ],
         );
