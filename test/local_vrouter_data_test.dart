@@ -53,6 +53,54 @@ main() {
       expect(vWidget2Finder, findsOneWidget);
     });
 
+    testWidgets('LocalVRouterData pushSegments', (WidgetTester tester) async {
+      await tester.pumpWidget(
+        VRouter(
+          routes: [
+            VWidget(
+              path: '/',
+              widget: Builder(
+                builder: (BuildContext context) => TextButton(
+                  child: Text('VWidget1'),
+                  onPressed: () => VRouter.of(context).pushSegments(['settings']),
+                ),
+              ),
+              stackedRoutes: [
+                VWidget(
+                  path: '/settings',
+                  widget: Builder(
+                    builder: (BuildContext context) => TextButton(
+                      child: Text('VWidget2'),
+                      onPressed: () => VRouter.of(context).pushSegments(['']),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // At first we are on "/" so only VWidget1 should be shown
+
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
+
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
+
+      // Navigate to 'settings'
+      // Tap the add button.
+      await tester.tap(find.byType(TextButton));
+      await tester.pumpAndSettle();
+
+      // Now, only VWidget2 should be visible
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsOneWidget);
+    });
+
     testWidgets('LocalVRouterData pop', (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(

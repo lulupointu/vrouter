@@ -83,6 +83,28 @@ class VRedirector {
         queryParameters: queryParameters, historyState: historyState);
   }
 
+
+  /// Prevent the current redirection and push a new url based on url segments
+  ///
+  /// For example: pushSegments(['home', 'bob']) ~ push('/home/bob')
+  ///
+  /// The advantage of using this over push is that each segment gets encoded.
+  /// For example: pushSegments(['home', 'bob marley']) ~ push('/home/bob%20marley')
+  ///
+  /// Also see:
+  ///  - [push] to see want happens when you push a new url
+  void pushSegments(
+      List<String> segments, {
+        Map<String, String> queryParameters = const {},
+        Map<String, String> historyState = const {},
+      }) {
+    // Forming the new url by encoding each segment and placing "/" between them
+    final newUrl = segments.map((segment) => Uri.encodeComponent(segment)).join('/');
+
+    // Calling push with this newly formed url
+    return push(newUrl, queryParameters: queryParameters, historyState: historyState);
+  }
+
   /// Prevent the current redirection and pushNamed a route instead
   ///
   /// See [VRouter.push] for more information on push

@@ -131,7 +131,9 @@ VPopHandler(
 Navigating is easy, just access `VRouter` with `context.vRouter` and navigate:
 
 ```dart
-context.vRouter.push('/home'); // Pushing a new url
+context.vRouter.push('/home'); // Push the url '/home'
+
+context.vRouter.pushSegments(['home', 'settings']); // Push the url '/home/settings'
 ```
 
 # Useful notions

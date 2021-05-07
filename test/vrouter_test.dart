@@ -46,6 +46,47 @@ main() {
       expect(vWidget2Finder, findsOneWidget);
     });
 
+    testWidgets('VRouter pushSegments', (WidgetTester tester) async {
+      final vRouterKey = GlobalKey<VRouterState>();
+
+      await tester.pumpWidget(
+        VRouter(
+          key: vRouterKey,
+          routes: [
+            VWidget(
+              path: '/',
+              widget: Text('VWidget1'),
+              stackedRoutes: [
+                VWidget(
+                  path: '/settings',
+                  widget: Text('VWidget2'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // At first we are on "/" so only VWidget1 should be shown
+
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
+
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
+
+      // Navigate to 'settings'
+      // Tap the add button.
+      vRouterKey.currentState!.pushSegments(['settings']);
+      await tester.pumpAndSettle();
+
+      // Now, only VWidget2 should be visible
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsOneWidget);
+    });
+
     testWidgets('VRouter push relative', (WidgetTester tester) async {
       final vRouterKey = GlobalKey<VRouterState>();
 
@@ -85,6 +126,53 @@ main() {
       // Now, only VWidget2 should be visible
       expect(vWidget1Finder, findsNothing);
       expect(vWidget2Finder, findsOneWidget);
+    });
+
+    testWidgets('VRouter pushSegments with encoding needed', (WidgetTester tester) async {
+      final vRouterKey = GlobalKey<VRouterState>();
+
+      await tester.pumpWidget(
+        VRouter(
+          key: vRouterKey,
+          routes: [
+            VWidget(
+              path: '/',
+              widget: Text('VWidget1'),
+              stackedRoutes: [
+                VWidget(
+                  path: '/:id',
+                  widget: Text('VWidget2'),
+                ),
+              ],
+            ),
+          ],
+        ),
+      );
+
+      await tester.pumpAndSettle();
+
+      // At first we are on "/" so only VWidget1 should be shown
+
+      final vWidget1Finder = find.text('VWidget1');
+      final vWidget2Finder = find.text('VWidget2');
+
+      expect(vWidget1Finder, findsOneWidget);
+      expect(vWidget2Finder, findsNothing);
+
+      // Navigate to 'settings'
+      // Tap the add button.
+      vRouterKey.currentState!.pushSegments(['bob marley']);
+      await tester.pumpAndSettle();
+
+      // Now, only VWidget2 should be visible
+      expect(vWidget1Finder, findsNothing);
+      expect(vWidget2Finder, findsOneWidget);
+
+      // The url should be properly encoded
+      expect(vRouterKey.currentState!.url, '/bob%20marley');
+
+      // The path parameter should be decoded
+      expect(vRouterKey.currentState!.pathParameters['id'], 'bob marley');
     });
 
     testWidgets('VRouter pop', (WidgetTester tester) async {
