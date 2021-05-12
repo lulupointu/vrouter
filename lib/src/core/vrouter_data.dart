@@ -1,4 +1,5 @@
-part of '../main.dart';
+
+import 'package:flutter/widgets.dart';
 
 abstract class VRouterData extends InheritedWidget {
   VRouterData({Key? key, required Widget child})

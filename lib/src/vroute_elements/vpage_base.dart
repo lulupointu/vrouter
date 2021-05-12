@@ -1,4 +1,10 @@
-part of '../main.dart';
+
+import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/vroute_elements/void_vguard.dart';
+import 'package:vrouter/src/vroute_elements/void_vpop_handler.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_single_subroute.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_with_page.dart';
+import 'package:vrouter/src/vrouter_core.dart';
 
 /// A [VRouteElement] similar to [VWidgetBase] but which allows you to specify your own page
 /// thanks to [pageBuilder]

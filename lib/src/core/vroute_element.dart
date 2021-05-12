@@ -1,4 +1,8 @@
-part of '../main.dart';
+
+import 'package:flutter/foundation.dart';
+import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/core/route.dart';
+import 'package:vrouter/src/core/vredirector.dart';
 
 /// [VRouteElement] is the base class for any object used in routes, stackedRoutes
 /// or nestedRoutes
@@ -503,4 +507,38 @@ class InvalidVPathMatch extends VPathMatch implements Error {
 
   @override
   StackTrace? get stackTrace => StackTrace.current;
+}
+
+
+
+/// The value of the new parentPath in [VRouteElement.getPathFromPop] and [VRouteElement.getPathFromName]
+/// If this path is invalid:
+///   - return [ValidGetNewParentPathResult(value: parentPathParameter)]
+/// If this path starts with '/':
+///   - Either the path parameters from [pathParameters] include those of this path and
+///       we return the corresponding path
+///   - Or we return [InvalidGetNewParentPathResult(missingPathParameters: this missing path parameters)]
+/// If this path does not start with '/':
+///   - If the parent path is invalid:
+///   _  * [InvalidGetNewParentPathResult(missingPathParameters: parentPathParameterResult.missingPathParameters + this missingPathParameters)]
+///   - If the parent path is not invalid:
+///   _  * Either the path parameters from [pathParameters] include those of this path and
+///             we return [ValidGetNewParentPathResult(the parent path + this path)]
+///   _  * Or we return [InvalidGetNewParentPathResult(missingPathParameters: this missing path parameters)]
+abstract class GetNewParentPathResult {}
+
+class ValidParentPathResult extends GetNewParentPathResult {
+  /// Null is a valid value, it just means that this path is null and the parent one was as well
+  final String? path;
+
+  final Map<String, String> pathParameters;
+
+  ValidParentPathResult({required this.path, required this.pathParameters});
+}
+
+class PathParamsErrorNewParentPath extends GetNewParentPathResult {
+  /// The missing path parameters that prevents us from creating the path
+  final List<String> pathParameters;
+
+  PathParamsErrorNewParentPath({required this.pathParameters});
 }

@@ -1,4 +1,9 @@
-part of '../main.dart';
+
+import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/vroute_elements/vpage_base.dart';
+import 'package:vrouter/src/vroute_elements/vpath.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_builder.dart';
+import 'package:vrouter/src/vrouter_core.dart';
 
 class VPage extends VRouteElementBuilder {
   /// The path (relative or absolute) or this [VRouteElement]

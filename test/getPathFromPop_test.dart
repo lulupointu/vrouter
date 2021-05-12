@@ -1,6 +1,5 @@
 import 'package:flutter/widgets.dart';
 import 'package:test/test.dart';
-import 'package:vrouter/src/main.dart';
 import 'package:vrouter/vrouter.dart';
 
 void main() {

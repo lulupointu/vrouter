@@ -1,4 +1,5 @@
-part of '../main.dart';
+
+import 'package:vrouter/src/vrouter_core.dart';
 
 /// If the VRouteElement has a single [VRouteElement] as a child, it should instantiate this class
 ///

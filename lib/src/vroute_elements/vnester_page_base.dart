@@ -1,4 +1,10 @@
-part of '../main.dart';
+import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/helpers/empty_page.dart';
+import 'package:vrouter/src/helpers/vrouter_helper.dart';
+import 'package:vrouter/src/vroute_elements/void_vguard.dart';
+import 'package:vrouter/src/vroute_elements/void_vpop_handler.dart';
+import 'package:vrouter/src/vrouter_core.dart';
+import 'package:vrouter/src/vrouter_widgets.dart';
 
 /// A [VRouteElement] similar to [VNester] but which allows you to specify your own page
 /// thanks to [pageBuilder]
@@ -147,19 +153,13 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
                 Builder(
                   builder: (BuildContext context) {
                     return VRouterHelper(
-                      pages: <Page>[if (parentCanPop) MaterialPage(child: Container())] +
+                      pages: <Page>[if (parentCanPop) EmptyPage()] +
                           (nestedRouteVRoute!.pages.isNotEmpty
                               ? nestedRouteVRoute.pages
-                              : [
-                                  MaterialPage(
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  ),
-                                ]),
+                              : [EmptyPage()]),
                       navigatorKey: navigatorKey,
                       observers: <NavigatorObserver>[heroController] +
-                          RootVRouterData.of(context)._state.navigatorObservers,
+                          RootVRouterData.of(context).state.navigatorObservers,
                       backButtonDispatcher:
                           ChildBackButtonDispatcher(Router.of(context).backButtonDispatcher!),
                       onPopPage: (_, __) {

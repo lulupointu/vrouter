@@ -1,38 +1,8 @@
 library vrouter;
 
-export 'src/main.dart'
-    show
-        VPage,
-        VPageBase,
-        VDefaultPage,
-        VWidget,
-        VWidgetBase,
-        VNester,
-        VNesterBase,
-        VNesterPage,
-        VNesterPageBase,
-        VGuard,
-        VPopHandler,
-        VRouteRedirector,
-        VMaterialApp,
-        VWidgetGuard,
-        VRouteElement,
-        VRouteElementBuilder,
-        VRedirector,
-        VRouterModes,
-        VRouter,
-        VRouterDelegate,
-        VRouteInformationParser,
-        VBackButtonDispatcher,
-        CupertinoVRouter,
-        WidgetsVRouter,
-        VRouterContext,
-        VRouterState,
-        UnknownUrlVError,
-        InvalidPushVError,
-        NotFoundErrorNameResult,
-        PathParamsErrorsNameResult,
-        MissingPathParamsError,
-        OverlyPathParamsError,
-        PathParamsPopErrors,
-        NullPathErrorNameResult;
+export 'package:vrouter/src/vrouter_widgets.dart'
+    hide VWidgetGuardMessage, VWidgetGuardMessageRoot;
+export 'package:vrouter/src/vrouter_core.dart'
+    hide RootVRouterData, LocalVRouterData, VRouteElementNode;
+export 'package:vrouter/src/vrouter_vroute_elements.dart'
+    hide VRouteElementSingleSubRoute, VoidVGuard, VoidVPopHandler;

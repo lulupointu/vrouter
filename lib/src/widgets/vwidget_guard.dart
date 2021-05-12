@@ -1,4 +1,7 @@
-part of 'main.dart';
+import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/vrouter_core.dart';
+import 'package:vrouter/src/vrouter_vroute_elements.dart';
+import 'package:vrouter/src/vrouter_widgets.dart';
 
 /// [VGuard] is a [VRouteElement] which is used to control navigation changes
 ///
@@ -86,8 +89,7 @@ class VWidgetGuard extends StatefulWidget {
   ///
   /// Note that you should consider the navigation cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
-  final void Function(BuildContext context, String? from, String to)
-      afterUpdate;
+  final void Function(BuildContext context, String? from, String to) afterUpdate;
 
   /// Called when a pop event occurs.
   /// A pop event can be called programmatically (with [VRouter.of(context).pop()])
@@ -128,12 +130,12 @@ class VWidgetGuard extends StatefulWidget {
 
   const VWidgetGuard({
     Key? key,
-    this.afterEnter = VGuard._voidAfterEnter,
-    this.afterUpdate = VGuard._voidAfterUpdate,
-    this.beforeUpdate = VGuard._voidBeforeUpdate,
-    this.beforeLeave = VGuard._voidBeforeLeave,
-    this.onPop = VPopHandler._voidOnPop,
-    this.onSystemPop = VPopHandler._voidOnSystemPop,
+    this.afterEnter = VoidVGuard.voidAfterEnter,
+    this.afterUpdate = VoidVGuard.voidAfterUpdate,
+    this.beforeUpdate = VoidVGuard.voidBeforeUpdate,
+    this.beforeLeave = VoidVGuard.voidBeforeLeave,
+    this.onPop = VoidVPopHandler.voidOnPop,
+    this.onSystemPop = VoidVPopHandler.voidOnSystemPop,
     required this.child,
   }) : super(key: key);
 
@@ -144,8 +146,7 @@ class VWidgetGuard extends StatefulWidget {
 class _VWidgetGuardState extends State<VWidgetGuard> {
   @override
   void didChangeDependencies() {
-    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context)
-        .dispatch(context);
+    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context).dispatch(context);
     super.didChangeDependencies();
   }
 
@@ -154,15 +155,13 @@ class _VWidgetGuardState extends State<VWidgetGuard> {
   // are necessary when changes to VWidgetGuard are made
   @override
   void reassemble() {
-    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context)
-        .dispatch(context);
+    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context).dispatch(context);
     super.reassemble();
   }
 
   @override
   Widget build(BuildContext context) {
-    VRouter.of(
-        context); // Makes didChangeDependencies be called when VRouterData changes
+    VRouter.of(context); // Makes didChangeDependencies be called when VRouterData changes
     return widget.child;
   }
 }

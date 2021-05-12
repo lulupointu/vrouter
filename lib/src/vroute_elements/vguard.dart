@@ -1,4 +1,9 @@
-part of '../main.dart';
+
+import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/vroute_elements/void_vguard.dart';
+import 'package:vrouter/src/vroute_elements/void_vpop_handler.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_builder.dart';
+import 'package:vrouter/src/vrouter_core.dart';
 
 /// [VGuard] is a [VRouteElement] which is used to control navigation changes
 ///
@@ -49,43 +54,20 @@ class VGuard extends VRouteElementBuilder with VoidVPopHandler {
 
   VGuard({
     Future<void> Function(VRedirector vRedirector) beforeEnter =
-        VGuard._voidBeforeEnter,
+        VoidVGuard.voidBeforeEnter,
     Future<void> Function(VRedirector vRedirector) beforeUpdate =
-        VGuard._voidBeforeUpdate,
+        VoidVGuard.voidBeforeUpdate,
     final Future<void> Function(VRedirector vRedirector,
             void Function(Map<String, String> state) saveHistoryState)
-        beforeLeave = VGuard._voidBeforeLeave,
+        beforeLeave = VoidVGuard.voidBeforeLeave,
     void Function(BuildContext context, String? from, String to) afterEnter =
-        VGuard._voidAfterEnter,
+        VoidVGuard.voidAfterEnter,
     void Function(BuildContext context, String? from, String to) afterUpdate =
-        VGuard._voidAfterUpdate,
+        VoidVGuard.voidAfterUpdate,
     required this.stackedRoutes,
   })   : _beforeEnter = beforeEnter,
         _beforeUpdate = beforeUpdate,
         _beforeLeave = beforeLeave,
         _afterEnter = afterEnter,
         _afterUpdate = afterUpdate;
-
-  /// Default function for [VRouteElement.beforeEnter]
-  /// Basically does nothing
-  static Future<void> _voidBeforeEnter(VRedirector vRedirector) async {}
-
-  /// Default function for [VRouteElement.beforeUpdate]
-  /// Basically does nothing
-  static Future<void> _voidBeforeUpdate(VRedirector vRedirector) async {}
-
-  /// Default function for [VRouteElement.beforeLeave]
-  /// Basically does nothing
-  static Future<void> _voidBeforeLeave(
-    VRedirector? vRedirector,
-    void Function(Map<String, String> state) saveHistoryState,
-  ) async {}
-
-  /// Default function for [VRouteElement.afterEnter]
-  /// Basically does nothing
-  static void _voidAfterEnter(BuildContext context, String? from, String to) {}
-
-  /// Default function for [VRouteElement.afterUpdate]
-  /// Basically does nothing
-  static void _voidAfterUpdate(BuildContext context, String? from, String to) {}
 }

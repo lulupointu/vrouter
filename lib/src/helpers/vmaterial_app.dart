@@ -1,4 +1,7 @@
-part of 'main.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/core/vroute_information_parser.dart';
+import 'package:vrouter/src/helpers/vrouter_delegate_helper.dart';
 
 /// A helper to create a material app
 /// DO NOT use this on top of a VRouter, this will break the navigation
@@ -397,106 +400,4 @@ class VMaterialApp<T extends Object> extends StatelessWidget {
   ///
   ///  * <https://material.io/design/layout/spacing-methods.html>
   final bool? debugShowMaterialGrid;
-}
-
-/// This is a helper to create a router in which we nest
-/// a [VRouterDelegateHelper]
-class VRouterHelper extends StatelessWidget {
-  /// The pages that will be displayed in the [VRouterDelegateHelper]
-  /// Navigator
-  final List<Page> pages;
-
-  /// The key of the [VRouterDelegateHelper] navigator
-  final GlobalKey<NavigatorState>? navigatorKey;
-
-  /// The observers of the [VRouterDelegateHelper] navigator
-  final List<NavigatorObserver>? observers;
-
-  /// The [BackButtonDispatcher] of the router
-  final BackButtonDispatcher? backButtonDispatcher;
-
-  /// The function that will be called when [Navigator.pop]
-  /// is called in a page contained in this router
-  final bool Function(Route<dynamic>, dynamic)? onPopPage;
-
-  /// The function that will be called when a system pop
-  /// (hardware back button in android) is called in a page
-  /// contained in this router
-  final Future<bool> Function()? onSystemPopPage;
-
-  const VRouterHelper({
-    Key? key,
-    required this.pages,
-    this.navigatorKey,
-    this.observers,
-    this.backButtonDispatcher,
-    this.onPopPage,
-    this.onSystemPopPage,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Router(
-      backButtonDispatcher: backButtonDispatcher,
-      routerDelegate: VRouterDelegateHelper(
-        pages: pages,
-        navigatorKey: navigatorKey,
-        observers: observers,
-        onPopPage: onPopPage,
-        onSystemPopPage: onSystemPopPage,
-      ),
-    );
-  }
-}
-
-/// A routerDelegate which automatically creates a Navigator
-/// See the details of each attribute to see what they can be used for
-class VRouterDelegateHelper<T extends Object> extends RouterDelegate<T>
-    with ChangeNotifier {
-  final GlobalKey<NavigatorState>? navigatorKey;
-  final List<NavigatorObserver>? observers;
-  final Widget? child;
-  final List<Page>? pages;
-  final bool Function(Route<dynamic>, dynamic)? onPopPage;
-  final Future<bool> Function()? onSystemPopPage;
-
-  VRouterDelegateHelper({
-    this.child,
-    this.pages,
-    this.navigatorKey,
-    this.observers,
-    this.onPopPage,
-    this.onSystemPopPage,
-  }) : assert(pages != null || child != null);
-
-  @override
-  Widget build(BuildContext context) {
-    if (pages != null) {
-      return Navigator(
-        key: navigatorKey,
-        observers: observers ?? [],
-        pages: pages!,
-        onPopPage: onPopPage,
-      );
-    }
-    if (child != null) {
-      return child!;
-    }
-
-    return Center(
-      child: CircularProgressIndicator(),
-    );
-  }
-
-  @override
-  Future<void> setNewRoutePath(configuration) async => null;
-
-  @override
-  Future<bool> popRoute() async {
-    if (onSystemPopPage != null) {
-      await onSystemPopPage!();
-      return true;
-    }
-    return false;
-  }
 }

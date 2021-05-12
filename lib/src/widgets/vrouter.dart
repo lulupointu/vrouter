@@ -1,7 +1,7 @@
-part of '../main.dart';
-
-/// See [VRouter.mode]
-enum VRouterModes { hash, history }
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/vrouter_core.dart';
+import 'package:vrouter/src/vrouter_vroute_elements.dart';
 
 /// This widget handles most of the routing work
 /// It gives you access to the [routes] attribute where you can start
@@ -78,18 +78,18 @@ class VRouter extends StatefulWidget
     Key? key,
     required this.routes,
     Future<void> Function(VRedirector vRedirector) beforeEnter =
-        VGuard._voidBeforeEnter,
+        VoidVGuard.voidBeforeEnter,
     Future<void> Function(
       VRedirector vRedirector,
       void Function(Map<String, String> historyState) saveHistoryState,
     )
-        beforeLeave = VGuard._voidBeforeLeave,
+        beforeLeave = VoidVGuard.voidBeforeLeave,
     void Function(BuildContext context, String? from, String to) afterEnter =
-        VGuard._voidAfterEnter,
+        VoidVGuard.voidAfterEnter,
     Future<void> Function(VRedirector vRedirector) onPop =
-        VPopHandler._voidOnPop,
+        VoidVPopHandler.voidOnPop,
     Future<void> Function(VRedirector vRedirector) onSystemPop =
-        VPopHandler._voidOnSystemPop,
+        VoidVPopHandler.voidOnSystemPop,
     this.buildTransition,
     this.transitionDuration,
     this.reverseTransitionDuration,

@@ -1,4 +1,8 @@
-part of 'main.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:vrouter/src/core/root_vrouter_data.dart';
+import 'package:vrouter/src/vrouter_core.dart';
+import 'package:vrouter/src/wrappers/platform/platform.dart';
 
 /// A page to put in [Navigator] pages
 ///
@@ -69,7 +73,7 @@ abstract class VBasePage<T> extends Page<T> {
     Duration? reverseTransitionDuration,
     bool fullscreenDialog = false,
   }) =>
-      (!kIsWeb && Platform.isIOS)
+      (!Platform.isWeb && Platform.isIOS)
           ? VCupertinoPage(
               key: key,
               child: child,
@@ -157,7 +161,7 @@ abstract class VDefaultPage<T> extends Page<T> {
     Duration? reverseTransitionDuration,
     bool fullscreenDialog = false,
   }) =>
-      (!kIsWeb && Platform.isIOS)
+      (!Platform.isWeb && Platform.isIOS)
           ? VCupertinoPage<T>(
               key: key,
               child: child,
@@ -248,22 +252,22 @@ class VMaterialPage<T> extends MaterialPage<T>
         transitionDuration: transitionDuration,
         reverseTransitionDuration: reverseTransitionDuration,
       );
-    } else if (RootVRouterData.of(context)._defaultPageBuildTransition !=
+    } else if (RootVRouterData.of(context).defaultPageBuildTransition !=
         null) {
       // Else try to use the router transition
       return VPageRoute<T>(
         page: this,
         customTransition: (_, Animation<double> animation,
                 Animation<double> secondaryAnimation, Widget child) =>
-            RootVRouterData.of(context)._defaultPageBuildTransition!(
+            RootVRouterData.of(context).defaultPageBuildTransition!(
           animation,
           secondaryAnimation,
           child,
         ),
         transitionDuration:
-            RootVRouterData.of(context)._defaultPageTransitionDuration,
+            RootVRouterData.of(context).defaultPageTransitionDuration,
         reverseTransitionDuration:
-            RootVRouterData.of(context)._defaultPageReverseTransitionDuration,
+            RootVRouterData.of(context).defaultPageReverseTransitionDuration,
       );
     }
 
@@ -342,22 +346,22 @@ class VCupertinoPage<T> extends CupertinoPage<T>
         transitionDuration: transitionDuration,
         reverseTransitionDuration: reverseTransitionDuration,
       );
-    } else if (RootVRouterData.of(context)._defaultPageBuildTransition !=
+    } else if (RootVRouterData.of(context).defaultPageBuildTransition !=
         null) {
       // Else try to use the router transition
       return VPageRoute<T>(
         page: this,
         customTransition: (_, Animation<double> animation,
                 Animation<double> secondaryAnimation, Widget child) =>
-            RootVRouterData.of(context)._defaultPageBuildTransition!(
+            RootVRouterData.of(context).defaultPageBuildTransition!(
           animation,
           secondaryAnimation,
           child,
         ),
         transitionDuration:
-            RootVRouterData.of(context)._defaultPageTransitionDuration,
+            RootVRouterData.of(context).defaultPageTransitionDuration,
         reverseTransitionDuration:
-            RootVRouterData.of(context)._defaultPageReverseTransitionDuration,
+            RootVRouterData.of(context).defaultPageReverseTransitionDuration,
       );
     }
 

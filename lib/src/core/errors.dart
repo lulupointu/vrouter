@@ -1,4 +1,3 @@
-part of 'main.dart';
 
 /// This exception is raised when a user tries to navigate to a path which is unspecified
 class UnknownUrlVError extends Error {

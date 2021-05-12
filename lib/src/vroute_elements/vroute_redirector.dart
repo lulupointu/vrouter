@@ -1,4 +1,7 @@
-part of '../main.dart';
+
+import 'package:vrouter/src/vroute_elements/vpath.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_builder.dart';
+import 'package:vrouter/src/vrouter_core.dart';
 
 /// Use this route to redirect from [path] to [redirectTo]
 ///

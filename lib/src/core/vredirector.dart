@@ -1,4 +1,8 @@
-part of 'main.dart';
+
+import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/core/root_vrouter_data.dart';
+import 'package:vrouter/src/core/vroute_element.dart';
+import 'package:vrouter/src/core/vrouter_delegate.dart';
 
 /// A class which helps you in beforeLeave or beforeEnter functions
 /// This class contain 2 main functionality:
@@ -59,6 +63,7 @@ class VRedirector {
   /// Function which will be executed after stopping the redirection
   /// if [push], [pushNamed], ... have been used.
   void Function(VRouteElementNode vRouteElementNode)? _redirectFunction;
+  void Function(VRouteElementNode vRouteElementNode)? get redirectFunction => _redirectFunction;
 
   /// Stops the redirection
   ///

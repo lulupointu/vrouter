@@ -1,4 +1,9 @@
-part of '../main.dart';
+
+import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/vroute_elements/vnester_page_base.dart';
+import 'package:vrouter/src/vroute_elements/vpath.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_builder.dart';
+import 'package:vrouter/src/vrouter_core.dart';
 
 /// A [VRouteElement] similar to [VNester] but which allows you to specify your own page
 /// thanks to [pageBuilder]

@@ -1,12 +1,14 @@
-part of '../main.dart';
+import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/vrouter_core.dart';
+import 'package:vrouter/src/vrouter_vroute_elements.dart';
 
 /// This widget handles most of the routing work
 /// It gives you access to the [routes] attribute where you can start
 /// building your routes using [VRouteElement]s
 ///
-/// Note that this widget also acts as a [CupertinoApp] so you can pass
-/// it every argument that you would expect in [CupertinoApp]
-class CupertinoVRouter extends StatefulWidget
+/// Note that this widget also acts as a [WidgetsApp] so you can pass
+/// it every argument that you would expect in [WidgetsApp]
+class WidgetsVRouter extends StatefulWidget
     with VRouteElement, VRouteElementSingleSubRoute {
   /// This list holds every possible routes of your app
   final List<VRouteElement> routes;
@@ -71,22 +73,22 @@ class CupertinoVRouter extends StatefulWidget
   /// The default is '/'
   final String initialUrl;
 
-  CupertinoVRouter({
+  WidgetsVRouter({
     Key? key,
     required this.routes,
     Future<void> Function(VRedirector vRedirector) beforeEnter =
-        VGuard._voidBeforeEnter,
+        VoidVGuard.voidBeforeEnter,
     Future<void> Function(
       VRedirector vRedirector,
       void Function(Map<String, String> historyState) saveHistoryState,
     )
-        beforeLeave = VGuard._voidBeforeLeave,
+        beforeLeave = VoidVGuard.voidBeforeLeave,
     void Function(BuildContext context, String? from, String to) afterEnter =
-        VGuard._voidAfterEnter,
+        VoidVGuard.voidAfterEnter,
     Future<void> Function(VRedirector vRedirector) onPop =
-        VPopHandler._voidOnPop,
+        VoidVPopHandler.voidOnPop,
     Future<void> Function(VRedirector vRedirector) onSystemPop =
-        VPopHandler._voidOnSystemPop,
+        VoidVPopHandler.voidOnSystemPop,
     this.buildTransition,
     this.transitionDuration,
     this.reverseTransitionDuration,
@@ -94,11 +96,11 @@ class CupertinoVRouter extends StatefulWidget
     this.initialUrl = '/',
     this.navigatorObservers = const [],
     this.builder,
-    // Bellow are the MaterialApp parameters
-    this.theme,
+    // Bellow are the WidgetsApp parameters
     this.title = '',
     this.onGenerateTitle,
-    this.color,
+    this.textStyle,
+    required this.color,
     this.locale,
     this.localizationsDelegates,
     this.localeListResolutionCallback,
@@ -108,7 +110,9 @@ class CupertinoVRouter extends StatefulWidget
     this.checkerboardRasterCacheImages = false,
     this.checkerboardOffscreenLayers = false,
     this.showSemanticsDebugger = false,
+    this.debugShowWidgetInspector = false,
     this.debugShowCheckedModeBanner = true,
+    this.inspectorSelectButtonBuilder,
     this.shortcuts,
     this.actions,
     this.restorationScopeId,
@@ -120,7 +124,7 @@ class CupertinoVRouter extends StatefulWidget
         super(key: key);
 
   @override
-  CupertinoVRouterState createState() => CupertinoVRouterState();
+  WidgetsVRouterState createState() => WidgetsVRouterState();
 
   /// {@macro flutter.widgets.widgetsApp.navigatorObservers}
   final List<NavigatorObserver> navigatorObservers;
@@ -142,29 +146,35 @@ class CupertinoVRouter extends StatefulWidget
   /// This value is passed unmodified to [WidgetsApp.onGenerateTitle].
   final GenerateAppTitle? onGenerateTitle;
 
-  /// Default visual properties, like colors fonts and shapes, for this app's
-  /// material widgets.
+  /// The default text style for [Text] in the application.
+  final TextStyle? textStyle;
+
+  /// {@template flutter.widgets.widgetsApp.color}
+  /// The primary color to use for the application in the operating system
+  /// interface.
   ///
-  /// A second [darkTheme] [ThemeData] value, which is used to provide a dark
-  /// version of the user interface can also be specified. [themeMode] will
-  /// control which theme will be used if a [darkTheme] is provided.
+  /// For example, on Android this is the color used for the application in the
+  /// application switcher.
+  /// {@endtemplate}
+  final Color color;
+
+  /// {@template flutter.widgets.widgetsApp.locale}
+  /// The initial locale for this app's [Localizations] widget is based
+  /// on this value.
   ///
-  /// The default value of this property is the value of [ThemeData.light()].
+  /// If the 'locale' is null then the system's locale value is used.
+  ///
+  /// The value of [Localizations.locale] will equal this locale if
+  /// it matches one of the [supportedLocales]. Otherwise it will be
+  /// the first element of [supportedLocales].
+  /// {@endtemplate}
   ///
   /// See also:
   ///
-  ///  * [themeMode], which controls which theme to use.
-  ///  * [MediaQueryData.platformBrightness], which indicates the platform's
-  ///    desired brightness and is used to automatically toggle between [theme]
-  ///    and [darkTheme] in [MaterialApp].
-  ///  * [ThemeData.brightness], which indicates the [Brightness] of a theme's
-  ///    colors.
-  final CupertinoThemeData? theme;
-
-  /// {@macro flutter.widgets.widgetsApp.color}
-  final Color? color;
-
-  /// {@macro flutter.widgets.widgetsApp.locale}
+  ///  * [localeResolutionCallback], which can override the default
+  ///    [supportedLocales] matching algorithm.
+  ///  * [localizationsDelegates], which collectively define all of the localized
+  ///    resources used by this app.
   final Locale? locale;
 
   /// {@macro flutter.widgets.widgetsApp.localizationsDelegates}
@@ -301,8 +311,37 @@ class CupertinoVRouter extends StatefulWidget
   /// reported by the framework.
   final bool showSemanticsDebugger;
 
-  /// {@macro flutter.widgets.widgetsApp.debugShowCheckedModeBanner}
+  /// Turns on an overlay that enables inspecting the widget tree.
+  ///
+  /// The inspector is only available in checked mode as it depends on
+  /// [RenderObject.debugDescribeChildren] which should not be called outside of
+  /// checked mode.
+  final bool debugShowWidgetInspector;
+
+  /// {@template flutter.widgets.widgetsApp.debugShowCheckedModeBanner}
+  /// Turns on a little "DEBUG" banner in checked mode to indicate
+  /// that the app is in checked mode. This is on by default (in
+  /// checked mode), to turn it off, set the constructor argument to
+  /// false. In release mode this has no effect.
+  ///
+  /// To get this banner in your application if you're not using
+  /// WidgetsApp, include a [CheckedModeBanner] widget in your app.
+  ///
+  /// This banner is intended to deter people from complaining that your
+  /// app is slow when it's in checked mode. In checked mode, Flutter
+  /// enables a large number of expensive diagnostics to aid in
+  /// development, and so performance in checked mode is not
+  /// representative of what will happen in release mode.
+  /// {@endtemplate}
   final bool debugShowCheckedModeBanner;
+
+  /// Builds the widget the [WidgetInspector] uses to switch between view and
+  /// inspect modes.
+  ///
+  /// This lets [MaterialApp] to use a material button to toggle the inspector
+  /// select mode without requiring [WidgetInspector] to depend on the
+  /// material package.
+  final InspectorSelectButtonBuilder? inspectorSelectButtonBuilder;
 
   /// {@macro flutter.widgets.widgetsApp.shortcuts}
   /// {@tool snippet}
@@ -365,7 +404,22 @@ class CupertinoVRouter extends StatefulWidget
   /// {@macro flutter.widgets.widgetsApp.actions.seeAlso}
   final Map<Type, Action<Intent>>? actions;
 
-  /// {@macro flutter.widgets.widgetsApp.restorationScopeId}
+  /// {@template flutter.widgets.widgetsApp.restorationScopeId}
+  /// The identifier to use for state restoration of this app.
+  ///
+  /// Providing a restoration ID inserts a [RootRestorationScope] into the
+  /// widget hierarchy, which enables state restoration for descendant widgets.
+  ///
+  /// Providing a restoration ID also enables the [Navigator] built by the
+  /// [WidgetsApp] to restore its state (i.e. to restore the history stack of
+  /// active [Route]s). See the documentation on [Navigator] for more details
+  /// around state restoration of [Route]s.
+  ///
+  /// See also:
+  ///
+  ///  * [RestorationManager], which explains how state restoration works in
+  ///    Flutter.
+  /// {@endtemplate}
   final String? restorationScopeId;
 
   static VRouterData of(BuildContext context) {
@@ -403,7 +457,7 @@ class CupertinoVRouter extends StatefulWidget
   Future<void> beforeUpdate(VRedirector vRedirector) async {}
 }
 
-class CupertinoVRouterState extends State<CupertinoVRouter> {
+class WidgetsVRouterState extends State<WidgetsVRouter> {
   late final vRouterDelegate = VRouterDelegate(
     routes: widget.routes,
     builder: widget.builder,
@@ -422,13 +476,13 @@ class CupertinoVRouterState extends State<CupertinoVRouter> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp.router(
+    return WidgetsApp.router(
       backButtonDispatcher: VBackButtonDispatcher(),
       routeInformationParser: VRouteInformationParser(),
       routerDelegate: vRouterDelegate,
-      theme: widget.theme,
       title: widget.title,
       onGenerateTitle: widget.onGenerateTitle,
+      textStyle: widget.textStyle,
       color: widget.color,
       locale: widget.locale,
       localizationsDelegates: widget.localizationsDelegates,
@@ -439,7 +493,9 @@ class CupertinoVRouterState extends State<CupertinoVRouter> {
       checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages,
       checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,
       showSemanticsDebugger: widget.showSemanticsDebugger,
+      debugShowWidgetInspector: widget.debugShowWidgetInspector,
       debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,
+      inspectorSelectButtonBuilder: widget.inspectorSelectButtonBuilder,
       shortcuts: widget.shortcuts,
       actions: widget.actions,
       restorationScopeId: widget.restorationScopeId,
@@ -532,6 +588,7 @@ class CupertinoVRouterState extends State<CupertinoVRouter> {
         queryParameters: queryParameters,
         historyState: historyState,
       );
+
 
   /// Pushes a new url based on url segments
   ///

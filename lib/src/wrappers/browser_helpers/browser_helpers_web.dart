@@ -8,7 +8,7 @@ import 'package:js/js.dart';
 // ignore: avoid_web_libraries_in_flutter
 import 'dart:html' as html;
 
-import '../../src/main.dart';
+import 'package:vrouter/src/vrouter_core.dart';
 
 /// List of static methods to interact with the browser
 /// Only one is implemented for mobile: pushExternal

@@ -1,4 +1,8 @@
-part of '../main.dart';
+
+import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/core/local_vrouter_data.dart';
+import 'package:vrouter/src/vrouter_core.dart';
+import 'package:vrouter/src/vrouter_widgets.dart';
 
 /// If the [VRouteElement] does have a page to display, it should extend this class
 ///
