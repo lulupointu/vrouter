@@ -4,6 +4,10 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.1.2+4\] - 13/05/2021.
+
+* 🛠️ : Import typo prevented web compilation
+
 ## \[1.1.2+3\] - 12/05/2021.
 
 * 🛠️ : Refactor to re-enable IDEs autocompletion
