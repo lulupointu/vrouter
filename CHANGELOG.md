@@ -4,6 +4,11 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.1.2+5\] - 16/05/2021.
+
+* 🛠️ : Exporting helpers (such as VMaterialApp)
+* 🛠️ : Update discord invite link to not expire
+
 ## \[1.1.2+4\] - 13/05/2021.
 
 * 🛠️ : Import typo prevented web compilation
