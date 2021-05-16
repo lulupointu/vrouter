@@ -62,7 +62,8 @@ main() {
               widget: Builder(
                 builder: (BuildContext context) => TextButton(
                   child: Text('VWidget1'),
-                  onPressed: () => VRouter.of(context).pushSegments(['settings']),
+                  onPressed: () =>
+                      VRouter.of(context).pushSegments(['settings']),
                 ),
               ),
               stackedRoutes: [

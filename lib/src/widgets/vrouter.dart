@@ -628,7 +628,6 @@ class VRouterState extends State<VRouter> {
         historyState: historyState,
       );
 
-
   /// Pushes a new url based on url segments
   ///
   /// For example: pushSegments(['home', 'bob']) ~ push('/home/bob')
@@ -639,15 +638,17 @@ class VRouterState extends State<VRouter> {
   /// Also see:
   ///  - [push] to see want happens when you push a new url
   void pushSegments(
-      List<String> segments, {
-        Map<String, String> queryParameters = const {},
-        Map<String, String> historyState = const {},
-      }) {
+    List<String> segments, {
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+  }) {
     // Forming the new url by encoding each segment and placing "/" between them
-    final newUrl = segments.map((segment) => Uri.encodeComponent(segment)).join('/');
+    final newUrl =
+        segments.map((segment) => Uri.encodeComponent(segment)).join('/');
 
     // Calling push with this newly formed url
-    return push('/$newUrl', queryParameters: queryParameters, historyState: historyState);
+    return push('/$newUrl',
+        queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Updates the url given a [VRouteElement] name

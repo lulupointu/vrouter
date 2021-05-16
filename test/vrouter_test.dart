@@ -128,7 +128,8 @@ main() {
       expect(vWidget2Finder, findsOneWidget);
     });
 
-    testWidgets('VRouter pushSegments with encoding needed', (WidgetTester tester) async {
+    testWidgets('VRouter pushSegments with encoding needed',
+        (WidgetTester tester) async {
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(

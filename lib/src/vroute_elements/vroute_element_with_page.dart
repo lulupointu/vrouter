@@ -1,4 +1,3 @@
-
 import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/core/local_vrouter_data.dart';
 import 'package:vrouter/src/vrouter_core.dart';
@@ -42,7 +41,7 @@ mixin VRouteElementWithPage on VRouteElement {
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
     required VPathMatch parentVPathMatch,
-        required bool parentCanPop,
+    required bool parentCanPop,
   }) {
     // Set localPath to null since a VRouteElementWithPage marks a limit between localPaths
     VPathMatch newVPathMatch = (parentVPathMatch is ValidVPathMatch)

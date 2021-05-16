@@ -26,6 +26,3 @@ export 'core/route.dart';
 export 'core/vrouter_data.dart';
 export 'core/local_vrouter_data.dart';
 export 'core/root_vrouter_data.dart';
-
-
-

@@ -1,4 +1,3 @@
-
 import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/core/root_vrouter_data.dart';
 import 'package:vrouter/src/core/vroute_element.dart';
@@ -63,7 +62,8 @@ class VRedirector {
   /// Function which will be executed after stopping the redirection
   /// if [push], [pushNamed], ... have been used.
   void Function(VRouteElementNode vRouteElementNode)? _redirectFunction;
-  void Function(VRouteElementNode vRouteElementNode)? get redirectFunction => _redirectFunction;
+  void Function(VRouteElementNode vRouteElementNode)? get redirectFunction =>
+      _redirectFunction;
 
   /// Stops the redirection
   ///
@@ -88,7 +88,6 @@ class VRedirector {
         queryParameters: queryParameters, historyState: historyState);
   }
 
-
   /// Prevent the current redirection and push a new url based on url segments
   ///
   /// For example: pushSegments(['home', 'bob']) ~ push('/home/bob')
@@ -99,15 +98,17 @@ class VRedirector {
   /// Also see:
   ///  - [push] to see want happens when you push a new url
   void pushSegments(
-      List<String> segments, {
-        Map<String, String> queryParameters = const {},
-        Map<String, String> historyState = const {},
-      }) {
+    List<String> segments, {
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+  }) {
     // Forming the new url by encoding each segment and placing "/" between them
-    final newUrl = segments.map((segment) => Uri.encodeComponent(segment)).join('/');
+    final newUrl =
+        segments.map((segment) => Uri.encodeComponent(segment)).join('/');
 
     // Calling push with this newly formed url
-    return push('/$newUrl', queryParameters: queryParameters, historyState: historyState);
+    return push('/$newUrl',
+        queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Prevent the current redirection and pushNamed a route instead

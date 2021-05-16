@@ -1,4 +1,3 @@
-
 import 'package:flutter/foundation.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:vrouter/src/vroute_elements/void_vguard.dart';
@@ -106,7 +105,7 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
     required VPathMatch parentVPathMatch,
-        required bool parentCanPop,
+    required bool parentCanPop,
   }) {
     // This will hold the GetPathMatchResult for the path so that we compute it only once
     late final VPathMatch pathMatch;
@@ -207,7 +206,7 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
     VPathRequestData vPathRequestData, {
     required List<VRouteElement> routes,
     required VPathMatch vPathMatch,
-        required bool parentCanPop,
+    required bool parentCanPop,
   }) {
     for (var vRouteElement in routes) {
       final childVRoute = vRouteElement.buildRoute(

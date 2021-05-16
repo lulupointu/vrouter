@@ -1,4 +1,3 @@
-
 import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/vrouter_core.dart';
 
@@ -11,22 +10,27 @@ import 'package:vrouter/src/vrouter_core.dart';
 /// Note that you can still override these methods
 mixin VoidVGuard on VRouteElement {
   @override
-  Future<void> beforeEnter(VRedirector vRedirector) => voidBeforeEnter(vRedirector);
+  Future<void> beforeEnter(VRedirector vRedirector) =>
+      voidBeforeEnter(vRedirector);
 
   @override
-  Future<void> beforeUpdate(VRedirector vRedirector) => voidBeforeUpdate(vRedirector);
+  Future<void> beforeUpdate(VRedirector vRedirector) =>
+      voidBeforeUpdate(vRedirector);
 
   @override
   Future<void> beforeLeave(
     VRedirector vRedirector,
     void Function(Map<String, String> state) saveHistoryState,
-  ) => voidBeforeLeave(vRedirector, saveHistoryState);
+  ) =>
+      voidBeforeLeave(vRedirector, saveHistoryState);
 
   @override
-  void afterEnter(BuildContext context, String? from, String to) => voidAfterEnter(context, from, to);
+  void afterEnter(BuildContext context, String? from, String to) =>
+      voidAfterEnter(context, from, to);
 
   @override
-  void afterUpdate(BuildContext context, String? from, String to) => voidAfterUpdate(context, from, to);
+  void afterUpdate(BuildContext context, String? from, String to) =>
+      voidAfterUpdate(context, from, to);
 
   /// Default function for [VRouteElement.beforeEnter]
   /// Basically does nothing
@@ -39,9 +43,9 @@ mixin VoidVGuard on VRouteElement {
   /// Default function for [VRouteElement.beforeLeave]
   /// Basically does nothing
   static Future<void> voidBeforeLeave(
-      VRedirector? vRedirector,
-      void Function(Map<String, String> state) saveHistoryState,
-      ) async {}
+    VRedirector? vRedirector,
+    void Function(Map<String, String> state) saveHistoryState,
+  ) async {}
 
   /// Default function for [VRouteElement.afterEnter]
   /// Basically does nothing

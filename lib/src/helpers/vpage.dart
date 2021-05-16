@@ -251,8 +251,7 @@ class VMaterialPage<T> extends MaterialPage<T>
         transitionDuration: transitionDuration,
         reverseTransitionDuration: reverseTransitionDuration,
       );
-    } else if (RootVRouterData.of(context).defaultPageBuildTransition !=
-        null) {
+    } else if (RootVRouterData.of(context).defaultPageBuildTransition != null) {
       // Else try to use the router transition
       return VPageRoute<T>(
         page: this,
@@ -345,8 +344,7 @@ class VCupertinoPage<T> extends CupertinoPage<T>
         transitionDuration: transitionDuration,
         reverseTransitionDuration: reverseTransitionDuration,
       );
-    } else if (RootVRouterData.of(context).defaultPageBuildTransition !=
-        null) {
+    } else if (RootVRouterData.of(context).defaultPageBuildTransition != null) {
       // Else try to use the router transition
       return VPageRoute<T>(
         page: this,

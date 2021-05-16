@@ -1,4 +1,3 @@
-
 import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/core/root_vrouter_data.dart';
 import 'package:vrouter/src/core/vroute_element.dart';
@@ -101,7 +100,6 @@ class LocalVRouterData extends VRouterData {
       RootVRouterData.of(_rootVRouterDataContext).push(newUrl,
           queryParameters: queryParameters, historyState: historyState);
 
-
   /// Pushes a new url based on url segments
   ///
   /// For example: pushSegments(['home', 'bob']) ~ push('/home/bob')
@@ -112,15 +110,17 @@ class LocalVRouterData extends VRouterData {
   /// Also see:
   ///  - [push] to see want happens when you push a new url
   void pushSegments(
-      List<String> segments, {
-        Map<String, String> queryParameters = const {},
-        Map<String, String> historyState = const {},
-      }) {
+    List<String> segments, {
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+  }) {
     // Forming the new url by encoding each segment and placing "/" between them
-    final newUrl = segments.map((segment) => Uri.encodeComponent(segment)).join('/');
+    final newUrl =
+        segments.map((segment) => Uri.encodeComponent(segment)).join('/');
 
     // Calling push with this newly formed url
-    return push('/$newUrl', queryParameters: queryParameters, historyState: historyState);
+    return push('/$newUrl',
+        queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Updates the url given a [VRouteElement] name

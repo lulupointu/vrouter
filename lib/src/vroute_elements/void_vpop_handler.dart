@@ -1,4 +1,3 @@
-
 import 'package:vrouter/src/vrouter_core.dart';
 
 /// Use this mixin if you don't want to implement [VRouteElement.onPop] and [VRouteElement.onSystemPop]
@@ -11,7 +10,8 @@ mixin VoidVPopHandler on VRouteElement {
   Future<void> onPop(VRedirector vRedirector) => voidOnPop(vRedirector);
 
   @override
-  Future<void> onSystemPop(VRedirector vRedirector) => voidOnSystemPop(vRedirector);
+  Future<void> onSystemPop(VRedirector vRedirector) =>
+      voidOnSystemPop(vRedirector);
 
   /// Default function for [onPop]
   /// Basically does nothing

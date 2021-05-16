@@ -54,7 +54,7 @@ main() {
       await tester.pumpWidget(
         VRouter(
           beforeLeave: (vRedirector, _) async =>
-          (vRedirector.to != '/other') ? vRedirector.push('/other') : null,
+              (vRedirector.to != '/other') ? vRedirector.push('/other') : null,
           routes: [
             VWidget(
               path: '/',
@@ -106,8 +106,9 @@ main() {
     testWidgets('vRedirector.pushSegments', (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(
-          beforeLeave: (vRedirector, _) async =>
-          (vRedirector.to != '/other') ? vRedirector.pushSegments(['other']) : null,
+          beforeLeave: (vRedirector, _) async => (vRedirector.to != '/other')
+              ? vRedirector.pushSegments(['other'])
+              : null,
           routes: [
             VWidget(
               path: '/',

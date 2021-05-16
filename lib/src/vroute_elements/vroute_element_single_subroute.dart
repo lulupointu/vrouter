@@ -1,4 +1,3 @@
-
 import 'package:vrouter/src/vrouter_core.dart';
 
 /// If the VRouteElement has a single [VRouteElement] as a child, it should instantiate this class
@@ -38,7 +37,7 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
   VRoute? buildRoute(
     VPathRequestData vPathRequestData, {
     required VPathMatch parentVPathMatch,
-        required bool parentCanPop,
+    required bool parentCanPop,
   }) {
     VRoute? childVRoute;
     for (var vRouteElement in _subroutes) {

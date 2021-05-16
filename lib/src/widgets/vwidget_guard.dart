@@ -89,7 +89,8 @@ class VWidgetGuard extends StatefulWidget {
   ///
   /// Note that you should consider the navigation cycle to
   /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
-  final void Function(BuildContext context, String? from, String to) afterUpdate;
+  final void Function(BuildContext context, String? from, String to)
+      afterUpdate;
 
   /// Called when a pop event occurs.
   /// A pop event can be called programmatically (with [VRouter.of(context).pop()])
@@ -146,7 +147,8 @@ class VWidgetGuard extends StatefulWidget {
 class _VWidgetGuardState extends State<VWidgetGuard> {
   @override
   void didChangeDependencies() {
-    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context).dispatch(context);
+    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context)
+        .dispatch(context);
     super.didChangeDependencies();
   }
 
@@ -155,13 +157,15 @@ class _VWidgetGuardState extends State<VWidgetGuard> {
   // are necessary when changes to VWidgetGuard are made
   @override
   void reassemble() {
-    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context).dispatch(context);
+    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context)
+        .dispatch(context);
     super.reassemble();
   }
 
   @override
   Widget build(BuildContext context) {
-    VRouter.of(context); // Makes didChangeDependencies be called when VRouterData changes
+    VRouter.of(
+        context); // Makes didChangeDependencies be called when VRouterData changes
     return widget.child;
   }
 }
