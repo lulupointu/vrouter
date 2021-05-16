@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:vrouter/src/core/root_vrouter_data.dart';
 import 'package:vrouter/src/vrouter_core.dart';
 import 'package:vrouter/src/wrappers/platform/platform.dart';
 
