@@ -1305,6 +1305,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
   /// App state to navigation state
   @override
   RouteInformation? get currentConfiguration {
+    if (url == null) return null;
+
     // We report manually and don't use RouteInformation because flutter
     // does not want to report twice the same RouteInformation
     if (Platform.isWeb && _doReportBackUrlToBrowser) {
@@ -1323,7 +1325,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
 
     return _doReportBackUrlToBrowser
         ? RouteInformation(
-            location: url ?? '/',
+            location: url!,
             state: jsonEncode({
               'serialCount': _serialCount,
               'historyState': jsonEncode(historyState),
