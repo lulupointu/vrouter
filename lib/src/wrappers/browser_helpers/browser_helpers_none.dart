@@ -28,8 +28,7 @@ class BrowserHelpers {
 
   /// This uses the launch method from the [url_launcher] package to open a given link
   /// [openNewTab] does nothing here since we open a window anyway
-  static Future<void> pushExternal(String url,
-      {required bool openNewTab}) async {
+  static Future<void> pushExternal(String url, {required bool openNewTab}) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
@@ -39,4 +38,11 @@ class BrowserHelpers {
 
   static void pushReplacement(String url, {required VRouterModes routerMode}) =>
       throw (Exception('pushReplacement should only be used on the web'));
+
+  static void push(
+    String url, {
+    required VRouterModes routerMode,
+    String? state,
+  }) =>
+      throw (Exception('push should only be used on the web'));
 }

@@ -84,30 +84,32 @@ mixin VRouteElementWithPage on VRouteElement {
       pages: [
         pageBuilder(
           key ?? ValueKey(parentVPathMatch.localPath),
-          LocalVRouterData(
-            child: NotificationListener<VWidgetGuardMessage>(
-              // This listen to [VWidgetGuardNotification] which is a notification
-              // that a [VWidgetGuard] sends when it is created
-              // When this happens, we store the VWidgetGuard and its context
-              // This will be used to call its afterUpdate and beforeLeave in particular.
-              onNotification: (VWidgetGuardMessage vWidgetGuardMessage) {
-                VWidgetGuardMessageRoot(
-                  vWidgetGuard: vWidgetGuardMessage.vWidgetGuard,
-                  localContext: vWidgetGuardMessage.localContext,
-                  associatedVRouteElement: this,
-                ).dispatch(vPathRequestData.rootVRouterContext);
+          Builder(
+          builder:(context)=> LocalVRouterData(
+              child: NotificationListener<VWidgetGuardMessage>(
+                // This listen to [VWidgetGuardNotification] which is a notification
+                // that a [VWidgetGuard] sends when it is created
+                // When this happens, we store the VWidgetGuard and its context
+                // This will be used to call its afterUpdate and beforeLeave in particular.
+                onNotification: (VWidgetGuardMessage vWidgetGuardMessage) {
+                  VWidgetGuardMessageRoot(
+                    vWidgetGuard: vWidgetGuardMessage.vWidgetGuard,
+                    localContext: vWidgetGuardMessage.localContext,
+                    associatedVRouteElement: this,
+                  ).dispatch(vPathRequestData.rootVRouterContext);
 
-                return true;
-              },
-              child: widget,
+                  return true;
+                },
+                child: widget,
+              ),
+              vRouteElementNode: vRouteElementNode,
+              url: vPathRequestData.url,
+              previousUrl: vPathRequestData.previousUrl,
+              historyState: vPathRequestData.historyState,
+              pathParameters: pathParameters,
+              queryParameters: vPathRequestData.queryParameters,
+              context: context,
             ),
-            vRouteElementNode: vRouteElementNode,
-            url: vPathRequestData.url,
-            previousUrl: vPathRequestData.previousUrl,
-            historyState: vPathRequestData.historyState,
-            pathParameters: pathParameters,
-            queryParameters: vPathRequestData.queryParameters,
-            context: vPathRequestData.rootVRouterContext,
           ),
           name ?? parentVPathMatch.localPath,
         ),

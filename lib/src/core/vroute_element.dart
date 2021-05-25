@@ -109,6 +109,19 @@ abstract class VRouteElement {
   );
 
   /// This is called after the url and the historyState are updated and this [VRouteElement]
+  /// was in the previous route and is NOT in the new route
+  /// You can't prevent the navigation anymore
+  /// You can get the new route parameters, and queryParameters
+  ///
+  /// Note that you should consider the navigation cycle to
+  /// handle this precisely, see [https://vrouter.dev/guide/Advanced/Navigation%20Control/The%20Navigation%20Cycle]
+  ///
+  /// Also see:
+  ///   * [VRouter.afterEnter] for router level afterEnter
+  ///   * [VWidgetGuard.afterEnter] for widget level afterEnter
+  void afterLeave(BuildContext context, String? from, String to);
+
+  /// This is called after the url and the historyState are updated and this [VRouteElement]
   /// was NOT in the previous route and is in the new route
   /// You can't prevent the navigation anymore
   /// You can get the new route parameters, and queryParameters
@@ -351,11 +364,14 @@ class VPathRequestData {
   /// A [BuildContext] with which we can access [RootVRouterData]
   final BuildContext rootVRouterContext;
 
+  final List<NavigatorObserver> navigatorObserversToReportTo;
+
   VPathRequestData({
     required this.previousUrl,
     required this.uri,
     required this.historyState,
     required this.rootVRouterContext,
+    required this.navigatorObserversToReportTo,
   });
 
   /// The path contained in the uri

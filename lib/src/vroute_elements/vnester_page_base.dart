@@ -1,4 +1,6 @@
 import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/core/vnavigator_observer.dart';
+import 'package:vrouter/src/core/vpop_data.dart';
 import 'package:vrouter/src/helpers/empty_page.dart';
 import 'package:vrouter/src/helpers/vrouter_helper.dart';
 import 'package:vrouter/src/vroute_elements/void_vguard.dart';
@@ -59,8 +61,9 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
     this.key,
     this.name,
     GlobalKey<NavigatorState>? navigatorKey,
-  }) : assert(nestedRoutes.isNotEmpty,
-            'The nestedRoutes of a VNester should not be null, otherwise it can\'t nest') {
+  })  : assert(nestedRoutes.isNotEmpty,
+            'The nestedRoutes of a VNester should not be null, otherwise it can\'t nest'),
+        _vNavigatorObserver = VNavigatorObserver() {
     this.navigatorKey = navigatorKey ??
         GlobalKey<NavigatorState>(
           debugLabel: '$runtimeType of name $name and key $key navigatorKey',
@@ -70,6 +73,10 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
   /// A hero controller for the navigator
   /// It is created automatically
   final HeroController heroController = HeroController();
+
+  /// Observes push and pop event to keep track of changes
+  /// linked to Navigator 1.0
+  final VNavigatorObserver _vNavigatorObserver;
 
   @override
   VRoute? buildRoute(
@@ -134,66 +141,92 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
       pages: [
         pageBuilder(
           key ?? ValueKey(parentVPathMatch.localPath),
-          LocalVRouterData(
-            child: NotificationListener<VWidgetGuardMessage>(
-              // This listen to [VWidgetGuardNotification] which is a notification
-              // that a [VWidgetGuard] sends when it is created
-              // When this happens, we store the VWidgetGuard and its context
-              // This will be used to call its afterUpdate and beforeLeave in particular.
-              onNotification: (VWidgetGuardMessage vWidgetGuardMessage) {
-                VWidgetGuardMessageRoot(
-                  vWidgetGuard: vWidgetGuardMessage.vWidgetGuard,
-                  localContext: vWidgetGuardMessage.localContext,
-                  associatedVRouteElement: this,
-                ).dispatch(vPathRequestData.rootVRouterContext);
+          Builder(
+            builder: (context) => LocalVRouterData(
+              child: NotificationListener<VWidgetGuardMessage>(
+                // This listen to [VWidgetGuardNotification] which is a notification
+                // that a [VWidgetGuard] sends when it is created
+                // When this happens, we store the VWidgetGuard and its context
+                // This will be used to call its afterUpdate and beforeLeave in particular.
+                onNotification: (VWidgetGuardMessage vWidgetGuardMessage) {
+                  VWidgetGuardMessageRoot(
+                    vWidgetGuard: vWidgetGuardMessage.vWidgetGuard,
+                    localContext: vWidgetGuardMessage.localContext,
+                    associatedVRouteElement: this,
+                  ).dispatch(vPathRequestData.rootVRouterContext);
 
-                return true;
-              },
-              child: widgetBuilder(
-                Builder(
-                  builder: (BuildContext context) {
-                    return VRouterHelper(
-                      pages: <Page>[if (parentCanPop) EmptyPage()] +
-                          (nestedRouteVRoute!.pages.isNotEmpty
-                              ? nestedRouteVRoute.pages
-                              : [EmptyPage()]),
-                      navigatorKey: navigatorKey,
-                      observers: <NavigatorObserver>[heroController] +
-                          RootVRouterData.of(context).state.navigatorObservers,
-                      backButtonDispatcher: ChildBackButtonDispatcher(
-                          Router.of(context).backButtonDispatcher!),
-                      onPopPage: (_, __) {
-                        RootVRouterData.of(context).popFromElement(
-                          nestedRouteVRoute!.vRouteElementNode
-                              .getVRouteElementToPop(),
-                          pathParameters: VRouter.of(context).pathParameters,
-                        );
+                  return true;
+                },
+                child: widgetBuilder(
+                  Builder(
+                    builder: (BuildContext context) {
+                      return VRouterHelper(
+                        pages: <Page>[if (parentCanPop) EmptyPage()] +
+                            (nestedRouteVRoute!.pages.isNotEmpty
+                                ? nestedRouteVRoute.pages
+                                : [EmptyPage()]),
+                        navigatorKey: navigatorKey,
+                        observers: <NavigatorObserver>[
+                          _vNavigatorObserver,
+                          VNestedObserverReporter(
+                            navigatorObserversToReportTo:
+                                vPathRequestData.navigatorObserversToReportTo,
+                          ),
+                          heroController
+                        ],
+                        backButtonDispatcher:
+                            ChildBackButtonDispatcher(Router.of(context).backButtonDispatcher!)
+                              ..takePriority(),
+                        onPopPage: (_, data) {
+                          // If something has been push be Navigator.push, pop it
+                          if (_vNavigatorObserver.hasNavigator1Pushed) {
+                            return true;
+                          }
 
-                        // We always prevent popping because we handle it in VRouter
-                        return false;
-                      },
-                      onSystemPopPage: () async {
-                        await RootVRouterData.of(context).systemPopFromElement(
-                          nestedRouteVRoute!.vRouteElementNode
-                              .getVRouteElementToSystemPop(),
-                          pathParameters: VRouter.of(context).pathParameters,
-                        );
+                          // Else use [VRouterDelegate.pop]
+                          late final vPopData;
+                          if (data is VPopData) {
+                            vPopData = data;
+                          } else {
+                            vPopData = VPopData(
+                              elementToPop:
+                                  nestedRouteVRoute!.vRouteElementNode.getVRouteElementToPop(),
+                              pathParameters: pathParameters,
+                              queryParameters: {},
+                              newHistoryState: {},
+                            );
+                          }
 
-                        // We always prevent popping because we handle it in VRouter
-                        return true;
-                      },
-                    );
-                  },
+                          RootVRouterData.of(context).popFromElement(
+                            vPopData.elementToPop,
+                            pathParameters: vPopData.pathParameters,
+                            queryParameters: vPopData.newHistoryState,
+                            newHistoryState: vPopData.newHistoryState,
+                          );
+                          return false;
+                        },
+                        onSystemPopPage: () async {
+                          if (_vNavigatorObserver.hasNavigator1Pushed) {
+                            navigatorKey.currentState!.pop();
+                            return true; // We handled it
+                          }
+
+                          // Return false because we handle it in VRouter
+                          return false;
+                        },
+                      );
+                    },
+                  ),
                 ),
               ),
+              vRouteElementNode: vRouteElementNode,
+              url: vPathRequestData.url,
+              previousUrl: vPathRequestData.previousUrl,
+              historyState: vPathRequestData.historyState,
+              pathParameters: pathParameters,
+              queryParameters: vPathRequestData.queryParameters,
+              context: context,
             ),
-            vRouteElementNode: vRouteElementNode,
-            url: vPathRequestData.url,
-            previousUrl: vPathRequestData.previousUrl,
-            historyState: vPathRequestData.historyState,
-            pathParameters: pathParameters,
-            queryParameters: vPathRequestData.queryParameters,
-            context: vPathRequestData.rootVRouterContext,
           ),
           name ?? parentVPathMatch.localPath,
         ),
@@ -260,8 +293,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
                 values: [
                   OverlyPathParamsError(
                     pathParams: pathParameters.keys.toList(),
-                    expectedPathParams:
-                        parentPathResult.pathParameters.keys.toList(),
+                    expectedPathParams: parentPathResult.pathParameters.keys.toList(),
                   ),
                 ],
               ),
@@ -280,8 +312,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
               MissingPathParamsError(
                 pathParams: pathParameters.keys.toList(),
                 missingPathParams:
-                    (parentPathResult as PathParamsErrorNewParentPath)
-                        .pathParameters,
+                    (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
               ),
             ],
           ),
@@ -310,8 +341,8 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
     }
 
     // Else try to find a NullPathError
-    if (childNameResults.indexWhere(
-            (childNameResult) => childNameResult is NullPathErrorNameResult) !=
+    if (childNameResults
+            .indexWhere((childNameResult) => childNameResult is NullPathErrorNameResult) !=
         -1) {
       return NullPathErrorNameResult(name: nameToMatch);
     }
@@ -387,8 +418,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
             MissingPathParamsError(
               pathParams: pathParameters.keys.toList(),
               missingPathParams:
-                  (parentPathResult as PathParamsErrorNewParentPath)
-                      .pathParameters,
+                  (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
             ),
           ],
         );
@@ -398,5 +428,64 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
     // If none of the stackedRoutes popped and this did not pop, return a NotValidPopResult
     // This should never reach RootVRouter
     return NotFoundPopResult();
+  }
+
+  @override
+  void afterLeave(BuildContext context, String? from, String to) {
+    for (var i = 0; i < _vNavigatorObserver.navigator1PushCount; i++)
+      navigatorKey.currentState!.pop();
+  }
+}
+
+/// The only goal of this observer is to push information up the root [VNavigatorObserver]
+class VNestedObserverReporter extends NavigatorObserver {
+  final List<NavigatorObserver> _navigatorObserversToReportTo;
+
+  VNestedObserverReporter({required List<NavigatorObserver> navigatorObserversToReportTo})
+      : _navigatorObserversToReportTo = navigatorObserversToReportTo;
+
+  @override
+  void didPop(Route route, Route? previousRoute) {
+    _navigatorObserversToReportTo.forEach(
+      (element) => element.didPop(route, previousRoute),
+    );
+  }
+
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    _navigatorObserversToReportTo.forEach(
+      (element) => element.didPush(route, previousRoute),
+    );
+  }
+
+  @override
+  void didRemove(Route route, Route? previousRoute) {
+    _navigatorObserversToReportTo.forEach(
+      (element) => element.didRemove(route, previousRoute),
+    );
+  }
+
+  @override
+  void didReplace({Route? newRoute, Route? oldRoute}) {
+    _navigatorObserversToReportTo.forEach(
+      (element) => element.didReplace(
+        newRoute: newRoute,
+        oldRoute: oldRoute,
+      ),
+    );
+  }
+
+  @override
+  void didStartUserGesture(Route route, Route? previousRoute) {
+    _navigatorObserversToReportTo.forEach(
+      (element) => element.didStartUserGesture(route, previousRoute),
+    );
+  }
+
+  @override
+  void didStopUserGesture() {
+    _navigatorObserversToReportTo.forEach(
+      (element) => element.didStopUserGesture(),
+    );
   }
 }

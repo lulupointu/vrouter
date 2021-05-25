@@ -8,8 +8,7 @@ class RootVRouter extends VRouteElement with VRouteElementSingleSubRoute {
 
   RootVRouter({
     required this.routes,
-    Future<void> Function(VRedirector vRedirector) beforeEnter =
-        VoidVGuard.voidBeforeEnter,
+    Future<void> Function(VRedirector vRedirector) beforeEnter = VoidVGuard.voidBeforeEnter,
     Future<void> Function(
       VRedirector vRedirector,
       void Function(Map<String, String> historyState) saveHistoryState,
@@ -17,8 +16,7 @@ class RootVRouter extends VRouteElement with VRouteElementSingleSubRoute {
         beforeLeave = VoidVGuard.voidBeforeLeave,
     void Function(BuildContext context, String? from, String to) afterEnter =
         VoidVGuard.voidAfterEnter,
-    Future<void> Function(VRedirector vRedirector) onPop =
-        VoidVPopHandler.voidOnPop,
+    Future<void> Function(VRedirector vRedirector) onPop = VoidVPopHandler.voidOnPop,
     Future<void> Function(VRedirector vRedirector) onSystemPop =
         VoidVPopHandler.voidOnSystemPop,
   })  : _beforeEnter = beforeEnter,
@@ -28,8 +26,7 @@ class RootVRouter extends VRouteElement with VRouteElementSingleSubRoute {
         _onSystemPop = onSystemPop;
 
   @override
-  Future<void> beforeEnter(VRedirector vRedirector) =>
-      _beforeEnter(vRedirector);
+  Future<void> beforeEnter(VRedirector vRedirector) => _beforeEnter(vRedirector);
   final Future<void> Function(VRedirector vRedirector) _beforeEnter;
 
   @override
@@ -46,16 +43,14 @@ class RootVRouter extends VRouteElement with VRouteElementSingleSubRoute {
   @override
   void afterEnter(BuildContext context, String? from, String to) =>
       _afterEnter(context, from, to);
-  final void Function(BuildContext context, String? from, String to)
-      _afterEnter;
+  final void Function(BuildContext context, String? from, String to) _afterEnter;
 
   @override
   Future<void> onPop(VRedirector vRedirector) => _onPop(vRedirector);
   final Future<void> Function(VRedirector vRedirector) _onPop;
 
   @override
-  Future<void> onSystemPop(VRedirector vRedirector) =>
-      _onSystemPop(vRedirector);
+  Future<void> onSystemPop(VRedirector vRedirector) => _onSystemPop(vRedirector);
   final Future<void> Function(VRedirector vRedirector) _onSystemPop;
 
   @override
@@ -66,4 +61,7 @@ class RootVRouter extends VRouteElement with VRouteElementSingleSubRoute {
 
   @override
   List<VRouteElement> buildRoutes() => routes;
+
+  @override
+  void afterLeave(BuildContext context, String? from, String to) {}
 }

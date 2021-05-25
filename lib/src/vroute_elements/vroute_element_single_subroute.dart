@@ -10,9 +10,12 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
 
   late final List<VRouteElement> _subroutes = buildRoutes();
 
-  /// Describes whether we should we pop this [VRouteElement]
-  /// if the [VRouteElement] of the subroute pops
-  bool get popWithSubRoute => true;
+  /// Describes whether this [VRouteElement] can be a node of a [VRoute]
+  ///
+  /// If true:
+  ///   - this can create a [VRoute] even if no [_subroutes] matches
+  ///   - this will pop if a route in [_subroutes] pops
+  bool get mustHaveSubRoutes => true;
 
   /// [buildRoute] must return [VRoute] if it constitute (which its subroutes or not) a valid
   /// route given the input parameters
@@ -58,6 +61,20 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
           vRouteElements: <VRouteElement>[this] + childVRoute.vRouteElements,
         );
       }
+    }
+
+    // If none where found, test if this [VRouteElement] can create a [VRoute]
+    final validParentVPathMatch = (parentVPathMatch is ValidVPathMatch) && parentVPathMatch.remainingPath.isEmpty;
+    if (!mustHaveSubRoutes && validParentVPathMatch) {
+      return VRoute(
+        vRouteElementNode: VRouteElementNode(
+          this,
+          localPath: null,
+        ),
+        pages: [],
+        pathParameters: (parentVPathMatch as ValidVPathMatch).pathParameters,
+        vRouteElements: <VRouteElement>[this],
+      );
     }
 
     return null;
@@ -154,7 +171,7 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
 
         // If PoppingPopResult, check whether we should pop with it or not
 
-        if (popWithSubRoute) {
+        if (mustHaveSubRoutes) {
           // If we should pop with the VRouteElement to pop
           // Add ourselves to the poppedVRouteElements in a PoppingPopResult
           return PoppingPopResult(

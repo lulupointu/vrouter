@@ -24,6 +24,14 @@ class VRouteRedirector extends VRouteElementBuilder {
 
   @override
   List<VRouteElement> buildRoutes() => [
-        VPath(path: path, stackedRoutes: []),
+        VPath(path: path, stackedRoutes: [_VRouteElementNode()]),
       ];
+}
+
+class _VRouteElementNode extends VRouteElementBuilder {
+  @override
+  List<VRouteElement> buildRoutes() => [];
+
+  @override
+  bool get mustHaveSubRoutes => false;
 }

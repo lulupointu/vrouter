@@ -488,6 +488,9 @@ class VRouter extends StatefulWidget
   List<VRouteElement> buildRoutes() => routes;
 
   @override
+  void afterLeave(BuildContext context, String? from, String to) {}
+
+  @override
   void afterUpdate(BuildContext context, String? from, String to) {}
 
   @override

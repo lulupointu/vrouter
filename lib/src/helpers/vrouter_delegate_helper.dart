@@ -46,8 +46,7 @@ class VRouterDelegateHelper<T extends Object> extends RouterDelegate<T>
   @override
   Future<bool> popRoute() async {
     if (onSystemPopPage != null) {
-      await onSystemPopPage!();
-      return true;
+      return onSystemPopPage!();
     }
     return false;
   }

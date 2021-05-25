@@ -177,25 +177,25 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
 
     // Else, if no subroute is valid
 
-    // check if this is an exact match with path
-    final vRoute = getVRouteFromSelf(
-      vPathRequestData,
-      vPathMatch: pathMatch,
-    );
-    if (vRoute != null) {
-      return vRoute;
-    }
-
-    // Check exact match for the aliases
-    for (var i = 0; i < aliases.length; i++) {
-      final vRoute = getVRouteFromSelf(
-        vPathRequestData,
-        vPathMatch: aliasesMatch[i],
-      );
-      if (vRoute != null) {
-        return vRoute;
-      }
-    }
+    // // check if this is an exact match with path
+    // final vRoute = getVRouteFromSelf(
+    //   vPathRequestData,
+    //   vPathMatch: pathMatch,
+    // );
+    // if (vRoute != null) {
+    //   return vRoute;
+    // }
+    //
+    // // Check exact match for the aliases
+    // for (var i = 0; i < aliases.length; i++) {
+    //   final vRoute = getVRouteFromSelf(
+    //     vPathRequestData,
+    //     vPathMatch: aliasesMatch[i],
+    //   );
+    //   if (vRoute != null) {
+    //     return vRoute;
+    //   }
+    // }
 
     // Else return null
     return null;

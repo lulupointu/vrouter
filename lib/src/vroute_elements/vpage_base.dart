@@ -46,5 +46,5 @@ class VPageBase extends VRouteElement
   List<VRouteElement> buildRoutes() => stackedRoutes;
 
   @override
-  bool get popWithSubRoute => false;
+  bool get mustHaveSubRoutes => false;
 }

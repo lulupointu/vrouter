@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
-import 'package:vrouter/src/core/root_vrouter_data.dart';
+import 'package:vrouter/src/core/vnavigator_observer.dart';
+import 'package:vrouter/src/core/vpop_data.dart';
 import 'package:vrouter/src/core/vroute_element.dart';
 import 'package:vrouter/src/core/vrouter_data.dart';
 import 'package:vrouter/src/core/vrouter_delegate.dart';
@@ -17,7 +18,7 @@ class LocalVRouterData extends VRouterData {
   final VRouteElementNode _vRouteElementNode;
 
   /// A [BuildContext] which can be used to access the [RootVRouterData]
-  final BuildContext _rootVRouterDataContext;
+  final BuildContext _context;
 
   LocalVRouterData({
     Key? key,
@@ -29,8 +30,8 @@ class LocalVRouterData extends VRouterData {
     required this.queryParameters,
     required VRouteElementNode vRouteElementNode,
     required BuildContext context,
-  })   : _vRouteElementNode = vRouteElementNode,
-        _rootVRouterDataContext = context,
+  })  : _vRouteElementNode = vRouteElementNode,
+        _context = context,
         super(
           key: key,
           child: child,
@@ -97,8 +98,8 @@ class LocalVRouterData extends VRouterData {
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
   }) =>
-      RootVRouterData.of(_rootVRouterDataContext).push(newUrl,
-          queryParameters: queryParameters, historyState: historyState);
+      RootVRouterData.of(_context)
+          .push(newUrl, queryParameters: queryParameters, historyState: historyState);
 
   /// Pushes a new url based on url segments
   ///
@@ -115,12 +116,10 @@ class LocalVRouterData extends VRouterData {
     Map<String, String> historyState = const {},
   }) {
     // Forming the new url by encoding each segment and placing "/" between them
-    final newUrl =
-        segments.map((segment) => Uri.encodeComponent(segment)).join('/');
+    final newUrl = segments.map((segment) => Uri.encodeComponent(segment)).join('/');
 
     // Calling push with this newly formed url
-    return push('/$newUrl',
-        queryParameters: queryParameters, historyState: historyState);
+    return push('/$newUrl', queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Updates the url given a [VRouteElement] name
@@ -144,7 +143,7 @@ class LocalVRouterData extends VRouterData {
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
   }) =>
-      RootVRouterData.of(_rootVRouterDataContext).pushNamed(name,
+      RootVRouterData.of(_context).pushNamed(name,
           pathParameters: pathParameters,
           queryParameters: queryParameters,
           historyState: historyState);
@@ -169,7 +168,7 @@ class LocalVRouterData extends VRouterData {
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
   }) =>
-      RootVRouterData.of(_rootVRouterDataContext).pushReplacement(newUrl,
+      RootVRouterData.of(_context).pushReplacement(newUrl,
           queryParameters: queryParameters, historyState: historyState);
 
   /// Replace the url given a [VRouteElement] name
@@ -194,7 +193,7 @@ class LocalVRouterData extends VRouterData {
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
   }) =>
-      RootVRouterData.of(_rootVRouterDataContext).pushReplacementNamed(name,
+      RootVRouterData.of(_context).pushReplacementNamed(name,
           pathParameters: pathParameters,
           queryParameters: queryParameters,
           historyState: historyState);
@@ -204,8 +203,7 @@ class LocalVRouterData extends VRouterData {
   /// On the web, you can set [openNewTab] to true to open this url
   /// in a new tab
   void pushExternal(String newUrl, {bool openNewTab = false}) =>
-      RootVRouterData.of(_rootVRouterDataContext)
-          .pushExternal(newUrl, openNewTab: openNewTab);
+      RootVRouterData.of(_context).pushExternal(newUrl, openNewTab: openNewTab);
 
   /// Starts a pop cycle
   ///
@@ -221,13 +219,19 @@ class LocalVRouterData extends VRouterData {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
     Map<String, String> newHistoryState = const {},
-  }) =>
-      RootVRouterData.of(_rootVRouterDataContext).popFromElement(
-        _vRouteElementNode.getVRouteElementToPop(),
-        pathParameters: pathParameters,
+  }) {
+    Navigator.of(_context).pop(
+      VPopData(
+        elementToPop: _vRouteElementNode.getVRouteElementToPop(),
+        pathParameters: {
+          ...pathParameters,
+          ...this.pathParameters, // Include the previous path parameters when poping
+        },
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
-      );
+      ),
+    );
+  }
 
   /// Starts a systemPop cycle
   ///
@@ -243,22 +247,29 @@ class LocalVRouterData extends VRouterData {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
     Map<String, String> newHistoryState = const {},
-  }) =>
-      RootVRouterData.of(_rootVRouterDataContext).systemPopFromElement(
-        _vRouteElementNode.getVRouteElementToSystemPop(),
-        pathParameters: pathParameters,
-        queryParameters: queryParameters,
-        newHistoryState: newHistoryState,
-      );
+  }) async {
+    final _vNavigatorObserver = Navigator.of(_context)
+            .widget
+            .observers
+            .firstWhere((navigatorObserver) => navigatorObserver is VNavigatorObserver)
+        as VNavigatorObserver;
+    if (_vNavigatorObserver.hasNavigator1Pushed) {
+      return Navigator.of(_context).pop();
+    }
+    return RootVRouterData.of(_context).systemPopFromElement(
+      _vRouteElementNode.getVRouteElementToSystemPop(),
+      pathParameters: pathParameters,
+      queryParameters: queryParameters,
+      newHistoryState: newHistoryState,
+    );
+  }
 
   /// This replaces the current history state of [VRouter] with given one
   void replaceHistoryState(Map<String, String> historyState) =>
-      RootVRouterData.of(_rootVRouterDataContext)
-          .replaceHistoryState(historyState);
+      RootVRouterData.of(_context).replaceHistoryState(historyState);
 
   static LocalVRouterData of(BuildContext context) {
-    final localVRouterData =
-        context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
+    final localVRouterData = context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
     if (localVRouterData == null) {
       throw FlutterError(
           'LocalVRouter.of(context) was called with a context which does not contain a LocalVRouterData.\n'

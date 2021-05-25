@@ -455,6 +455,9 @@ class WidgetsVRouter extends StatefulWidget
 
   @override
   Future<void> beforeUpdate(VRedirector vRedirector) async {}
+
+  @override
+  void afterLeave(BuildContext context, String? from, String to) {}
 }
 
 class WidgetsVRouterState extends State<WidgetsVRouter> {

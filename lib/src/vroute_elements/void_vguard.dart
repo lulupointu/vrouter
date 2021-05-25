@@ -25,6 +25,10 @@ mixin VoidVGuard on VRouteElement {
       voidBeforeLeave(vRedirector, saveHistoryState);
 
   @override
+  void afterLeave(BuildContext context, String? from, String to) =>
+      voidAfterLeave(context, from, to);
+
+  @override
   void afterEnter(BuildContext context, String? from, String to) =>
       voidAfterEnter(context, from, to);
 
@@ -50,6 +54,10 @@ mixin VoidVGuard on VRouteElement {
   /// Default function for [VRouteElement.afterEnter]
   /// Basically does nothing
   static void voidAfterEnter(BuildContext context, String? from, String to) {}
+
+  /// Default function for [VRouteElement.voidAfterLeave]
+  /// Basically does nothing
+  static void voidAfterLeave(BuildContext context, String? from, String to) {}
 
   /// Default function for [VRouteElement.afterUpdate]
   /// Basically does nothing
