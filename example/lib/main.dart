@@ -4,33 +4,20 @@ import 'package:vrouter/vrouter.dart';
 void main() {
   runApp(
     VRouter(
+      debugShowCheckedModeBanner: false, // VRouter acts as a MaterialApp
+      mode: VRouterModes.history, // Remove the '#' from the url
       routes: [
-        VNester(
-          path: '/settings',
-          widgetBuilder: (child) => Scaffold(
-            body: child,
-            bottomNavigationBar: Text('BottomNavigationBar'),
-          ),
-          nestedRoutes: [
-            VWidget(
-              path: '/',
-              widget: Builder(
-                builder: (context) => Material(
-                  child: InkWell(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => InkWell(
-                          onTap: () => context.vRouter.systemPop(),
-                          child: Text('MaterialPageRoute'),
-                        ),
-                      ),
-                    ),
-                    child: Text('VWidget1'),
-                  ),
-                ),
-              ),
-            ),
+        VWidget(
+          path: '/login',
+          widget: LoginWidget(),
+          stackedRoutes: [
+            ConnectedRoutes(), // Custom VRouteElement
           ],
+        ),
+        // This redirect every unknown routes to /login
+        VRouteRedirector(
+          redirectTo: '/login',
+          path: r':_(.*)', // .* is a regexp which matching every paths
         ),
       ],
     ),
@@ -91,58 +78,46 @@ class _LoginWidgetState extends State<LoginWidget> {
   @override
   Widget build(BuildContext context) {
     return Material(
-      child: InkWell(
-        onTap: () => showModalBottomSheet(
-          context: context,
-          builder: (_) => InkWell(
-            onTap: () => showModalBottomSheet(
-              context: context,
-              builder: (_) => Text('OTHER (2nd)\nshowModalBottomSheet'),
-            ),
-            child: Text('showModalBottomSheet'),
-          ),
-        ),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text('Enter your name to connect: '),
-                  Container(
-                    width: 200,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Colors.black),
-                    ),
-                    child: Form(
-                      key: _formKey,
-                      child: TextFormField(
-                        textAlign: TextAlign.center,
-                        onChanged: (value) => name = value,
-                        initialValue: 'bob',
-                      ),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('Enter your name to connect: '),
+                Container(
+                  width: 200,
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black),
+                  ),
+                  child: Form(
+                    key: _formKey,
+                    child: TextFormField(
+                      textAlign: TextAlign.center,
+                      onChanged: (value) => name = value,
+                      initialValue: 'bob',
                     ),
                   ),
-                ],
-              ),
-              SizedBox(
-                height: 20,
-              ),
+                ),
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
 
-              // This FAB is shared and shows hero animations working with no issues
-              FloatingActionButton(
-                heroTag: 'FAB',
-                onPressed: () {
-                  setState(() => (_formKey.currentState!.validate())
-                      ? ConnectedRoutes.toProfile(context, name)
-                      : null);
-                },
-                child: Icon(Icons.login),
-              )
-            ],
-          ),
+            // This FAB is shared and shows hero animations working with no issues
+            FloatingActionButton(
+              heroTag: 'FAB',
+              onPressed: () {
+                setState(() => (_formKey.currentState!.validate())
+                    ? ConnectedRoutes.toProfile(context, name)
+                    : null);
+              },
+              child: Icon(Icons.login),
+            )
+          ],
         ),
       ),
     );
@@ -159,7 +134,6 @@ class MyScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: Text('You are connected'),
-        leading: BackButton(onPressed: () => VRouter.of(context).pop()),
       ),
       bottomNavigationBar: BottomNavigationBar(
         // We can access the url with VRouter.of(context).url
@@ -211,46 +185,38 @@ class _ProfileWidgetState extends State<ProfileWidget> {
       // This history state will be NOT null if the user presses the back button for example
       afterEnter: (context, __, ___) => getCountFromState(context),
       afterUpdate: (context, __, ___) => getCountFromState(context),
-      child: InkWell(
-        onTap: () => showModalBottomSheet(
-          context: context,
-          builder: (_) => InkWell(
-              onTap: () => Navigator.pop(context, 'TEST'),
-              child: Text('showModalBottomSheet')),
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0),
-          child: Center(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextButton(
-                  onPressed: () {
-                    VRouter.of(context)
-                        .replaceHistoryState({'count': '${count + 1}'});
-                    setState(() => count++);
-                  },
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(50),
-                      color: Colors.blueAccent,
-                    ),
-                    padding:
-                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-                    child: Text(
-                      'Your pressed this button $count times',
-                      style: buttonTextStyle,
-                    ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+        child: Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextButton(
+                onPressed: () {
+                  VRouter.of(context)
+                      .replaceHistoryState({'count': '${count + 1}'});
+                  setState(() => count++);
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Colors.blueAccent,
+                  ),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                  child: Text(
+                    'Your pressed this button $count times',
+                    style: buttonTextStyle,
                   ),
                 ),
-                SizedBox(height: 20),
-                Text(
-                  'This number is saved in the history state so if you are on the web leave this page and hit the back button to see this number restored!',
-                  style: textStyle,
-                  textAlign: TextAlign.center,
-                ),
-              ],
-            ),
+              ),
+              SizedBox(height: 20),
+              Text(
+                'This number is saved in the history state so if you are on the web leave this page and hit the back button to see this number restored!',
+                style: textStyle,
+                textAlign: TextAlign.center,
+              ),
+            ],
           ),
         ),
       ),
@@ -269,31 +235,17 @@ class _ProfileWidgetState extends State<ProfileWidget> {
 class SettingsWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: () => showModalBottomSheet(
-        context: context,
-        builder: (_) => InkWell(
-          onTap: () => showModalBottomSheet(
-            context: context,
-            builder: (_) => Text('OTHER (2nd)\nshowModalBottomSheet'),
-            useRootNavigator: true,
-          ),
-          child: Text('showModalBottomSheet'),
-        ),
-        useRootNavigator: true,
-      ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-        child: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Did you see the custom animation when coming here?',
-                style: textStyle.copyWith(fontSize: textStyle.fontSize! + 2),
-              ),
-            ],
-          ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+      child: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Did you see the custom animation when coming here?',
+              style: textStyle.copyWith(fontSize: textStyle.fontSize! + 2),
+            ),
+          ],
         ),
       ),
     );
