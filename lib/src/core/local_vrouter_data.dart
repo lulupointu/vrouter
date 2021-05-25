@@ -30,7 +30,7 @@ class LocalVRouterData extends VRouterData {
     required this.queryParameters,
     required VRouteElementNode vRouteElementNode,
     required BuildContext context,
-  })  : _vRouteElementNode = vRouteElementNode,
+  })   : _vRouteElementNode = vRouteElementNode,
         _context = context,
         super(
           key: key,
@@ -98,8 +98,8 @@ class LocalVRouterData extends VRouterData {
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
   }) =>
-      RootVRouterData.of(_context)
-          .push(newUrl, queryParameters: queryParameters, historyState: historyState);
+      RootVRouterData.of(_context).push(newUrl,
+          queryParameters: queryParameters, historyState: historyState);
 
   /// Pushes a new url based on url segments
   ///
@@ -116,10 +116,12 @@ class LocalVRouterData extends VRouterData {
     Map<String, String> historyState = const {},
   }) {
     // Forming the new url by encoding each segment and placing "/" between them
-    final newUrl = segments.map((segment) => Uri.encodeComponent(segment)).join('/');
+    final newUrl =
+        segments.map((segment) => Uri.encodeComponent(segment)).join('/');
 
     // Calling push with this newly formed url
-    return push('/$newUrl', queryParameters: queryParameters, historyState: historyState);
+    return push('/$newUrl',
+        queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Updates the url given a [VRouteElement] name
@@ -225,7 +227,8 @@ class LocalVRouterData extends VRouterData {
         elementToPop: _vRouteElementNode.getVRouteElementToPop(),
         pathParameters: {
           ...pathParameters,
-          ...this.pathParameters, // Include the previous path parameters when poping
+          ...this
+              .pathParameters, // Include the previous path parameters when poping
         },
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
@@ -251,7 +254,8 @@ class LocalVRouterData extends VRouterData {
     final _vNavigatorObserver = Navigator.of(_context)
             .widget
             .observers
-            .firstWhere((navigatorObserver) => navigatorObserver is VNavigatorObserver)
+            .firstWhere(
+                (navigatorObserver) => navigatorObserver is VNavigatorObserver)
         as VNavigatorObserver;
     if (_vNavigatorObserver.hasNavigator1Pushed) {
       return Navigator.of(_context).pop();
@@ -269,7 +273,8 @@ class LocalVRouterData extends VRouterData {
       RootVRouterData.of(_context).replaceHistoryState(historyState);
 
   static LocalVRouterData of(BuildContext context) {
-    final localVRouterData = context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
+    final localVRouterData =
+        context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
     if (localVRouterData == null) {
       throw FlutterError(
           'LocalVRouter.of(context) was called with a context which does not contain a LocalVRouterData.\n'

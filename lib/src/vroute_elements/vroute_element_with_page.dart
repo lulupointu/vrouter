@@ -85,7 +85,7 @@ mixin VRouteElementWithPage on VRouteElement {
         pageBuilder(
           key ?? ValueKey(parentVPathMatch.localPath),
           Builder(
-          builder:(context)=> LocalVRouterData(
+            builder: (context) => LocalVRouterData(
               child: NotificationListener<VWidgetGuardMessage>(
                 // This listen to [VWidgetGuardNotification] which is a notification
                 // that a [VWidgetGuard] sends when it is created

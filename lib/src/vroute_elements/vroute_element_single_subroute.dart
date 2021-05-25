@@ -64,7 +64,8 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
     }
 
     // If none where found, test if this [VRouteElement] can create a [VRoute]
-    final validParentVPathMatch = (parentVPathMatch is ValidVPathMatch) && parentVPathMatch.remainingPath.isEmpty;
+    final validParentVPathMatch = (parentVPathMatch is ValidVPathMatch) &&
+        parentVPathMatch.remainingPath.isEmpty;
     if (!mustHaveSubRoutes && validParentVPathMatch) {
       return VRoute(
         vRouteElementNode: VRouteElementNode(

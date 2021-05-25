@@ -53,7 +53,8 @@ class ConnectedRoutes extends VRouteElementBuilder {
   List<VRouteElement> buildRoutes() {
     return [
       VNester(
-        path: '/:username', // :username is a path parameter and can be any value
+        path:
+            '/:username', // :username is a path parameter and can be any value
         widgetBuilder: (child) => MyScaffold(child),
         nestedRoutes: [
           VWidget(
@@ -162,10 +163,15 @@ class MyScaffold extends StatelessWidget {
       ),
       bottomNavigationBar: BottomNavigationBar(
         // We can access the url with VRouter.of(context).url
-        currentIndex: (VRouter.of(context).url!.contains(ConnectedRoutes.profile)) ? 0 : 1,
+        currentIndex:
+            (VRouter.of(context).url!.contains(ConnectedRoutes.profile))
+                ? 0
+                : 1,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'Info'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline), label: 'Profile'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.info_outline), label: 'Info'),
         ],
         onTap: (int index) {
           // We can access this username via the local path parameters (stored in VRouteElement)
@@ -220,7 +226,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
               children: [
                 TextButton(
                   onPressed: () {
-                    VRouter.of(context).replaceHistoryState({'count': '${count + 1}'});
+                    VRouter.of(context)
+                        .replaceHistoryState({'count': '${count + 1}'});
                     setState(() => count++);
                   },
                   child: Container(
@@ -228,7 +235,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                       borderRadius: BorderRadius.circular(50),
                       color: Colors.blueAccent,
                     ),
-                    padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                     child: Text(
                       'Your pressed this button $count times',
                       style: buttonTextStyle,

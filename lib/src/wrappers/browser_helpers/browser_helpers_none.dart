@@ -28,7 +28,8 @@ class BrowserHelpers {
 
   /// This uses the launch method from the [url_launcher] package to open a given link
   /// [openNewTab] does nothing here since we open a window anyway
-  static Future<void> pushExternal(String url, {required bool openNewTab}) async {
+  static Future<void> pushExternal(String url,
+      {required bool openNewTab}) async {
     if (await canLaunch(url)) {
       await launch(url);
     } else {
