@@ -4,7 +4,7 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
-## \[1.1.2+6\] - 24/05/2021.
+## \[1.1.3\] - 24/05/2021.
 
 * 🛠️ : Navigator observers will no longer throw error with VNester
 * 🛠️ : `WidgetsBinding.instance` is replaced with `WidgetsFlutterBinding.ensureInitialized()` to avoid null errors (Closes https://github.com/lulupointu/vrouter/issues/67)
