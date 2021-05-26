@@ -15,6 +15,7 @@ import 'package:vrouter/src/core/route.dart';
 import 'package:vrouter/src/core/vroute_element.dart';
 import 'package:vrouter/src/core/vrouter_data.dart';
 import 'package:vrouter/src/core/vrouter_modes.dart';
+import 'package:vrouter/src/core/vrouter_scope.dart';
 import 'package:vrouter/src/helpers/empty_page.dart';
 import 'package:vrouter/src/vrouter_vroute_elements.dart';
 import 'package:vrouter/src/vrouter_widgets.dart';
@@ -117,9 +118,6 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
           onPop: onPop,
           onSystemPop: onSystemPop,
         ) {
-    // When the app starts, get the serialCount. Default to 0.
-    _serialCount = _vLocations.serialCount;
-
     // Setup the url strategy (if hash, do nothing since it is the default)
     if (mode == VRouterModes.history) {
       setPathUrlStrategy();
@@ -143,12 +141,6 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
   /// Observes push and pop event to keep track of changes
   /// linked to Navigator 1.0
   final VNavigatorObserver _vNavigatorObserver;
-
-  /// This is used to keep track of the locations
-  ///
-  /// Note that this is a singleton, to make it safe to retrieve the locations even if
-  /// [VRouterDelegate] is rebuilt
-  final VLocations _vLocations = VLocations();
 
   /// The child of this widget
   ///
@@ -223,7 +215,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       _vWidgetGuardMessagesRoot.remove(deactivatedVWidgetGuardMessageRoot);
 
     // Update VLocations
-    _vLocations.setLocationAt(
+    VRouterScope.of(_rootVRouterContext).vLocations.setLocationAt(
         _serialCount, VRouteInformation(location: newUrl, state: historyState));
   }
 
@@ -1258,6 +1250,11 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
 
   @override
   SynchronousFuture<void> setInitialRoutePath(RouteInformation configuration) {
+    final vLocations = VRouterScope.of(_rootVRouterContext).vLocations;
+
+    // When the app starts, get the serialCount. Default to 0.
+    _serialCount = vLocations.serialCount;
+
     // Check if this is the first route
     if (_serialCount == 0) {
       return SynchronousFuture(pushReplacement(initialUrl));
@@ -1268,8 +1265,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       // In this case we use _vLocations to get the current location
       return SynchronousFuture(
         pushReplacement(
-          _vLocations.currentLocation.location,
-          historyState: _vLocations.currentLocation.state,
+          vLocations.currentLocation.location,
+          historyState: vLocations.currentLocation.state,
         ),
       );
     }

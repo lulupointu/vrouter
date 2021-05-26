@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/cupertino.dart';
 import 'package:vrouter/src/core/vrouter_modes.dart';
 import 'package:vrouter/src/wrappers/browser_helpers/browser_helpers.dart';
 import 'package:vrouter/src/wrappers/platform/platform.dart';
@@ -57,17 +56,6 @@ class VLocations {
   VRouteInformation get currentLocation => _locations.elementAt(serialCount)!;
 
   List<VRouteInformation?> get locations => _locations;
-
-  static VLocations _vLocations = VLocations._internal();
-
-  factory VLocations() {
-    return _vLocations;
-  }
-
-  VLocations._internal();
-
-  @visibleForTesting
-  static void tearDown() => _vLocations = VLocations._internal();
 }
 
 class VRouteInformation {

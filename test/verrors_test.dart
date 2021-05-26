@@ -9,8 +9,6 @@ main() {
   group('VError', () {
     testWidgets("InvalidPushVError", (WidgetTester tester) async {
       runZonedGuarded(() async {
-        VLocations.tearDown();
-
         final vRouterKey = GlobalKey<VRouterState>();
 
         await tester.pumpWidget(
@@ -34,8 +32,6 @@ main() {
     });
 
     testWidgets("UnknownUrlVError", (WidgetTester tester) async {
-      VLocations.tearDown();
-
       runZonedGuarded(() async {
         final vRouterKey = GlobalKey<VRouterState>();
 
@@ -64,8 +60,6 @@ main() {
     });
 
     testWidgets("NotFoundErrorNameResult", (WidgetTester tester) async {
-      VLocations.tearDown();
-
       runZonedGuarded(() async {
         final vRouterKey = GlobalKey<VRouterState>();
 
@@ -93,8 +87,6 @@ main() {
 
     testWidgets("PathParamsErrorsNameResult with MissingPathParamsError",
         (WidgetTester tester) async {
-      VLocations.tearDown();
-
       runZonedGuarded(() async {
         final vRouterKey = GlobalKey<VRouterState>();
 
@@ -130,8 +122,6 @@ main() {
     });
 
     testWidgets("NullPathErrorNameResult", (WidgetTester tester) async {
-      VLocations.tearDown();
-
       runZonedGuarded(() async {
         final vRouterKey = GlobalKey<VRouterState>();
 
@@ -162,8 +152,6 @@ main() {
 
     testWidgets("PathParamsErrorsNameResult with OverlyPathParamsError",
         (WidgetTester tester) async {
-      VLocations.tearDown();
-
       runZonedGuarded(() async {
         final vRouterKey = GlobalKey<VRouterState>();
 
@@ -204,8 +192,6 @@ main() {
     });
 
     testWidgets("PathParamsPopErrors", (WidgetTester tester) async {
-      VLocations.tearDown();
-
       runZonedGuarded(() async {
         final vRouterKey = GlobalKey<VRouterState>();
 

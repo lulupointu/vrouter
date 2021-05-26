@@ -73,6 +73,16 @@ class WidgetsVRouter extends StatefulWidget
   /// The default is '/'
   final String initialUrl;
 
+  /// Use this key to update the [routes]
+  ///
+  /// If your [routes] should change in a declarative fashion based on some variable,
+  /// you should change [appRouterKey] to update [routes]
+  /// Note that you should change [appRouterKey] as little as possible
+  ///
+  /// It will be used in [WidgetsApp] and NOT [WidgetsVRouter]
+  /// This is because [WidgetsVRouter] should never update
+  final Key? appRouterKey;
+
   WidgetsVRouter({
     Key? key,
     required this.routes,
@@ -96,6 +106,7 @@ class WidgetsVRouter extends StatefulWidget
     this.initialUrl = '/',
     this.navigatorObservers = const [],
     this.builder,
+    this.appRouterKey,
     // Bellow are the WidgetsApp parameters
     this.title = '',
     this.onGenerateTitle,
@@ -479,29 +490,32 @@ class WidgetsVRouterState extends State<WidgetsVRouter> {
 
   @override
   Widget build(BuildContext context) {
-    return WidgetsApp.router(
-      backButtonDispatcher: VBackButtonDispatcher(),
-      routeInformationParser: VRouteInformationParser(),
-      routerDelegate: vRouterDelegate,
-      title: widget.title,
-      onGenerateTitle: widget.onGenerateTitle,
-      textStyle: widget.textStyle,
-      color: widget.color,
-      locale: widget.locale,
-      localizationsDelegates: widget.localizationsDelegates,
-      localeListResolutionCallback: widget.localeListResolutionCallback,
-      localeResolutionCallback: widget.localeResolutionCallback,
-      supportedLocales: widget.supportedLocales,
-      showPerformanceOverlay: widget.showPerformanceOverlay,
-      checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages,
-      checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,
-      showSemanticsDebugger: widget.showSemanticsDebugger,
-      debugShowWidgetInspector: widget.debugShowWidgetInspector,
-      debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,
-      inspectorSelectButtonBuilder: widget.inspectorSelectButtonBuilder,
-      shortcuts: widget.shortcuts,
-      actions: widget.actions,
-      restorationScopeId: widget.restorationScopeId,
+    return VRouterScope(
+      child: WidgetsApp.router(
+        backButtonDispatcher: VBackButtonDispatcher(),
+        routeInformationParser: VRouteInformationParser(),
+        routerDelegate: vRouterDelegate,
+        key: widget.appRouterKey,
+        title: widget.title,
+        onGenerateTitle: widget.onGenerateTitle,
+        textStyle: widget.textStyle,
+        color: widget.color,
+        locale: widget.locale,
+        localizationsDelegates: widget.localizationsDelegates,
+        localeListResolutionCallback: widget.localeListResolutionCallback,
+        localeResolutionCallback: widget.localeResolutionCallback,
+        supportedLocales: widget.supportedLocales,
+        showPerformanceOverlay: widget.showPerformanceOverlay,
+        checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages,
+        checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,
+        showSemanticsDebugger: widget.showSemanticsDebugger,
+        debugShowWidgetInspector: widget.debugShowWidgetInspector,
+        debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,
+        inspectorSelectButtonBuilder: widget.inspectorSelectButtonBuilder,
+        shortcuts: widget.shortcuts,
+        actions: widget.actions,
+        restorationScopeId: widget.restorationScopeId,
+      ),
     );
   }
 

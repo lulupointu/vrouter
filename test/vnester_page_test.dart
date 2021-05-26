@@ -5,8 +5,6 @@ import 'package:vrouter/vrouter.dart';
 
 main() {
   testWidgets('VNesterPage pop', (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         initialUrl: '/settings',
@@ -70,8 +68,6 @@ main() {
     expect(vWidget3Finder, findsNothing);
   });
   testWidgets('VNesterPage vanilla navigator pop', (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         initialUrl: '/settings',
@@ -138,8 +134,6 @@ main() {
   });
 
   testWidgets('VNesterPage systemPop', (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         initialUrl: '/settings',
@@ -206,8 +200,6 @@ main() {
   });
 
   testWidgets('VNesterPage pop on alias', (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         routes: [
@@ -322,8 +314,6 @@ main() {
   });
 
   testWidgets('VNesterPage with stacked route', (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         routes: [
@@ -439,8 +429,6 @@ main() {
   });
 
   testWidgets('VNesterPage named', (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         routes: [
@@ -508,8 +496,6 @@ main() {
   });
 
   testWidgets('VNesterPage name in nestedRoutes', (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         routes: [
@@ -577,8 +563,6 @@ main() {
   });
 
   testWidgets('VNesterPage name in stackedRoutes', (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         routes: [
@@ -653,8 +637,6 @@ main() {
 
   testWidgets('VNesterPage named with alias default',
       (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         routes: [
@@ -723,8 +705,6 @@ main() {
   });
 
   testWidgets('VNesterPage with alias', (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         routes: [
@@ -791,8 +771,6 @@ main() {
   });
 
   testWidgets('VNesterPage pop in nested route', (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         initialUrl: '/other',
@@ -865,8 +843,6 @@ main() {
 
   testWidgets('VNesterPage vanilla Navigator pop in nested route',
       (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         initialUrl: '/other',
@@ -939,8 +915,6 @@ main() {
 
   testWidgets('VNesterPage systemPop in nested route',
       (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         initialUrl: '/other',

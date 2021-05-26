@@ -4,6 +4,12 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.1.4\] - 26/05/2021.
+
+* 🚨 : `VRouterScope` should now be put at the top of the widget tree. If you are using `...App.router`, you must insert `VRouterScope` on top of `...App.router`.
+* 🛠️ : VRouter does not use the singleton which was introduced in `1.1.3+2` anymore
+* ✨ : Use `appRouterKey` or change `...App.key` to recompute the `routes`, see the documentation for more details
+
 ## \[1.1.3+2\] - 25/05/2021.
 
 * 🛠️ : VRouter can now be used with different keys without losing url state

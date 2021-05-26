@@ -5,8 +5,6 @@ import 'package:vrouter/vrouter.dart';
 
 main() {
   testWidgets('VRouteRedirector used in routes', (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         routes: [
@@ -41,8 +39,6 @@ main() {
 
   testWidgets('VRouteRedirector used in a stackedRoute',
       (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         initialUrl: '/home',

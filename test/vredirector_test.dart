@@ -6,8 +6,6 @@ import 'package:vrouter/vrouter.dart';
 main() {
   group('vRedirector in VRouter beforeLeave', () {
     testWidgets('vRedirector.stopRedirection', (WidgetTester tester) async {
-      VLocations.tearDown();
-
       await tester.pumpWidget(
         VRouter(
           beforeLeave: (vRedirector, _) async => vRedirector.stopRedirection(),
@@ -53,8 +51,6 @@ main() {
     });
 
     testWidgets('vRedirector.push', (WidgetTester tester) async {
-      VLocations.tearDown();
-
       await tester.pumpWidget(
         VRouter(
           beforeLeave: (vRedirector, _) async =>
@@ -108,8 +104,6 @@ main() {
     });
 
     testWidgets('vRedirector.pushSegments', (WidgetTester tester) async {
-      VLocations.tearDown();
-
       await tester.pumpWidget(
         VRouter(
           beforeLeave: (vRedirector, _) async => (vRedirector.to != '/other')
@@ -164,8 +158,6 @@ main() {
     });
 
     testWidgets('vRedirector.pop', (WidgetTester tester) async {
-      VLocations.tearDown();
-
       await tester.pumpWidget(
         VRouter(
           initialUrl: '/settings',
@@ -221,8 +213,6 @@ main() {
     });
 
     testWidgets('vRedirector.systemPop', (WidgetTester tester) async {
-      VLocations.tearDown();
-
       await tester.pumpWidget(
         VRouter(
           initialUrl: '/settings',
@@ -278,8 +268,6 @@ main() {
     });
 
     testWidgets('vRedirector.pushNamed', (WidgetTester tester) async {
-      VLocations.tearDown();
-
       await tester.pumpWidget(
         VRouter(
           initialUrl: '/settings',

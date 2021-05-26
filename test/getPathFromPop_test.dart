@@ -7,8 +7,6 @@ void main() {
     'The following tests are used to test [VRouteElement.getPathFromPop]',
     () {
       test('Pop from absolute path to absolute path', () {
-        VLocations.tearDown();
-
         final elementToPop = VWidget(
           widget: Container(),
           path: '/settings',
@@ -42,8 +40,6 @@ void main() {
       });
 
       test('Pop from relative path to absolute path', () {
-        VLocations.tearDown();
-
         final elementToPop = VWidget(
           widget: Container(),
           path: 'settings',
@@ -77,8 +73,6 @@ void main() {
       });
 
       test('Pop from absolute path to relative path', () {
-        VLocations.tearDown();
-
         final elementToPop = VWidget(
           widget: Container(),
           path: '/settings',
@@ -118,8 +112,6 @@ void main() {
       });
 
       test('Pop from relative path to relative path', () {
-        VLocations.tearDown();
-
         final elementToPop = VWidget(
           widget: Container(),
           path: 'settings',
@@ -159,8 +151,6 @@ void main() {
       });
 
       test('Pop last element', () {
-        VLocations.tearDown();
-
         final elementToPop = VWidget(
           widget: Container(),
           path: '/home',
@@ -187,8 +177,6 @@ void main() {
       });
 
       test('Pop with right pathParameters', () {
-        VLocations.tearDown();
-
         final elementToPop = VWidget(
           widget: Container(),
           path: 'settings',
@@ -228,8 +216,6 @@ void main() {
       });
 
       test('Pop with wrong pathParameters', () {
-        VLocations.tearDown();
-
         final elementToPop = VWidget(
           widget: Container(),
           path: 'settings',
@@ -271,8 +257,6 @@ void main() {
       });
 
       test('Pop through VNester with wrong pathParameters', () {
-        VLocations.tearDown();
-
         final elementToPop = VWidget(
           widget: Container(),
           path: 'settings',
@@ -317,8 +301,6 @@ void main() {
         'Pop though VGuard'
         'Every VRouteElement which does not have a page to display should pop along side its subroute VRouteElement',
         () {
-          VLocations.tearDown();
-
           final elementToPop = VWidget(
             widget: Container(),
             path: 'settings',
@@ -360,8 +342,6 @@ void main() {
         'Pop though VPopHandler'
         'Every VRouteElement which does not have a page to display should pop along side its subroute VRouteElement',
         () {
-          VLocations.tearDown();
-
           final elementToPop = VWidget(
             widget: Container(),
             path: 'settings',
@@ -403,8 +383,6 @@ void main() {
         'Pop though VNester'
         'VNester should pop if it does not have a nested child',
         () {
-          VLocations.tearDown();
-
           final elementToPop = VWidget(
             widget: Container(),
             path: 'settings',
@@ -445,8 +423,6 @@ void main() {
       );
 
       test('Pop and aliases', () {
-        VLocations.tearDown();
-
         final elementToPop = VWidget(
           widget: Container(),
           path: '/settings',
@@ -481,8 +457,6 @@ void main() {
       });
 
       test('Pop and pathParameters', () {
-        VLocations.tearDown();
-
         final elementToPop = VWidget(
           widget: Container(),
           path: '/settings',
@@ -517,8 +491,6 @@ void main() {
       });
 
       test('Pop which includes a null path', () {
-        VLocations.tearDown();
-
         final elementToPop = VWidget(
           path: '/other',
           widget: Container(),
@@ -562,8 +534,6 @@ void main() {
       });
 
       test('Pop VNester', () {
-        VLocations.tearDown();
-
         final elementToPop = VNester(
           widgetBuilder: (child) => Container(),
           path: null,

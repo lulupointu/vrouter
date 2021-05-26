@@ -5,8 +5,6 @@ import 'package:vrouter/vrouter.dart';
 
 main() {
   testWidgets('VPage used in stackedRoutes stack', (WidgetTester tester) async {
-    VLocations.tearDown();
-
     await tester.pumpWidget(
       VRouter(
         routes: [

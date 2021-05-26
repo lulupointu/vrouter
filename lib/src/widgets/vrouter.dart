@@ -74,6 +74,16 @@ class VRouter extends StatefulWidget
   /// The default is '/'
   final String initialUrl;
 
+  /// Use this key to update the [routes]
+  ///
+  /// If your [routes] should change in a declarative fashion based on some variable,
+  /// you should change [appRouterKey] to update [routes]
+  /// Note that you should change [appRouterKey] as little as possible
+  ///
+  /// It will be used in [MaterialApp] and NOT [VRouter]
+  /// This is because [VRouter] should never update
+  final Key? appRouterKey;
+
   VRouter({
     Key? key,
     required this.routes,
@@ -97,6 +107,7 @@ class VRouter extends StatefulWidget
     this.initialUrl = '/',
     this.navigatorObservers = const [],
     this.builder,
+    this.appRouterKey,
     // Bellow are the MaterialApp parameters
     this.title = '',
     this.onGenerateTitle,
@@ -516,31 +527,34 @@ class VRouterState extends State<VRouter> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      backButtonDispatcher: VBackButtonDispatcher(),
-      routeInformationParser: VRouteInformationParser(),
-      routerDelegate: vRouterDelegate,
-      title: widget.title,
-      onGenerateTitle: widget.onGenerateTitle,
-      color: widget.color,
-      theme: widget.theme,
-      darkTheme: widget.darkTheme,
-      highContrastTheme: widget.highContrastTheme,
-      highContrastDarkTheme: widget.highContrastDarkTheme,
-      themeMode: widget.themeMode,
-      locale: widget.locale,
-      localizationsDelegates: widget.localizationsDelegates,
-      localeListResolutionCallback: widget.localeListResolutionCallback,
-      localeResolutionCallback: widget.localeResolutionCallback,
-      supportedLocales: widget.supportedLocales,
-      debugShowMaterialGrid: widget.debugShowMaterialGrid,
-      showPerformanceOverlay: widget.showPerformanceOverlay,
-      checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages,
-      checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,
-      showSemanticsDebugger: widget.showSemanticsDebugger,
-      debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,
-      shortcuts: widget.shortcuts,
-      actions: widget.actions,
+    return VRouterScope(
+      child: MaterialApp.router(
+        backButtonDispatcher: VBackButtonDispatcher(),
+        routeInformationParser: VRouteInformationParser(),
+        routerDelegate: vRouterDelegate,
+        key: widget.appRouterKey,
+        title: widget.title,
+        onGenerateTitle: widget.onGenerateTitle,
+        color: widget.color,
+        theme: widget.theme,
+        darkTheme: widget.darkTheme,
+        highContrastTheme: widget.highContrastTheme,
+        highContrastDarkTheme: widget.highContrastDarkTheme,
+        themeMode: widget.themeMode,
+        locale: widget.locale,
+        localizationsDelegates: widget.localizationsDelegates,
+        localeListResolutionCallback: widget.localeListResolutionCallback,
+        localeResolutionCallback: widget.localeResolutionCallback,
+        supportedLocales: widget.supportedLocales,
+        debugShowMaterialGrid: widget.debugShowMaterialGrid,
+        showPerformanceOverlay: widget.showPerformanceOverlay,
+        checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages,
+        checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,
+        showSemanticsDebugger: widget.showSemanticsDebugger,
+        debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,
+        shortcuts: widget.shortcuts,
+        actions: widget.actions,
+      ),
     );
   }
 
