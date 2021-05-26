@@ -6,6 +6,9 @@ import 'package:vrouter/vrouter.dart';
 main() {
   group('VRouter', () {
     testWidgets('VRouter push', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -47,6 +50,9 @@ main() {
     });
 
     testWidgets('VRouter pushSegments', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -88,6 +94,9 @@ main() {
     });
 
     testWidgets('VRouter push relative', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -130,6 +139,9 @@ main() {
 
     testWidgets('VRouter pushSegments with encoding needed',
         (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -177,6 +189,9 @@ main() {
     });
 
     testWidgets('VRouter pop', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -220,6 +235,9 @@ main() {
     });
 
     testWidgets('VRouter systemPop', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -261,6 +279,9 @@ main() {
     });
 
     testWidgets('VRouter pushNamed', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -303,6 +324,9 @@ main() {
 
     testWidgets('VRouter pushNamed with path parameters',
         (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -347,6 +371,9 @@ main() {
 
     testWidgets('VRouter push with queryParameters',
         (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(

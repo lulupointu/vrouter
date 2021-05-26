@@ -6,6 +6,9 @@ import 'package:vrouter/vrouter.dart';
 main() {
   group('VNester', () {
     testWidgets('VNester pop', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -115,6 +118,9 @@ main() {
     });
 
     testWidgets('VNester systemPop', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -200,6 +206,9 @@ main() {
     });
 
     testWidgets('VNester pop on alias', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -310,6 +319,9 @@ main() {
     });
 
     testWidgets('VNester with stacked route', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -420,6 +432,9 @@ main() {
     });
 
     testWidgets('VNester named', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -486,6 +501,9 @@ main() {
 
     testWidgets('VNester named with alias default',
         (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -552,6 +570,9 @@ main() {
     });
 
     testWidgets('VNester with alias', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -618,6 +639,9 @@ main() {
     testWidgets(
         'systemPop with stack in nested stacked.\n The last element of nested stack should pop',
         (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -682,6 +706,9 @@ main() {
 
     testWidgets('Pop on VNester from VNester.stackedRoutes',
         (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       late final BuildContext context;
 
       await tester.pumpWidget(
@@ -737,6 +764,9 @@ main() {
 
     testWidgets('BackButton appears if VNester can pop',
         (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -773,6 +803,9 @@ main() {
 
     testWidgets('BackButton does NOT appears if VNester can NOT pop',
         (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [

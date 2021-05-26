@@ -9,6 +9,7 @@ export 'core/vroute_information_parser.dart';
 export 'core/vrouter_data.dart';
 export 'core/vrouter_delegate.dart';
 export 'core/vrouter_modes.dart';
+export 'core/vlocations.dart';
 
 export 'core/route.dart';
 export 'core/vrouter_data.dart';

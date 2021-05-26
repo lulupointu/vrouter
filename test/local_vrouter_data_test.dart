@@ -6,6 +6,9 @@ import 'package:vrouter/vrouter.dart';
 main() {
   group('LocalVRouterData', () {
     testWidgets('LocalVRouterData push', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -54,6 +57,9 @@ main() {
     });
 
     testWidgets('LocalVRouterData pushSegments', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -103,6 +109,9 @@ main() {
     });
 
     testWidgets('LocalVRouterData pop', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -146,6 +155,9 @@ main() {
     });
 
     testWidgets('LocalVRouterData systemPop', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -189,6 +201,9 @@ main() {
     });
 
     testWidgets('LocalVRouterData pushNamed', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -233,6 +248,9 @@ main() {
 
     testWidgets('LocalVRouterData pushNamed with path parameters',
         (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       await tester.pumpWidget(
         VRouter(
           routes: [

@@ -11,6 +11,9 @@ main() {
       'Test whether actions that used Navigator 1 are registered and that VRouter interact appropriately with them',
       () {
     testWidgets("Navigator.push", (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(

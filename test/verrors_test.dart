@@ -3,35 +3,40 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 import 'package:vrouter/vrouter.dart';
 
 main() {
   group('VError', () {
     testWidgets("InvalidPushVError", (WidgetTester tester) async {
-      final vRouterKey = GlobalKey<VRouterState>();
+      runZonedGuarded(() async {
+        VLocations.tearDown();
 
-      var caughtError;
-      FlutterError.onError = (e) => caughtError = e.exception;
-      await tester.pumpWidget(
-        VRouter(
-          initialUrl: 'settings',
-          key: vRouterKey,
-          routes: [
-            VWidget(path: '/settings', widget: Text('VWidget1')),
-          ],
-        ),
-      );
+        final vRouterKey = GlobalKey<VRouterState>();
 
-      expect(caughtError.runtimeType, InvalidPushVError);
+        await tester.pumpWidget(
+          VRouter(
+            initialUrl: 'settings',
+            key: vRouterKey,
+            routes: [
+              VWidget(path: '/settings', widget: Text('VWidget1')),
+            ],
+          ),
+        );
+      }, (Object error, StackTrace stack) {
+        expectSync(error.runtimeType, InvalidPushVError);
 
-      // Test the output error string
-      expect(
-          caughtError.toString(),
-          "The current url is null but you are trying to access the path \"settings\" which does not start with '/'.\n"
-          "This is likely because you set a initialUrl which does not start with '/'.");
+        // Test the output error string
+        expectSync(
+            error.toString(),
+            "The current url is null but you are trying to access the path \"settings\" which does not start with '/'.\n"
+            "This is likely because you set a initialUrl which does not start with '/'.");
+      });
     });
 
     testWidgets("UnknownUrlVError", (WidgetTester tester) async {
+      VLocations.tearDown();
+
       runZonedGuarded(() async {
         final vRouterKey = GlobalKey<VRouterState>();
 
@@ -60,6 +65,8 @@ main() {
     });
 
     testWidgets("NotFoundErrorNameResult", (WidgetTester tester) async {
+      VLocations.tearDown();
+
       runZonedGuarded(() async {
         final vRouterKey = GlobalKey<VRouterState>();
 
@@ -80,13 +87,14 @@ main() {
         expect(error, isInstanceOf<NotFoundErrorNameResult>());
 
         // Test the output error string
-        expect(
-            error.toString(), 'Could not find the VRouteElement named random.');
+        expect(error.toString(), 'Could not find the VRouteElement named random.');
       });
     });
 
     testWidgets("PathParamsErrorsNameResult with MissingPathParamsError",
         (WidgetTester tester) async {
+      VLocations.tearDown();
+
       runZonedGuarded(() async {
         final vRouterKey = GlobalKey<VRouterState>();
 
@@ -108,8 +116,7 @@ main() {
         expect(error, isInstanceOf<PathParamsErrorsNameResult>());
         expect((error as PathParamsErrorsNameResult).values.length, 1);
         expect(error.values.first, isInstanceOf<MissingPathParamsError>());
-        expect((error.values.first as MissingPathParamsError).missingPathParams,
-            ['id']);
+        expect((error.values.first as MissingPathParamsError).missingPathParams, ['id']);
         expect((error.values.first as MissingPathParamsError).pathParams, []);
 
         // Test the output error string
@@ -122,6 +129,8 @@ main() {
     });
 
     testWidgets("NullPathErrorNameResult", (WidgetTester tester) async {
+      VLocations.tearDown();
+
       runZonedGuarded(() async {
         final vRouterKey = GlobalKey<VRouterState>();
 
@@ -152,6 +161,8 @@ main() {
 
     testWidgets("PathParamsErrorsNameResult with OverlyPathParamsError",
         (WidgetTester tester) async {
+      VLocations.tearDown();
+
       runZonedGuarded(() async {
         final vRouterKey = GlobalKey<VRouterState>();
 
@@ -160,27 +171,21 @@ main() {
             key: vRouterKey,
             routes: [
               VWidget(path: '/', widget: Text('VWidget1')),
-              VWidget(
-                  path: '/settings',
-                  widget: Text('VWidget2'),
-                  name: 'settings'),
+              VWidget(path: '/settings', widget: Text('VWidget2'), name: 'settings'),
             ],
           ),
         );
 
         await tester.pumpAndSettle();
 
-        vRouterKey.currentState!
-            .pushNamed('settings', pathParameters: {'id': '1'});
+        vRouterKey.currentState!.pushNamed('settings', pathParameters: {'id': '1'});
       }, (Object error, StackTrace stack) {
         // After pushing, we should get a PathParamsErrorsNameResult
         expect(error, isInstanceOf<PathParamsErrorsNameResult>());
         expect((error as PathParamsErrorsNameResult).values.length, 1);
         expect(error.values.first, isInstanceOf<OverlyPathParamsError>());
-        expect((error.values.first as OverlyPathParamsError).expectedPathParams,
-            []);
-        expect(
-            (error.values.first as OverlyPathParamsError).pathParams, ['id']);
+        expect((error.values.first as OverlyPathParamsError).expectedPathParams, []);
+        expect((error.values.first as OverlyPathParamsError).pathParams, ['id']);
 
         // Test the output error string
         expect(
@@ -192,6 +197,8 @@ main() {
     });
 
     testWidgets("PathParamsPopErrors", (WidgetTester tester) async {
+      VLocations.tearDown();
+
       runZonedGuarded(() async {
         final vRouterKey = GlobalKey<VRouterState>();
 

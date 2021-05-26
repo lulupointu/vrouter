@@ -6,6 +6,9 @@ import 'package:vrouter/vrouter.dart';
 main() {
   group('VRouter', () {
     testWidgets('VGuard beforeLeave', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -70,6 +73,9 @@ main() {
     });
 
     testWidgets('VGuard beforeUpdate', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -123,6 +129,9 @@ main() {
     });
 
     testWidgets('VGuard beforeEnter', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -170,6 +179,9 @@ main() {
     });
 
     testWidgets('VWidgetGuard afterUpdate', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       var count = 0;
       await tester.pumpWidget(
         VRouter(
@@ -209,6 +221,9 @@ main() {
     });
 
     testWidgets('VWidgetGuard voidAfterUpdate', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       var count = 0;
       await tester.pumpWidget(
         VRouter(

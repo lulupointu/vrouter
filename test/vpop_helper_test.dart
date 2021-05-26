@@ -6,6 +6,9 @@ import 'package:vrouter/vrouter.dart';
 main() {
   group('VPopHandler', () {
     testWidgets('VPopHandler onPop', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -52,6 +55,9 @@ main() {
     });
 
     testWidgets('VPopHandler onSystemPop', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -99,6 +105,9 @@ main() {
     });
     testWidgets('VPopHandler onPop not called if VRouteElement is not popped',
         (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -147,6 +156,9 @@ main() {
     testWidgets(
         'VPopHandler onSystemPop not called if VRouteElement is not popped',
         (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -193,6 +205,9 @@ main() {
     });
 
     testWidgets('VPopHandler deeply nested onPop', (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -248,6 +263,9 @@ main() {
 
     testWidgets('VPopHandler deeply nested onSystemPop',
         (WidgetTester tester) async {
+
+VLocations.tearDown();
+
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
