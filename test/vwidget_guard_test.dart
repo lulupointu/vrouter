@@ -5,8 +5,7 @@ import 'package:vrouter/vrouter.dart';
 
 main() {
   testWidgets('VWidgetGuard afterEnter', (WidgetTester tester) async {
-
-VLocations.tearDown();
+    VLocations.tearDown();
 
     var count = 0;
     await tester.pumpWidget(
@@ -35,8 +34,7 @@ VLocations.tearDown();
   });
 
   testWidgets('VWidgetGuard afterUpdate', (WidgetTester tester) async {
-
-VLocations.tearDown();
+    VLocations.tearDown();
 
     var count = 0;
     await tester.pumpWidget(
@@ -75,8 +73,7 @@ VLocations.tearDown();
   });
 
   testWidgets('VWidgetGuard beforeUpdate', (WidgetTester tester) async {
-
-VLocations.tearDown();
+    VLocations.tearDown();
 
     var count = 0;
     await tester.pumpWidget(
@@ -118,8 +115,7 @@ VLocations.tearDown();
   });
 
   testWidgets('VWidgetGuard beforeLeave', (WidgetTester tester) async {
-
-VLocations.tearDown();
+    VLocations.tearDown();
 
     final vRouterKey = GlobalKey<VRouterState>();
 
@@ -174,8 +170,7 @@ VLocations.tearDown();
   });
 
   testWidgets('VWidgetGuard in VNester', (WidgetTester tester) async {
-
-VLocations.tearDown();
+    VLocations.tearDown();
 
     var count = 0;
     await tester.pumpWidget(

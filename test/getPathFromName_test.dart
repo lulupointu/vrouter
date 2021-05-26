@@ -7,8 +7,7 @@ void main() {
     'The following tests are used to test [VRouteElement.getPathFromName]',
     () {
       test('Basic named', () {
-
-VLocations.tearDown();
+        VLocations.tearDown();
 
         final vRouter = VRouter(
           routes: [
@@ -40,8 +39,7 @@ VLocations.tearDown();
       });
 
       test('Nested named', () {
-
-VLocations.tearDown();
+        VLocations.tearDown();
 
         final vRouter = VRouter(
           routes: [
@@ -84,8 +82,7 @@ VLocations.tearDown();
       });
 
       test('Named with path parameters', () {
-
-VLocations.tearDown();
+        VLocations.tearDown();
 
         final vRouter = VRouter(
           routes: [
@@ -117,8 +114,7 @@ VLocations.tearDown();
       });
 
       test('Named with missing path parameters', () {
-
-VLocations.tearDown();
+        VLocations.tearDown();
 
         final vRouter = VRouter(
           routes: [
@@ -149,8 +145,7 @@ VLocations.tearDown();
 
       test('Named with missing path parameters in two stacked VRouteElement',
           () {
-
-VLocations.tearDown();
+        VLocations.tearDown();
 
         final vRouter = VRouter(
           routes: [
@@ -186,8 +181,7 @@ VLocations.tearDown();
       });
 
       test('Named with too much path parameters', () {
-
-VLocations.tearDown();
+        VLocations.tearDown();
 
         final vRouter = VRouter(
           routes: [
@@ -219,8 +213,7 @@ VLocations.tearDown();
 
       test('Named with too much path parameters with absolute stacked route',
           () {
-
-VLocations.tearDown();
+        VLocations.tearDown();
 
         final vRouter = VRouter(
           routes: [
@@ -261,8 +254,7 @@ VLocations.tearDown();
       });
 
       test('Named and aliases', () {
-
-VLocations.tearDown();
+        VLocations.tearDown();
 
         final vRouter = VRouter(
           routes: [
@@ -288,8 +280,7 @@ VLocations.tearDown();
       });
 
       test('Absent name', () {
-
-VLocations.tearDown();
+        VLocations.tearDown();
 
         final vRouter = VRouter(
           routes: [

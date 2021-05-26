@@ -86,7 +86,8 @@ main() {
         expect(error, isInstanceOf<NotFoundErrorNameResult>());
 
         // Test the output error string
-        expect(error.toString(), 'Could not find the VRouteElement named random.');
+        expect(
+            error.toString(), 'Could not find the VRouteElement named random.');
       });
     });
 
@@ -115,7 +116,8 @@ main() {
         expect(error, isInstanceOf<PathParamsErrorsNameResult>());
         expect((error as PathParamsErrorsNameResult).values.length, 1);
         expect(error.values.first, isInstanceOf<MissingPathParamsError>());
-        expect((error.values.first as MissingPathParamsError).missingPathParams, ['id']);
+        expect((error.values.first as MissingPathParamsError).missingPathParams,
+            ['id']);
         expect((error.values.first as MissingPathParamsError).pathParams, []);
 
         // Test the output error string
@@ -170,21 +172,27 @@ main() {
             key: vRouterKey,
             routes: [
               VWidget(path: '/', widget: Text('VWidget1')),
-              VWidget(path: '/settings', widget: Text('VWidget2'), name: 'settings'),
+              VWidget(
+                  path: '/settings',
+                  widget: Text('VWidget2'),
+                  name: 'settings'),
             ],
           ),
         );
 
         await tester.pumpAndSettle();
 
-        vRouterKey.currentState!.pushNamed('settings', pathParameters: {'id': '1'});
+        vRouterKey.currentState!
+            .pushNamed('settings', pathParameters: {'id': '1'});
       }, (Object error, StackTrace stack) {
         // After pushing, we should get a PathParamsErrorsNameResult
         expect(error, isInstanceOf<PathParamsErrorsNameResult>());
         expect((error as PathParamsErrorsNameResult).values.length, 1);
         expect(error.values.first, isInstanceOf<OverlyPathParamsError>());
-        expect((error.values.first as OverlyPathParamsError).expectedPathParams, []);
-        expect((error.values.first as OverlyPathParamsError).pathParams, ['id']);
+        expect((error.values.first as OverlyPathParamsError).expectedPathParams,
+            []);
+        expect(
+            (error.values.first as OverlyPathParamsError).pathParams, ['id']);
 
         // Test the output error string
         expect(

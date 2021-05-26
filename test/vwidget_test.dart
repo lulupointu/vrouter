@@ -5,8 +5,7 @@ import 'package:vrouter/vrouter.dart';
 
 main() {
   testWidgets('Stacked VWidget', (WidgetTester tester) async {
-
-VLocations.tearDown();
+    VLocations.tearDown();
 
     await tester.pumpWidget(
       VRouter(

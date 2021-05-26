@@ -6,8 +6,7 @@ import 'package:vrouter/vrouter.dart';
 main() {
   group('vRedirector in VRouter beforeLeave', () {
     testWidgets('vRedirector.stopRedirection', (WidgetTester tester) async {
-
-VLocations.tearDown();
+      VLocations.tearDown();
 
       await tester.pumpWidget(
         VRouter(
@@ -54,8 +53,7 @@ VLocations.tearDown();
     });
 
     testWidgets('vRedirector.push', (WidgetTester tester) async {
-
-VLocations.tearDown();
+      VLocations.tearDown();
 
       await tester.pumpWidget(
         VRouter(
@@ -110,8 +108,7 @@ VLocations.tearDown();
     });
 
     testWidgets('vRedirector.pushSegments', (WidgetTester tester) async {
-
-VLocations.tearDown();
+      VLocations.tearDown();
 
       await tester.pumpWidget(
         VRouter(
@@ -167,8 +164,7 @@ VLocations.tearDown();
     });
 
     testWidgets('vRedirector.pop', (WidgetTester tester) async {
-
-VLocations.tearDown();
+      VLocations.tearDown();
 
       await tester.pumpWidget(
         VRouter(
@@ -225,8 +221,7 @@ VLocations.tearDown();
     });
 
     testWidgets('vRedirector.systemPop', (WidgetTester tester) async {
-
-VLocations.tearDown();
+      VLocations.tearDown();
 
       await tester.pumpWidget(
         VRouter(
@@ -283,8 +278,7 @@ VLocations.tearDown();
     });
 
     testWidgets('vRedirector.pushNamed', (WidgetTester tester) async {
-
-VLocations.tearDown();
+      VLocations.tearDown();
 
       await tester.pumpWidget(
         VRouter(

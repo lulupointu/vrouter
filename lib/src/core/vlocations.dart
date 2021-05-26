@@ -6,7 +6,8 @@ import 'package:vrouter/src/wrappers/browser_helpers/browser_helpers.dart';
 import 'package:vrouter/src/wrappers/platform/platform.dart';
 
 class VLocations {
-  int _serialCount = (Platform.isWeb) ? (BrowserHelpers.getHistorySerialCount() ?? 0) : 0;
+  int _serialCount =
+      (Platform.isWeb) ? (BrowserHelpers.getHistorySerialCount() ?? 0) : 0;
 
   int get serialCount => _serialCount;
 
@@ -16,11 +17,15 @@ class VLocations {
   }
 
   List<VRouteInformation?> _locations = List<VRouteInformation?>.filled(
-          ((Platform.isWeb) ? (BrowserHelpers.getHistorySerialCount() ?? 0) : 0), null) +
+          ((Platform.isWeb)
+              ? (BrowserHelpers.getHistorySerialCount() ?? 0)
+              : 0),
+          null) +
       [
         (Platform.isWeb)
             ? VRouteInformation(
-                location: BrowserHelpers.getPathAndQuery(routerMode: VRouterModes.history),
+                location: BrowserHelpers.getPathAndQuery(
+                    routerMode: VRouterModes.history),
                 state: Map<String, String>.from(
                     jsonDecode((BrowserHelpers.getHistoryState() ?? '{}'))),
               )
