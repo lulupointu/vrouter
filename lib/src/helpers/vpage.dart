@@ -9,89 +9,7 @@ import 'package:vrouter/src/wrappers/platform/platform.dart';
 /// custom transitions easily.
 @Deprecated(
     '\nNaming changed to VDefaultPage.\nPlease use VDefaultPage instead of VBasePage')
-abstract class VBasePage<T> extends Page<T> {
-  /// The child of this page
-  final Widget child;
-
-  /// The name of this page
-  @override
-  final String? name;
-
-  /// The key of this page
-  @override
-  final LocalKey key;
-
-  /// The duration of the transition which happens when this page
-  /// is put in the widget tree
-  final Duration? transitionDuration;
-
-  /// The duration of the transition which happens when this page
-  /// is removed from the widget tree
-  final Duration? reverseTransitionDuration;
-
-  /// A function to build the transition to or from this route
-  ///
-  /// [child] is the child of the page
-  ///
-  /// Example of a fade transition:
-  /// buildTransition: (animation, _, child) {
-  ///    return FadeTransition(opacity: animation, child: child);
-  /// }
-  ///
-  /// If this is null, the default transition is the one of the [VRouter]
-  /// If the one of the [VRouter] is also null, the default transition is
-  /// the one of a [MaterialPage]
-  final Widget Function(Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child)? buildTransition;
-
-  /// {@macro flutter.widgets.ModalRoute.maintainState}
-  final bool maintainState;
-
-  /// {@macro flutter.widgets.PageRoute.fullscreenDialog}
-  final bool fullscreenDialog;
-
-  VBasePage({
-    required this.key,
-    required this.child,
-    this.maintainState = true,
-    this.fullscreenDialog = false,
-    this.name,
-    this.buildTransition,
-    this.transitionDuration,
-    this.reverseTransitionDuration,
-  }) : super(key: key);
-
-  factory VBasePage.fromPlatform({
-    required LocalKey key,
-    required Widget child,
-    String? name,
-    Widget Function(Animation<double> animation,
-            Animation<double> secondaryAnimation, Widget child)?
-        buildTransition,
-    Duration? transitionDuration,
-    Duration? reverseTransitionDuration,
-    bool fullscreenDialog = false,
-  }) =>
-      (!Platform.isWeb && Platform.isIOS)
-          ? VCupertinoPage(
-              key: key,
-              child: child,
-              name: name,
-              buildTransition: buildTransition,
-              transitionDuration: transitionDuration,
-              reverseTransitionDuration: reverseTransitionDuration,
-              fullscreenDialog: fullscreenDialog,
-            )
-          : VMaterialPage(
-              key: key,
-              child: child,
-              name: name,
-              buildTransition: buildTransition,
-              transitionDuration: transitionDuration,
-              reverseTransitionDuration: reverseTransitionDuration,
-              fullscreenDialog: fullscreenDialog,
-            ) as VBasePage<T>;
-}
+typedef VBasePage<T> = VDefaultPage<T>;
 
 /// A page to put in [Navigator] pages
 ///
@@ -178,7 +96,7 @@ abstract class VDefaultPage<T> extends Page<T> {
               transitionDuration: transitionDuration,
               reverseTransitionDuration: reverseTransitionDuration,
               fullscreenDialog: fullscreenDialog,
-            ) as VDefaultPage<T>;
+            );
 }
 
 /// A page to put in [Navigator] pages
@@ -186,7 +104,7 @@ abstract class VDefaultPage<T> extends Page<T> {
 /// This is a normal material page except that it allows for
 /// custom transitions easily.
 class VMaterialPage<T> extends MaterialPage<T>
-    implements VBasePage<T>, VDefaultPage<T> {
+    implements VDefaultPage<T> {
   /// The child of this page
   @override
   final Widget child;
@@ -279,7 +197,7 @@ class VMaterialPage<T> extends MaterialPage<T>
 /// This is a normal cupertino page except that it allows for
 /// custom transitions easily.
 class VCupertinoPage<T> extends CupertinoPage<T>
-    implements VBasePage<T>, VDefaultPage<T> {
+    implements VDefaultPage<T> {
   /// The child of this page
   @override
   final Widget child;
@@ -377,7 +295,7 @@ class VPageRoute<T> extends PageRoute<T> {
       Animation<double> secondaryAnimation, Widget child) customTransition;
 
   VPageRoute({
-    required VBasePage<T> page,
+    required VDefaultPage<T> page,
     required this.customTransition,
     Duration? transitionDuration,
     Duration? reverseTransitionDuration,
@@ -388,7 +306,7 @@ class VPageRoute<T> extends PageRoute<T> {
     assert(opaque);
   }
 
-  VBasePage<T> get _page => settings as VBasePage<T>;
+  VDefaultPage<T> get _page => settings as VDefaultPage<T>;
 
   @override
   bool get maintainState => _page.maintainState;
