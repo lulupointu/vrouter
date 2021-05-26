@@ -32,14 +32,16 @@ class VRouterScope extends StatefulWidget {
   }
 
   @override
-  _VRouterScopeState createState() => _VRouterScopeState(vRouterMode: vRouterMode);
+  _VRouterScopeState createState() =>
+      _VRouterScopeState(vRouterMode: vRouterMode);
 
   static _VRouterScopeData of(BuildContext context) {
     _VRouterScopeData? vRouterScope =
         context.dependOnInheritedWidgetOfExactType<_VRouterScopeData>();
 
     if (vRouterScope == null) {
-      throw VRouterScopeNotFoundException(widgetType: context.widget.runtimeType);
+      throw VRouterScopeNotFoundException(
+          widgetType: context.widget.runtimeType);
     }
 
     return vRouterScope;

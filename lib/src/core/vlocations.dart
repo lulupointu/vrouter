@@ -8,15 +8,21 @@ class VLocations {
   final VRouterModes vRouterMode;
 
   VLocations({required this.vRouterMode})
-      : _serialCount = (Platform.isWeb) ? (BrowserHelpers.getHistorySerialCount() ?? 0) : 0,
+      : _serialCount = (Platform.isWeb)
+            ? (BrowserHelpers.getHistorySerialCount() ?? 0)
+            : 0,
         _locations = List<VRouteInformation?>.filled(
-                ((Platform.isWeb) ? (BrowserHelpers.getHistorySerialCount() ?? 0) : 0), null) +
+                ((Platform.isWeb)
+                    ? (BrowserHelpers.getHistorySerialCount() ?? 0)
+                    : 0),
+                null) +
             [
               (Platform.isWeb)
                   ? VRouteInformation(
-                      location: BrowserHelpers.getPathAndQuery(routerMode: vRouterMode),
-                      state: Map<String, String>.from(
-                          jsonDecode((BrowserHelpers.getHistoryState() ?? '{}'))),
+                      location: BrowserHelpers.getPathAndQuery(
+                          routerMode: vRouterMode),
+                      state: Map<String, String>.from(jsonDecode(
+                          (BrowserHelpers.getHistoryState() ?? '{}'))),
                     )
                   : null
             ];
