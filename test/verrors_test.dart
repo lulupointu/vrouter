@@ -8,27 +8,28 @@ import 'package:vrouter/vrouter.dart';
 main() {
   group('VError', () {
     testWidgets("InvalidPushVError", (WidgetTester tester) async {
-      runZonedGuarded(() async {
-        final vRouterKey = GlobalKey<VRouterState>();
+      final vRouterKey = GlobalKey<VRouterState>();
 
-        await tester.pumpWidget(
-          VRouter(
-            initialUrl: 'settings',
-            key: vRouterKey,
-            routes: [
-              VWidget(path: '/settings', widget: Text('VWidget1')),
-            ],
-          ),
-        );
-      }, (Object error, StackTrace stack) {
-        expectSync(error.runtimeType, InvalidPushVError);
+      var caughtError;
+      FlutterError.onError = (e) => caughtError = e.exception;
+      final vRouter = VRouter(
+        initialUrl: 'settings',
+        key: vRouterKey,
+        routes: [
+          VWidget(path: '/settings', widget: Text('VWidget1')),
+        ],
+      );
+      await tester.pumpWidget(
+        vRouter,
+      );
 
-        // Test the output error string
-        expectSync(
-            error.toString(),
-            "The current url is null but you are trying to access the path \"settings\" which does not start with '/'.\n"
-            "This is likely because you set a initialUrl which does not start with '/'.");
-      });
+      expect(caughtError.runtimeType, InvalidPushVError);
+
+      // Test the output error string
+      expect(
+          caughtError.toString(),
+          "The current url is null but you are trying to access the path \"settings\" which does not start with '/'.\n"
+              "This is likely because you set a initialUrl which does not start with '/'.");
     });
 
     testWidgets("UnknownUrlVError", (WidgetTester tester) async {

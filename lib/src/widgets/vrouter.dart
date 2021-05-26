@@ -509,7 +509,7 @@ class VRouter extends StatefulWidget
 }
 
 class VRouterState extends State<VRouter> {
-  late final vRouterDelegate = VRouterDelegate(
+  late VRouterDelegate vRouterDelegate = VRouterDelegate(
     routes: widget.routes,
     builder: widget.builder,
     navigatorObservers: widget.navigatorObservers,
@@ -521,13 +521,34 @@ class VRouterState extends State<VRouter> {
     buildTransition: widget.buildTransition,
     transitionDuration: widget.transitionDuration,
     reverseTransitionDuration: widget.reverseTransitionDuration,
-    mode: widget.mode,
     initialUrl: widget.initialUrl,
   );
 
   @override
+  void didUpdateWidget(covariant VRouter oldWidget) {
+    if (oldWidget.appRouterKey != widget.appRouterKey) {
+      vRouterDelegate = VRouterDelegate(
+        routes: widget.routes,
+        builder: widget.builder,
+        navigatorObservers: widget.navigatorObservers,
+        beforeEnter: widget.beforeEnter,
+        beforeLeave: widget.beforeLeave,
+        afterEnter: widget.afterEnter,
+        onPop: widget.onPop,
+        onSystemPop: widget.onSystemPop,
+        buildTransition: widget.buildTransition,
+        transitionDuration: widget.transitionDuration,
+        reverseTransitionDuration: widget.reverseTransitionDuration,
+        initialUrl: widget.initialUrl,
+      );
+    }
+    super.didUpdateWidget(oldWidget);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return VRouterScope(
+      vRouterMode: widget.mode,
       child: MaterialApp.router(
         backButtonDispatcher: VBackButtonDispatcher(),
         routeInformationParser: VRouteInformationParser(),
