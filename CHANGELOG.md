@@ -4,6 +4,10 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.1.3+2\] - 25/05/2021.
+
+* 🛠️ : VRouter can now be used with different keys without losing url state
+
 ## \[1.1.3+1\] - 25/05/2021.
 
 * 🛠️ : Fix null error on web
