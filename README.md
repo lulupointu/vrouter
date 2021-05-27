@@ -304,7 +304,7 @@ VRouter(
      buildTransition: (animation1, _, child) => ScaleTransition(scale: animation1, child: child),
    )
    // The default FadeTransition will play for '/settings'
-   VStacked(path: '/settings', widget: SettingsScreen()),
+   VWidget(path: '/settings', widget: SettingsScreen()),
  ],
 )
 ```
