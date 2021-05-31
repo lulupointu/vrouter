@@ -4,6 +4,11 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.1.4+4\] - 31/05/2021.
+
+* 🛠️ : Renaming `VRouterScopeDuplicateException` to `_VRouterScopeDuplicateError` since this is an error
+* 🛠️ : Postponing some initialization until `build`. This should fix issues with easy_localization package (https://github.com/lulupointu/vrouter/issues/60)
+
 ## \[1.1.4+3\] - 27/05/2021.
 
 * 🛠️ : Replace a remaining `VStacked` by `VWidget` in README

@@ -66,7 +66,7 @@ class _VRouterScopeState extends State<VRouterScope> {
       );
     }
 
-    throw VRouterScopeDuplicateException(widgetType: widget.child.runtimeType);
+    throw _VRouterScopeDuplicateError(widgetType: widget.child.runtimeType);
   }
 }
 
@@ -87,11 +87,11 @@ If you are using VRouter, CupertinoVRouter or WidgetsVRouter directly, this is a
 ''';
 }
 
-class VRouterScopeDuplicateException implements Exception {
+class _VRouterScopeDuplicateError implements Exception {
   /// The type of the Widget requesting the value
   final Type widgetType;
 
-  VRouterScopeDuplicateException({required this.widgetType});
+  _VRouterScopeDuplicateError({required this.widgetType});
 
   @override
   String toString() => '''

@@ -108,30 +108,6 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
           onPop: onPop,
           onSystemPop: onSystemPop,
         ) {
-    WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
-      final vLocations = VRouterScope.of(_rootVRouterContext).vLocations;
-
-      // When the app starts, get the serialCount. Default to 0.
-      _serialCount = vLocations.serialCount;
-
-      // Check if this is the first route
-      if (_serialCount == 0) {
-        return pushReplacement(initialUrl);
-      } else {
-        // This happens when VRouter is rebuilt, either because:
-        //   - The entire app has been rebuilt
-        //   - VRouter key changed
-        // In this case we use _vLocations to get the current location
-        final currentLocation =
-            (vLocations.currentLocation.location.startsWith('/') ? '' : '/ ') +
-                vLocations.currentLocation.location;
-        pushReplacement(
-          currentLocation,
-          historyState: vLocations.currentLocation.state,
-        );
-      }
-    });
-
     // If we are on the web, we listen to any unload event.
     // This allows us to call beforeLeave when the browser or the tab
     // is being closed for example
@@ -191,6 +167,9 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
   /// Contains all query parameters (i.e. parameters after
   /// the "?" in the url) of the current url
   Map<String, String> queryParameters = <String, String>{};
+
+  ///
+  bool _isInitialized = false;
 
   /// Updates every state variables of [VRouter]
   ///
@@ -1264,6 +1243,38 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     return true;
   }
 
+  void initialize(BuildContext context) {
+    assert(
+        !_isInitialized,
+        'VRouterDelegate has already been initialized, it should not be initialized multiple times.'
+        'Please check VRouterDelegate._isInitialized');
+    WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
+      final vLocations = VRouterScope.of(context).vLocations;
+
+      // When the app starts, get the serialCount. Default to 0.
+      _serialCount = vLocations.serialCount;
+
+      // Check if this is the first route
+      if (_serialCount == 0) {
+        return pushReplacement(initialUrl);
+      } else {
+        // This happens when VRouter is rebuilt, either because:
+        //   - The entire app has been rebuilt
+        //   - VRouter key changed
+        // In this case we use _vLocations to get the current location
+        final currentLocation =
+            (vLocations.currentLocation.location.startsWith('/') ? '' : '/ ') +
+                vLocations.currentLocation.location;
+        pushReplacement(
+          currentLocation,
+          historyState: vLocations.currentLocation.state,
+        );
+      }
+    });
+
+    _isInitialized = true;
+  }
+
   @override
   SynchronousFuture<void> setInitialRoutePath(RouteInformation configuration) {
     return SynchronousFuture(null);
@@ -1374,6 +1385,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         child: Builder(
           builder: (context) {
             _rootVRouterContext = context;
+            if (!_isInitialized) initialize(context);
 
             final child = Navigator(
               pages: _vRoute.pages.isNotEmpty
