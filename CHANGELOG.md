@@ -4,6 +4,10 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.1.4+5\] - 02/06/2021.
+
+* ✨ : The `path` can now be accessed with `VRouter.of(context).path`
+
 ## \[1.1.4+4\] - 31/05/2021.
 
 * 🛠️ : Renaming `VRouterScopeDuplicateException` to `_VRouterScopeDuplicateError` since this is an error
