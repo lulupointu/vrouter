@@ -548,6 +548,16 @@ class WidgetsVRouterState extends State<WidgetsVRouter> {
   /// Previous url that was synced with the state
   String? get previousUrl => vRouterDelegate.previousUrl;
 
+  /// Path of [url]
+  ///
+  /// This is the same as the url WITHOUT the queryParameters
+  String? get path => url != null ? Uri.parse(url!).path : null;
+
+  /// Path of [previousUrl]
+  ///
+  /// This is the same as the url WITHOUT the queryParameters
+  String? get previousPath => url != null ? Uri.parse(url!).path : null;
+
   /// This state is saved in the browser history. This means that if the user presses
   /// the back or forward button on the navigator, this historyState will be the same
   /// as the last one you saved.
