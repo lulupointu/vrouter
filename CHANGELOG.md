@@ -4,6 +4,12 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.1.4+6\] - 02/06/2021.
+
+* 🛠️ : Correct `VRoute` to `VWidget` in `UnknownUrlError` (thanks evandrmb)
+* 🛠️ : Deep-linking is no longer broken
+* 🛠️ : Solved issues which might have erased when the url was modified manually (1. Broken browser navigation control, 2. Bad path restoration after hot restart)
+
 ## \[1.1.4+5\] - 02/06/2021.
 
 * ✨ : The `path` can now be accessed with `VRouter.of(context).path`

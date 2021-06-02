@@ -5,6 +5,12 @@ import 'package:vrouter/src/vrouter_core.dart';
 /// Only one is implemented for mobile: pushExternal
 
 class BrowserHelpers {
+  /// This is used to reset flutter serialCount in the history state to 0
+  ///
+  /// This is needed to allow path restoration on hot reload on flutter web
+  static void resetFlutterSerialCount() =>
+      throw (Exception('replaceHistoryState should only be used on the web'));
+
   static void replaceHistoryState(String state) =>
       throw (Exception('replaceHistoryState should only be used on the web'));
 
@@ -37,7 +43,11 @@ class BrowserHelpers {
     }
   }
 
-  static void pushReplacement(String url, {required VRouterModes routerMode}) =>
+  static void pushReplacement(
+    String url, {
+    required VRouterModes routerMode,
+    required String state,
+  }) =>
       throw (Exception('pushReplacement should only be used on the web'));
 
   static void push(

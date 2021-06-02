@@ -14,6 +14,16 @@ import 'package:vrouter/src/vrouter_core.dart';
 /// Only one is implemented for mobile: pushExternal
 
 class BrowserHelpers {
+  /// This is used to reset flutter serialCount in the history state to 0
+  ///
+  /// This is needed to allow path restoration on hot reload on flutter web
+  static void resetFlutterSerialCount() {
+    var globalState = html.window.history.state;
+    globalState['serialCount'] =
+        0; // Reset to 0 to avoid issues with flutter hot reload
+    html.window.history.replaceState(globalState, 'flutter', null);
+  }
+
   /// This replace the current history state by the new given one
   ///
   /// Note that flutter uses a map in the browser history and that
@@ -21,6 +31,8 @@ class BrowserHelpers {
   static void replaceHistoryState(String state) {
     var globalState = html.window.history.state;
     globalState['state'] = state;
+    globalState['serialCount'] =
+        0; // Reset to 0 to avoid issues with flutter hot reload
     html.window.history.replaceState(globalState, 'flutter', null);
   }
 
@@ -103,9 +115,18 @@ class BrowserHelpers {
 
   /// This replace the current url by the given one
   /// Meaning that while the url changes, no new history entry is created
-  static void pushReplacement(String url, {required VRouterModes routerMode}) =>
-      html.window.history.replaceState(html.window.history.state, "",
-          (routerMode == VRouterModes.hash) ? '/#$url' : url);
+  static void pushReplacement(
+    String url, {
+    required VRouterModes routerMode,
+    required String state,
+  }) {
+    var globalState = html.window.history.state;
+    globalState['state'] = state;
+    globalState['serialCount'] =
+        0; // Reset to 0 to avoid issues with flutter hot reload
+    html.window.history.replaceState(
+        globalState, "", (routerMode == VRouterModes.hash) ? '/#$url' : url);
+  }
 
   /// This pushes a url to the browser
   ///
@@ -121,6 +142,8 @@ class BrowserHelpers {
   }) {
     var globalState = html.window.history.state;
     globalState['state'] = state ?? '';
+    globalState['serialCount'] =
+        0; // Reset to 0 to avoid issues with flutter hot reload
     html.window.history.pushState(
         globalState, "", (routerMode == VRouterModes.hash) ? '/#$url' : url);
   }

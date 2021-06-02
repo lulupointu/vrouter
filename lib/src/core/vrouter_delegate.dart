@@ -599,8 +599,14 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       if (BrowserHelpers.getPathAndQuery(
               routerMode: VRouterScope.of(_rootVRouterContext).vRouterMode) !=
           newUri.toString()) {
-        BrowserHelpers.pushReplacement(newUri.toString(),
-            routerMode: VRouterScope.of(_rootVRouterContext).vRouterMode);
+        BrowserHelpers.pushReplacement(
+          newUri.toString(),
+          routerMode: VRouterScope.of(_rootVRouterContext).vRouterMode,
+          state: jsonEncode({
+            'serialCount': _serialCount,
+            'historyState': jsonEncode(newHistoryState),
+          }),
+        );
         if (BrowserHelpers.getPathAndQuery(
                 routerMode: VRouterScope.of(_rootVRouterContext).vRouterMode) !=
             newUri.toString()) {
@@ -616,10 +622,17 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         'historyState': jsonEncode(newHistoryState),
       }));
       _ignoreNextBrowserCalls = false;
-    } else if (newSerialCount != null) {
+    } else if (fromBrowser) {
       // If this comes from the browser, newSerialCount is not null
       _doReportBackUrlToBrowser = false;
-      _serialCount = newSerialCount;
+      _serialCount = newSerialCount!;
+
+      // Reset the history state in case it as been overwritten
+      // This can happen when a url is typed manually
+      BrowserHelpers.replaceHistoryState(jsonEncode({
+        'serialCount': _serialCount,
+        'historyState': jsonEncode(newHistoryState),
+      }));
     } else {
       // If this comes from a user:
       //    - If he/she pushes the same url+historyState, flutter does not create a new history entry so the serialCount remains the same
@@ -1256,7 +1269,15 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
 
       // Check if this is the first route
       if (_serialCount == 0) {
-        return pushReplacement(initialUrl);
+        // Check if this is the first route
+
+        if (vLocations.currentLocation.location != '') {
+          // If we are deep-linking, just deep-link
+          pushReplacement(vLocations.currentLocation.location);
+        } else {
+          // Else go to [initialUrl]
+          pushReplacement(initialUrl);
+        }
       } else {
         // This happens when VRouter is rebuilt, either because:
         //   - The entire app has been rebuilt
@@ -1311,6 +1332,9 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
           return;
         }
       }
+
+      // Call this at each browser update to be sure to allow path restoration on hot reload on flutter web
+      if (Platform.isWeb) BrowserHelpers.resetFlutterSerialCount();
 
       // Update the app with the new url
       await _updateUrl(
