@@ -6,7 +6,7 @@ class UnknownUrlVError extends Error {
 
   @override
   String toString() => "The url '$url' has no matching route.\n"
-      "Consider using VRoute(path: '.*', widget: UnknownPathWidget()) at the bottom of your VRouter routes to catch any wrong route.";
+      "Consider using VWidget(path: '.*', widget: UnknownPathWidget()) at the bottom of your VRouter routes to catch any wrong route.";
 
   @override
   StackTrace? get stackTrace => StackTrace.current;
