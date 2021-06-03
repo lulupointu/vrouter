@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:flutter/material.dart';
 import 'package:vrouter/src/core/vrouter_modes.dart';
 import 'package:vrouter/src/wrappers/browser_helpers/browser_helpers.dart';
 import 'package:vrouter/src/wrappers/platform/platform.dart';
