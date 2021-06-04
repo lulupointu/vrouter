@@ -118,7 +118,7 @@ class CupertinoVRouter extends StatefulWidget
     this.navigatorObservers = const [],
     this.builder,
     @Deprecated('Please use navigatorKey instead.\n This has been removed because it is redundant with navigatorKey.')
-    this.appRouterKey,
+        this.appRouterKey,
     this.navigatorKey,
     // Bellow are the MaterialApp parameters
     this.theme,
@@ -451,7 +451,8 @@ class CupertinoVRouterState extends State<CupertinoVRouter> {
 
   @override
   void didUpdateWidget(covariant CupertinoVRouter oldWidget) {
-    if (oldWidget.appRouterKey != widget.appRouterKey || oldWidget.navigatorKey != widget.navigatorKey) {
+    if (oldWidget.appRouterKey != widget.appRouterKey ||
+        oldWidget.navigatorKey != widget.navigatorKey) {
       vRouterDelegate = VRouterDelegate(
         routes: widget.routes,
         builder: widget.builder,

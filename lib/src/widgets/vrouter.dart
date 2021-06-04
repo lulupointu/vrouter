@@ -117,7 +117,7 @@ class VRouter extends StatefulWidget
     this.navigatorObservers = const [],
     this.builder,
     @Deprecated('Please use navigatorKey instead.\n This has been removed because it is redundant with navigatorKey.')
-    this.appRouterKey,
+        this.appRouterKey,
     this.navigatorKey,
     // Bellow are the MaterialApp parameters
     this.title = '',
@@ -538,7 +538,8 @@ class VRouterState extends State<VRouter> {
 
   @override
   void didUpdateWidget(covariant VRouter oldWidget) {
-    if (oldWidget.appRouterKey != widget.appRouterKey || oldWidget.navigatorKey != widget.navigatorKey) {
+    if (oldWidget.appRouterKey != widget.appRouterKey ||
+        oldWidget.navigatorKey != widget.navigatorKey) {
       vRouterDelegate = VRouterDelegate(
         routes: widget.routes,
         builder: widget.builder,

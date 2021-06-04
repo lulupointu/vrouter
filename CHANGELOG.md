@@ -6,7 +6,9 @@
 
 ## \[1.1.4+7\] - 03/06/2021.
 
+* 🔁 : `appRouterKey` should not be used anymore. If you need to update `routes` use `navigatorKey` instead
 * 🛠️ : Correcting expression to catch unknown path in `UnknownUrlVError`
+* ✨ : `navigatorKey` can now be specified manually
 
 ## \[1.1.4+6\] - 02/06/2021.
 
