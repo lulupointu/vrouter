@@ -98,7 +98,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     this.transitionDuration,
     this.reverseTransitionDuration,
     this.initialUrl = '/',
-  })  : _navigatorKey = GlobalKey<NavigatorState>(),
+    GlobalKey<NavigatorState>? navigatorKey,
+  })  : navigatorKey = navigatorKey ?? GlobalKey<NavigatorState>(),
         _vNavigatorObserver = VNavigatorObserver(),
         _rootVRouter = RootVRouter(
           routes: routes,
@@ -118,7 +119,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
 
   /// Those are used in the root navigator
   /// They are here to prevent breaking animations
-  final GlobalKey<NavigatorState> _navigatorKey;
+  final GlobalKey<NavigatorState> navigatorKey;
 
   /// The VRouter associated to this VRouterDelegate
   final RootVRouter _rootVRouter;
@@ -580,7 +581,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     /// Remove any Navigator 1.0 push
     final navigator1PushCount = _vNavigatorObserver.navigator1PushCount;
     for (var i = 0; i < navigator1PushCount; i++)
-      _navigatorKey.currentState!.pop();
+      navigatorKey.currentState!.pop();
 
     /// Leave if the url is external
     if (isUrlExternal) {
@@ -1048,7 +1049,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     Map<String, String> queryParameters = const {},
     Map<String, String> newHistoryState = const {},
   }) async {
-    _navigatorKey.currentState!.pop(
+    navigatorKey.currentState!.pop(
       VPopData(
         elementToPop: _vRoute.vRouteElementNode.getVRouteElementToPop(),
         pathParameters: pathParameters,
@@ -1074,7 +1075,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     Map<String, String> newHistoryState = const {},
   }) async {
     if (_vNavigatorObserver.hasNavigator1Pushed) {
-      _navigatorKey.currentState!.pop();
+      navigatorKey.currentState!.pop();
       return;
     }
     _systemPop(
@@ -1417,7 +1418,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
                   : [
                       EmptyPage(),
                     ],
-              key: _navigatorKey,
+              key: navigatorKey,
               observers: [_vNavigatorObserver, ...navigatorObservers],
               onPopPage: (_, data) {
                 if (_vNavigatorObserver.hasNavigator1Pushed) {
@@ -1646,7 +1647,7 @@ class RootVRouterData extends VRouterData {
     Map<String, String> queryParameters = const {},
     Map<String, String> newHistoryState = const {},
   }) {
-    state._navigatorKey.currentState!.pop(
+    state.navigatorKey.currentState!.pop(
       VPopData(
         elementToPop: itemToPop,
         pathParameters: {

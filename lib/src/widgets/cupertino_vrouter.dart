@@ -85,6 +85,15 @@ class CupertinoVRouter extends StatefulWidget
   /// This is because [CupertinoVRouter] should never update
   final Key? appRouterKey;
 
+  /// A key given to the root navigator
+  ///
+  ///
+  /// This can be used to access a context in which you can call [Navigator]
+  ///
+  /// This can also be used if you need your [routes] to update, in this case change this key
+  /// Note however that you should change [navigatorKey] as little as possible
+  final GlobalKey<NavigatorState>? navigatorKey;
+
   CupertinoVRouter({
     Key? key,
     required this.routes,
@@ -108,7 +117,9 @@ class CupertinoVRouter extends StatefulWidget
     this.initialUrl = '/',
     this.navigatorObservers = const [],
     this.builder,
+    @Deprecated('Please use navigatorKey instead.\n This has been removed because it is redundant with navigatorKey.')
     this.appRouterKey,
+    this.navigatorKey,
     // Bellow are the MaterialApp parameters
     this.theme,
     this.title = '',
@@ -435,11 +446,12 @@ class CupertinoVRouterState extends State<CupertinoVRouter> {
     transitionDuration: widget.transitionDuration,
     reverseTransitionDuration: widget.reverseTransitionDuration,
     initialUrl: widget.initialUrl,
+    // navigatorKey: widget.navigatorKey,
   );
 
   @override
   void didUpdateWidget(covariant CupertinoVRouter oldWidget) {
-    if (oldWidget.appRouterKey != widget.appRouterKey) {
+    if (oldWidget.appRouterKey != widget.appRouterKey || oldWidget.navigatorKey != widget.navigatorKey) {
       vRouterDelegate = VRouterDelegate(
         routes: widget.routes,
         builder: widget.builder,
@@ -453,6 +465,7 @@ class CupertinoVRouterState extends State<CupertinoVRouter> {
         transitionDuration: widget.transitionDuration,
         reverseTransitionDuration: widget.reverseTransitionDuration,
         initialUrl: widget.initialUrl,
+        // navigatorKey: widget.navigatorKey,
       );
     }
     super.didUpdateWidget(oldWidget);
