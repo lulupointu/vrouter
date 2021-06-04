@@ -24,7 +24,7 @@ class VLocations {
                       state: Map<String, String>.from(jsonDecode(
                           (BrowserHelpers.getHistoryState() ?? '{}'))),
                     )
-                  : VRouteInformation(location: '', state: const {})
+                  : VRouteInformation(location: '/', state: const {})
             ];
 
   int _serialCount;
