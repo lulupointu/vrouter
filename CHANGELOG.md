@@ -4,6 +4,10 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.1.4+8\] - 04/06/2021.
+
+* 🛠️ : `initialUrl` now works on the web again
+
 ## \[1.1.4+7\] - 03/06/2021.
 
 * 🔁 : `appRouterKey` should not be used anymore. If you need to update `routes` use `navigatorKey` instead
