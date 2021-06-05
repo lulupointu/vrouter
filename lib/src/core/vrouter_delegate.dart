@@ -1272,7 +1272,9 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       if (_serialCount == 0) {
         // Check if this is the first route
 
-        if (vLocations.currentLocation.location != '' || vLocations.currentLocation.location != '/') { // Is this '' or '/' ? Both seem to appear from time to time
+        if (vLocations.currentLocation.location != '' ||
+            vLocations.currentLocation.location != '/') {
+          // Is this '' or '/' ? Both seem to appear from time to time
           // If we are deep-linking, just deep-link
           pushReplacement(vLocations.currentLocation.location);
         } else {
