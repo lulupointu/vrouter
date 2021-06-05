@@ -533,7 +533,7 @@ class VRouterState extends State<VRouter> {
     transitionDuration: widget.transitionDuration,
     reverseTransitionDuration: widget.reverseTransitionDuration,
     initialUrl: widget.initialUrl,
-    // navigatorKey: widget.navigatorKey,
+    navigatorKey: widget.navigatorKey,
   );
 
   @override
@@ -553,7 +553,7 @@ class VRouterState extends State<VRouter> {
         transitionDuration: widget.transitionDuration,
         reverseTransitionDuration: widget.reverseTransitionDuration,
         initialUrl: widget.initialUrl,
-        // navigatorKey: widget.navigatorKey,
+        navigatorKey: widget.navigatorKey,
       );
     }
     super.didUpdateWidget(oldWidget);
