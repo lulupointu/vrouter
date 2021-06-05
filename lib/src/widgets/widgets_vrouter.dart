@@ -156,7 +156,7 @@ class WidgetsVRouter extends StatefulWidget
   /// Material specific features such as [showDialog] and [showMenu], and widgets
   /// such as [Tooltip], [PopupMenuButton], also require a [Navigator] to properly
   /// function.
-  final TransitionBuilder? builder;
+  final Widget Function(BuildContext context, Widget child)? builder;
 
   /// {@macro flutter.widgets.widgetsApp.title}
   ///

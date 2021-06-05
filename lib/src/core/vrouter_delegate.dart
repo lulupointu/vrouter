@@ -75,7 +75,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
 
   /// Build widget before the pages
   /// The context can be used to access VRouter.of
-  final TransitionBuilder? builder;
+  final Widget Function(BuildContext context, Widget child)? builder;
 
   VRouterDelegate({
     required this.routes,

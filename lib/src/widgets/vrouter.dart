@@ -141,6 +141,8 @@ class VRouter extends StatefulWidget
     this.debugShowCheckedModeBanner = true,
     this.shortcuts,
     this.actions,
+    this.restorationScopeId,
+    this.scrollBehavior,
   })  : _beforeEnter = beforeEnter,
         _beforeLeave = beforeLeave,
         _afterEnter = afterEnter,
@@ -159,7 +161,7 @@ class VRouter extends StatefulWidget
   /// Material specific features such as [showDialog] and [showMenu], and widgets
   /// such as [Tooltip], [PopupMenuButton], also require a [Navigator] to properly
   /// function.
-  final TransitionBuilder? builder;
+  final Widget Function(BuildContext context, Widget child)? builder;
 
   /// {@macro flutter.widgets.widgetsApp.title}
   ///
@@ -471,6 +473,26 @@ class VRouter extends StatefulWidget
   /// {@macro flutter.widgets.widgetsApp.actions.seeAlso}
   final Map<Type, Action<Intent>>? actions;
 
+  /// {@macro flutter.widgets.widgetsApp.restorationScopeId}
+  final String? restorationScopeId;
+
+  /// {@template flutter.material.materialApp.scrollBehavior}
+  /// The default [ScrollBehavior] for the application.
+  ///
+  /// [ScrollBehavior]s describe how [Scrollable] widgets behave. Providing
+  /// a [ScrollBehavior] can set the default [ScrollPhysics] across
+  /// an application, and manage [Scrollable] decorations like [Scrollbar]s and
+  /// [GlowingOverscrollIndicator]s.
+  /// {@endtemplate}
+  ///
+  /// When null, defaults to [MaterialScrollBehavior].
+  ///
+  /// See also:
+  ///
+  ///  * [ScrollConfiguration], which controls how [Scrollable] widgets behave
+  ///    in a subtree.
+  final ScrollBehavior? scrollBehavior;
+
   /// Turns on a [GridPaper] overlay that paints a baseline grid
   /// Material apps.
   ///
@@ -589,6 +611,8 @@ class VRouterState extends State<VRouter> {
         debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,
         shortcuts: widget.shortcuts,
         actions: widget.actions,
+        restorationScopeId: widget.restorationScopeId,
+        scrollBehavior: widget.scrollBehavior,
       ),
     );
   }
