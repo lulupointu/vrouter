@@ -51,31 +51,13 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
   /// {@macro flutter.widgets.widgetsApp.navigatorObservers}
   final List<NavigatorObserver> navigatorObservers;
 
-  /// This is a context which contains the VRouter.
-  /// It is used is VRouter.beforeLeave for example.
-  late BuildContext _rootVRouterContext;
-
-  /// Designates the number of page we navigated since
-  /// entering the app.
-  /// If is only used in the web to know where we are when
-  /// the user interacts with the browser instead of the app
-  /// (e.g back button)
-  late int _serialCount;
-
-  /// When set to true, urlToAppState will be ignored
-  /// You must manually reset it to true otherwise it will
-  /// be ignored forever.
-  bool _ignoreNextBrowserCalls = false;
-
-  /// When set to false, appStateToUrl will be "ignored"
-  /// i.e. no new history entry will be created
-  /// You must manually reset it to true otherwise it will
-  /// be ignored forever.
-  bool _doReportBackUrlToBrowser = true;
-
   /// Build widget before the pages
   /// The context can be used to access VRouter.of
   final Widget Function(BuildContext context, Widget child)? builder;
+
+  /// Those are used in the root navigator
+  /// They are here to prevent breaking animations
+  final GlobalKey<NavigatorState> navigatorKey;
 
   VRouterDelegate({
     required this.routes,
@@ -117,16 +99,34 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     }
   }
 
-  /// Those are used in the root navigator
-  /// They are here to prevent breaking animations
-  final GlobalKey<NavigatorState> navigatorKey;
-
   /// The VRouter associated to this VRouterDelegate
   final RootVRouter _rootVRouter;
 
   /// Observes push and pop event to keep track of changes
   /// linked to Navigator 1.0
   final VNavigatorObserver _vNavigatorObserver;
+
+  /// This is a context which contains the VRouter.
+  /// It is used is VRouter.beforeLeave for example.
+  late BuildContext _rootVRouterContext;
+
+  /// Designates the number of page we navigated since
+  /// entering the app.
+  /// If is only used in the web to know where we are when
+  /// the user interacts with the browser instead of the app
+  /// (e.g back button)
+  late int _serialCount;
+
+  /// When set to true, urlToAppState will be ignored
+  /// You must manually reset it to true otherwise it will
+  /// be ignored forever.
+  bool _ignoreNextBrowserCalls = false;
+
+  /// When set to false, appStateToUrl will be "ignored"
+  /// i.e. no new history entry will be created
+  /// You must manually reset it to true otherwise it will
+  /// be ignored forever.
+  bool _doReportBackUrlToBrowser = true;
 
   /// The child of this widget
   ///
