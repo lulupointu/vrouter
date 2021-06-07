@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/core/route.dart';
 import 'package:vrouter/src/core/vredirector.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_with_name.dart';
 
 /// [VRouteElement] is the base class for any object used in routes, stackedRoutes
 /// or nestedRoutes
@@ -213,6 +214,12 @@ class ValidPopResult extends FoundPopResult {
   /// If [path] is null, the app will be put in the background on IOS and Android
   final String? path;
 
+  /// The names of the [VRouteElement]s of the new path
+  ///
+  /// NOTE that this is not exact (because of [VNester]). To make this exact
+  /// requires to rewrite the pop flow
+  final List<String> names;
+
   /// List of every popping [VRouteElement]
   ///
   /// This should either be passed from [PoppingPopResult] or [ValidPopResult] but never changed
@@ -221,6 +228,7 @@ class ValidPopResult extends FoundPopResult {
   ValidPopResult({
     required this.path,
     required this.poppedVRouteElements,
+    required this.names,
   });
 }
 
@@ -265,8 +273,7 @@ class ValidNameResult extends GetPathFromNameResult {
   ValidNameResult({required this.path});
 }
 
-abstract class ErrorGetPathFromNameResult extends GetPathFromNameResult
-    implements Error {
+abstract class ErrorGetPathFromNameResult extends GetPathFromNameResult implements Error {
   String get error;
 
   @override
@@ -310,22 +317,18 @@ class MissingPathParamsError extends PathParamsError {
   final List<String> missingPathParams;
   final List<String> pathParams;
 
-  MissingPathParamsError(
-      {required this.pathParams, required this.missingPathParams});
+  MissingPathParamsError({required this.pathParams, required this.missingPathParams});
 
-  String get error =>
-      'Path parameters given: $pathParams, missing: $missingPathParams';
+  String get error => 'Path parameters given: $pathParams, missing: $missingPathParams';
 }
 
 class OverlyPathParamsError extends PathParamsError {
   final List<String> expectedPathParams;
   final List<String> pathParams;
 
-  OverlyPathParamsError(
-      {required this.pathParams, required this.expectedPathParams});
+  OverlyPathParamsError({required this.pathParams, required this.expectedPathParams});
 
-  String get error =>
-      'Path parameters given: $pathParams, expected: $expectedPathParams';
+  String get error => 'Path parameters given: $pathParams, expected: $expectedPathParams';
 }
 
 class PathParamsErrorsNameResult extends ErrorGetPathFromNameResult {
@@ -382,112 +385,6 @@ class VPathRequestData {
 
   /// The url corresponding to the uri
   String get url => uri.toString();
-}
-
-/// [VRouteElementNode] is used to represent the current route configuration as a tree
-class VRouteElementNode {
-  /// The [VRouteElementNode] containing the [VRouteElement] which is the current nested route
-  /// to be valid, if any
-  ///
-  /// The is used be all types of [VNestedPage]
-  final VRouteElementNode? nestedVRouteElementNode;
-
-  /// The [VRouteElementNode] containing the [VRouteElement] which is the current stacked routes
-  /// to be valid, if any
-  final VRouteElementNode? stackedVRouteElementNode;
-
-  /// The [VRouteElement] attached to this node
-  final VRouteElement vRouteElement;
-
-  /// The path of the [VRouteElement] attached to this node
-  /// If the path has path parameters, they should be replaced
-  final String? localPath;
-
-  VRouteElementNode(
-    this.vRouteElement, {
-    required this.localPath,
-    this.nestedVRouteElementNode,
-    this.stackedVRouteElementNode,
-  });
-
-  /// Finding the element to pop for a [VRouteElementNode] means finding which one is at the
-  /// end of the chain of stackedVRouteElementNode (if none then this should be popped)
-  VRouteElement getVRouteElementToPop() {
-    if (stackedVRouteElementNode != null) {
-      return stackedVRouteElementNode!.getVRouteElementToPop();
-    }
-    return vRouteElement;
-  }
-
-  /// Finding the element to pop for a [VRouteElementNode] means finding which one is at the
-  /// end of the chain of stackedVRouteElementNode (if none then this should be popped)
-  VRouteElement getVRouteElementToSystemPop() {
-    if (stackedVRouteElementNode != null) {
-      return stackedVRouteElementNode!.getVRouteElementToSystemPop();
-    }
-    if (nestedVRouteElementNode != null) {
-      return nestedVRouteElementNode!.getVRouteElementToSystemPop();
-    }
-    return vRouteElement;
-  }
-
-  /// Get the [VRouteElementNode] associated to the given [VRouteElement]
-  /// returns null if the [VRouteElement] is not his nor in the stackedRoutes or the subroutes
-  VRouteElementNode? getVRouteElementNodeFromVRouteElement(
-      VRouteElement vRouteElement) {
-    if (vRouteElement == this.vRouteElement) return this;
-    if (stackedVRouteElementNode != null) {
-      final vRouteElementNode = stackedVRouteElementNode!
-          .getVRouteElementNodeFromVRouteElement(vRouteElement);
-      if (vRouteElementNode != null) return vRouteElementNode;
-    }
-    if (nestedVRouteElementNode != null) {
-      final vRouteElementNode = nestedVRouteElementNode!
-          .getVRouteElementNodeFromVRouteElement(vRouteElement);
-      if (vRouteElementNode != null) return vRouteElementNode;
-    }
-    return null;
-  }
-
-  /// Get a flatten list of the [VRouteElement] from this + all those contained in
-  /// stackedRoutes and subRoutes.
-  List<VRouteElement> getVRouteElements() {
-    return [vRouteElement] +
-        (stackedVRouteElementNode?.getVRouteElements() ?? []) +
-        (nestedVRouteElementNode?.getVRouteElements() ?? []);
-  }
-
-  /// This function will search this node and the nested and sub nodes to try to find the node
-  /// that hosts [vRouteElement]
-  VRouteElementNode? getChildVRouteElementNode({
-    required VRouteElement vRouteElement,
-  }) {
-    // If this VRouteElementNode contains the given VRouteElement, return this
-    if (vRouteElement == this.vRouteElement) {
-      return this;
-    }
-
-    // Search if the VRouteElementNode containing the VRouteElement is in the nestedVRouteElementNode
-    if (nestedVRouteElementNode != null) {
-      VRouteElementNode? vRouteElementNode = nestedVRouteElementNode!
-          .getChildVRouteElementNode(vRouteElement: vRouteElement);
-      if (vRouteElementNode != null) {
-        return vRouteElementNode;
-      }
-    }
-
-    // Search if the VRouteElementNode containing the VRouteElement is in the stackedVRouteElementNode
-    if (stackedVRouteElementNode != null) {
-      VRouteElementNode? vRouteElementNode = stackedVRouteElementNode!
-          .getChildVRouteElementNode(vRouteElement: vRouteElement);
-      if (vRouteElementNode != null) {
-        return vRouteElementNode;
-      }
-    }
-
-    // If the VRouteElement was not find anywhere, return null
-    return null;
-  }
 }
 
 /// Part of [VRouteElement.buildRoute] that must be passed down but can be modified

@@ -15,5 +15,6 @@ export 'vroute_elements/vwidget.dart';
 export 'vroute_elements/vwidget_base.dart';
 
 export 'vroute_elements/vroute_element_single_subroute.dart';
+export 'vroute_elements/vroute_element_with_name.dart';
 export 'vroute_elements/void_vguard.dart';
 export 'vroute_elements/void_vpop_handler.dart';

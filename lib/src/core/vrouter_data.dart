@@ -37,6 +37,10 @@ abstract class VRouterData extends InheritedWidget {
   /// the "?" in the url) of the current url
   Map<String, String> get queryParameters;
 
+  /// A list of every names corresponding to the [VRouteElement]s in
+  /// the current stack
+  List<String> get names;
+
   /// See [VRouterState.push]
   void push(
     String newUrl, {

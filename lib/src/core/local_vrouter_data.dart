@@ -2,8 +2,10 @@ import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/core/vnavigator_observer.dart';
 import 'package:vrouter/src/core/vpop_data.dart';
 import 'package:vrouter/src/core/vroute_element.dart';
+import 'package:vrouter/src/core/vroute_element_node.dart';
 import 'package:vrouter/src/core/vrouter_data.dart';
 import 'package:vrouter/src/core/vrouter_delegate.dart';
+import 'package:vrouter/src/vrouter_widgets.dart';
 
 /// An [InheritedWidget] accessible via [VRouter.of(context)]
 ///
@@ -79,6 +81,10 @@ class LocalVRouterData extends VRouterData {
   /// Contains all query parameters (i.e. parameters after
   /// the "?" in the url) of the current url
   final Map<String, String> queryParameters;
+
+  /// A list of every names corresponding to the [VRouteElement]s in
+  /// the current stack
+  List<String> get names => VRouter.of(_context).names;
 
   /// Pushes the new route of the given url on top of the current one
   /// A path can be of one of two forms:

@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/core/vroute_element.dart';
+import 'package:vrouter/src/core/vroute_element_node.dart';
 import 'package:vrouter/src/core/vrouter_delegate.dart';
 
 /// A class which helps you in beforeLeave or beforeEnter functions

@@ -5,6 +5,7 @@ export 'core/extended_context.dart';
 export 'core/vredirector.dart';
 export 'core/vback_button_dispatcher.dart';
 export 'core/vroute_element.dart';
+export 'core/vroute_element_node.dart';
 export 'core/vroute_information_parser.dart';
 export 'core/vrouter_data.dart';
 export 'core/vrouter_delegate.dart';

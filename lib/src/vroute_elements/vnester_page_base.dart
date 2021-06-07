@@ -5,12 +5,14 @@ import 'package:vrouter/src/helpers/empty_page.dart';
 import 'package:vrouter/src/helpers/vrouter_helper.dart';
 import 'package:vrouter/src/vroute_elements/void_vguard.dart';
 import 'package:vrouter/src/vroute_elements/void_vpop_handler.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_with_name.dart';
 import 'package:vrouter/src/vrouter_core.dart';
 import 'package:vrouter/src/vrouter_widgets.dart';
 
 /// A [VRouteElement] similar to [VNester] but which allows you to specify your own page
 /// thanks to [pageBuilder]
-class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
+class VNesterPageBase extends VRouteElement
+    with VoidVGuard, VoidVPopHandler, VRouteElementWithName {
   /// A list of [VRouteElement] which widget will be accessible in [widgetBuilder]
   final List<VRouteElement> nestedRoutes;
 
@@ -174,9 +176,9 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
                           ),
                           heroController
                         ],
-                        backButtonDispatcher: ChildBackButtonDispatcher(
-                            Router.of(context).backButtonDispatcher!)
-                          ..takePriority(),
+                        backButtonDispatcher:
+                            ChildBackButtonDispatcher(Router.of(context).backButtonDispatcher!)
+                              ..takePriority(),
                         onPopPage: (_, data) {
                           // If something has been push be Navigator.push, pop it
                           if (_vNavigatorObserver.hasNavigator1Pushed) {
@@ -189,8 +191,8 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
                             vPopData = data;
                           } else {
                             vPopData = VPopData(
-                              elementToPop: nestedRouteVRoute!.vRouteElementNode
-                                  .getVRouteElementToPop(),
+                              elementToPop:
+                                  nestedRouteVRoute!.vRouteElementNode.getVRouteElementToPop(),
                               pathParameters: pathParameters,
                               queryParameters: {},
                               newHistoryState: {},
@@ -293,8 +295,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
                 values: [
                   OverlyPathParamsError(
                     pathParams: pathParameters.keys.toList(),
-                    expectedPathParams:
-                        parentPathResult.pathParameters.keys.toList(),
+                    expectedPathParams: parentPathResult.pathParameters.keys.toList(),
                   ),
                 ],
               ),
@@ -313,8 +314,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
               MissingPathParamsError(
                 pathParams: pathParameters.keys.toList(),
                 missingPathParams:
-                    (parentPathResult as PathParamsErrorNewParentPath)
-                        .pathParameters,
+                    (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
               ),
             ],
           ),
@@ -343,8 +343,8 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
     }
 
     // Else try to find a NullPathError
-    if (childNameResults.indexWhere(
-            (childNameResult) => childNameResult is NullPathErrorNameResult) !=
+    if (childNameResults
+            .indexWhere((childNameResult) => childNameResult is NullPathErrorNameResult) !=
         -1) {
       return NullPathErrorNameResult(name: nameToMatch);
     }
@@ -398,6 +398,15 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
 
         // If NOT PoppingPopResult, return the PathParamsPopErrors or the ValidPopResult as is
         if (!(childPopResult is PoppingPopResult)) {
+          // If it is ValidPopResult, add this name to the list of names if this has a name
+          if (childPopResult is ValidPopResult) {
+            return ValidPopResult(
+              path: childPopResult.path,
+              poppedVRouteElements: childPopResult.poppedVRouteElements,
+              names: (name != null ? [name!] : <String>[]) + childPopResult.names,
+            );
+          }
+
           return childPopResult;
         }
 
@@ -409,6 +418,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
           return ValidPopResult(
             path: parentPathResult.path,
             poppedVRouteElements: childPopResult.poppedVRouteElements + [this],
+            names: name != null ? [name!] : [],
           );
         }
 
@@ -420,8 +430,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
             MissingPathParamsError(
               pathParams: pathParameters.keys.toList(),
               missingPathParams:
-                  (parentPathResult as PathParamsErrorNewParentPath)
-                      .pathParameters,
+                  (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
             ),
           ],
         );
@@ -444,8 +453,7 @@ class VNesterPageBase extends VRouteElement with VoidVGuard, VoidVPopHandler {
 class VNestedObserverReporter extends NavigatorObserver {
   final List<NavigatorObserver> _navigatorObserversToReportTo;
 
-  VNestedObserverReporter(
-      {required List<NavigatorObserver> navigatorObserversToReportTo})
+  VNestedObserverReporter({required List<NavigatorObserver> navigatorObserversToReportTo})
       : _navigatorObserversToReportTo = navigatorObserversToReportTo;
 
   @override

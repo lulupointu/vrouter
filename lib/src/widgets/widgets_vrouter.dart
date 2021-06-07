@@ -587,6 +587,10 @@ class WidgetsVRouterState extends State<WidgetsVRouter> {
   /// the "?" in the url) of the current url
   Map<String, String> get queryParameters => vRouterDelegate.queryParameters;
 
+  /// A list of every names corresponding to the [VRouteElement]s in
+  /// the current stack
+  List<String> get names => vRouterDelegate.names;
+
   /// Starts a pop cycle
   ///
   /// Pop cycle:

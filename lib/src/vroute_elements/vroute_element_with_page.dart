@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/core/local_vrouter_data.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_with_name.dart';
 import 'package:vrouter/src/vrouter_core.dart';
 import 'package:vrouter/src/vrouter_widgets.dart';
 
@@ -9,7 +10,7 @@ import 'package:vrouter/src/vrouter_widgets.dart';
 ///   - Requiring attribute [widget]
 ///   - implementing [buildRoute] methods
 @immutable
-mixin VRouteElementWithPage on VRouteElement {
+mixin VRouteElementWithPage on VRouteElement implements VRouteElementWithName {
   List<VRouteElement> get stackedRoutes;
 
   /// The widget which will be displayed for the given [path]
