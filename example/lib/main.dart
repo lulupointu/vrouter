@@ -40,16 +40,24 @@ class ConnectedRoutes extends VRouteElementBuilder {
   List<VRouteElement> buildRoutes() {
     return [
       VNester(
-        path:
-            '/:username', // :username is a path parameter and can be any value
-        widgetBuilder: (child) => MyScaffold(child),
+        path: '/:username', // :username is a path parameter and can be any value
+        widgetBuilder: (child) => Builder(
+          // Simply use a Builder if you need the context
+          builder: (context) {
+            // We can use the names to get the index, this is sometimes preferred to parsing the url
+            final currentIndex = context.vRouter.names.contains(profile) ? 0 : 1;
+            return MyScaffold(child, currentIndex: currentIndex);
+          },
+        ),
         nestedRoutes: [
           VWidget(
             path: profile,
+            name: profile,
             widget: ProfileWidget(),
           ),
           VWidget(
             path: settings,
+            name: settings,
             widget: SettingsWidget(),
 
             // Custom transition
@@ -126,8 +134,9 @@ class _LoginWidgetState extends State<LoginWidget> {
 
 class MyScaffold extends StatelessWidget {
   final Widget child;
+  final int currentIndex;
 
-  const MyScaffold(this.child);
+  const MyScaffold(this.child, {required this.currentIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -136,19 +145,13 @@ class MyScaffold extends StatelessWidget {
         title: Text('You are connected'),
       ),
       bottomNavigationBar: BottomNavigationBar(
-        // We can access the url with VRouter.of(context).url
-        currentIndex:
-            (VRouter.of(context).url!.contains(ConnectedRoutes.profile))
-                ? 0
-                : 1,
+        currentIndex: currentIndex,
         items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline), label: 'Profile'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.info_outline), label: 'Info'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'Info'),
         ],
         onTap: (int index) {
-          // We can access this username via the local path parameters (stored in VRouteElement)
+          // We can access this username via the path parameters
           final username = VRouter.of(context).pathParameters['username']!;
           if (index == 0) {
             ConnectedRoutes.toProfile(context, username);
@@ -193,8 +196,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             children: [
               TextButton(
                 onPressed: () {
-                  VRouter.of(context)
-                      .replaceHistoryState({'count': '${count + 1}'});
+                  VRouter.of(context).replaceHistoryState({'count': '${count + 1}'});
                   setState(() => count++);
                 },
                 child: Container(
@@ -202,8 +204,7 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     borderRadius: BorderRadius.circular(50),
                     color: Colors.blueAccent,
                   ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                   child: Text(
                     'Your pressed this button $count times',
                     style: buttonTextStyle,
