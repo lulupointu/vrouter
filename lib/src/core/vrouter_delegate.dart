@@ -585,7 +585,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
 
     /// Remove any Navigator 1.0 push
     final navigator1PushCount = _vNavigatorObserver.navigator1PushCount;
-    for (var i = 0; i < navigator1PushCount; i++) navigatorKey.currentState!.pop();
+    for (var i = 0; i < navigator1PushCount; i++) navigatorKey.currentState?.pop();
 
     /// Leave if the url is external
     if (isUrlExternal) {
