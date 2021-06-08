@@ -10,8 +10,9 @@ class VNavigatorObserver extends NavigatorObserver {
   ///
   /// This is useful when calling pop or systemPop. Since when such a route exists,
   /// it should be popped and [VRouterDelegate.pop] should not.
-  bool get hasNavigator1Pushed =>
-      (navigator == null) ? false : _pushCount != (navigator!.widget.pages.length);
+  bool get hasNavigator1Pushed => (navigator == null)
+      ? false
+      : _pushCount != (navigator!.widget.pages.length);
 
   /// How much time Navigator.push was used in the context of this [navigator]
   ///

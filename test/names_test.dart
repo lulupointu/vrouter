@@ -89,11 +89,7 @@ main() {
                     },
                   ),
                 ),
-                VWidget(
-                  path: '/other',
-                  name: 'other',
-                  widget: Text('Other')
-                )
+                VWidget(path: '/other', name: 'other', widget: Text('Other'))
               ],
             ),
           ],
@@ -120,7 +116,7 @@ main() {
             VNester(
               path: '/settings',
               name: 'nester',
-              widgetBuilder: (child) =>  Builder(
+              widgetBuilder: (child) => Builder(
                 builder: (context) {
                   namesFromNester = context.vRouter.names;
                   return child;

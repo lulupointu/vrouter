@@ -40,12 +40,14 @@ class ConnectedRoutes extends VRouteElementBuilder {
   List<VRouteElement> buildRoutes() {
     return [
       VNester(
-        path: '/:username', // :username is a path parameter and can be any value
+        path:
+            '/:username', // :username is a path parameter and can be any value
         widgetBuilder: (child) => Builder(
           // Simply use a Builder if you need the context
           builder: (context) {
             // We can use the names to get the index, this is sometimes preferred to parsing the url
-            final currentIndex = context.vRouter.names.contains(profile) ? 0 : 1;
+            final currentIndex =
+                context.vRouter.names.contains(profile) ? 0 : 1;
             return MyScaffold(child, currentIndex: currentIndex);
           },
         ),
@@ -147,8 +149,10 @@ class MyScaffold extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'Info'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline), label: 'Profile'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.info_outline), label: 'Info'),
         ],
         onTap: (int index) {
           // We can access this username via the path parameters
@@ -196,7 +200,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             children: [
               TextButton(
                 onPressed: () {
-                  VRouter.of(context).replaceHistoryState({'count': '${count + 1}'});
+                  VRouter.of(context)
+                      .replaceHistoryState({'count': '${count + 1}'});
                   setState(() => count++);
                 },
                 child: Container(
@@ -204,7 +209,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     borderRadius: BorderRadius.circular(50),
                     color: Colors.blueAccent,
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                   child: Text(
                     'Your pressed this button $count times',
                     style: buttonTextStyle,

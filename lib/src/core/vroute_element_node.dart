@@ -50,16 +50,17 @@ class VRouteElementNode {
 
   /// Get the [VRouteElementNode] associated to the given [VRouteElement]
   /// returns null if the [VRouteElement] is not his nor in the stackedRoutes or the subroutes
-  VRouteElementNode? getVRouteElementNodeFromVRouteElement(VRouteElement vRouteElement) {
+  VRouteElementNode? getVRouteElementNodeFromVRouteElement(
+      VRouteElement vRouteElement) {
     if (vRouteElement == this.vRouteElement) return this;
     if (stackedVRouteElementNode != null) {
-      final vRouteElementNode =
-          stackedVRouteElementNode!.getVRouteElementNodeFromVRouteElement(vRouteElement);
+      final vRouteElementNode = stackedVRouteElementNode!
+          .getVRouteElementNodeFromVRouteElement(vRouteElement);
       if (vRouteElementNode != null) return vRouteElementNode;
     }
     if (nestedVRouteElementNode != null) {
-      final vRouteElementNode =
-          nestedVRouteElementNode!.getVRouteElementNodeFromVRouteElement(vRouteElement);
+      final vRouteElementNode = nestedVRouteElementNode!
+          .getVRouteElementNodeFromVRouteElement(vRouteElement);
       if (vRouteElementNode != null) return vRouteElementNode;
     }
     return null;
@@ -85,8 +86,8 @@ class VRouteElementNode {
 
     // Search if the VRouteElementNode containing the VRouteElement is in the nestedVRouteElementNode
     if (nestedVRouteElementNode != null) {
-      VRouteElementNode? vRouteElementNode =
-          nestedVRouteElementNode!.getChildVRouteElementNode(vRouteElement: vRouteElement);
+      VRouteElementNode? vRouteElementNode = nestedVRouteElementNode!
+          .getChildVRouteElementNode(vRouteElement: vRouteElement);
       if (vRouteElementNode != null) {
         return vRouteElementNode;
       }
@@ -94,8 +95,8 @@ class VRouteElementNode {
 
     // Search if the VRouteElementNode containing the VRouteElement is in the stackedVRouteElementNode
     if (stackedVRouteElementNode != null) {
-      VRouteElementNode? vRouteElementNode =
-          stackedVRouteElementNode!.getChildVRouteElementNode(vRouteElement: vRouteElement);
+      VRouteElementNode? vRouteElementNode = stackedVRouteElementNode!
+          .getChildVRouteElementNode(vRouteElement: vRouteElement);
       if (vRouteElementNode != null) {
         return vRouteElementNode;
       }
@@ -107,10 +108,12 @@ class VRouteElementNode {
 
   /// Gets the name from this [VRouteElementNode] and all the ones bellow
   List<String> getNames() {
-    final List<String> stackedNames =
-        stackedVRouteElementNode != null ? stackedVRouteElementNode!.getNames() : [];
-    final List<String> nestedNames =
-    nestedVRouteElementNode != null ? nestedVRouteElementNode!.getNames() : [];
+    final List<String> stackedNames = stackedVRouteElementNode != null
+        ? stackedVRouteElementNode!.getNames()
+        : [];
+    final List<String> nestedNames = nestedVRouteElementNode != null
+        ? nestedVRouteElementNode!.getNames()
+        : [];
     final String? name = (vRouteElement is VRouteElementWithName)
         ? (vRouteElement as VRouteElementWithName).name
         : null;
@@ -132,7 +135,6 @@ class VRouteElementNode {
     return stackedNames + nestedNames + ((name != null) ? [name] : []);
   }
 }
-
 
 // WIP: don't look :)
 // abstract class VRouteElementNodeBase {

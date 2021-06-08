@@ -65,8 +65,8 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
     }
 
     // If none where found, test if this [VRouteElement] can create a [VRoute]
-    final validParentVPathMatch =
-        (parentVPathMatch is ValidVPathMatch) && parentVPathMatch.remainingPath.isEmpty;
+    final validParentVPathMatch = (parentVPathMatch is ValidVPathMatch) &&
+        parentVPathMatch.remainingPath.isEmpty;
     if (!mustHaveSubRoutes && validParentVPathMatch) {
       return VRoute(
         vRouteElementNode: VRouteElementNode(
@@ -131,8 +131,8 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
     }
 
     // Else try to find a NullPathError
-    if (childNameResults
-            .indexWhere((childNameResult) => childNameResult is NullPathErrorNameResult) !=
+    if (childNameResults.indexWhere(
+            (childNameResult) => childNameResult is NullPathErrorNameResult) !=
         -1) {
       return NullPathErrorNameResult(name: nameToMatch);
     }
@@ -201,10 +201,10 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
           return ValidPopResult(
             path: parentPathResult.path,
             poppedVRouteElements: childPopResult.poppedVRouteElements,
-            names:
-                (this is VRouteElementWithName) && (this as VRouteElementWithName).name != null
-                    ? [(this as VRouteElementWithName).name!]
-                    : [],
+            names: (this is VRouteElementWithName) &&
+                    (this as VRouteElementWithName).name != null
+                ? [(this as VRouteElementWithName).name!]
+                : [],
           );
         }
 
@@ -216,7 +216,8 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
             MissingPathParamsError(
               pathParams: pathParameters.keys.toList(),
               missingPathParams:
-                  (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
+                  (parentPathResult as PathParamsErrorNewParentPath)
+                      .pathParameters,
             ),
           ],
         );
