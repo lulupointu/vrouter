@@ -4,8 +4,11 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.1.4+11\] - 08/06/2021.
+- 🛠️ : Showing then hiding `VNester.widgetBuilder` `child` no longer causes an error
+
 ## \[1.1.4+10\] - 07/06/2021.
-* 🛠️ : Not using `VNester.widgetBuilder` no longer causes an error
+* 🛠️ : Not using `VNester.widgetBuilder` `child` no longer causes an error
 * ✨ : `VRouter.of(context).names` can now be used to get every names present in the current routes stack
 
 ## \[1.1.4+9\] - 04/06/2021.
