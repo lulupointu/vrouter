@@ -26,7 +26,13 @@ class VRouterScope extends StatefulWidget {
   }) : super(key: key) {
     // Setup the url strategy (if hash, do nothing since it is the default)
     if (!_isUrlStrategySet && vRouterMode == VRouterModes.history) {
-      setPathUrlStrategy();
+
+      try {
+        setPathUrlStrategy();
+      } catch (e) {
+        print('WARNING: You tried to set the url strategy several time, this should never happen.\n'
+            'If a package that you use (other than VRouter) sets the url strategy, please use the other package.');
+      }
       _isUrlStrategySet = true;
     }
   }
