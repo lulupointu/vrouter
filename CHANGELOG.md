@@ -4,6 +4,9 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.1.4+13\] - 10/06/2021.
+- 🛠️ : Moving the use of a `context` outside of `addPostFrameCallback` to avoid error (yes again)
+
 ## \[1.1.4+12\] - 10/06/2021.
 - 🛠️ : Moving the use of a `context` outside of `addPostFrameCallback` to avoid error
 - ✨ : Improving the warning message if using several packages which all try to setup the url strategy
