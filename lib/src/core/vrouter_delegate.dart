@@ -182,6 +182,11 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   /// It is safe to be called multiple times but should not
   bool _isInitialized = false;
 
+  /// Represents information that should be longed lived and not be destroyed
+  ///
+  /// This should be gotten using context
+  late final VRouterScopeData _vRouterScope;
+
   /// Updates every state variables of [VRouter]
   ///
   /// Note that this does not call setState
@@ -213,8 +218,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       _vWidgetGuardMessagesRoot.remove(deactivatedVWidgetGuardMessageRoot);
 
     // Update VLocations
-    VRouterScope.of(_rootVRouterContext)
-        .vLocations
+    _vRouterScope.vLocations
         .setLocationAt(_serialCount, VRouteInformation(location: newUrl, state: historyState));
   }
 
@@ -601,22 +605,22 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       _doReportBackUrlToBrowser = false;
       _ignoreNextBrowserCalls = true;
       if (BrowserHelpers.getPathAndQuery(
-              routerMode: VRouterScope.of(_rootVRouterContext).vRouterMode) !=
+              routerMode: _vRouterScope.vRouterMode) !=
           newUri.toString()) {
         BrowserHelpers.pushReplacement(
           newUri.toString(),
-          routerMode: VRouterScope.of(_rootVRouterContext).vRouterMode,
+          routerMode: _vRouterScope.vRouterMode,
           state: jsonEncode({
             'serialCount': _serialCount,
             'historyState': jsonEncode(newHistoryState),
           }),
         );
         if (BrowserHelpers.getPathAndQuery(
-                routerMode: VRouterScope.of(_rootVRouterContext).vRouterMode) !=
+                routerMode: _vRouterScope.vRouterMode) !=
             newUri.toString()) {
           await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
               BrowserHelpers.getPathAndQuery(
-                  routerMode: VRouterScope.of(_rootVRouterContext).vRouterMode) ==
+                  routerMode: _vRouterScope.vRouterMode) ==
               newUri.toString());
         }
       }
@@ -1255,8 +1259,9 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
         !_isInitialized,
         'VRouterDelegate has already been initialized, it should not be initialized multiple times.'
         'Please check VRouterDelegate._isInitialized');
-    final vLocations = VRouterScope.of(context).vLocations;
+    _vRouterScope = VRouterScope.of(context);
 
+    final vLocations = _vRouterScope.vLocations;
     WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
       // When the app starts, get the serialCount. Default to 0.
       _serialCount = vLocations.serialCount;
@@ -1350,7 +1355,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     if (Platform.isWeb && _doReportBackUrlToBrowser) {
       BrowserHelpers.push(
         url!,
-        routerMode: VRouterScope.of(_rootVRouterContext).vRouterMode,
+        routerMode: _vRouterScope.vRouterMode,
         state: jsonEncode({
           'serialCount': _serialCount,
           'historyState': jsonEncode(historyState),

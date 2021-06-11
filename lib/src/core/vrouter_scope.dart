@@ -43,9 +43,9 @@ class VRouterScope extends StatefulWidget {
   _VRouterScopeState createState() =>
       _VRouterScopeState(vRouterMode: vRouterMode);
 
-  static _VRouterScopeData of(BuildContext context) {
-    _VRouterScopeData? vRouterScope =
-        context.dependOnInheritedWidgetOfExactType<_VRouterScopeData>();
+  static VRouterScopeData of(BuildContext context) {
+    VRouterScopeData? vRouterScope =
+        context.dependOnInheritedWidgetOfExactType<VRouterScopeData>();
 
     if (vRouterScope == null) {
       throw VRouterScopeNotFoundException(
@@ -67,7 +67,7 @@ class _VRouterScopeState extends State<VRouterScope> {
     try {
       VRouterScope.of(context);
     } on VRouterScopeNotFoundException {
-      return _VRouterScopeData(
+      return VRouterScopeData(
         child: widget.child,
         vRouterMode: widget.vRouterMode,
         vLocations: vLocations,
@@ -111,7 +111,7 @@ If you are using ...App.router with VRouterDelegate, make sure that you did not 
 ''';
 }
 
-class _VRouterScopeData extends InheritedWidget {
+class VRouterScopeData extends InheritedWidget {
   /// Two router mode are possible:
   ///    - "hash": This is the default, the url will be serverAddress/#/localUrl
   ///    - "history": This will display the url in the way we are used to, without
@@ -122,12 +122,12 @@ class _VRouterScopeData extends InheritedWidget {
   /// Stores the encountered location of the lifecycle of this app
   final VLocations vLocations;
 
-  _VRouterScopeData({
+  VRouterScopeData({
     required Widget child,
     required this.vRouterMode,
     required this.vLocations,
   }) : super(child: child);
 
   @override
-  bool updateShouldNotify(_VRouterScopeData old) => false;
+  bool updateShouldNotify(VRouterScopeData old) => false;
 }
