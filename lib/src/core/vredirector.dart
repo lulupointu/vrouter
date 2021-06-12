@@ -1,5 +1,4 @@
 import 'package:flutter/widgets.dart';
-import 'package:vrouter/src/core/vroute_element.dart';
 import 'package:vrouter/src/core/vroute_element_node.dart';
 import 'package:vrouter/src/core/vrouter_delegate.dart';
 
@@ -12,12 +11,11 @@ import 'package:vrouter/src/core/vrouter_delegate.dart';
 /// use VRouterData to do so.
 class VRedirector {
   VRedirector({
-    required BuildContext context,
     required this.from,
     required this.to,
     required this.previousVRouterData,
     required this.newVRouterData,
-  }) : _context = context;
+  });
 
   /// If [_shouldUpdate] is set to false, the current url updating is stopped
   ///
@@ -55,15 +53,17 @@ class VRedirector {
   ///   If you are in beforeEnter, you can't save an history state here
   final RootVRouterData? newVRouterData;
 
-  /// A context which gives us access to VRouter and the current VRoute
-  /// This is local because we don't want developers to use VRouterData to redirect
-  final BuildContext _context;
+  // /// A context which gives us access to VRouter and the current VRoute
+  // /// This is local because we don't want developers to use VRouterData to redirect
+  // final BuildContext _context;
 
   /// Function which will be executed after stopping the redirection
   /// if [push], [pushNamed], ... have been used.
-  void Function(VRouteElementNode vRouteElementNode)? _redirectFunction;
-  void Function(VRouteElementNode vRouteElementNode)? get redirectFunction =>
+  void Function({required BuildContext context, required VRouteElementNode vRouteElementNode})?
       _redirectFunction;
+
+  void Function({required BuildContext context, required VRouteElementNode vRouteElementNode})?
+      get redirectFunction => _redirectFunction;
 
   /// Stops the redirection
   ///
@@ -84,9 +84,11 @@ class VRedirector {
     Map<String, String> historyState = const {},
   }) {
     stopRedirection();
-    final vRouterData = RootVRouterData.of(_context);
-    _redirectFunction = (_) => vRouterData.push(newUrl,
-        queryParameters: queryParameters, historyState: historyState);
+    _redirectFunction = ({
+      required BuildContext context,
+      required VRouteElementNode vRouteElementNode,
+    }) =>
+        RootVRouterData.of(context).push(newUrl, queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Prevent the current redirection and push a new url based on url segments
@@ -104,12 +106,10 @@ class VRedirector {
     Map<String, String> historyState = const {},
   }) {
     // Forming the new url by encoding each segment and placing "/" between them
-    final newUrl =
-        segments.map((segment) => Uri.encodeComponent(segment)).join('/');
+    final newUrl = segments.map((segment) => Uri.encodeComponent(segment)).join('/');
 
     // Calling push with this newly formed url
-    return push('/$newUrl',
-        queryParameters: queryParameters, historyState: historyState);
+    return push('/$newUrl', queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Prevent the current redirection and pushNamed a route instead
@@ -122,11 +122,14 @@ class VRedirector {
     Map<String, String> historyState = const {},
   }) {
     stopRedirection();
-    final vRouterData = RootVRouterData.of(_context);
-    _redirectFunction = (_) => vRouterData.pushNamed(name,
-        pathParameters: pathParameters,
-        queryParameters: queryParameters,
-        historyState: historyState);
+    _redirectFunction = ({
+      required BuildContext context,
+      required VRouteElementNode vRouteElementNode,
+    }) =>
+        RootVRouterData.of(context).pushNamed(name,
+            pathParameters: pathParameters,
+            queryParameters: queryParameters,
+            historyState: historyState);
   }
 
   /// Prevent the current redirection and pushReplacement a route instead
@@ -138,9 +141,12 @@ class VRedirector {
     Map<String, String> historyState = const {},
   }) {
     stopRedirection();
-    final vRouterData = RootVRouterData.of(_context);
-    _redirectFunction = (_) => vRouterData.pushReplacement(newUrl,
-        queryParameters: queryParameters, historyState: historyState);
+    _redirectFunction = ({
+      required BuildContext context,
+      required VRouteElementNode vRouteElementNode,
+    }) =>
+        RootVRouterData.of(context).pushReplacement(newUrl,
+            queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Prevent the current redirection and pushReplacementNamed a route instead
@@ -153,8 +159,11 @@ class VRedirector {
     Map<String, String> historyState = const {},
   }) {
     stopRedirection();
-    final vRouterData = RootVRouterData.of(_context);
-    _redirectFunction = (_) => vRouterData.pushReplacementNamed(
+    _redirectFunction = ({
+      required BuildContext context,
+      required VRouteElementNode vRouteElementNode,
+    }) =>
+        RootVRouterData.of(context).pushReplacementNamed(
           name,
           pathParameters: pathParameters,
           queryParameters: queryParameters,
@@ -167,9 +176,11 @@ class VRedirector {
   /// See [VRouter.push] for more information on push
   void pushExternal(String newUrl, {bool openNewTab = false}) {
     stopRedirection();
-    final vRouterData = RootVRouterData.of(_context);
-    _redirectFunction =
-        (_) => vRouterData.pushExternal(newUrl, openNewTab: openNewTab);
+    _redirectFunction = ({
+      required BuildContext context,
+      required VRouteElementNode vRouteElementNode,
+    }) =>
+        RootVRouterData.of(context).pushExternal(newUrl, openNewTab: openNewTab);
   }
 
   /// Prevent the current redirection and call pop instead
@@ -181,14 +192,16 @@ class VRedirector {
     Map<String, String> newHistoryState = const {},
   }) {
     stopRedirection();
-    final vRouterData = RootVRouterData.of(_context);
-    _redirectFunction =
-        (VRouteElementNode vRouteElementNode) => vRouterData.popFromElement(
-              vRouteElementNode.getVRouteElementToPop(),
-              pathParameters: pathParameters,
-              queryParameters: queryParameters,
-              newHistoryState: newHistoryState,
-            );
+    _redirectFunction = ({
+      required BuildContext context,
+      required VRouteElementNode vRouteElementNode,
+    }) =>
+        RootVRouterData.of(context).popFromElement(
+          vRouteElementNode.getVRouteElementToPop(),
+          pathParameters: pathParameters,
+          queryParameters: queryParameters,
+          newHistoryState: newHistoryState,
+        );
   }
 
   /// Prevent the current redirection and call systemPop instead
@@ -200,9 +213,11 @@ class VRedirector {
     Map<String, String> newHistoryState = const {},
   }) async {
     stopRedirection();
-    final vRouterData = RootVRouterData.of(_context);
-    _redirectFunction = (VRouteElementNode vRouteElementNode) =>
-        vRouterData.systemPopFromElement(
+    _redirectFunction = ({
+      required BuildContext context,
+      required VRouteElementNode vRouteElementNode,
+    }) =>
+        RootVRouterData.of(context).systemPopFromElement(
           vRouteElementNode.getVRouteElementToPop(),
           pathParameters: pathParameters,
           queryParameters: queryParameters,
