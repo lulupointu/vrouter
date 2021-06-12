@@ -177,8 +177,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
   /// Whether this [VRouterDelegate] is initialized
   ///
   ///
-  /// It sets the [_rootVRouterContext] and deals between [initialUrl]
-  /// pushing OR deep linking
+  /// Deals between [initialUrl] pushing OR deep linking
   /// This is also used to pick up the url on hot restart for flutter web
   ///
   /// It is safe to be called multiple times but should not
