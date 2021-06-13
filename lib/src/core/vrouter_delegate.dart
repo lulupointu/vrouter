@@ -438,7 +438,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
           );
 
           vRedirector.redirectFunction?.call(
-            context: _rootVRouterContext,
+            vRouterDelegate: this,
             vRouteElementNode: _vRoute.vRouteElementNode.getChildVRouteElementNode(
                     vRouteElement: vWidgetGuardMessageRoot.associatedVRouteElement) ??
                 _vRoute.vRouteElementNode,
@@ -457,7 +457,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
             newSerialCount: newSerialCount,
           );
           vRedirector.redirectFunction?.call(
-            context: _rootVRouterContext,
+            vRouterDelegate: this,
             vRouteElementNode: _vRoute.vRouteElementNode
                     .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
                 _vRoute.vRouteElementNode,
@@ -475,7 +475,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
           newSerialCount: newSerialCount,
         );
         vRedirector.redirectFunction?.call(
-          context: _rootVRouterContext,
+          vRouterDelegate: this,
           vRouteElementNode: _vRoute.vRouteElementNode,
         );
         return;
@@ -492,7 +492,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
           newSerialCount: newSerialCount,
         );
         vRedirector.redirectFunction?.call(
-          context: _rootVRouterContext,
+          vRouterDelegate: this,
           vRouteElementNode: _vRoute.vRouteElementNode,
         );
         return;
@@ -508,7 +508,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
             newSerialCount: newSerialCount,
           );
           vRedirector.redirectFunction?.call(
-            context: _rootVRouterContext,
+            vRouterDelegate: this,
             vRouteElementNode: _vRoute.vRouteElementNode
                     .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
                 _vRoute.vRouteElementNode,
@@ -528,7 +528,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
           );
 
           vRedirector.redirectFunction?.call(
-            context: _rootVRouterContext,
+            vRouterDelegate: this,
             vRouteElementNode: _vRoute.vRouteElementNode.getChildVRouteElementNode(
                     vRouteElement: vWidgetGuardMessageRoot.associatedVRouteElement) ??
                 _vRoute.vRouteElementNode,
@@ -548,7 +548,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
           );
 
           vRedirector.redirectFunction?.call(
-            context: _rootVRouterContext,
+            vRouterDelegate: this,
             vRouteElementNode: _vRoute.vRouteElementNode
                     .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
                 _vRoute.vRouteElementNode,
@@ -770,7 +770,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       await vWidgetGuardMessageRoot.vWidgetGuard.onPop(vRedirector);
       if (!vRedirector.shouldUpdate) {
         vRedirector.redirectFunction?.call(
-          context: _rootVRouterContext,
+          vRouterDelegate: this,
           vRouteElementNode: _vRoute.vRouteElementNode.getChildVRouteElementNode(
                   vRouteElement: vWidgetGuardMessageRoot.associatedVRouteElement) ??
               _vRoute.vRouteElementNode,
@@ -784,7 +784,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       await vRouteElement.onPop(vRedirector);
       if (!vRedirector.shouldUpdate) {
         vRedirector.redirectFunction?.call(
-          context: _rootVRouterContext,
+          vRouterDelegate: this,
           vRouteElementNode: _vRoute.vRouteElementNode
                   .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
               _vRoute.vRouteElementNode,
@@ -797,7 +797,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     await _rootVRouter.onPop(vRedirector);
     if (!vRedirector.shouldUpdate) {
       vRedirector.redirectFunction?.call(
-        context: _rootVRouterContext,
+        vRouterDelegate: this,
         vRouteElementNode:
             _vRoute.vRouteElementNode.getChildVRouteElementNode(vRouteElement: _rootVRouter) ??
                 _vRoute.vRouteElementNode,
@@ -849,7 +849,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       }
       if (!vRedirector.shouldUpdate) {
         vRedirector.redirectFunction?.call(
-          context: _rootVRouterContext,
+          vRouterDelegate: this,
           vRouteElementNode: _vRoute.vRouteElementNode.getChildVRouteElementNode(
                   vRouteElement: vWidgetGuardMessageRoot.associatedVRouteElement) ??
               _vRoute.vRouteElementNode,
@@ -867,7 +867,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       }
       if (!vRedirector.shouldUpdate) {
         vRedirector.redirectFunction?.call(
-          context: _rootVRouterContext,
+          vRouterDelegate: this,
           vRouteElementNode: _vRoute.vRouteElementNode
                   .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
               _vRoute.vRouteElementNode,
@@ -884,7 +884,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     }
     if (!vRedirector.shouldUpdate) {
       vRedirector.redirectFunction?.call(
-        context: _rootVRouterContext,
+        vRouterDelegate: this,
         vRouteElementNode:
             _vRoute.vRouteElementNode.getChildVRouteElementNode(vRouteElement: _rootVRouter) ??
                 _vRoute.vRouteElementNode,

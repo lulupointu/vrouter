@@ -1,4 +1,5 @@
 import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/core/vpop_data.dart';
 import 'package:vrouter/src/core/vroute_element_node.dart';
 import 'package:vrouter/src/core/vrouter_delegate.dart';
 
@@ -59,10 +60,10 @@ class VRedirector {
 
   /// Function which will be executed after stopping the redirection
   /// if [push], [pushNamed], ... have been used.
-  void Function({required BuildContext context, required VRouteElementNode vRouteElementNode})?
+  void Function({required VRouterDelegate vRouterDelegate, required VRouteElementNode vRouteElementNode})?
       _redirectFunction;
 
-  void Function({required BuildContext context, required VRouteElementNode vRouteElementNode})?
+  void Function({required VRouterDelegate vRouterDelegate, required VRouteElementNode vRouteElementNode})?
       get redirectFunction => _redirectFunction;
 
   /// Stops the redirection
@@ -85,10 +86,10 @@ class VRedirector {
   }) {
     stopRedirection();
     _redirectFunction = ({
-      required BuildContext context,
+      required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode,
     }) =>
-        RootVRouterData.of(context).push(newUrl, queryParameters: queryParameters, historyState: historyState);
+        vRouterDelegate.push(newUrl, queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Prevent the current redirection and push a new url based on url segments
@@ -123,10 +124,10 @@ class VRedirector {
   }) {
     stopRedirection();
     _redirectFunction = ({
-      required BuildContext context,
+      required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode,
     }) =>
-        RootVRouterData.of(context).pushNamed(name,
+        vRouterDelegate.pushNamed(name,
             pathParameters: pathParameters,
             queryParameters: queryParameters,
             historyState: historyState);
@@ -142,10 +143,10 @@ class VRedirector {
   }) {
     stopRedirection();
     _redirectFunction = ({
-      required BuildContext context,
+      required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode,
     }) =>
-        RootVRouterData.of(context).pushReplacement(newUrl,
+        vRouterDelegate.pushReplacement(newUrl,
             queryParameters: queryParameters, historyState: historyState);
   }
 
@@ -160,10 +161,10 @@ class VRedirector {
   }) {
     stopRedirection();
     _redirectFunction = ({
-      required BuildContext context,
+      required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode,
     }) =>
-        RootVRouterData.of(context).pushReplacementNamed(
+        vRouterDelegate.pushReplacementNamed(
           name,
           pathParameters: pathParameters,
           queryParameters: queryParameters,
@@ -177,10 +178,10 @@ class VRedirector {
   void pushExternal(String newUrl, {bool openNewTab = false}) {
     stopRedirection();
     _redirectFunction = ({
-      required BuildContext context,
+      required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode,
     }) =>
-        RootVRouterData.of(context).pushExternal(newUrl, openNewTab: openNewTab);
+        vRouterDelegate.pushExternal(newUrl, openNewTab: openNewTab);
   }
 
   /// Prevent the current redirection and call pop instead
@@ -193,14 +194,19 @@ class VRedirector {
   }) {
     stopRedirection();
     _redirectFunction = ({
-      required BuildContext context,
+      required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode,
     }) =>
-        RootVRouterData.of(context).popFromElement(
-          vRouteElementNode.getVRouteElementToPop(),
-          pathParameters: pathParameters,
-          queryParameters: queryParameters,
-          newHistoryState: newHistoryState,
+        vRouterDelegate.navigatorKey.currentState!.pop(
+          VPopData(
+            elementToPop: vRouteElementNode.getVRouteElementToPop(),
+            pathParameters: {
+              ...pathParameters,
+              ...vRouterDelegate.pathParameters, // Include the previous path parameters when popping
+            },
+            queryParameters: queryParameters,
+            newHistoryState: newHistoryState,
+          ),
         );
   }
 
@@ -214,11 +220,11 @@ class VRedirector {
   }) async {
     stopRedirection();
     _redirectFunction = ({
-      required BuildContext context,
+      required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode,
     }) =>
-        RootVRouterData.of(context).systemPopFromElement(
-          vRouteElementNode.getVRouteElementToPop(),
+        vRouterDelegate.systemPop(
+          // vRouteElementNode.getVRouteElementToPop(),
           pathParameters: pathParameters,
           queryParameters: queryParameters,
           newHistoryState: newHistoryState,
