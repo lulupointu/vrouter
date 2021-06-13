@@ -1292,37 +1292,35 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     _vRouterScope = VRouterScope.of(context);
 
     final vLocations = _vRouterScope.vLocations;
-    WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((timeStamp) {
-      // When the app starts, get the serialCount. Default to 0.
-      _serialCount = vLocations.serialCount;
+    // When the app starts, get the serialCount. Default to 0.
+    _serialCount = vLocations.serialCount;
 
+    // Check if this is the first route
+    if (_serialCount == 0) {
       // Check if this is the first route
-      if (_serialCount == 0) {
-        // Check if this is the first route
 
-        if (vLocations.currentLocation.location != '' &&
-            vLocations.currentLocation.location != '/') {
-          // Is this '' or '/' ? Both seem to appear from time to time
-          // If we are deep-linking, just deep-link
-          pushReplacement(vLocations.currentLocation.location);
-        } else {
-          // Else go to [initialUrl]
-          pushReplacement(initialUrl);
-        }
+      if (vLocations.currentLocation.location != '' &&
+          vLocations.currentLocation.location != '/') {
+        // Is this '' or '/' ? Both seem to appear from time to time
+        // If we are deep-linking, just deep-link
+        pushReplacement(vLocations.currentLocation.location);
       } else {
-        // This happens when VRouter is rebuilt, either because:
-        //   - The entire app has been rebuilt
-        //   - VRouter key changed
-        // In this case we use _vLocations to get the current location
-        final currentLocation =
-            (vLocations.currentLocation.location.startsWith('/') ? '' : '/ ') +
-                vLocations.currentLocation.location;
-        pushReplacement(
-          currentLocation,
-          historyState: vLocations.currentLocation.state,
-        );
+        // Else go to [initialUrl]
+        pushReplacement(initialUrl);
       }
-    });
+    } else {
+      // This happens when VRouter is rebuilt, either because:
+      //   - The entire app has been rebuilt
+      //   - VRouter key changed
+      // In this case we use _vLocations to get the current location
+      final currentLocation =
+          (vLocations.currentLocation.location.startsWith('/') ? '' : '/ ') +
+              vLocations.currentLocation.location;
+      pushReplacement(
+        currentLocation,
+        historyState: vLocations.currentLocation.state,
+      );
+    }
 
     _isInitialized = true;
   }
