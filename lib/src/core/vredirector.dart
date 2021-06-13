@@ -60,10 +60,13 @@ class VRedirector {
 
   /// Function which will be executed after stopping the redirection
   /// if [push], [pushNamed], ... have been used.
-  void Function({required VRouterDelegate vRouterDelegate, required VRouteElementNode vRouteElementNode})?
-      _redirectFunction;
+  void Function(
+      {required VRouterDelegate vRouterDelegate,
+      required VRouteElementNode vRouteElementNode})? _redirectFunction;
 
-  void Function({required VRouterDelegate vRouterDelegate, required VRouteElementNode vRouteElementNode})?
+  void Function(
+          {required VRouterDelegate vRouterDelegate,
+          required VRouteElementNode vRouteElementNode})?
       get redirectFunction => _redirectFunction;
 
   /// Stops the redirection
@@ -89,7 +92,8 @@ class VRedirector {
       required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode,
     }) =>
-        vRouterDelegate.push(newUrl, queryParameters: queryParameters, historyState: historyState);
+        vRouterDelegate.push(newUrl,
+            queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Prevent the current redirection and push a new url based on url segments
@@ -107,10 +111,12 @@ class VRedirector {
     Map<String, String> historyState = const {},
   }) {
     // Forming the new url by encoding each segment and placing "/" between them
-    final newUrl = segments.map((segment) => Uri.encodeComponent(segment)).join('/');
+    final newUrl =
+        segments.map((segment) => Uri.encodeComponent(segment)).join('/');
 
     // Calling push with this newly formed url
-    return push('/$newUrl', queryParameters: queryParameters, historyState: historyState);
+    return push('/$newUrl',
+        queryParameters: queryParameters, historyState: historyState);
   }
 
   /// Prevent the current redirection and pushNamed a route instead
@@ -202,7 +208,8 @@ class VRedirector {
             elementToPop: vRouteElementNode.getVRouteElementToPop(),
             pathParameters: {
               ...pathParameters,
-              ...vRouterDelegate.pathParameters, // Include the previous path parameters when popping
+              ...vRouterDelegate
+                  .pathParameters, // Include the previous path parameters when popping
             },
             queryParameters: queryParameters,
             newHistoryState: newHistoryState,
