@@ -3,3 +3,5 @@
 // TODO: Add debug logs
 // TODO: Add docs about ...app.router
 // TODO: Update example to use names
+// TODO: Add example of stackedRoutes
+// TODO: Add documentation: stackedRoutes vs nestedRoutes
