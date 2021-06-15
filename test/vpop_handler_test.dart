@@ -301,4 +301,50 @@ main() {
       expect(vWidget2Finder, findsOneWidget);
     });
   });
+
+  testWidgets('VPopHandler pop on error stopped', (WidgetTester tester) async {
+    final vRouterKey = GlobalKey<VRouterState>();
+
+    await tester.pumpWidget(
+      VRouter(
+        key: vRouterKey,
+        routes: [
+          VWidget(
+            path: '/:id', // Popping here with no pathParams will yield an error
+            widget: Text('VWidget1'),
+            stackedRoutes: [
+              VPopHandler(
+                onPop: (vRedirector) async => vRedirector.stopRedirection(),
+                stackedRoutes: [
+                  VWidget(
+                    path: '/',
+                    widget: Text('VWidget2'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    await tester.pumpAndSettle();
+
+    // At first we are on "/" so only VWidget2 should be shown
+
+    final vWidget1Finder = find.text('VWidget1');
+    final vWidget2Finder = find.text('VWidget2');
+
+    expect(vWidget1Finder, findsNothing);
+    expect(vWidget2Finder, findsOneWidget);
+
+    // Try to pop
+    // Tap the add button.
+    vRouterKey.currentState!.pop();
+    await tester.pumpAndSettle();
+
+    // pop should have been prevented, to VWidget2 should still be visible
+    expect(vWidget1Finder, findsNothing);
+    expect(vWidget2Finder, findsOneWidget);
+  });
 }

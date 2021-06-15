@@ -194,13 +194,15 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
         }
 
         // If we should NOT pop with the VRouteElement to pop
-        // Check whether the parentPathResult is valid or not
 
+        final poppedVRouteElements = childPopResult.poppedVRouteElements;
+
+        // Check whether the parentPathResult is valid or not
         if (parentPathResult is ValidParentPathResult) {
           // If parentPathResult is valid, return a ValidPopResult with the right path
           return ValidPopResult(
             path: parentPathResult.path,
-            poppedVRouteElements: childPopResult.poppedVRouteElements,
+            poppedVRouteElements: poppedVRouteElements,
             names: (this is VRouteElementWithName) &&
                     (this as VRouteElementWithName).name != null
                 ? [(this as VRouteElementWithName).name!]
@@ -212,6 +214,7 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
         // being valid
         assert(parentPathResult is PathParamsErrorNewParentPath);
         return PathParamsPopErrors(
+          poppedVRouteElements: poppedVRouteElements,
           values: [
             MissingPathParamsError(
               pathParams: pathParameters.keys.toList(),

@@ -414,13 +414,15 @@ class VNesterPageBase extends VRouteElement
         }
 
         // We should NOT pop with the VRouteElement to pop
-        // Check whether the parentPathResult is valid or not
 
+        final poppedVRouteElements = childPopResult.poppedVRouteElements + [this];
+
+        // Check whether the parentPathResult is valid or not
         if (parentPathResult is ValidParentPathResult) {
           // If parentPathResult is valid, return a ValidPopResult with the right path
           return ValidPopResult(
             path: parentPathResult.path,
-            poppedVRouteElements: childPopResult.poppedVRouteElements + [this],
+            poppedVRouteElements: poppedVRouteElements,
             names: name != null ? [name!] : [],
           );
         }
@@ -429,6 +431,7 @@ class VNesterPageBase extends VRouteElement
         // being valid
         assert(parentPathResult is PathParamsErrorNewParentPath);
         return PathParamsPopErrors(
+          poppedVRouteElements: poppedVRouteElements,
           values: [
             MissingPathParamsError(
               pathParams: pathParameters.keys.toList(),

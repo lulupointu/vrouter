@@ -245,11 +245,14 @@ class NotFoundPopResult extends ErrorPopResult {
 
 /// Return from [VRouteElement.getPathFromPop] if the [VRouteElement] to pop was
 /// found but the deduced path is not valid due to missing path parameters
-class PathParamsPopErrors extends ErrorPopResult {
+class PathParamsPopErrors extends ErrorPopResult implements FoundPopResult {
   final List<MissingPathParamsError> values;
+  @override
+  List<VRouteElement> poppedVRouteElements;
 
   PathParamsPopErrors({
     required this.values,
+    required this.poppedVRouteElements,
   });
 
   @override
@@ -260,6 +263,7 @@ class PathParamsPopErrors extends ErrorPopResult {
         for (var value in values)
           '  - Expected path parameters: ${value.pathParams}, missing ones: ${value.missingPathParams}'
       ].join('\n');
+
 }
 
 /// Return type of [VRouteElement.getPathFromName]
