@@ -4,8 +4,11 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
-## \[1.1.4+14\] - 15/06/2021.
+## \[1.1.4+15\] - 15/06/2021.
 - 🛠️ : Delaying pop errors so that `VPopHandler` can redirect or stop the pop before the error
+- 🛠️ : Moving the use of a `context` outside of a callback (again)
+
+## \[1.1.4+14\] - 12/06/2021.
 - 🛠️ : Moving the use of a `context` outside of a callback
 
 ## \[1.1.4+13\] - 10/06/2021.
