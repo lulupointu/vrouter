@@ -6,7 +6,7 @@
 
 ## \[1.1.4+15\] - 15/06/2021.
 - 🛠️ : Delaying pop errors so that `VPopHandler` can redirect or stop the pop before the error
-- 🛠️ : Moving the use of a `context` outside of a callback (again)
+- 🛠️ : Computing the route on the first frame instead of delaying it
 
 ## \[1.1.4+14\] - 12/06/2021.
 - 🛠️ : Moving the use of a `context` outside of a callback
