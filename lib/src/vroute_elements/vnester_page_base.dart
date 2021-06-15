@@ -415,7 +415,8 @@ class VNesterPageBase extends VRouteElement
 
         // We should NOT pop with the VRouteElement to pop
 
-        final poppedVRouteElements = childPopResult.poppedVRouteElements + [this];
+        final poppedVRouteElements =
+            childPopResult.poppedVRouteElements + [this];
 
         // Check whether the parentPathResult is valid or not
         if (parentPathResult is ValidParentPathResult) {

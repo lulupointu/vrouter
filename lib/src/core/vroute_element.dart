@@ -263,7 +263,6 @@ class PathParamsPopErrors extends ErrorPopResult implements FoundPopResult {
         for (var value in values)
           '  - Expected path parameters: ${value.pathParams}, missing ones: ${value.missingPathParams}'
       ].join('\n');
-
 }
 
 /// Return type of [VRouteElement.getPathFromName]
