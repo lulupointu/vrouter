@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:vrouter/src/helpers/vpage.dart';
 import 'package:vrouter/src/vroute_elements/vnester_page_base.dart';
 import 'package:vrouter/src/vroute_elements/vroute_element_builder.dart';
 import 'package:vrouter/src/vrouter_core.dart';
+import 'package:vrouter/src/vrouter_helpers.dart';
 
 /// A [VRouteElement] which enable nesting
 ///

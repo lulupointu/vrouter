@@ -1,8 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'package:vrouter/src/helpers/vpage.dart';
 import 'package:vrouter/src/vroute_elements/vpage_base.dart';
 import 'package:vrouter/src/vroute_elements/vroute_element_builder.dart';
 import 'package:vrouter/src/vrouter_core.dart';
+import 'package:vrouter/src/vrouter_helpers.dart';
 
 class VWidgetBase extends VRouteElementBuilder {
   /// A list of routes which:
