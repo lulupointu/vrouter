@@ -40,9 +40,8 @@ class VMaterialPage<T> extends MaterialPage<T> implements VDefaultPage<T> {
   /// If this is null, the default transition is the one of the [VRouter]
   /// If the one of the [VRouter] is also null, the default transition is
   /// the one of a [MaterialPage]
-  final Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
-      buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child)? buildTransition;
 
   @override
   final bool fullscreenDialog;
@@ -59,8 +58,8 @@ class VMaterialPage<T> extends MaterialPage<T> implements VDefaultPage<T> {
 
   @override
   Route<T> createRoute(BuildContext context) {
-    final transitionDuration =
-        this.transitionDuration ?? RootVRouterData.of(context).defaultPageTransitionDuration;
+    final transitionDuration = this.transitionDuration ??
+        RootVRouterData.of(context).defaultPageTransitionDuration;
     final reverseTransitionDuration = this.reverseTransitionDuration ??
         RootVRouterData.of(context).defaultPageReverseTransitionDuration;
 
@@ -113,7 +112,8 @@ class _VPageBasedMaterialPageRoute<T> extends PageRoute<T>
     required MaterialPage<T> page,
     required Duration? transitionDuration,
     required Duration? reverseTransitionDuration,
-  })  : this.transitionDuration = transitionDuration ?? const Duration(milliseconds: 400),
+  })   : this.transitionDuration =
+            transitionDuration ?? const Duration(milliseconds: 400),
         this.reverseTransitionDuration =
             reverseTransitionDuration ?? const Duration(milliseconds: 400),
         super(settings: page) {
