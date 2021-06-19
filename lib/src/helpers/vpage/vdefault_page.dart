@@ -78,7 +78,7 @@ abstract class VDefaultPage<T> extends Page<T> {
     Duration? reverseTransitionDuration,
     bool fullscreenDialog = false,
   }) =>
-      (!Platform.isWeb && Platform.isIOS)
+      Platform.isIOS
           ? VCupertinoPage<T>(
         key: key,
         child: child,
