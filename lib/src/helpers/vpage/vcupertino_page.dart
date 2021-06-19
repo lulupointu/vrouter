@@ -40,9 +40,8 @@ class VCupertinoPage<T> extends CupertinoPage<T> implements VDefaultPage<T> {
   /// If this is null, the default transition is the one of the [VRouter]
   /// If the one of the [VRouter] is also null, the default transition is
   /// the one of a [MaterialPage]
-  final Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
-      buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child)? buildTransition;
 
   @override
   final bool fullscreenDialog;
@@ -70,8 +69,8 @@ class VCupertinoPage<T> extends CupertinoPage<T> implements VDefaultPage<T> {
           secondaryAnimation,
           child,
         ),
-        transitionDuration:
-            transitionDuration ?? RootVRouterData.of(context).defaultPageTransitionDuration,
+        transitionDuration: transitionDuration ??
+            RootVRouterData.of(context).defaultPageTransitionDuration,
         reverseTransitionDuration: reverseTransitionDuration ??
             RootVRouterData.of(context).defaultPageReverseTransitionDuration,
       );
@@ -86,7 +85,8 @@ class VCupertinoPage<T> extends CupertinoPage<T> implements VDefaultPage<T> {
           secondaryAnimation,
           child,
         ),
-        transitionDuration: RootVRouterData.of(context).defaultPageTransitionDuration,
+        transitionDuration:
+            RootVRouterData.of(context).defaultPageTransitionDuration,
         reverseTransitionDuration:
             RootVRouterData.of(context).defaultPageReverseTransitionDuration,
       );

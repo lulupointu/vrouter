@@ -7,8 +7,7 @@ import 'package:vrouter/src/vrouter_core.dart';
 ///
 /// This is a normal material page except that it allows for
 /// custom transitions easily.
-class VMaterialPage<T> extends MaterialPage<T>
-    implements VDefaultPage<T> {
+class VMaterialPage<T> extends MaterialPage<T> implements VDefaultPage<T> {
   /// The child of this page
   @override
   final Widget child;
@@ -64,12 +63,12 @@ class VMaterialPage<T> extends MaterialPage<T>
       return VPageRoute<T>(
         page: this,
         customTransition: (_, Animation<double> animation,
-            Animation<double> secondaryAnimation, Widget child) =>
+                Animation<double> secondaryAnimation, Widget child) =>
             buildTransition!(
-              animation,
-              secondaryAnimation,
-              child,
-            ),
+          animation,
+          secondaryAnimation,
+          child,
+        ),
         transitionDuration: transitionDuration,
         reverseTransitionDuration: reverseTransitionDuration,
       );
@@ -78,16 +77,16 @@ class VMaterialPage<T> extends MaterialPage<T>
       return VPageRoute<T>(
         page: this,
         customTransition: (_, Animation<double> animation,
-            Animation<double> secondaryAnimation, Widget child) =>
+                Animation<double> secondaryAnimation, Widget child) =>
             RootVRouterData.of(context).defaultPageBuildTransition!(
-              animation,
-              secondaryAnimation,
-              child,
-            ),
+          animation,
+          secondaryAnimation,
+          child,
+        ),
         transitionDuration:
-        RootVRouterData.of(context).defaultPageTransitionDuration,
+            RootVRouterData.of(context).defaultPageTransitionDuration,
         reverseTransitionDuration:
-        RootVRouterData.of(context).defaultPageReverseTransitionDuration,
+            RootVRouterData.of(context).defaultPageReverseTransitionDuration,
       );
     }
 
