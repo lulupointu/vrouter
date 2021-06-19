@@ -4,6 +4,9 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.1.4+16\] - 19/06/2021.
+- 🛠️ : Having a base path for a webapp is now supported. Don't forget to do https://flutter.dev/docs/development/ui/navigation/url-strategies#hosting-a-flutter-app-at-a-non-root-location (not VRouter specific). (Should fix https://github.com/lulupointu/vrouter/issues/101)
+
 ## \[1.1.4+15\] - 15/06/2021.
 - 🛠️ : Delaying pop errors so that `VPopHandler` can redirect or stop the pop before the error
 - 🛠️ : Computing the route on the first frame instead of delaying it

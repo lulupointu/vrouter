@@ -19,8 +19,7 @@ class BrowserHelpers {
   /// This is needed to allow path restoration on hot reload on flutter web
   static void resetFlutterSerialCount() {
     var globalState = html.window.history.state;
-    globalState['serialCount'] =
-        0; // Reset to 0 to avoid issues with flutter hot reload
+    globalState['serialCount'] = 0; // Reset to 0 to avoid issues with flutter hot reload
     html.window.history.replaceState(globalState, 'flutter', null);
   }
 
@@ -31,8 +30,7 @@ class BrowserHelpers {
   static void replaceHistoryState(String state) {
     var globalState = html.window.history.state;
     globalState['state'] = state;
-    globalState['serialCount'] =
-        0; // Reset to 0 to avoid issues with flutter hot reload
+    globalState['serialCount'] = 0; // Reset to 0 to avoid issues with flutter hot reload
     html.window.history.replaceState(globalState, 'flutter', null);
   }
 
@@ -43,8 +41,7 @@ class BrowserHelpers {
     }
     String? historyState;
     try {
-      historyState =
-          jsonDecode(html.window.history.state['state'] ?? '{}')['state'];
+      historyState = jsonDecode(html.window.history.state['state'] ?? '{}')['state'];
       // ignore: empty_catches
     } on FormatException {} on TypeError {
       /// Catch and fix error with flutter sdk, see https://github.com/flutter/flutter/issues/78620
@@ -62,8 +59,7 @@ class BrowserHelpers {
     }
     int? newSerialCount;
     try {
-      newSerialCount =
-          jsonDecode(html.window.history.state['state'] ?? '{}')['serialCount'];
+      newSerialCount = jsonDecode(html.window.history.state['state'] ?? '{}')['serialCount'];
       // ignore: empty_catches
     } on FormatException {} on TypeError {
       /// Catch and fix error with flutter sdk, see https://github.com/flutter/flutter/issues/78620
@@ -74,37 +70,45 @@ class BrowserHelpers {
 
   /// Gets every part of the url apart from the hostname
   /// If we are in hash mode, we remove the # as well
+  /// Always starts with '/'
   ///
   /// Note that this is the url of the browser, which might not be always
   /// in sync with [VRouterData.url]
   static String getPathAndQuery({required VRouterModes routerMode}) {
-    return (routerMode == VRouterModes.hash)
-        ? html.window.location.hash.isEmpty
-            ? html.window.location.hash
-            : html.window.location.hash.substring(1)
-        : ((html.window.location.pathname ?? '') +
-            (html.window.location.search ?? '') +
-            html.window.location.hash);
+    // If the mode is hash, it's easy we just take whatever is after the hash
+    if (routerMode == VRouterModes.hash) {
+      return html.window.location.hash.isEmpty ? '' : html.window.location.hash.substring(1);
+    }
+
+    // else, we have to be careful with the basePath
+
+    // Get the entire url (http...)
+    final entireUrl = _getEntireUrl();
+
+    // Remove the basePath
+    final basePath = _getBasePath();
+    final pathAndQuery = (basePath.length < entireUrl.length) // This might happen during first app startup
+        ? entireUrl.substring(basePath.length)
+        : '';
+
+    return pathAndQuery.startsWith('/') ? pathAndQuery : '/$pathAndQuery';
   }
 
   /// Allows us to tell the browser to navigate in the browser history
   static void browserGo(int delta) => html.window.history.go(delta);
 
   /// Fires an event when the url changes
-  static Stream<html.PopStateEvent> get onBrowserPopState =>
-      html.window.onPopState;
+  static Stream<html.PopStateEvent> get onBrowserPopState => html.window.onPopState;
 
   /// Fires an event when a page will be unloaded
   ///
   /// This mainly occurs when a user types a url in the browser on closes the browser
-  static Stream<html.Event> get onBrowserBeforeUnload =>
-      html.window.onBeforeUnload;
+  static Stream<html.Event> get onBrowserBeforeUnload => html.window.onBeforeUnload;
 
   /// Pushes a url which is from another website
   ///
   /// If [openNewTab] is true, this url in opened in a new tab
-  static Future<void> pushExternal(String url,
-      {required bool openNewTab}) async {
+  static Future<void> pushExternal(String url, {required bool openNewTab}) async {
     final targetUrl = url.startsWith('http') ? url : 'http://$url';
     if (openNewTab) {
       html.window.open(targetUrl, '_blank');
@@ -122,10 +126,14 @@ class BrowserHelpers {
   }) {
     var globalState = html.window.history.state;
     globalState['state'] = state;
-    globalState['serialCount'] =
-        0; // Reset to 0 to avoid issues with flutter hot reload
+    globalState['serialCount'] = 0; // Reset to 0 to avoid issues with flutter hot reload
     html.window.history.replaceState(
-        globalState, "", (routerMode == VRouterModes.hash) ? '/#$url' : url);
+      globalState,
+      "",
+      (html.document.getElementsByTagName('base')[0].baseUri ?? '/') +
+          ((routerMode == VRouterModes.hash) ? '#/' : '') +
+          (url.startsWith('/') ? url.substring(1) : url),
+    );
   }
 
   /// This pushes a url to the browser
@@ -142,9 +150,22 @@ class BrowserHelpers {
   }) {
     var globalState = html.window.history.state;
     globalState['state'] = state ?? '';
-    globalState['serialCount'] =
-        0; // Reset to 0 to avoid issues with flutter hot reload
+    globalState['serialCount'] = 0; // Reset to 0 to avoid issues with flutter hot reload
     html.window.history.pushState(
-        globalState, "", (routerMode == VRouterModes.hash) ? '/#$url' : url);
+      globalState,
+      "",
+      _getBasePath() +
+          ((routerMode == VRouterModes.hash) ? '#/' : '') +
+          (url.startsWith('/') ? url.substring(1) : url),
+    );
   }
+
+  /// Returns the base path (ending with a '/')
+  ///
+  /// The base path is:
+  ///   protocol + '//' + host + basePath (uri from the first <base> tag)
+  static String _getBasePath() => html.document.getElementsByTagName('base')[0].baseUri ?? '/';
+
+  /// Returns the entire url
+  static String _getEntireUrl() => html.window.location.href;
 }
