@@ -132,17 +132,24 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
   /// The child of this widget
   ///
   /// This will contain the navigator etc.
+  ///
+  ///
+  /// When the app starts it contains nothing so we put a dummy value
+  /// All the remaining times, we use [VRouterScope.vRoute] since this
+  /// will stand even a refresh
   //
   // When the app starts, before we process the '/' route, we display
   // nothing.
   // Ideally this should never be needed, or replaced with a splash screen
   // Should we add the option ?
-  late VRoute _vRoute = VRoute(
-    pages: [],
-    pathParameters: {},
-    vRouteElementNode: VRouteElementNode(_rootVRouter, localPath: null),
-    vRouteElements: [_rootVRouter],
-  );
+  VRoute get _vRoute =>
+      _vRouterScope.vRoute ??
+      VRoute(
+        pages: [],
+        pathParameters: {},
+        vRouteElementNode: VRouteElementNode(_rootVRouter, localPath: null),
+        vRouteElements: [_rootVRouter],
+      );
 
   /// Every VWidgetGuard will be registered here
   List<VWidgetGuardMessageRoot> _vWidgetGuardMessagesRoot = [];
@@ -186,7 +193,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
   /// Represents information that should be longed lived and not be destroyed
   ///
   /// This should be gotten using context
-  late final VRouterScopeData _vRouterScope;
+  late VRouterScopeData _vRouterScope;
 
   /// Updates every state variables of [VRouter]
   ///
@@ -198,8 +205,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     required Map<String, String> historyState,
     required List<VWidgetGuardMessageRoot> deactivatedVWidgetGuardsMessagesRoot,
   }) {
-    // Update the vRoute
-    this._vRoute = vRoute;
+    // Update the vRoute in VRouterScope
+    _vRouterScope.setLatestVRoute(vRoute);
 
     // Update the urls
     previousUrl = url;
@@ -415,7 +422,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         historyState: historyState,
         pathParameters: _vRoute.pathParameters,
         queryParameters: this.queryParameters,
-        names: this.names,
+        namesBuilder: () => this.names,
         state: this,
         url: url,
         previousUrl: previousUrl,
@@ -425,7 +432,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         historyState: newHistoryState,
         pathParameters: newVRoute?.pathParameters ?? {},
         queryParameters: queryParameters,
-        names: newVRoute?.vRouteElementNode.getNames() ?? [],
+        namesBuilder: () => newVRoute?.vRouteElementNode.getNames() ?? [],
         state: this,
         url: newUri.toString(),
         previousUrl: url,
@@ -986,7 +993,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         historyState: vPopData.newHistoryState,
         pathParameters: vPopData.pathParameters,
         queryParameters: vPopData.queryParameters,
-        names: newNames,
+        namesBuilder: () => newNames,
         url: newUrl,
         previousUrl: url,
         state: this,
@@ -1030,7 +1037,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
           historyState: historyState,
           pathParameters: _vRoute.pathParameters,
           queryParameters: queryParameters,
-          names: names,
+          namesBuilder: () => names,
           state: this,
           previousUrl: previousUrl,
           url: url,
@@ -1069,7 +1076,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         historyState: historyState,
         pathParameters: _vRoute.pathParameters,
         queryParameters: this.queryParameters,
-        names: names,
+        namesBuilder: () => names,
         state: this,
         url: url,
         previousUrl: previousUrl,
@@ -1324,7 +1331,6 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         !_isInitialized,
         'VRouterDelegate has already been initialized, it should not be initialized multiple times.'
         'Please check VRouterDelegate._isInitialized');
-    _vRouterScope = VRouterScope.of(context);
 
     final vLocations = _vRouterScope.vLocations;
     // When the app starts, get the serialCount. Default to 0.
@@ -1468,10 +1474,12 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         pathParameters: pathParameters,
         historyState: historyState,
         queryParameters: queryParameters,
-        names: names,
+        namesBuilder: () => names,
         child: Builder(
           builder: (context) {
             _rootVRouterContext = context;
+            _vRouterScope = VRouterScope.of(context);
+
             if (!_isInitialized) _initialize(context);
 
             final child = Navigator(
@@ -1545,8 +1553,9 @@ class RootVRouterData extends VRouterData {
     required this.historyState,
     required this.pathParameters,
     required this.queryParameters,
-    required this.names,
+    required List<String> Function() namesBuilder,
   })   : state = state,
+        _namesBuilder = namesBuilder,
         super(
           key: key,
           child: child,
@@ -1596,7 +1605,10 @@ class RootVRouterData extends VRouterData {
 
   /// A list of every names corresponding to the [VRouteElement]s in
   /// the current stack
-  final List<String> names;
+  late final List<String> names = _namesBuilder();
+
+  /// A builder to get the names because we want to lazy load them
+  final List<String> Function() _namesBuilder;
 
   /// The duration of the transition which happens when this page
   /// is put in the widget tree

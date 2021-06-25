@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:url_strategy/url_strategy.dart';
+import 'package:vrouter/src/core/route.dart';
 import 'package:vrouter/src/core/vlocations.dart';
+import 'package:vrouter/src/core/vrouter_delegate.dart';
 import 'package:vrouter/src/core/vrouter_modes.dart';
 
 /// Whether [_customUrlStrategy] has been set or not.
@@ -71,10 +73,21 @@ class _VRouterScopeState extends State<VRouterScope> {
         child: widget.child,
         vRouterMode: widget.vRouterMode,
         vLocations: vLocations,
+        vRoute: vRoute,
+        setLatestVRoute: setLatestVRoute,
       );
     }
 
     throw _VRouterScopeDuplicateError(widgetType: widget.child.runtimeType);
+  }
+
+  /// This represent the latest [VRoute] that [VRouterDelegate] produced
+  VRoute? vRoute;
+
+  void setLatestVRoute(VRoute newVRoute) {
+    setState(() {
+      vRoute = newVRoute;
+    });
   }
 }
 
@@ -126,8 +139,14 @@ class VRouterScopeData extends InheritedWidget {
     required Widget child,
     required this.vRouterMode,
     required this.vLocations,
+    required this.vRoute,
+    required this.setLatestVRoute,
   }) : super(child: child);
 
   @override
   bool updateShouldNotify(VRouterScopeData old) => false;
+
+  final VRoute? vRoute;
+
+  final void Function(VRoute newVRoute) setLatestVRoute;
 }
