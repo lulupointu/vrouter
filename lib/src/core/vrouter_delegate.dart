@@ -1346,7 +1346,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     } else {
       // This happens when VRouter is rebuilt, either because:
       //   - The entire app has been rebuilt
-      //   - VRouter key changed
+      //   - VRouter.navigatorKey has changed
       // In this case we use _vLocations to get the current location
       final currentLocation = vLocations.currentLocation.location;
       pushReplacement(
