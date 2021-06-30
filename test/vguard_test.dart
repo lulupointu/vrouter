@@ -50,7 +50,7 @@ main() {
 
       // Navigate to '/settings'
       // Tap the add button.
-      vRouterKey.currentState!.push('/settings');
+      vRouterKey.currentState!.to('/settings');
       await tester.pumpAndSettle();
 
       // VWidget2 should be visible
@@ -60,7 +60,7 @@ main() {
 
       // Try to navigate to '/other'
       // Tap the add button.
-      vRouterKey.currentState!.push('/other');
+      vRouterKey.currentState!.to('/other');
       await tester.pumpAndSettle();
 
       // The navigation must have been stopped, so VWidget2 should be visible
@@ -114,7 +114,7 @@ main() {
 
       // Try to navigate to '/settings'
       // Tap the add button.
-      vRouterKey.currentState!.push('/settings');
+      vRouterKey.currentState!.to('/settings');
       await tester.pumpAndSettle();
 
       // The navigation must have been stopped, so VWidget1 should be visible
@@ -161,7 +161,7 @@ main() {
 
       // Try to navigate to '/settings'
       // Tap the add button.
-      vRouterKey.currentState!.push('/settings');
+      vRouterKey.currentState!.to('/settings');
       await tester.pumpAndSettle();
 
       // The navigation must have been stopped, so VWidget1 should be visible
@@ -183,7 +183,7 @@ main() {
                   widget: Builder(
                     builder: (BuildContext context) => TextButton(
                       child: Text('VWidget1'),
-                      onPressed: () => VRouter.of(context).push('/settings'),
+                      onPressed: () => VRouter.of(context).to('/settings'),
                     ),
                   ),
                   stackedRoutes: [
@@ -221,7 +221,7 @@ main() {
                   widget: Builder(
                     builder: (BuildContext context) => TextButton(
                       child: Text('VWidget1'),
-                      onPressed: () => VRouter.of(context).push('/settings'),
+                      onPressed: () => VRouter.of(context).to('/settings'),
                     ),
                   ),
                   stackedRoutes: [

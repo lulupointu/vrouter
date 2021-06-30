@@ -1,5 +1,6 @@
 import 'package:url_launcher/url_launcher.dart';
 import 'package:vrouter/src/vrouter_core.dart';
+import 'package:vrouter/src/vrouter_scope.dart';
 
 /// List of static methods to interact with the browser
 /// Only one is implemented for mobile: pushExternal
@@ -56,4 +57,7 @@ class BrowserHelpers {
     String? state,
   }) =>
       throw (Exception('push should only be used on the web'));
+
+  static int getHistoryLength() =>
+      throw (Exception('getHistoryLength should only be used on the web'));
 }

@@ -4,6 +4,23 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.2.0\] - 28/06/2021.
+- 🚨 : `VRedirector.to` was renamed `VRedirector.toUrl`
+- 🔁 : `VRedirector.from` was renamed `VRedirector.fromUrl`
+- 🔁 : `push` should NOT be used anymore. DO use `to` instead.
+- 🔁 : `pushReplacement` should NOT be used anymore. DO use `to(..., isReplacement: true)` instead.
+- 🔁 : `pushNamed` should NOT be used anymore. DO use `toNamed` instead.
+- 🔁 : `pushReplacementNamed` should NOT be used anymore. DO use `toNamed(..., isReplacement: true)` instead.
+- 🔁 : `pushSegments` should NOT be used anymore. DO use `toSegments` instead.
+- 🔁 : `pushExternal` should NOT be used anymore. DO use `toExternal` instead.
+- 🔁 : `replaceHistoryState` should NOT be used anymore. DO use `to(..., historyState: newHistoryState, isReplacement: true)` instead.
+- ✨ : The new `toX` have more and better documentation than their `pushX` counterpart
+- 🚨 : `VRouterData` was renamed `VRouterDataNavigator` (this should not impact anyone)
+- 🚨 : `VLocation` was renamed `VUrlHistory` (this should not impact anyone)
+- ✨ : `urlHistoryBack()` goes back from 1 in the history url
+- ✨ : `urlHistoryForward()` goes forward to 1 in the history url
+- ✨ : `urlHistoryGo(int delta)` goes to i (positive or negative) from the history url
+
 ## \[1.1.4+17\] - 19/06/2021.
 - 🛠️ : Changing `VRouter.navigatorKey` won't produce any flashes anymore (Fixes: https://github.com/lulupointu/vrouter/issues/89)
 

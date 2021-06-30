@@ -17,7 +17,7 @@ main() {
                 return Scaffold(
                   body: Text('VWidget1'),
                   floatingActionButton: FloatingActionButton(
-                    onPressed: () => VRouter.of(context).push('/settings'),
+                    onPressed: () => VRouter.of(context).to('/settings'),
                   ),
                 );
               },

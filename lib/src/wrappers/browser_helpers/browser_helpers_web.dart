@@ -9,6 +9,7 @@ import 'package:js/js.dart';
 import 'dart:html' as html;
 
 import 'package:vrouter/src/vrouter_core.dart';
+import 'package:vrouter/src/vrouter_scope.dart';
 
 /// List of static methods to interact with the browser
 /// Only one is implemented for mobile: pushExternal
@@ -176,9 +177,15 @@ class BrowserHelpers {
   ///
   /// The base path is:
   ///   protocol + '//' + host + basePath (uri from the first <base> tag)
-  static String _getBasePath() =>
-      html.document.getElementsByTagName('base')[0].baseUri ?? '/';
+  static String _getBasePath() {
+    final baseTags = html.document.getElementsByTagName('base');
+
+    return baseTags.isEmpty ? '/' : (baseTags[0].baseUri ?? '/');
+  }
 
   /// Returns the entire url
   static String _getEntireUrl() => html.window.location.href;
+
+  /// Get the number of history entries
+  static int getHistoryLength() => html.window.history.length;
 }

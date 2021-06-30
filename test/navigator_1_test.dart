@@ -8,7 +8,7 @@ main() {
       'Navigator 1 tests\n'
       'Test whether actions that used Navigator 1 are registered and that VRouter interact appropriately with them',
       () {
-    testWidgets("Navigator.push", (WidgetTester tester) async {
+    testWidgets("Navigator.to", (WidgetTester tester) async {
       final vRouterKey = GlobalKey<VRouterState>();
 
       await tester.pumpWidget(
@@ -61,7 +61,7 @@ main() {
       expect(materialPageRouteFinder, findsNothing);
     });
 
-    // testWidgets("Navigator.push in nested route", (WidgetTester tester) async {
+    // testWidgets("Navigator.to in nested route", (WidgetTester tester) async {
     //   final vRouterKey = GlobalKey<VRouterState>();
     //
     //   await tester.pumpWidget(
@@ -80,7 +80,7 @@ main() {
     //               widget: Builder(
     //                 builder: (context) => Material(
     //                   child: InkWell(
-    //                     onTap: () => Navigator.of(context).push(
+    //                     onTap: () => Navigator.of(context).to(
     //                       MaterialPageRoute(
     //                         builder: (context) => Text('MaterialPageRoute'),
     //                       ),
@@ -128,7 +128,7 @@ main() {
     // });
 
     // testWidgets(
-    //   "Navigator.push in nested route using rootNavigator",
+    //   "Navigator.to in nested route using rootNavigator",
     //   (WidgetTester tester) async {
     //   },
     // );

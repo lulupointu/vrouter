@@ -210,7 +210,7 @@ main() {
                 return Scaffold(
                   body: Text('VWidget1'),
                   floatingActionButton: FloatingActionButton(
-                    onPressed: () => VRouter.of(context).push('/other'),
+                    onPressed: () => VRouter.of(context).to('/other'),
                   ),
                 );
               },
@@ -325,7 +325,7 @@ main() {
                   body: Text('VWidget1'),
                   floatingActionButton: FloatingActionButton(
                     onPressed: () =>
-                        VRouter.of(context).push('/settings/other'),
+                        VRouter.of(context).to('/settings/other'),
                   ),
                 );
               },
@@ -439,7 +439,7 @@ main() {
                 return Scaffold(
                   body: Text('VWidget1'),
                   floatingActionButton: FloatingActionButton(
-                    onPressed: () => VRouter.of(context).pushNamed('settings'),
+                    onPressed: () => VRouter.of(context).toNamed('settings'),
                   ),
                 );
               },
@@ -506,7 +506,7 @@ main() {
                 return Scaffold(
                   body: Text('VWidget1'),
                   floatingActionButton: FloatingActionButton(
-                    onPressed: () => VRouter.of(context).pushNamed('settings'),
+                    onPressed: () => VRouter.of(context).toNamed('settings'),
                   ),
                 );
               },
@@ -573,7 +573,7 @@ main() {
                 return Scaffold(
                   body: Text('VWidget1'),
                   floatingActionButton: FloatingActionButton(
-                    onPressed: () => VRouter.of(context).pushNamed('settings'),
+                    onPressed: () => VRouter.of(context).toNamed('settings'),
                   ),
                 );
               },
@@ -647,7 +647,7 @@ main() {
                 return Scaffold(
                   body: Text('VWidget1'),
                   floatingActionButton: FloatingActionButton(
-                    onPressed: () => VRouter.of(context).pushNamed('settings'),
+                    onPressed: () => VRouter.of(context).toNamed('settings'),
                   ),
                 );
               },
@@ -715,7 +715,7 @@ main() {
                 return Scaffold(
                   body: Text('VWidget1'),
                   floatingActionButton: FloatingActionButton(
-                    onPressed: () => VRouter.of(context).push('/settings/2'),
+                    onPressed: () => VRouter.of(context).to('/settings/2'),
                   ),
                 );
               },
@@ -759,7 +759,7 @@ main() {
     expect(vNesterFinder, findsNothing);
     expect(vWidget2Finder, findsNothing);
 
-    // Navigate to '/settings/2' by push
+    // Navigate to '/settings/2' by to
     // Tap the add button.
     await tester.tap(find.byType(FloatingActionButton));
     await tester.pumpAndSettle();

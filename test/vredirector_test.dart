@@ -14,7 +14,7 @@ main() {
               path: '/',
               widget: Builder(
                 builder: (BuildContext context) => TextButton(
-                  onPressed: () => VRouter.of(context).push('/settings'),
+                  onPressed: () => VRouter.of(context).to('/settings'),
                   child: Text('VWidget1'),
                 ),
               ),
@@ -50,17 +50,17 @@ main() {
       expect(vWidget2Finder, findsNothing);
     });
 
-    testWidgets('vRedirector.push', (WidgetTester tester) async {
+    testWidgets('vRedirector.to', (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(
           beforeLeave: (vRedirector, _) async =>
-              (vRedirector.to != '/other') ? vRedirector.push('/other') : null,
+              (vRedirector.toUrl != '/other') ? vRedirector.to('/other') : null,
           routes: [
             VWidget(
               path: '/',
               widget: Builder(
                 builder: (BuildContext context) => TextButton(
-                  onPressed: () => VRouter.of(context).push('/settings'),
+                  onPressed: () => VRouter.of(context).to('/settings'),
                   child: Text('VWidget1'),
                 ),
               ),
@@ -103,18 +103,18 @@ main() {
       expect(vWidget3Finder, findsOneWidget);
     });
 
-    testWidgets('vRedirector.pushSegments', (WidgetTester tester) async {
+    testWidgets('vRedirector.toSegments', (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(
-          beforeLeave: (vRedirector, _) async => (vRedirector.to != '/other')
-              ? vRedirector.pushSegments(['other'])
+          beforeLeave: (vRedirector, _) async => (vRedirector.toUrl != '/other')
+              ? vRedirector.toSegments(['other'])
               : null,
           routes: [
             VWidget(
               path: '/',
               widget: Builder(
                 builder: (BuildContext context) => TextButton(
-                  onPressed: () => VRouter.of(context).push('/settings'),
+                  onPressed: () => VRouter.of(context).to('/settings'),
                   child: Text('VWidget1'),
                 ),
               ),
@@ -162,7 +162,7 @@ main() {
         VRouter(
           initialUrl: '/settings',
           beforeLeave: (vRedirector, _) async =>
-              (vRedirector.to != '/') ? vRedirector.pop() : null,
+              (vRedirector.toUrl != '/') ? vRedirector.pop() : null,
           routes: [
             VWidget(
               path: '/',
@@ -172,7 +172,7 @@ main() {
                   path: '/settings',
                   widget: Builder(
                     builder: (BuildContext context) => TextButton(
-                      onPressed: () => VRouter.of(context).push('/other'),
+                      onPressed: () => VRouter.of(context).to('/other'),
                       child: Text('VWidget2'),
                     ),
                   ),
@@ -217,7 +217,7 @@ main() {
         VRouter(
           initialUrl: '/settings',
           beforeLeave: (vRedirector, _) async =>
-              (vRedirector.to != '/') ? vRedirector.systemPop() : null,
+              (vRedirector.toUrl != '/') ? vRedirector.systemPop() : null,
           routes: [
             VWidget(
               path: '/',
@@ -227,7 +227,7 @@ main() {
                   path: '/settings',
                   widget: Builder(
                     builder: (BuildContext context) => TextButton(
-                      onPressed: () => VRouter.of(context).push('/other'),
+                      onPressed: () => VRouter.of(context).to('/other'),
                       child: Text('VWidget2'),
                     ),
                   ),
@@ -267,12 +267,12 @@ main() {
       expect(vWidget3Finder, findsNothing);
     });
 
-    testWidgets('vRedirector.pushNamed', (WidgetTester tester) async {
+    testWidgets('vRedirector.toNamed', (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(
           initialUrl: '/settings',
-          beforeLeave: (vRedirector, _) async => (vRedirector.to != '/other')
-              ? vRedirector.pushNamed('other')
+          beforeLeave: (vRedirector, _) async => (vRedirector.toUrl != '/other')
+              ? vRedirector.toNamed('other')
               : null,
           routes: [
             VWidget(
@@ -283,7 +283,7 @@ main() {
                   path: '/settings',
                   widget: Builder(
                     builder: (BuildContext context) => TextButton(
-                      onPressed: () => VRouter.of(context).push('/'),
+                      onPressed: () => VRouter.of(context).to('/'),
                       child: Text('VWidget2'),
                     ),
                   ),

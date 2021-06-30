@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 
 import 'package:vrouter/src/vrouter_core.dart';
+import 'package:vrouter/src/vrouter_scope.dart';
 import 'package:vrouter/src/vrouter_vroute_elements.dart';
 
 /// This widget handles most of the routing work
@@ -443,7 +444,7 @@ class CupertinoVRouter extends StatefulWidget
   Future<void> beforeUpdate(VRedirector vRedirector) async {}
 }
 
-class CupertinoVRouterState extends State<CupertinoVRouter> {
+class CupertinoVRouterState extends State<CupertinoVRouter> implements VRouterData {
   late VRouterDelegate vRouterDelegate = VRouterDelegate(
     routes: widget.routes,
     builder: widget.builder,
@@ -514,52 +515,31 @@ class CupertinoVRouterState extends State<CupertinoVRouter> {
     );
   }
 
-  /// Url currently synced with the state
-  /// This url can differ from the once of the browser if
-  /// the state has been yet been updated
+  @override
   String? get url => vRouterDelegate.url;
 
-  /// Previous url that was synced with the state
+  @override
   String? get previousUrl => vRouterDelegate.previousUrl;
 
-  /// Path of [url]
-  ///
-  /// This is the same as the url WITHOUT the queryParameters
+  @override
   String? get path => url != null ? Uri.parse(url!).path : null;
 
-  /// Path of [previousUrl]
-  ///
-  /// This is the same as the url WITHOUT the queryParameters
+  @override
   String? get previousPath => url != null ? Uri.parse(url!).path : null;
 
-  /// This state is saved in the browser history. This means that if the user presses
-  /// the back or forward button on the navigator, this historyState will be the same
-  /// as the last one you saved.
-  ///
-  /// It can be changed by using [context.vRouter.replaceHistoryState(newState)]
+  @override
   Map<String, String> get historyState => vRouterDelegate.historyState;
 
-  /// Maps all route parameters (i.e. parameters of the path
-  /// mentioned as ":someId")
+  @override
   Map<String, String> get pathParameters => vRouterDelegate.pathParameters;
 
-  /// Contains all query parameters (i.e. parameters after
-  /// the "?" in the url) of the current url
+  @override
   Map<String, String> get queryParameters => vRouterDelegate.queryParameters;
 
-  /// A list of every names corresponding to the [VRouteElement]s in
-  /// the current stack
+  @override
   List<String> get names => vRouterDelegate.names;
 
-  /// Starts a pop cycle
-  ///
-  /// Pop cycle:
-  ///   1. onPop is called in all [VNavigationGuard]s
-  ///   2. onPop is called in all [VRouteElement]s of the current route
-  ///   3. onPop is called in [VRouter]
-  ///
-  /// In any of the above steps, we can use [vRedirector] if you want to redirect or
-  /// stop the navigation
+  @override
   Future<void> pop({
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
@@ -571,15 +551,7 @@ class CupertinoVRouterState extends State<CupertinoVRouter> {
         newHistoryState: newHistoryState,
       );
 
-  /// Starts a systemPop cycle
-  ///
-  /// systemPop cycle:
-  ///   1. onSystemPop (or onPop if not implemented) is called in all VNavigationGuards
-  ///   2. onSystemPop (or onPop if not implemented) is called in the nested-most VRouteElement of the current route
-  ///   3. onSystemPop (or onPop if not implemented) is called in MaterialVRouter
-  ///
-  /// In any of the above steps, we can use a [VRedirector] if you want to redirect or
-  /// stop the navigation
+  @override
   Future<void> systemPop({
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
@@ -591,143 +563,156 @@ class CupertinoVRouterState extends State<CupertinoVRouter> {
         newHistoryState: newHistoryState,
       );
 
-  /// Pushes the new route of the given url on top of the current one
-  /// A path can be of one of two forms:
-  ///   * stating with '/', in which case we just navigate
-  ///     to the given path
-  ///   * not starting with '/', in which case we append the
-  ///     current path to the given one
-  ///
-  /// We can also specify queryParameters, either by directly
-  /// putting them is the url or by providing a Map using [queryParameters]
-  ///
-  /// We can also put a state to the next route, this state will
-  /// be a router state (this is the only kind of state that we can
-  /// push) accessible with MaterialVRouter.of(context).historyState
+  @override
+  @Deprecated('Use to (vRouter.to) instead')
   void push(
-    String newUrl, {
-    Map<String, String> queryParameters = const {},
-    Map<String, String> historyState = const {},
-  }) =>
-      vRouterDelegate.push(
+      String newUrl, {
+        Map<String, String> queryParameters = const {},
+        Map<String, String> historyState = const {},
+      }) =>
+      to(
         newUrl,
         queryParameters: queryParameters,
         historyState: historyState,
       );
 
-  /// Pushes a new url based on url segments
-  ///
-  /// For example: pushSegments(['home', 'bob']) ~ push('/home/bob')
-  ///
-  /// The advantage of using this over push is that each segment gets encoded.
-  /// For example: pushSegments(['home', 'bob marley']) ~ push('/home/bob%20marley')
-  ///
-  /// Also see:
-  ///  - [push] to see want happens when you push a new url
+  @override
+  @Deprecated('Use toSegments instead')
   void pushSegments(
-    List<String> segments, {
-    Map<String, String> queryParameters = const {},
-    Map<String, String> historyState = const {},
-  }) {
-    // Forming the new url by encoding each segment and placing "/" between them
-    final newUrl =
-        segments.map((segment) => Uri.encodeComponent(segment)).join('/');
+      List<String> segments, {
+        Map<String, String> queryParameters = const {},
+        Map<String, String> historyState = const {},
+      }) =>
+      toSegments(
+        segments,
+        queryParameters: queryParameters,
+        historyState: historyState,
+      );
 
-    // Calling push with this newly formed url
-    return push('/$newUrl',
-        queryParameters: queryParameters, historyState: historyState);
-  }
-
-  /// Updates the url given a [VRouteElement] name
-  ///
-  /// We can also specify path parameters to inject into the new path
-  ///
-  /// We can also specify queryParameters, either by directly
-  /// putting them is the url or by providing a Map using [queryParameters]
-  ///
-  /// We can also put a state to the next route, this state will
-  /// be a router state (this is the only kind of state that we can
-  /// push) accessible with MaterialVRouter.of(context).historyState
-  ///
-  /// After finding the url and taking charge of the path parameters,
-  /// it updates the url
-  ///
-  /// To specify a name, see [VRouteElement.name]
+  @override
+  @Deprecated('Use toNamed instead')
   void pushNamed(
-    String name, {
-    Map<String, String> pathParameters = const {},
-    Map<String, String> queryParameters = const {},
-    Map<String, String> historyState = const {},
-  }) =>
-      vRouterDelegate.pushNamed(
+      String name, {
+        Map<String, String> pathParameters = const {},
+        Map<String, String> queryParameters = const {},
+        Map<String, String> historyState = const {},
+      }) =>
+      toNamed(
         name,
         pathParameters: pathParameters,
         queryParameters: queryParameters,
         historyState: historyState,
       );
 
-  /// Replace the current one by the new route corresponding to the given url
-  /// The difference with [push] is that this overwrites the current browser history entry
-  /// If you are on mobile, this is the same as push
-  /// Path can be of one of two forms:
-  ///   * stating with '/', in which case we just navigate
-  ///     to the given path
-  ///   * not starting with '/', in which case we append the
-  ///     current path to the given one
-  ///
-  /// We can also specify queryParameters, either by directly
-  /// putting them is the url or by providing a Map using [queryParameters]
-  ///
-  /// We can also put a state to the next route, this state will
-  /// be a router state (this is the only kind of state that we can
-  /// push) accessible with MaterialVRouter.of(context).historyState
+  @override
+  @Deprecated('Use vRouter.to(..., isReplacement: true) instead')
   void pushReplacement(
-    String newUrl, {
-    Map<String, String> queryParameters = const {},
-    Map<String, String> historyState = const {},
-  }) =>
-      vRouterDelegate.pushReplacement(
+      String newUrl, {
+        Map<String, String> queryParameters = const {},
+        Map<String, String> historyState = const {},
+      }) =>
+      to(
         newUrl,
         queryParameters: queryParameters,
         historyState: historyState,
+        isReplacement: true,
       );
 
-  /// Replace the url given a [VRouteElement] name
-  /// The difference with [pushNamed] is that this overwrites the current browser history entry
-  ///
-  /// We can also specify path parameters to inject into the new path
-  ///
-  /// We can also specify queryParameters, either by directly
-  /// putting them is the url or by providing a Map using [queryParameters]
-  ///
-  /// We can also put a state to the next route, this state will
-  /// be a router state (this is the only kind of state that we can
-  /// push) accessible with MaterialVRouter.of(context).historyState
-  ///
-  /// After finding the url and taking charge of the path parameters
-  /// it updates the url
-  ///
-  /// To specify a name, see [VPath.name]
+  @override
+  @Deprecated('Use vRouter.toNamed(..., isReplacement: true) instead')
   void pushReplacementNamed(
-    String name, {
-    Map<String, String> pathParameters = const {},
-    Map<String, String> queryParameters = const {},
-    Map<String, String> historyState = const {},
-  }) =>
-      vRouterDelegate.pushReplacementNamed(
+      String name, {
+        Map<String, String> pathParameters = const {},
+        Map<String, String> queryParameters = const {},
+        Map<String, String> historyState = const {},
+      }) =>
+      toNamed(
         name,
         pathParameters: pathParameters,
         queryParameters: queryParameters,
         historyState: historyState,
+        isReplacement: true,
       );
 
-  /// Goes to an url which is not in the app
-  ///
-  /// On the web, you can set [openNewTab] to true to open this url
-  /// in a new tab
+  @override
+  @Deprecated('Use toExternal instead')
   void pushExternal(String newUrl, {bool openNewTab = false}) =>
-      vRouterDelegate.pushExternal(
-        newUrl,
-        openNewTab: openNewTab,
+      toExternal(newUrl, openNewTab: openNewTab);
+
+  @override
+  @Deprecated(
+      'Use to(context.vRouter.url!, isReplacement: true, historyState: newHistoryState) instead')
+  void replaceHistoryState(Map<String, String> historyState) => to(
+    url ?? '/',
+    historyState: historyState,
+    isReplacement: true,
+  );
+
+  @override
+  void to(
+      String path, {
+        Map<String, String> queryParameters = const {},
+        Map<String, String> historyState = const {},
+        isReplacement = false,
+      }) =>
+      vRouterDelegate.to(
+        path,
+        queryParameters: queryParameters,
+        historyState: historyState,
+        isReplacement: isReplacement,
       );
+
+  @override
+  void toSegments(
+      List<String> segments, {
+        Map<String, String> queryParameters = const {},
+        Map<String, String> historyState = const {},
+        isReplacement = false,
+      }) =>
+      vRouterDelegate.toSegments(
+        segments,
+        queryParameters: queryParameters,
+        historyState: historyState,
+        isReplacement: isReplacement,
+      );
+
+  @override
+  void toNamed(
+      String name, {
+        Map<String, String> pathParameters = const {},
+        Map<String, String> queryParameters = const {},
+        Map<String, String> historyState = const {},
+        bool isReplacement = false,
+      }) =>
+      vRouterDelegate.toNamed(
+        name,
+        pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        historyState: historyState,
+        isReplacement: isReplacement,
+      );
+
+  @override
+  void toExternal(String newUrl, {bool openNewTab = false}) => vRouterDelegate.toExternal(
+    newUrl,
+    openNewTab: openNewTab,
+  );
+
+  @override
+  void urlHistoryForward() => vRouterDelegate.urlHistoryForward();
+
+  @override
+  void urlHistoryBack() => vRouterDelegate.urlHistoryBack();
+
+  @override
+  void urlHistoryGo(int delta) => vRouterDelegate.urlHistoryGo(delta);
+
+  @override
+  bool urlHistoryCanForward() => vRouterDelegate.urlHistoryCanForward();
+
+  @override
+  bool urlHistoryCanBack() => vRouterDelegate.urlHistoryCanBack();
+
+  @override
+  bool urlHistoryCanGo(int delta) => vRouterDelegate.urlHistoryCanGo(delta);
 }

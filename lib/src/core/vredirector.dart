@@ -1,36 +1,43 @@
-import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/core/vpop_data.dart';
 import 'package:vrouter/src/core/vroute_element_node.dart';
+import 'package:vrouter/src/core/vrouter_data.dart';
 import 'package:vrouter/src/core/vrouter_delegate.dart';
 
 /// A class which helps you in beforeLeave or beforeEnter functions
 /// This class contain 2 main functionality:
-///   1. It allows you to redirect using [VRedirector.push], [VRedirector.pushNamed], ...
+///   1. It allows you to redirect using [VRedirector.to], [VRedirector.toNamed], ...
 ///   2. It gives you access to information about the previous route and the new route
 ///
 /// Note that you should use this object to redirect in beforeLeave and beforeEnter. Never
 /// use VRouterData to do so.
-class VRedirector {
+class VRedirector implements VRouterNavigator {
   VRedirector({
-    required this.from,
-    required this.to,
+    required this.fromUrl,
+    required this.toUrl,
     required this.previousVRouterData,
     required this.newVRouterData,
-  });
+    required VRouterDelegate vRouterDelegate,
+  }) : _vRouterDelegate = vRouterDelegate;
+
+  VRouterDelegate _vRouterDelegate;
 
   /// If [_shouldUpdate] is set to false, the current url updating is stopped
   ///
   /// You should NOT modify this, instead use [stopRedirection], or other methods
-  /// such as [push], [pushNamed], ...
+  /// such as [to], [toNamed], ...
   bool _shouldUpdate = true;
 
   bool get shouldUpdate => _shouldUpdate;
 
   /// The url we are coming from
-  final String? from;
+  @Deprecated('Use fromUrl instead')
+  String? get from => fromUrl;
+
+  /// The url we are coming from
+  final String? fromUrl;
 
   /// The url we are going to
-  final String? to;
+  final String? toUrl;
 
   /// The [VRouterData] of the previous route
   /// Useful information is:
@@ -54,12 +61,8 @@ class VRedirector {
   ///   If you are in beforeEnter, you can't save an history state here
   final RootVRouterData? newVRouterData;
 
-  // /// A context which gives us access to VRouter and the current VRoute
-  // /// This is local because we don't want developers to use VRouterData to redirect
-  // final BuildContext _context;
-
   /// Function which will be executed after stopping the redirection
-  /// if [push], [pushNamed], ... have been used.
+  /// if [to], [toNamed], ... have been used.
   void Function(
       {required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode})? _redirectFunction;
@@ -82,19 +85,17 @@ class VRedirector {
   /// Prevent the current redirection and push a route instead
   ///
   /// See [VRouter.push] for more information on push
+  @Deprecated('Use to (vRedirector.to) instead')
   void push(
     String newUrl, {
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
-  }) {
-    stopRedirection();
-    _redirectFunction = ({
-      required VRouterDelegate vRouterDelegate,
-      required VRouteElementNode vRouteElementNode,
-    }) =>
-        vRouterDelegate.push(newUrl,
-            queryParameters: queryParameters, historyState: historyState);
-  }
+  }) =>
+      to(
+        newUrl,
+        queryParameters: queryParameters,
+        historyState: historyState,
+      );
 
   /// Prevent the current redirection and push a new url based on url segments
   ///
@@ -105,90 +106,207 @@ class VRedirector {
   ///
   /// Also see:
   ///  - [push] to see want happens when you push a new url
+  @Deprecated('Use toSegments (vRedirector.toSegments) instead')
   void pushSegments(
     List<String> segments, {
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
-  }) {
-    // Forming the new url by encoding each segment and placing "/" between them
-    final newUrl =
-        segments.map((segment) => Uri.encodeComponent(segment)).join('/');
-
-    // Calling push with this newly formed url
-    return push('/$newUrl',
-        queryParameters: queryParameters, historyState: historyState);
-  }
+  }) =>
+      toSegments(
+        segments,
+        queryParameters: queryParameters,
+        historyState: historyState,
+      );
 
   /// Prevent the current redirection and pushNamed a route instead
   ///
   /// See [VRouter.push] for more information on push
+  @Deprecated('Use toNamed (vRedirector.toNamed) instead')
   void pushNamed(
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
-  }) {
-    stopRedirection();
-    _redirectFunction = ({
-      required VRouterDelegate vRouterDelegate,
-      required VRouteElementNode vRouteElementNode,
-    }) =>
-        vRouterDelegate.pushNamed(name,
-            pathParameters: pathParameters,
-            queryParameters: queryParameters,
-            historyState: historyState);
-  }
+  }) =>
+      toNamed(
+        name,
+        pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        historyState: historyState,
+      );
 
   /// Prevent the current redirection and pushReplacement a route instead
   ///
   /// See [VRouter.push] for more information on push
+  @Deprecated('Use to(..., isReplacement: true) instead')
   void pushReplacement(
     String newUrl, {
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
-  }) {
-    stopRedirection();
-    _redirectFunction = ({
-      required VRouterDelegate vRouterDelegate,
-      required VRouteElementNode vRouteElementNode,
-    }) =>
-        vRouterDelegate.pushReplacement(newUrl,
-            queryParameters: queryParameters, historyState: historyState);
-  }
+  }) =>
+      to(
+        newUrl,
+        queryParameters: queryParameters,
+        historyState: historyState,
+      );
 
   /// Prevent the current redirection and pushReplacementNamed a route instead
   ///
   /// See [VRouter.push] for more information on push
+  @Deprecated('Use toNamed(..., isReplacement: true) instead')
   void pushReplacementNamed(
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
+  }) =>
+      toNamed(
+        name,
+        pathParameters: pathParameters,
+        queryParameters: queryParameters,
+        historyState: historyState,
+        isReplacement: true,
+      );
+
+  /// Prevent the current redirection and pushExternal instead
+  ///
+  /// See [VRouter.push] for more information on push
+  @Deprecated('Use toExternal instead')
+  void pushExternal(String newUrl, {bool openNewTab = false}) => toExternal(
+        newUrl,
+        openNewTab: openNewTab,
+      );
+
+  /// Prevent the current redirection and redirects to [path] instead
+  ///
+  /// See [VRouterData.to] for more information on [to]
+  @override
+  void to(
+    String path, {
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+    isReplacement = false,
   }) {
     stopRedirection();
     _redirectFunction = ({
       required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode,
     }) =>
-        vRouterDelegate.pushReplacementNamed(
-          name,
-          pathParameters: pathParameters,
+        vRouterDelegate.to(
+          path,
           queryParameters: queryParameters,
           historyState: historyState,
+          isReplacement: isReplacement,
         );
   }
 
-  /// Prevent the current redirection and pushExternal instead
+  /// Prevent the current redirection and redirects to the
+  /// external [url] instead
   ///
-  /// See [VRouter.push] for more information on push
-  void pushExternal(String newUrl, {bool openNewTab = false}) {
+  /// See [VRouterData.toExternal] for more information on [toExternal]
+  @override
+  void toExternal(
+    String url, {
+    bool openNewTab = false,
+  }) {
     stopRedirection();
     _redirectFunction = ({
       required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode,
     }) =>
-        vRouterDelegate.pushExternal(newUrl, openNewTab: openNewTab);
+        vRouterDelegate.toExternal(
+          url,
+          openNewTab: openNewTab,
+        );
   }
+
+  /// Prevent the current redirection and redirects to the VRouteElement
+  /// with [name] instead
+  ///
+  /// See [VRouterData.toNamed] for more information on [toNamed]
+  @override
+  void toNamed(
+    String name, {
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+    bool isReplacement = false,
+  }) {
+    stopRedirection();
+    _redirectFunction = ({
+      required VRouterDelegate vRouterDelegate,
+      required VRouteElementNode vRouteElementNode,
+    }) =>
+        vRouterDelegate.toNamed(
+          name,
+          queryParameters: queryParameters,
+          historyState: historyState,
+          isReplacement: isReplacement,
+        );
+  }
+
+  /// Prevent the current redirection and redirects to the new path
+  /// composed of the url-encoded [segments] instead
+  ///
+  /// See [VRouterData.toSegments] for more information on [toSegments]
+  @override
+  void toSegments(
+    List<String> segments, {
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+    isReplacement = false,
+  }) {
+    stopRedirection();
+    _redirectFunction = ({
+      required VRouterDelegate vRouterDelegate,
+      required VRouteElementNode vRouteElementNode,
+    }) =>
+        vRouterDelegate.toSegments(
+          segments,
+          queryParameters: queryParameters,
+          historyState: historyState,
+          isReplacement: isReplacement,
+        );
+  }
+
+  @override
+  void urlHistoryForward() {
+    stopRedirection();
+    _redirectFunction = ({
+      required VRouterDelegate vRouterDelegate,
+      required VRouteElementNode vRouteElementNode,
+    }) =>
+        vRouterDelegate.urlHistoryForward();
+  }
+
+  @override
+  void urlHistoryBack() {
+    stopRedirection();
+    _redirectFunction = ({
+      required VRouterDelegate vRouterDelegate,
+      required VRouteElementNode vRouteElementNode,
+    }) =>
+        vRouterDelegate.urlHistoryBack();
+  }
+
+  @override
+  void urlHistoryGo(int delta) {
+    stopRedirection();
+    _redirectFunction = ({
+      required VRouterDelegate vRouterDelegate,
+      required VRouteElementNode vRouteElementNode,
+    }) =>
+        vRouterDelegate.urlHistoryGo(delta);
+  }
+
+  @override
+  bool urlHistoryCanForward() => _vRouterDelegate.urlHistoryCanForward();
+
+  @override
+  bool urlHistoryCanBack() => _vRouterDelegate.urlHistoryCanBack();
+
+  @override
+  bool urlHistoryCanGo(int delta) => _vRouterDelegate.urlHistoryCanGo(delta);
 
   /// Prevent the current redirection and call pop instead
   ///
@@ -237,4 +355,13 @@ class VRedirector {
           newHistoryState: newHistoryState,
         );
   }
+
+  @override
+  @Deprecated(
+      'Use to(context.vRouter.url!, isReplacement: true, historyState: newHistoryState) instead')
+  void replaceHistoryState(Map<String, String> historyState) => to(
+        fromUrl ?? '/',
+        historyState: historyState,
+        isReplacement: true,
+      );
 }

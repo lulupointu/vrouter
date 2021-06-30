@@ -23,7 +23,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  vrouter: ^1.1.4+10
+  vrouter: ^1.2.0
 
 dev_dependencies:
   flutter_test:

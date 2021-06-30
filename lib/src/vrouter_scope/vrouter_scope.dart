@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:vrouter/src/core/route.dart';
-import 'package:vrouter/src/core/vlocations.dart';
 import 'package:vrouter/src/core/vrouter_delegate.dart';
-import 'package:vrouter/src/core/vrouter_modes.dart';
+import 'package:vrouter/src/vrouter_scope.dart';
+
+import 'vurl_history/vrouter_modes.dart';
+import 'vurl_history/vurl_history.dart';
 
 /// Whether [_customUrlStrategy] has been set or not.
 ///
@@ -11,6 +13,8 @@ import 'package:vrouter/src/core/vrouter_modes.dart';
 /// check to determine whether it was set or not. We need an extra boolean.
 bool _isUrlStrategySet = false;
 
+/// A top level widget which keeps the part of the state of [VRouter]
+/// which needs to always persist
 class VRouterScope extends StatefulWidget {
   /// Two router mode are possible:
   ///    - "hash": This is the default, the url will be serverAddress/#/localUrl
@@ -59,10 +63,10 @@ class VRouterScope extends StatefulWidget {
 }
 
 class _VRouterScopeState extends State<VRouterScope> {
-  final vLocations;
+  final vUrlStrategy;
 
   _VRouterScopeState({required VRouterModes vRouterMode})
-      : vLocations = VLocations(vRouterMode: vRouterMode);
+      : vUrlStrategy = VUrlHistory.implementation(vRouterMode);
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +76,7 @@ class _VRouterScopeState extends State<VRouterScope> {
       return VRouterScopeData(
         child: widget.child,
         vRouterMode: widget.vRouterMode,
-        vLocations: vLocations,
+        vUrlHistory: vUrlStrategy,
         vRoute: vRoute,
         setLatestVRoute: setLatestVRoute,
       );
@@ -133,12 +137,12 @@ class VRouterScopeData extends InheritedWidget {
   final VRouterModes vRouterMode;
 
   /// Stores the encountered location of the lifecycle of this app
-  final VLocations vLocations;
+  final VUrlHistory vUrlHistory;
 
   VRouterScopeData({
     required Widget child,
     required this.vRouterMode,
-    required this.vLocations,
+    required this.vUrlHistory,
     required this.vRoute,
     required this.setLatestVRoute,
   }) : super(child: child);

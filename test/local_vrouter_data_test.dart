@@ -5,7 +5,7 @@ import 'package:vrouter/vrouter.dart';
 
 main() {
   group('LocalVRouterData', () {
-    testWidgets('LocalVRouterData push', (WidgetTester tester) async {
+    testWidgets('LocalVRouterData to', (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -14,7 +14,7 @@ main() {
               widget: Builder(
                 builder: (BuildContext context) => TextButton(
                   child: Text('VWidget1'),
-                  onPressed: () => VRouter.of(context).push('/settings'),
+                  onPressed: () => VRouter.of(context).to('/settings'),
                 ),
               ),
               stackedRoutes: [
@@ -23,7 +23,7 @@ main() {
                   widget: Builder(
                     builder: (BuildContext context) => TextButton(
                       child: Text('VWidget2'),
-                      onPressed: () => VRouter.of(context).push('/'),
+                      onPressed: () => VRouter.of(context).to('/'),
                     ),
                   ),
                 ),
@@ -53,7 +53,7 @@ main() {
       expect(vWidget2Finder, findsOneWidget);
     });
 
-    testWidgets('LocalVRouterData pushSegments', (WidgetTester tester) async {
+    testWidgets('LocalVRouterData toSegments', (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -63,7 +63,7 @@ main() {
                 builder: (BuildContext context) => TextButton(
                   child: Text('VWidget1'),
                   onPressed: () =>
-                      VRouter.of(context).pushSegments(['settings']),
+                      VRouter.of(context).toSegments(['settings']),
                 ),
               ),
               stackedRoutes: [
@@ -72,7 +72,7 @@ main() {
                   widget: Builder(
                     builder: (BuildContext context) => TextButton(
                       child: Text('VWidget2'),
-                      onPressed: () => VRouter.of(context).pushSegments([]),
+                      onPressed: () => VRouter.of(context).toSegments([]),
                     ),
                   ),
                 ),
@@ -188,7 +188,7 @@ main() {
       expect(vWidget2Finder, findsNothing);
     });
 
-    testWidgets('LocalVRouterData pushNamed', (WidgetTester tester) async {
+    testWidgets('LocalVRouterData toNamed', (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -197,7 +197,7 @@ main() {
               widget: Builder(
                 builder: (BuildContext context) => TextButton(
                   child: Text('VWidget1'),
-                  onPressed: () => VRouter.of(context).pushNamed('settings'),
+                  onPressed: () => VRouter.of(context).toNamed('settings'),
                 ),
               ),
               stackedRoutes: [
@@ -231,7 +231,7 @@ main() {
       expect(vWidget2Finder, findsOneWidget);
     });
 
-    testWidgets('LocalVRouterData pushNamed with path parameters',
+    testWidgets('LocalVRouterData toNamed with path parameters',
         (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(
@@ -242,7 +242,7 @@ main() {
                 builder: (BuildContext context) => TextButton(
                   child: Text('VWidget1'),
                   onPressed: () => VRouter.of(context)
-                      .pushNamed('settings', pathParameters: {'id': '2'}),
+                      .toNamed('settings', pathParameters: {'id': '2'}),
                 ),
               ),
               stackedRoutes: [

@@ -47,9 +47,9 @@ main() {
 
         await tester.pumpAndSettle();
 
-        vRouterKey.currentState!.push('/settings');
+        vRouterKey.currentState!.to('/settings');
       }, (Object error, StackTrace stack) {
-        // After pushing, we should get a UnknownUrlVError
+        // After toing, we should get a UnknownUrlVError
         expect(error, isInstanceOf<UnknownUrlVError>());
 
         // Test the output error string
@@ -75,9 +75,9 @@ main() {
 
         await tester.pumpAndSettle();
 
-        vRouterKey.currentState!.pushNamed('random');
+        vRouterKey.currentState!.toNamed('random');
       }, (Object error, StackTrace stack) {
-        // After pushing, we should get a NotFoundErrorNameResult
+        // After toing, we should get a NotFoundErrorNameResult
         expect(error, isInstanceOf<NotFoundErrorNameResult>());
 
         // Test the output error string
@@ -103,9 +103,9 @@ main() {
 
         await tester.pumpAndSettle();
 
-        vRouterKey.currentState!.pushNamed('id');
+        vRouterKey.currentState!.toNamed('id');
       }, (Object error, StackTrace stack) {
-        // After pushing, we should get a PathParamsErrorsNameResult
+        // After toing, we should get a PathParamsErrorsNameResult
         expect(error, isInstanceOf<PathParamsErrorsNameResult>());
         expect((error as PathParamsErrorsNameResult).values.length, 1);
         expect(error.values.first, isInstanceOf<MissingPathParamsError>());
@@ -138,9 +138,9 @@ main() {
 
         await tester.pumpAndSettle();
 
-        vRouterKey.currentState!.pushNamed('id');
+        vRouterKey.currentState!.toNamed('id');
       }, (Object error, StackTrace stack) {
-        // After pushing, we should get a PathParamsErrorsNameResult
+        // After toing, we should get a PathParamsErrorsNameResult
         expect(error, isInstanceOf<NullPathErrorNameResult>());
 
         // Test the output error string
@@ -172,9 +172,9 @@ main() {
         await tester.pumpAndSettle();
 
         vRouterKey.currentState!
-            .pushNamed('settings', pathParameters: {'id': '1'});
+            .toNamed('settings', pathParameters: {'id': '1'});
       }, (Object error, StackTrace stack) {
-        // After pushing, we should get a PathParamsErrorsNameResult
+        // After toing, we should get a PathParamsErrorsNameResult
         expect(error, isInstanceOf<PathParamsErrorsNameResult>());
         expect((error as PathParamsErrorsNameResult).values.length, 1);
         expect(error.values.first, isInstanceOf<OverlyPathParamsError>());
@@ -215,7 +215,7 @@ main() {
 
         vRouterKey.currentState!.pop();
       }, (Object error, StackTrace stack) {
-        // After pushing, we should get a PathParamsErrorsNameResult
+        // After toing, we should get a PathParamsErrorsNameResult
         expect(error, isInstanceOf<PathParamsPopErrors>());
         expect((error as PathParamsPopErrors).values.length, 1);
         expect(error.values.first, isInstanceOf<MissingPathParamsError>());
