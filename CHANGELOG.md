@@ -4,7 +4,10 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
-## \[1.2.0\] - 05/07/2021.
+## \[1.2.0+2\] - 05/07/2021.
+- ✨ : Remove dependency on the `js` package
+
+## \[1.2.0+1\] - 05/07/2021.
 - 🛠️ : dartfmt formated
 
 ## \[1.2.0\] - 05/07/2021.
