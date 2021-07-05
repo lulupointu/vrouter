@@ -1,8 +1,4 @@
-import 'package:flutter/widgets.dart';
-
-/// Describes a class which contains all the useful data
-/// of VRouter
-abstract class VRouterData implements VRouterNavigator {
+abstract class VRouterData {
   /// Url currently synced with the state
   /// This url can differ from the once of the browser if
   /// the state has been yet been updated
@@ -19,7 +15,8 @@ abstract class VRouterData implements VRouterNavigator {
   /// Path of [previousUrl]
   ///
   /// This is the same as the url WITHOUT the queryParameters
-  String? get previousPath => url != null ? Uri.parse(url!).path : null;
+  String? get previousPath =>
+      previousUrl != null ? Uri.parse(previousUrl!).path : null;
 
   /// This state is saved in the browser history. This means that if the user presses
   /// the back or forward button on the navigator, this historyState will be the same
@@ -40,6 +37,24 @@ abstract class VRouterData implements VRouterNavigator {
   /// A list of every names corresponding to the [VRouteElement]s in
   /// the current stack
   List<String> get names;
+}
+
+/// Describes a class which contains all the useful data
+/// of VRouter
+abstract class VRouterSailor implements VRouterNavigator, VRouterData {}
+
+/// Same as [VRouterSailor] except that [VRouter] has been
+/// initialized so we are sure to have a url
+abstract class InitializedVRouterSailor implements VRouterSailor {
+  @override
+  String get url;
+
+  @override
+  String get path => Uri.parse(url).path;
+
+  @override
+  String? get previousPath =>
+      previousUrl != null ? Uri.parse(previousUrl!).path : null;
 }
 
 /// Describes a class which contains all the useful navigation method of VRouter
@@ -120,7 +135,7 @@ abstract class VRouterNavigator {
   ///
   /// [isReplacement] determines whether to overwrite the current
   /// history entry or create a new one. The is mainly useful
-  /// when using [back], [forward] or [go], or on the web to control
+  /// when using [back], [forward] or [vRouteInformationAt], or on the web to control
   /// the browser history entries
   ///
   ///
@@ -151,7 +166,7 @@ abstract class VRouterNavigator {
   ///
   /// [isReplacement] determines whether to overwrite the current
   /// history entry or create a new one. The is mainly useful
-  /// when using [back], [forward] or [go], or on the web to control
+  /// when using [back], [forward] or [vRouteInformationAt], or on the web to control
   /// the browser history entries
   ///
   ///
@@ -177,7 +192,7 @@ abstract class VRouterNavigator {
   ///
   /// [isReplacement] determines whether to overwrite the current
   /// history entry or create a new one. The is mainly useful
-  /// when using [back], [forward] or [go], or on the web to control
+  /// when using [back], [forward] or [vRouteInformationAt], or on the web to control
   /// the browser history entries
   ///
   ///
@@ -210,31 +225,31 @@ abstract class VRouterNavigator {
   ///
   ///
   /// Throws an exception if this is not possible
-  /// Use [urlHistoryCanForward] to know if this is possible
-  void urlHistoryForward();
+  /// Use [historyCanForward] to know if this is possible
+  void historyForward();
 
   /// Goes back 1 in the url history
   ///
   ///
   /// Throws an exception if this is not possible
-  /// Use [urlHistoryCanBack] to know if this is possible
-  void urlHistoryBack();
+  /// Use [historyCanBack] to know if this is possible
+  void historyBack();
 
   /// Goes jumps of [delta] in the url history
   ///
   ///
   /// Throws an exception if this is not possible
-  /// Use [urlHistoryCanGo] to know if this is possible
-  void urlHistoryGo(int delta);
+  /// Use [historyCanGo] to know if this is possible
+  void historyGo(int delta);
 
   /// Check whether going forward 1 in the history url is possible
-  bool urlHistoryCanForward();
+  bool historyCanForward();
 
   /// Check whether going back 1 in the history url is possible
-  bool urlHistoryCanBack();
+  bool historyCanBack();
 
   /// Check whether jumping of [delta] in the history url is possible
-  bool urlHistoryCanGo(int delta);
+  bool historyCanGo(int delta);
 
   /// Starts a pop cycle
   ///

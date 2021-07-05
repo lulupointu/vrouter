@@ -14,12 +14,20 @@
 - 🔁 : `pushSegments` should NOT be used anymore. DO use `toSegments` instead.
 - 🔁 : `pushExternal` should NOT be used anymore. DO use `toExternal` instead.
 - 🔁 : `replaceHistoryState` should NOT be used anymore. DO use `to(..., historyState: newHistoryState, isReplacement: true)` instead.
-- ✨ : The new `toX` have more and better documentation than their `pushX` counterpart
+- ✨ : The new `toX` have even more and better documentation than their `pushX` counterpart
+- ✨ : vrouter.dev has been updated for the new `toX` API
 - 🚨 : `VRouterData` was renamed `VRouterDataNavigator` (this should not impact anyone)
 - 🚨 : `VLocation` was renamed `VUrlHistory` (this should not impact anyone)
-- ✨ : `urlHistoryBack()` goes back from 1 in the history url
-- ✨ : `urlHistoryForward()` goes forward to 1 in the history url
-- ✨ : `urlHistoryGo(int delta)` goes to i (positive or negative) from the history url
+- ✨ : `historyBack()` goes back from 1 in the history
+- ✨ : `historyForward()` goes forward to 1 in the history
+- ✨ : `historyGo(int delta)` goes to i (positive or negative) from the history
+- ✨ : `historyCanBack()` check whether going back from 1 in the history is possible
+- ✨ : `historyCanForward()` check whether going forward to 1 in the history is possible
+- ✨ : `historyCanGo(int delta)` check whether going to i (positive or negative) from the history is possible
+- ✨ : vrouter.dev has documentation and example on the new `history` API
+- ✨ : VRouter now has logs! `VRouter.logs` can be change to change which logs to show (`VLogs.none`, `VLogs.info` or `VLogs.warning`)
+- ✨ : vrouter.dev has a new example on `stackedRoutes`
+- 🛠️ : Mobile deep-linking should now work
 
 ## \[1.1.4+17\] - 19/06/2021.
 - 🛠️ : Changing `VRouter.navigatorKey` won't produce any flashes anymore (Fixes: https://github.com/lulupointu/vrouter/issues/89)

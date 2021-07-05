@@ -5,11 +5,11 @@ import 'package:vrouter/vrouter.dart';
 
 main() {
   group(
-    'urlHistoryBack',
+    'historyBack',
     () {
       testWidgets(
-        'LocalVRouterData urlHistoryBack should go -1 in the UrlHistory if it is possible',
-            (WidgetTester tester) async {
+        'LocalVRouterData historyBack should go -1 in the History if it is possible',
+        (WidgetTester tester) async {
           final vRouterKey = GlobalKey<VRouterState>();
 
           await tester.pumpWidget(
@@ -47,13 +47,13 @@ main() {
 
           // At first we are on "/" so only VWidget1 should be shown
 
-          // Navigate to 'settings' to populate the urlHistory
+          // Navigate to 'settings' to populate the history
           // Tap the add button.
           await tester.tap(find.byType(TextButton));
           await tester.pumpAndSettle();
 
-          // Try to call urlHistoryBack
-          vRouterKey.currentState!.urlHistoryBack();
+          // Try to call historyBack
+          vRouterKey.currentState!.historyBack();
           await tester.pumpAndSettle();
 
           // Now we should be on '/' again
@@ -64,8 +64,8 @@ main() {
       );
 
       testWidgets(
-        'LocalVRouterData urlHistoryCanBack should return true if going -1 in the UrlHistory IS possible',
-            (WidgetTester tester) async {
+        'LocalVRouterData historyCanBack should return true if going -1 in the History IS possible',
+        (WidgetTester tester) async {
           final vRouterKey = GlobalKey<VRouterState>();
 
           await tester.pumpWidget(
@@ -100,18 +100,18 @@ main() {
 
           // At first we are on "/" so only VWidget1 should be shown
 
-          // Navigate to 'settings' to populate the urlHistory
+          // Navigate to 'settings' to populate the history
           // Tap the add button.
           await tester.tap(find.byType(TextButton));
           await tester.pumpAndSettle();
 
-          expect(vRouterKey.currentState!.urlHistoryCanBack(), true);
+          expect(vRouterKey.currentState!.historyCanBack(), true);
         },
       );
 
       testWidgets(
-        'LocalVRouterData urlHistoryCanBack should return false if going -1 in the UrlHistory IS possible',
-            (WidgetTester tester) async {
+        'LocalVRouterData historyCanBack should return false if going -1 in the History IS possible',
+        (WidgetTester tester) async {
           final vRouterKey = GlobalKey<VRouterState>();
 
           await tester.pumpWidget(
@@ -128,14 +128,14 @@ main() {
 
           await tester.pumpAndSettle();
 
-          // Try to call urlHistoryBack
-          expect(vRouterKey.currentState!.urlHistoryCanBack(), false);
+          // Try to call historyBack
+          expect(vRouterKey.currentState!.historyCanBack(), false);
         },
       );
 
       testWidgets(
-        'LocalVRouterData urlHistoryBack should throw an error when going -1 in the UrlHistory is NOT possible',
-            (WidgetTester tester) async {
+        'LocalVRouterData historyBack should throw an error when going -1 in the History is NOT possible',
+        (WidgetTester tester) async {
           final vRouterKey = GlobalKey<VRouterState>();
 
           await tester.pumpWidget(
@@ -152,129 +152,20 @@ main() {
 
           await tester.pumpAndSettle();
 
-          // Try to call urlHistoryBack
-          expect(() => vRouterKey.currentState!.urlHistoryBack(), throwsA(isA<UrlHistoryNavigationError>()));
+          // Try to call historyBack
+          expect(() => vRouterKey.currentState!.historyBack(),
+              throwsA(isA<HistoryNavigationError>()));
         },
       );
     },
   );
 
   group(
-    'urlHistoryForward',
-        () {
-          testWidgets(
-            'LocalVRouterData urlHistoryForward should go +1 in the UrlHistory if it is possible',
-                (WidgetTester tester) async {
-              final vRouterKey = GlobalKey<VRouterState>();
-
-              await tester.pumpWidget(
-                VRouter(
-                  key: vRouterKey,
-                  routes: [
-                    VWidget(
-                      path: '/',
-                      widget: Builder(
-                        builder: (BuildContext context) => TextButton(
-                          child: Text('VWidget1'),
-                          onPressed: () => VRouter.of(context).to('/settings'),
-                        ),
-                      ),
-                      stackedRoutes: [
-                        VWidget(
-                          path: '/settings',
-                          widget: Builder(
-                            builder: (BuildContext context) => TextButton(
-                              child: Text('VWidget2'),
-                              onPressed: () => VRouter.of(context).to('/'),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-
-              final vWidget1Finder = find.text('VWidget1');
-              final vWidget2Finder = find.text('VWidget2');
-
-              await tester.pumpAndSettle();
-
-              // At first we are on "/" so only VWidget1 should be shown
-
-              // Navigate to 'settings' to populate the urlHistory
-              // Tap the add button.
-              await tester.tap(find.byType(TextButton));
-              await tester.pumpAndSettle();
-
-              // Call urlHistoryBack to go -1 in the urlHistory
-              vRouterKey.currentState!.urlHistoryBack();
-              await tester.pumpAndSettle();
-
-              // Call urlHistoryForward to go +1 in the urlHistory
-              vRouterKey.currentState!.urlHistoryForward();
-              await tester.pumpAndSettle();
-
-              // Now we should be on '/settings' again
-              expect(vRouterKey.currentState!.url, '/settings');
-              expect(vWidget1Finder, findsNothing);
-              expect(vWidget2Finder, findsOneWidget);
-            },
-          );
-
-          testWidgets(
-            'LocalVRouterData urlHistoryForward should return true if going +1 in the UrlHistory IS possible',
-                (WidgetTester tester) async {
-              final vRouterKey = GlobalKey<VRouterState>();
-
-              await tester.pumpWidget(
-                VRouter(
-                  key: vRouterKey,
-                  routes: [
-                    VWidget(
-                      path: '/',
-                      widget: Builder(
-                        builder: (BuildContext context) => TextButton(
-                          child: Text('VWidget1'),
-                          onPressed: () => VRouter.of(context).to('/settings'),
-                        ),
-                      ),
-                      stackedRoutes: [
-                        VWidget(
-                          path: '/settings',
-                          widget: Builder(
-                            builder: (BuildContext context) => TextButton(
-                              child: Text('VWidget2'),
-                              onPressed: () => VRouter.of(context).to('/'),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              );
-
-              await tester.pumpAndSettle();
-
-              // At first we are on "/" so only VWidget1 should be shown
-
-              // Navigate to 'settings' to populate the urlHistory
-              // Tap the add button.
-              await tester.tap(find.byType(TextButton));
-              await tester.pumpAndSettle();
-
-              // Call urlHistoryBack to go -1 in the urlHistory
-              vRouterKey.currentState!.urlHistoryBack();
-              await tester.pumpAndSettle();
-
-              expect(vRouterKey.currentState!.urlHistoryCanForward(), true);
-            },
-          );
-
+    'historyForward',
+    () {
       testWidgets(
-        'LocalVRouterData urlHistoryForward should throw an error when going +1 in the UrlHistory is NOT possible',
-            (WidgetTester tester) async {
+        'LocalVRouterData historyForward should go +1 in the History if it is possible',
+        (WidgetTester tester) async {
           final vRouterKey = GlobalKey<VRouterState>();
 
           await tester.pumpWidget(
@@ -283,22 +174,108 @@ main() {
               routes: [
                 VWidget(
                   path: '/',
-                  widget: Text('VWidget1'),
+                  widget: Builder(
+                    builder: (BuildContext context) => TextButton(
+                      child: Text('VWidget1'),
+                      onPressed: () => VRouter.of(context).to('/settings'),
+                    ),
+                  ),
+                  stackedRoutes: [
+                    VWidget(
+                      path: '/settings',
+                      widget: Builder(
+                        builder: (BuildContext context) => TextButton(
+                          child: Text('VWidget2'),
+                          onPressed: () => VRouter.of(context).to('/'),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
           );
 
+          final vWidget1Finder = find.text('VWidget1');
+          final vWidget2Finder = find.text('VWidget2');
+
           await tester.pumpAndSettle();
 
-          // Try to call urlHistoryForward
-          expect(() => vRouterKey.currentState!.urlHistoryForward(), throwsA(isA<UrlHistoryNavigationError>()));
+          // At first we are on "/" so only VWidget1 should be shown
+
+          // Navigate to 'settings' to populate the history
+          // Tap the add button.
+          await tester.tap(find.byType(TextButton));
+          await tester.pumpAndSettle();
+
+          // Call historyBack to go -1 in the history
+          vRouterKey.currentState!.historyBack();
+          await tester.pumpAndSettle();
+
+          // Call historyForward to go +1 in the history
+          vRouterKey.currentState!.historyForward();
+          await tester.pumpAndSettle();
+
+          // Now we should be on '/settings' again
+          expect(vRouterKey.currentState!.url, '/settings');
+          expect(vWidget1Finder, findsNothing);
+          expect(vWidget2Finder, findsOneWidget);
         },
       );
 
       testWidgets(
-        'LocalVRouterData urlHistoryForward should return false if going +1 in the UrlHistory is NOT possible',
-            (WidgetTester tester) async {
+        'LocalVRouterData historyForward should return true if going +1 in the History IS possible',
+        (WidgetTester tester) async {
+          final vRouterKey = GlobalKey<VRouterState>();
+
+          await tester.pumpWidget(
+            VRouter(
+              key: vRouterKey,
+              routes: [
+                VWidget(
+                  path: '/',
+                  widget: Builder(
+                    builder: (BuildContext context) => TextButton(
+                      child: Text('VWidget1'),
+                      onPressed: () => VRouter.of(context).to('/settings'),
+                    ),
+                  ),
+                  stackedRoutes: [
+                    VWidget(
+                      path: '/settings',
+                      widget: Builder(
+                        builder: (BuildContext context) => TextButton(
+                          child: Text('VWidget2'),
+                          onPressed: () => VRouter.of(context).to('/'),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+
+          await tester.pumpAndSettle();
+
+          // At first we are on "/" so only VWidget1 should be shown
+
+          // Navigate to 'settings' to populate the history
+          // Tap the add button.
+          await tester.tap(find.byType(TextButton));
+          await tester.pumpAndSettle();
+
+          // Call historyBack to go -1 in the history
+          vRouterKey.currentState!.historyBack();
+          await tester.pumpAndSettle();
+
+          expect(vRouterKey.currentState!.historyCanForward(), true);
+        },
+      );
+
+      testWidgets(
+        'LocalVRouterData historyForward should throw an error when going +1 in the History is NOT possible',
+        (WidgetTester tester) async {
           final vRouterKey = GlobalKey<VRouterState>();
 
           await tester.pumpWidget(
@@ -315,8 +292,33 @@ main() {
 
           await tester.pumpAndSettle();
 
-          // Try to call urlHistoryForward
-          expect(vRouterKey.currentState!.urlHistoryCanForward(), false);
+          // Try to call historyForward
+          expect(() => vRouterKey.currentState!.historyForward(),
+              throwsA(isA<HistoryNavigationError>()));
+        },
+      );
+
+      testWidgets(
+        'LocalVRouterData historyForward should return false if going +1 in the History is NOT possible',
+        (WidgetTester tester) async {
+          final vRouterKey = GlobalKey<VRouterState>();
+
+          await tester.pumpWidget(
+            VRouter(
+              key: vRouterKey,
+              routes: [
+                VWidget(
+                  path: '/',
+                  widget: Text('VWidget1'),
+                ),
+              ],
+            ),
+          );
+
+          await tester.pumpAndSettle();
+
+          // Try to call historyForward
+          expect(vRouterKey.currentState!.historyCanForward(), false);
         },
       );
     },

@@ -15,7 +15,7 @@ import 'package:vrouter/src/vrouter_widgets.dart';
 ///   _  pop event based on where the [VRouteElement] is in the [VRoute]
 ///   2. When a [VRouteElement] is no longer in the route, it has a page animation out. During
 ///   _  this, the old VRouterData should be used, which this [LocalVRouterData] holds
-class LocalVRouterData extends InheritedWidget with VRouterData {
+class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
   /// The [VRouteElementNode] of the associated [VRouteElement]
   final VRouteElementNode _vRouteElementNode;
 
@@ -32,7 +32,7 @@ class LocalVRouterData extends InheritedWidget with VRouterData {
     required this.queryParameters,
     required VRouteElementNode vRouteElementNode,
     required BuildContext context,
-  })  : _vRouteElementNode = vRouteElementNode,
+  })   : _vRouteElementNode = vRouteElementNode,
         _context = context,
         super(
           key: key,
@@ -49,7 +49,7 @@ class LocalVRouterData extends InheritedWidget with VRouterData {
   }
 
   @override
-  final String? url;
+  final String url;
 
   @override
   final String? previousUrl;
@@ -195,25 +195,24 @@ class LocalVRouterData extends InheritedWidget with VRouterData {
         openNewTab: openNewTab,
       );
 
-
+  @override
+  void historyForward() => RootVRouterData.of(_context).historyForward();
 
   @override
-  void urlHistoryForward() => RootVRouterData.of(_context).urlHistoryForward();
+  void historyBack() => RootVRouterData.of(_context).historyBack();
 
   @override
-  void urlHistoryBack() => RootVRouterData.of(_context).urlHistoryBack();
+  void historyGo(int delta) => RootVRouterData.of(_context).historyGo(delta);
 
   @override
-  void urlHistoryGo(int delta) => RootVRouterData.of(_context).urlHistoryGo(delta);
+  bool historyCanForward() => RootVRouterData.of(_context).historyCanForward();
 
   @override
-  bool urlHistoryCanForward() => RootVRouterData.of(_context).urlHistoryCanForward();
+  bool historyCanBack() => RootVRouterData.of(_context).historyCanBack();
 
   @override
-  bool urlHistoryCanBack() => RootVRouterData.of(_context).urlHistoryCanBack();
-
-  @override
-  bool urlHistoryCanGo(int delta) => RootVRouterData.of(_context).urlHistoryCanGo(delta);
+  bool historyCanGo(int delta) =>
+      RootVRouterData.of(_context).historyCanGo(delta);
 
   @override
   void pop({
@@ -226,7 +225,8 @@ class LocalVRouterData extends InheritedWidget with VRouterData {
         elementToPop: _vRouteElementNode.getVRouteElementToPop(),
         pathParameters: {
           ...pathParameters,
-          ...this.pathParameters, // Include the previous path parameters when poping
+          ...this
+              .pathParameters, // Include the previous path parameters when poping
         },
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
@@ -243,7 +243,8 @@ class LocalVRouterData extends InheritedWidget with VRouterData {
     final _vNavigatorObserver = Navigator.of(_context)
             .widget
             .observers
-            .firstWhere((navigatorObserver) => navigatorObserver is VNavigatorObserver)
+            .firstWhere(
+                (navigatorObserver) => navigatorObserver is VNavigatorObserver)
         as VNavigatorObserver;
     if (_vNavigatorObserver.hasNavigator1Pushed) {
       return Navigator.of(_context).pop();
@@ -258,13 +259,14 @@ class LocalVRouterData extends InheritedWidget with VRouterData {
 
   @override
   void replaceHistoryState(Map<String, String> historyState) => to(
-        url ?? '/',
+        url,
         historyState: historyState,
         isReplacement: true,
       );
 
   static LocalVRouterData of(BuildContext context) {
-    final localVRouterData = context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
+    final localVRouterData =
+        context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
     if (localVRouterData == null) {
       throw FlutterError(
           'LocalVRouter.of(context) was called with a context which does not contain a LocalVRouterData.\n'

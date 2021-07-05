@@ -23,7 +23,7 @@ main() {
         vRouter,
       );
 
-      expect(caughtError.runtimeType, InvalidPushVError);
+      expect(caughtError.runtimeType, InvalidUrlVError);
 
       // Test the output error string
       expect(

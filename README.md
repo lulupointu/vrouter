@@ -49,6 +49,7 @@ Here are a few things that this package will make easy:
   - [VRedirector](#vredirector)
 - [Go Beyond](#go-beyond)
   - [Initial url](#initial-url)
+  - [Logs](#logs)
   - [Named route](#named-route)
   - [Transitions](#transitions)
 - [Much more](#much-more)
@@ -274,6 +275,19 @@ VRouter(
  initialUrl: '/home',
  routes: [...],
 )
+```
+
+## Logs
+
+By default, VRouter shows logs of every navigation events.
+
+You can *remove* these logs using `VLogs.none`:
+
+```dart
+VRouter(
+  logs: VLogs.none,
+  routes: [...],
+);
 ```
 
 ## Named route

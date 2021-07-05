@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
+import 'package:vrouter/src/vlogs.dart';
 
 import 'package:vrouter/src/vrouter_core.dart';
 import 'package:vrouter/src/vrouter_scope.dart';
@@ -38,7 +39,20 @@ class CupertinoVRouter extends StatefulWidget
   ///    - "history": This will display the url in the way we are used to, without
   ///       the #. However note that you will need to configure your server to make this work.
   ///       Follow the instructions here: [https://router.vuejs.org/guide/essentials/history-mode.html#example-server-configurations]
-  final VRouterModes mode;
+  final VRouterMode mode;
+
+  /// The VRouter logs that are to be shown
+  ///
+  ///
+  /// Most of the logs are navigation event such as
+  /// successful navigation
+  ///
+  ///
+  /// Use VLogs to easily set the logs to show:
+  ///   - VLogs.none opts out of logs
+  ///   - VLogs.info (default) shows every logs
+  ///   - VLogs.warning shows only warning logs
+  final List<VLogLevel> logs;
 
   @override
   Future<void> beforeEnter(VRedirector vRedirector) =>
@@ -114,8 +128,9 @@ class CupertinoVRouter extends StatefulWidget
     this.buildTransition,
     this.transitionDuration,
     this.reverseTransitionDuration,
-    this.mode = VRouterModes.hash,
+    this.mode = VRouterMode.hash,
     this.initialUrl = '/',
+    this.logs = VLogs.info,
     this.navigatorObservers = const [],
     this.builder,
     @Deprecated('Please use navigatorKey instead.\n This has been removed because it is redundant with navigatorKey.')
@@ -406,8 +421,8 @@ class CupertinoVRouter extends StatefulWidget
   ///    in a subtree.
   final ScrollBehavior? scrollBehavior;
 
-  static VRouterData of(BuildContext context) {
-    VRouterData? vRouterData;
+  static VRouterSailor of(BuildContext context) {
+    VRouterSailor? vRouterData;
 
     // First try to get a local MaterialVRouterData
     vRouterData =
@@ -444,7 +459,8 @@ class CupertinoVRouter extends StatefulWidget
   Future<void> beforeUpdate(VRedirector vRedirector) async {}
 }
 
-class CupertinoVRouterState extends State<CupertinoVRouter> implements VRouterData {
+class CupertinoVRouterState extends State<CupertinoVRouter>
+    implements VRouterSailor {
   late VRouterDelegate vRouterDelegate = VRouterDelegate(
     routes: widget.routes,
     builder: widget.builder,
@@ -459,6 +475,7 @@ class CupertinoVRouterState extends State<CupertinoVRouter> implements VRouterDa
     reverseTransitionDuration: widget.reverseTransitionDuration,
     initialUrl: widget.initialUrl,
     navigatorKey: widget.navigatorKey,
+    logs: widget.logs,
   );
 
   @override
@@ -479,6 +496,7 @@ class CupertinoVRouterState extends State<CupertinoVRouter> implements VRouterDa
         reverseTransitionDuration: widget.reverseTransitionDuration,
         initialUrl: widget.initialUrl,
         navigatorKey: widget.navigatorKey,
+        logs: widget.logs,
       );
     }
     super.didUpdateWidget(oldWidget);
@@ -566,10 +584,10 @@ class CupertinoVRouterState extends State<CupertinoVRouter> implements VRouterDa
   @override
   @Deprecated('Use to (vRouter.to) instead')
   void push(
-      String newUrl, {
-        Map<String, String> queryParameters = const {},
-        Map<String, String> historyState = const {},
-      }) =>
+    String newUrl, {
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+  }) =>
       to(
         newUrl,
         queryParameters: queryParameters,
@@ -579,10 +597,10 @@ class CupertinoVRouterState extends State<CupertinoVRouter> implements VRouterDa
   @override
   @Deprecated('Use toSegments instead')
   void pushSegments(
-      List<String> segments, {
-        Map<String, String> queryParameters = const {},
-        Map<String, String> historyState = const {},
-      }) =>
+    List<String> segments, {
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+  }) =>
       toSegments(
         segments,
         queryParameters: queryParameters,
@@ -592,11 +610,11 @@ class CupertinoVRouterState extends State<CupertinoVRouter> implements VRouterDa
   @override
   @Deprecated('Use toNamed instead')
   void pushNamed(
-      String name, {
-        Map<String, String> pathParameters = const {},
-        Map<String, String> queryParameters = const {},
-        Map<String, String> historyState = const {},
-      }) =>
+    String name, {
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+  }) =>
       toNamed(
         name,
         pathParameters: pathParameters,
@@ -607,10 +625,10 @@ class CupertinoVRouterState extends State<CupertinoVRouter> implements VRouterDa
   @override
   @Deprecated('Use vRouter.to(..., isReplacement: true) instead')
   void pushReplacement(
-      String newUrl, {
-        Map<String, String> queryParameters = const {},
-        Map<String, String> historyState = const {},
-      }) =>
+    String newUrl, {
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+  }) =>
       to(
         newUrl,
         queryParameters: queryParameters,
@@ -621,11 +639,11 @@ class CupertinoVRouterState extends State<CupertinoVRouter> implements VRouterDa
   @override
   @Deprecated('Use vRouter.toNamed(..., isReplacement: true) instead')
   void pushReplacementNamed(
-      String name, {
-        Map<String, String> pathParameters = const {},
-        Map<String, String> queryParameters = const {},
-        Map<String, String> historyState = const {},
-      }) =>
+    String name, {
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+  }) =>
       toNamed(
         name,
         pathParameters: pathParameters,
@@ -643,18 +661,18 @@ class CupertinoVRouterState extends State<CupertinoVRouter> implements VRouterDa
   @Deprecated(
       'Use to(context.vRouter.url!, isReplacement: true, historyState: newHistoryState) instead')
   void replaceHistoryState(Map<String, String> historyState) => to(
-    url ?? '/',
-    historyState: historyState,
-    isReplacement: true,
-  );
+        url ?? '/',
+        historyState: historyState,
+        isReplacement: true,
+      );
 
   @override
   void to(
-      String path, {
-        Map<String, String> queryParameters = const {},
-        Map<String, String> historyState = const {},
-        isReplacement = false,
-      }) =>
+    String path, {
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+    isReplacement = false,
+  }) =>
       vRouterDelegate.to(
         path,
         queryParameters: queryParameters,
@@ -664,11 +682,11 @@ class CupertinoVRouterState extends State<CupertinoVRouter> implements VRouterDa
 
   @override
   void toSegments(
-      List<String> segments, {
-        Map<String, String> queryParameters = const {},
-        Map<String, String> historyState = const {},
-        isReplacement = false,
-      }) =>
+    List<String> segments, {
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+    isReplacement = false,
+  }) =>
       vRouterDelegate.toSegments(
         segments,
         queryParameters: queryParameters,
@@ -678,12 +696,12 @@ class CupertinoVRouterState extends State<CupertinoVRouter> implements VRouterDa
 
   @override
   void toNamed(
-      String name, {
-        Map<String, String> pathParameters = const {},
-        Map<String, String> queryParameters = const {},
-        Map<String, String> historyState = const {},
-        bool isReplacement = false,
-      }) =>
+    String name, {
+    Map<String, String> pathParameters = const {},
+    Map<String, String> queryParameters = const {},
+    Map<String, String> historyState = const {},
+    bool isReplacement = false,
+  }) =>
       vRouterDelegate.toNamed(
         name,
         pathParameters: pathParameters,
@@ -693,26 +711,27 @@ class CupertinoVRouterState extends State<CupertinoVRouter> implements VRouterDa
       );
 
   @override
-  void toExternal(String newUrl, {bool openNewTab = false}) => vRouterDelegate.toExternal(
-    newUrl,
-    openNewTab: openNewTab,
-  );
+  void toExternal(String newUrl, {bool openNewTab = false}) =>
+      vRouterDelegate.toExternal(
+        newUrl,
+        openNewTab: openNewTab,
+      );
 
   @override
-  void urlHistoryForward() => vRouterDelegate.urlHistoryForward();
+  void historyForward() => vRouterDelegate.historyForward();
 
   @override
-  void urlHistoryBack() => vRouterDelegate.urlHistoryBack();
+  void historyBack() => vRouterDelegate.historyBack();
 
   @override
-  void urlHistoryGo(int delta) => vRouterDelegate.urlHistoryGo(delta);
+  void historyGo(int delta) => vRouterDelegate.historyGo(delta);
 
   @override
-  bool urlHistoryCanForward() => vRouterDelegate.urlHistoryCanForward();
+  bool historyCanForward() => vRouterDelegate.historyCanForward();
 
   @override
-  bool urlHistoryCanBack() => vRouterDelegate.urlHistoryCanBack();
+  bool historyCanBack() => vRouterDelegate.historyCanBack();
 
   @override
-  bool urlHistoryCanGo(int delta) => vRouterDelegate.urlHistoryCanGo(delta);
+  bool historyCanGo(int delta) => vRouterDelegate.historyCanGo(delta);
 }

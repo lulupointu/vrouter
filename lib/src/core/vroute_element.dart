@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/core/route.dart';
 import 'package:vrouter/src/core/vredirector.dart';
-import 'package:vrouter/src/vroute_elements/vroute_element_with_name.dart';
 
 /// [VRouteElement] is the base class for any object used in routes, stackedRoutes
 /// or nestedRoutes

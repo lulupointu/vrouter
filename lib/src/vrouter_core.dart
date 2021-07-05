@@ -10,6 +10,7 @@ export 'core/vroute_information_parser.dart';
 export 'core/vrouter_data.dart';
 export 'core/vrouter_delegate.dart';
 export 'vrouter_scope/vrouter_scope.dart';
+export 'core/vlogs.dart';
 
 export 'core/route.dart';
 export 'core/vrouter_data.dart';

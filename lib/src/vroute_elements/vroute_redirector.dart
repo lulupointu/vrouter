@@ -20,7 +20,7 @@ class VRouteRedirector extends VRouteElementBuilder {
 
   @override
   Future<void> beforeEnter(VRedirector vRedirector) async =>
-      vRedirector.pushReplacement(redirectTo);
+      vRedirector.to(redirectTo, isReplacement: true);
 
   @override
   List<VRouteElement> buildRoutes() => [

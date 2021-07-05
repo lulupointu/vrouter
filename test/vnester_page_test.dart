@@ -324,8 +324,7 @@ main() {
                 return Scaffold(
                   body: Text('VWidget1'),
                   floatingActionButton: FloatingActionButton(
-                    onPressed: () =>
-                        VRouter.of(context).to('/settings/other'),
+                    onPressed: () => VRouter.of(context).to('/settings/other'),
                   ),
                 );
               },

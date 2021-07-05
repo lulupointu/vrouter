@@ -39,27 +39,27 @@ class VRedirector implements VRouterNavigator {
   /// The url we are going to
   final String? toUrl;
 
-  /// The [VRouterData] of the previous route
+  /// The [VRouterSailor] of the previous route
   /// Useful information is:
-  ///   * [VRouterData.pathParameters]
-  ///   * [VRouterData.queryParameters]
-  ///   * [VRouterData.historyState]
+  ///   * [VRouterSailor.pathParameters]
+  ///   * [VRouterSailor.queryParameters]
+  ///   * [VRouterSailor.historyState]
   ///
   /// Note that you should NOT call [newVRouterData.replaceHistoryState]
   ///   If you are in beforeLeave, call [saveHistoryState] instead
   ///   If you are in beforeEnter, you can't save an history state here
-  final RootVRouterData? previousVRouterData;
+  final VRedirectorData? previousVRouterData;
 
-  /// The [VRouterData] of the new route
+  /// The [VRouterSailor] of the new route
   /// Useful information is:
-  ///   * [VRouterData.pathParameters]
-  ///   * [VRouterData.queryParameters]
-  ///   * [VRouterData.historyState]
+  ///   * [VRouterSailor.pathParameters]
+  ///   * [VRouterSailor.queryParameters]
+  ///   * [VRouterSailor.historyState]
   ///
   /// Note that you should NOT call [newVRouterData.replaceHistoryState]
   ///   If you are in beforeLeave, call [saveHistoryState] instead
   ///   If you are in beforeEnter, you can't save an history state here
-  final RootVRouterData? newVRouterData;
+  final VRedirectorData? newVRouterData;
 
   /// Function which will be executed after stopping the redirection
   /// if [to], [toNamed], ... have been used.
@@ -179,7 +179,7 @@ class VRedirector implements VRouterNavigator {
 
   /// Prevent the current redirection and redirects to [path] instead
   ///
-  /// See [VRouterData.to] for more information on [to]
+  /// See [VRouterSailor.to] for more information on [to]
   @override
   void to(
     String path, {
@@ -203,7 +203,7 @@ class VRedirector implements VRouterNavigator {
   /// Prevent the current redirection and redirects to the
   /// external [url] instead
   ///
-  /// See [VRouterData.toExternal] for more information on [toExternal]
+  /// See [VRouterSailor.toExternal] for more information on [toExternal]
   @override
   void toExternal(
     String url, {
@@ -223,7 +223,7 @@ class VRedirector implements VRouterNavigator {
   /// Prevent the current redirection and redirects to the VRouteElement
   /// with [name] instead
   ///
-  /// See [VRouterData.toNamed] for more information on [toNamed]
+  /// See [VRouterSailor.toNamed] for more information on [toNamed]
   @override
   void toNamed(
     String name, {
@@ -248,7 +248,7 @@ class VRedirector implements VRouterNavigator {
   /// Prevent the current redirection and redirects to the new path
   /// composed of the url-encoded [segments] instead
   ///
-  /// See [VRouterData.toSegments] for more information on [toSegments]
+  /// See [VRouterSailor.toSegments] for more information on [toSegments]
   @override
   void toSegments(
     List<String> segments, {
@@ -270,43 +270,43 @@ class VRedirector implements VRouterNavigator {
   }
 
   @override
-  void urlHistoryForward() {
+  void historyForward() {
     stopRedirection();
     _redirectFunction = ({
       required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode,
     }) =>
-        vRouterDelegate.urlHistoryForward();
+        vRouterDelegate.historyForward();
   }
 
   @override
-  void urlHistoryBack() {
+  void historyBack() {
     stopRedirection();
     _redirectFunction = ({
       required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode,
     }) =>
-        vRouterDelegate.urlHistoryBack();
+        vRouterDelegate.historyBack();
   }
 
   @override
-  void urlHistoryGo(int delta) {
+  void historyGo(int delta) {
     stopRedirection();
     _redirectFunction = ({
       required VRouterDelegate vRouterDelegate,
       required VRouteElementNode vRouteElementNode,
     }) =>
-        vRouterDelegate.urlHistoryGo(delta);
+        vRouterDelegate.historyGo(delta);
   }
 
   @override
-  bool urlHistoryCanForward() => _vRouterDelegate.urlHistoryCanForward();
+  bool historyCanForward() => _vRouterDelegate.historyCanForward();
 
   @override
-  bool urlHistoryCanBack() => _vRouterDelegate.urlHistoryCanBack();
+  bool historyCanBack() => _vRouterDelegate.historyCanBack();
 
   @override
-  bool urlHistoryCanGo(int delta) => _vRouterDelegate.urlHistoryCanGo(delta);
+  bool historyCanGo(int delta) => _vRouterDelegate.historyCanGo(delta);
 
   /// Prevent the current redirection and call pop instead
   ///
@@ -364,4 +364,33 @@ class VRedirector implements VRouterNavigator {
         historyState: historyState,
         isReplacement: true,
       );
+}
+
+class VRedirectorData extends VRouterData {
+  @override
+  final Map<String, String> historyState;
+
+  @override
+  final List<String> names;
+
+  @override
+  final Map<String, String> pathParameters;
+
+  @override
+  final String? previousUrl;
+
+  @override
+  final Map<String, String> queryParameters;
+
+  @override
+  final String? url;
+
+  VRedirectorData({
+    required this.historyState,
+    required this.names,
+    required this.pathParameters,
+    required this.previousUrl,
+    required this.queryParameters,
+    required this.url,
+  });
 }

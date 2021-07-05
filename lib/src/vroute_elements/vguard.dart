@@ -9,7 +9,7 @@ import 'package:vrouter/src/vrouter_core.dart';
 /// Use [beforeEnter], [beforeLeave] or [beforeUpdate] to get navigation changes before
 /// they take place. These methods will give you a [VRedirector] that you can use to:
 ///   - know about the navigation changes [VRedirector.previousVRouterData] and [VRedirector.newVRouterData]
-///   - redirect using [VRedirector.push] or stop the navigation using [VRedirector.stopRedirection]
+///   - redirect using [VRedirector.to] or stop the navigation using [VRedirector.stopRedirection]
 ///
 /// Use [afterEnter] or [afterUpdate] to get notification changes after they happened. At this point
 /// you can use [VRouter.of(context)] to get any information about the new route

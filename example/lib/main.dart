@@ -5,7 +5,8 @@ void main() {
   runApp(
     VRouter(
       debugShowCheckedModeBanner: false, // VRouter acts as a MaterialApp
-      mode: VRouterModes.history, // Remove the '#' from the url
+      mode: VRouterMode.history, // Remove the '#' from the url
+      logs: VLogs.info, // Defines which logs to show, info is the default
       routes: [
         VWidget(
           path: '/login',
@@ -29,23 +30,25 @@ class ConnectedRoutes extends VRouteElementBuilder {
   static final String profile = 'profile';
 
   static void toProfile(BuildContext context, String username) =>
-      context.vRouter.toUrl('/$username/$profile');
+      context.vRouter.to('/$username/$profile');
 
   static final String settings = 'settings';
 
   static void toSettings(BuildContext context, String username) =>
-      context.vRouter.toUrl('/$username/$settings');
+      context.vRouter.to('/$username/$settings');
 
   @override
   List<VRouteElement> buildRoutes() {
     return [
       VNester(
-        path: '/:username', // :username is a path parameter and can be any value
+        path:
+            '/:username', // :username is a path parameter and can be any value
         widgetBuilder: (child) => Builder(
           // Simply use a Builder if you need the context
           builder: (context) {
             // We can use the names to get the index, this is sometimes preferred to parsing the url
-            final currentIndex = context.vRouter.names.contains(profile) ? 0 : 1;
+            final currentIndex =
+                context.vRouter.names.contains(profile) ? 0 : 1;
             return MyScaffold(child, currentIndex: currentIndex);
           },
         ),
@@ -147,8 +150,10 @@ class MyScaffold extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         items: [
-          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
-          BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'Info'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.person_outline), label: 'Profile'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.info_outline), label: 'Info'),
         ],
         onTap: (int index) {
           // We can access this username via the path parameters
@@ -165,7 +170,7 @@ class MyScaffold extends StatelessWidget {
       // This FAB is shared with login and shows hero animations working with no issues
       floatingActionButton: FloatingActionButton(
         heroTag: 'FAB',
-        onPressed: () => VRouter.of(context).toUrl('/login'),
+        onPressed: () => VRouter.of(context).to('/login'),
         child: Icon(Icons.logout),
       ),
     );
@@ -196,8 +201,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
             children: [
               TextButton(
                 onPressed: () {
-                  VRouter.of(context).toUrl(
-                    context.vRouter.url!,
+                  VRouter.of(context).to(
+                    context.vRouter.url,
                     isReplacement: true,
                     historyState: {'count': '${count + 1}'},
                   );
@@ -208,9 +213,28 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     borderRadius: BorderRadius.circular(50),
                     color: Colors.blueAccent,
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                   child: Text(
                     'Your pressed this button $count times',
+                    style: buttonTextStyle,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              TextButton(
+                onPressed: () {
+                  print('historyState: ${context.vRouter.historyState}');
+                },
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(50),
+                    color: Colors.blueAccent,
+                  ),
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                  child: Text(
+                    'Press to print historyState',
                     style: buttonTextStyle,
                   ),
                 ),
@@ -229,6 +253,8 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   }
 
   void getCountFromState(BuildContext context) {
+    print(
+        'AFTER UPDATE with historyState: ${VRouter.of(context).historyState}');
     setState(() {
       count = (VRouter.of(context).historyState['count'] == null)
           ? 0

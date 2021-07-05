@@ -1,10 +1,8 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:vrouter/src/core/errors.dart';
+import 'package:vrouter/src/core/vlogs.dart';
 import 'package:vrouter/src/core/vnavigator_observer.dart';
 import 'package:vrouter/src/core/vpop_data.dart';
 import 'package:vrouter/src/core/vredirector.dart';
@@ -13,6 +11,8 @@ import 'package:vrouter/src/core/route.dart';
 import 'package:vrouter/src/core/vroute_element.dart';
 import 'package:vrouter/src/core/vroute_element_node.dart';
 import 'package:vrouter/src/core/vrouter_data.dart';
+import 'package:vrouter/src/logs/vlog_printer.dart';
+import 'package:vrouter/src/logs/vlogs.dart';
 import 'package:vrouter/src/vrouter_scope.dart';
 import 'package:vrouter/src/vrouter_scope/vrouter_scope.dart';
 import 'package:vrouter/src/helpers/empty_page.dart';
@@ -22,7 +22,8 @@ import 'package:vrouter/src/wrappers/move_to_background.dart';
 import 'package:vrouter/src/wrappers/platform/platform.dart';
 import 'package:vrouter/src/wrappers/browser_helpers/browser_helpers.dart';
 
-class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifier {
+class VRouterDelegate extends RouterDelegate<RouteInformation>
+    with ChangeNotifier {
   /// This list holds every possible routes of your app
   final List<VRouteElement> routes;
 
@@ -34,9 +35,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   /// Note that if this is not implemented, every route which does not implement
   /// its own buildTransition will be given a default transition: this of a
   /// [MaterialPage] or a [CupertinoPage] depending on the platform
-  final Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
-      buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child)? buildTransition;
 
   /// The duration of [VRouter.buildTransition]
   final Duration? transitionDuration;
@@ -60,11 +60,25 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   /// They are here to prevent breaking animations
   final GlobalKey<NavigatorState> navigatorKey;
 
+  /// The VRouter logs that are to be shown
+  ///
+  ///
+  /// Most of the logs are navigation event such as
+  /// successful navigation
+  ///
+  ///
+  /// Use VLogs to easily set the logs to show:
+  ///   - VLogs.none opts out of logs
+  ///   - VLogs.info (default) shows every logs
+  ///   - VLogs.warning shows only warning logs
+  final List<VLogLevel> logs;
+
   VRouterDelegate({
     required this.routes,
     this.builder,
     this.navigatorObservers = const [],
-    Future<void> Function(VRedirector vRedirector) beforeEnter = VoidVGuard.voidBeforeEnter,
+    Future<void> Function(VRedirector vRedirector) beforeEnter =
+        VoidVGuard.voidBeforeEnter,
     Future<void> Function(
       VRedirector vRedirector,
       void Function(Map<String, String> historyState) saveHistoryState,
@@ -72,13 +86,15 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
         beforeLeave = VoidVGuard.voidBeforeLeave,
     void Function(BuildContext context, String? from, String to) afterEnter =
         VoidVGuard.voidAfterEnter,
-    Future<void> Function(VRedirector vRedirector) onPop = VoidVPopHandler.voidOnPop,
+    Future<void> Function(VRedirector vRedirector) onPop =
+        VoidVPopHandler.voidOnPop,
     Future<void> Function(VRedirector vRedirector) onSystemPop =
         VoidVPopHandler.voidOnSystemPop,
     this.buildTransition,
     this.transitionDuration,
     this.reverseTransitionDuration,
     this.initialUrl = '/',
+    this.logs = VLogs.info,
     GlobalKey<NavigatorState>? navigatorKey,
   })  : navigatorKey = navigatorKey ?? GlobalKey<NavigatorState>(),
         _vNavigatorObserver = VNavigatorObserver(),
@@ -90,6 +106,9 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
           onPop: onPop,
           onSystemPop: onSystemPop,
         ) {
+    // Set the logs to the desired ones
+    VLogPrinter.showLevels = logs;
+
     // If we are on the web, we listen to any unload event.
     // This allows us to call beforeLeave when the browser or the tab
     // is being closed for example
@@ -114,18 +133,12 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   /// If is only used in the web to know where we are when
   /// the user interacts with the browser instead of the app
   /// (e.g back button)
-  late int _serialCount;
+  // late int _historyIndex;
 
   /// When set to true, urlToAppState will be ignored
   /// You must manually reset it to true otherwise it will
   /// be ignored forever.
   bool _ignoreNextBrowserCalls = false;
-
-  /// When set to false, appStateToUrl will be "ignored"
-  /// i.e. no new history entry will be created
-  /// You must manually reset it to true otherwise it will
-  /// be ignored forever.
-  bool _doReportBackUrlToBrowser = true;
 
   /// The child of this widget
   ///
@@ -198,8 +211,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   /// Note that this does not call setState
   void _updateStateVariables(
     VRoute vRoute,
-    String newUrl, {
-    required Map<String, String> queryParameters,
+    Uri newUri, {
     required Map<String, String> historyState,
     required List<VWidgetGuardMessageRoot> deactivatedVWidgetGuardsMessagesRoot,
   }) {
@@ -208,7 +220,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
 
     // Update the urls
     previousUrl = url;
-    url = newUrl;
+    url = newUri.toString();
 
     // Update the history state
     this.historyState = historyState;
@@ -217,25 +229,21 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     this.pathParameters = vRoute.pathParameters;
 
     // Update the query parameters
-    this.queryParameters = queryParameters;
+    this.queryParameters = newUri.queryParameters;
 
     // Update _vWidgetGuardMessagesRoot by removing the no-longer actives VWidgetGuards
-    for (var deactivatedVWidgetGuardMessageRoot in deactivatedVWidgetGuardsMessagesRoot)
+    for (var deactivatedVWidgetGuardMessageRoot
+        in deactivatedVWidgetGuardsMessagesRoot)
       _vWidgetGuardMessagesRoot.remove(deactivatedVWidgetGuardMessageRoot);
-
-    // Update VLocations
-    _vRouterScope.vUrlHistory
-        .setLocationAt(_serialCount, VRouteInformation(location: newUrl, state: historyState));
   }
 
-  /// See [VRouterMethodsHolder.pushNamed]
   String _getUrlFromName(
     String name, {
     Map<String, String> pathParameters = const {},
   }) {
     // Encode the path parameters
-    pathParameters =
-        pathParameters.map((key, value) => MapEntry(key, Uri.encodeComponent(value)));
+    pathParameters = pathParameters
+        .map((key, value) => MapEntry(key, Uri.encodeComponent(value)));
 
     // We use VRouteElement.getPathFromName
     final getPathFromNameResult = _rootVRouter.getPathFromName(
@@ -263,6 +271,32 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     return newPath;
   }
 
+  VRoute getNewVRoute(
+      {required Uri uri, required Map<String, String> historyState}) {
+    final newVRoute = _rootVRouter.buildRoute(
+      VPathRequestData(
+        previousUrl: url,
+        uri: uri,
+        historyState: historyState,
+        rootVRouterContext: _rootVRouterContext,
+        navigatorObserversToReportTo:
+            navigatorObservers, // This ensures that nested navigators report their events too
+      ),
+      parentVPathMatch: ValidVPathMatch(
+        remainingPath: uri.path,
+        pathParameters: {},
+        localPath: null,
+      ),
+      parentCanPop: false,
+    );
+
+    if (newVRoute == null) {
+      throw UnknownUrlVError(url: uri.toString());
+    }
+
+    return newVRoute;
+  }
+
   /// This should be the only way to change a url.
   /// Navigation cycle:
   /// 1. Call beforeLeave in all deactivated [VWidgetGuard]
@@ -282,78 +316,23 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   /// 11. Call afterUpdate in all reused [VWidgetGuard]
   /// 12. Call afterUpdate in all reused [VRouteElement]
   Future<void> _updateUrl(
-    String newUrl, {
+    Uri newUri, {
+    required VRoute? newVRoute,
     Map<String, String> newHistoryState = const {},
-    bool fromBrowser = false,
-    int? newSerialCount,
-    Map<String, String> queryParameters = const {},
-    bool isUrlExternal = false,
-    bool isReplacement = false,
-    bool openNewTab = false,
+    required VoidCallback onCancel,
+    required VoidCallback onUpdate,
   }) async {
-    assert(Platform.isWeb || !fromBrowser);
+    final newUrl = newUri.toString();
 
-    // Reset this to true, new url = new chance to report
-    _doReportBackUrlToBrowser = true;
-
-    var newUri = Uri.parse(newUrl);
-    final newPath = newUri.path;
-    assert(!(newUri.queryParameters.isNotEmpty && queryParameters.isNotEmpty),
-        'You used the queryParameters attribute but the url already contained queryParameters. The latter will be overwritten by the argument you gave');
-    if (queryParameters.isEmpty) {
-      queryParameters = newUri.queryParameters;
-    }
-    // Decode queryParameters
-    queryParameters = queryParameters.map(
-      (key, value) => MapEntry(key, Uri.decodeComponent(value)),
-    );
-
-    // Add the queryParameters to the url if needed
-    if (queryParameters.isNotEmpty) {
-      newUri = Uri(path: newPath, queryParameters: queryParameters);
-    }
-
-    // Get only the path from the url
-    final path = (url != null) ? Uri.parse(url!).path : null;
-
-    late final List<VRouteElement> deactivatedVRouteElements;
-    late final List<VRouteElement> reusedVRouteElements;
-    late final List<VRouteElement> initializedVRouteElements;
-    late final List<VWidgetGuardMessageRoot> deactivatedVWidgetGuardsMessagesRoot;
-    late final List<VWidgetGuardMessageRoot> reusedVWidgetGuardsMessagesRoot;
-    VRoute? newVRoute;
-    if (isUrlExternal) {
-      newVRoute = null;
-      deactivatedVRouteElements = <VRouteElement>[];
-      reusedVRouteElements = <VRouteElement>[];
-      initializedVRouteElements = <VRouteElement>[];
-      deactivatedVWidgetGuardsMessagesRoot = <VWidgetGuardMessageRoot>[];
-      reusedVWidgetGuardsMessagesRoot = <VWidgetGuardMessageRoot>[];
-    } else {
-      // Get the new route
-      newVRoute = _rootVRouter.buildRoute(
-        VPathRequestData(
-          previousUrl: url,
-          uri: newUri,
-          historyState: newHistoryState,
-          rootVRouterContext: _rootVRouterContext,
-          navigatorObserversToReportTo:
-              navigatorObservers, // This ensures that nested navigators report their events too
-        ),
-        parentVPathMatch: ValidVPathMatch(
-          remainingPath: newPath,
-          pathParameters: {},
-          localPath: null,
-        ),
-        parentCanPop: false,
-      );
-
-      if (newVRoute == null) {
-        throw UnknownUrlVError(url: newUrl);
-      }
-
+    List<VRouteElement> deactivatedVRouteElements = [];
+    List<VRouteElement> reusedVRouteElements = [];
+    List<VRouteElement> initializedVRouteElements = [];
+    List<VWidgetGuardMessageRoot> deactivatedVWidgetGuardsMessagesRoot = [];
+    List<VWidgetGuardMessageRoot> reusedVWidgetGuardsMessagesRoot = [];
+    if (newVRoute != null) {
       // This copy is necessary in order not to modify newVRoute.vRouteElements
-      final newVRouteElements = List<VRouteElement>.from(newVRoute.vRouteElements);
+      final newVRouteElements =
+          List<VRouteElement>.from(newVRoute.vRouteElements);
 
       deactivatedVRouteElements = <VRouteElement>[];
       reusedVRouteElements = <VRouteElement>[];
@@ -373,8 +352,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       initializedVRouteElements = newVRouteElements
           .where(
             (newVRouteElement) =>
-                _vRoute.vRouteElements
-                    .indexWhere((vRouteElement) => vRouteElement == newVRouteElement) ==
+                _vRoute.vRouteElements.indexWhere(
+                    (vRouteElement) => vRouteElement == newVRouteElement) ==
                 -1,
           )
           .toList();
@@ -388,8 +367,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
           .toList();
       reusedVWidgetGuardsMessagesRoot = _vWidgetGuardMessagesRoot
           .where(
-            (vWidgetGuardMessageRoot) =>
-                reusedVRouteElements.contains(vWidgetGuardMessageRoot.associatedVRouteElement),
+            (vWidgetGuardMessageRoot) => reusedVRouteElements
+                .contains(vWidgetGuardMessageRoot.associatedVRouteElement),
           )
           .toList();
     }
@@ -403,47 +382,43 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     final vRedirector = VRedirector(
       vRouterDelegate: this,
       fromUrl: url,
-      toUrl: newUri.toString(),
-      previousVRouterData: RootVRouterData(
-        child: Container(),
+      toUrl: newUrl,
+      previousVRouterData: VRedirectorData(
         historyState: historyState,
         pathParameters: _vRoute.pathParameters,
         queryParameters: this.queryParameters,
-        namesBuilder: () => this.names,
-        state: this,
+        names: this.names,
         url: url,
         previousUrl: previousUrl,
       ),
-      newVRouterData: RootVRouterData(
-        child: Container(),
+      newVRouterData: VRedirectorData(
         historyState: newHistoryState,
         pathParameters: newVRoute?.pathParameters ?? {},
         queryParameters: queryParameters,
-        namesBuilder: () => newVRoute?.vRouteElementNode.getNames() ?? [],
-        state: this,
-        url: newUri.toString(),
+        names: newVRoute?.vRouteElementNode.getNames() ?? [],
+        url: newUrl,
         previousUrl: url,
       ),
     );
 
     if (url != null) {
       ///   1. Call beforeLeave in all deactivated [VWidgetGuard]
-      for (var vWidgetGuardMessageRoot in deactivatedVWidgetGuardsMessagesRoot) {
-        await vWidgetGuardMessageRoot.vWidgetGuard.beforeLeave(vRedirector, saveHistoryState);
+      for (var vWidgetGuardMessageRoot
+          in deactivatedVWidgetGuardsMessagesRoot) {
+        await vWidgetGuardMessageRoot.vWidgetGuard
+            .beforeLeave(vRedirector, saveHistoryState);
         if (!vRedirector.shouldUpdate) {
-          await _abortUpdateUrl(
-            fromBrowser: fromBrowser,
-            serialCount: _serialCount,
-            newSerialCount: newSerialCount,
-          );
+          onCancel();
 
-          vRedirector.redirectFunction?.call(
+          return vRedirector.redirectFunction?.call(
             vRouterDelegate: this,
-            vRouteElementNode: _vRoute.vRouteElementNode.getChildVRouteElementNode(
-                    vRouteElement: vWidgetGuardMessageRoot.associatedVRouteElement) ??
-                _vRoute.vRouteElementNode,
+            vRouteElementNode:
+                _vRoute.vRouteElementNode.getChildVRouteElementNode(
+                      vRouteElement:
+                          vWidgetGuardMessageRoot.associatedVRouteElement,
+                    ) ??
+                    _vRoute.vRouteElementNode,
           );
-          return;
         }
       }
 
@@ -451,69 +426,65 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       for (var vRouteElement in deactivatedVRouteElements) {
         await vRouteElement.beforeLeave(vRedirector, saveHistoryState);
         if (!vRedirector.shouldUpdate) {
-          await _abortUpdateUrl(
-            fromBrowser: fromBrowser,
-            serialCount: _serialCount,
-            newSerialCount: newSerialCount,
-          );
-          vRedirector.redirectFunction?.call(
+          onCancel();
+
+          return vRedirector.redirectFunction?.call(
             vRouterDelegate: this,
-            vRouteElementNode: _vRoute.vRouteElementNode
-                    .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
-                _vRoute.vRouteElementNode,
+            vRouteElementNode:
+                _vRoute.vRouteElementNode.getChildVRouteElementNode(
+                      vRouteElement: vRouteElement,
+                    ) ??
+                    _vRoute.vRouteElementNode,
           );
-          return;
         }
       }
 
       /// 3. Call beforeLeave in the [VRouter]
       await _rootVRouter.beforeLeave(vRedirector, saveHistoryState);
       if (!vRedirector.shouldUpdate) {
-        await _abortUpdateUrl(
-          fromBrowser: fromBrowser,
-          serialCount: _serialCount,
-          newSerialCount: newSerialCount,
-        );
-        vRedirector.redirectFunction?.call(
+        onCancel();
+
+        return vRedirector.redirectFunction?.call(
           vRouterDelegate: this,
-          vRouteElementNode: _vRoute.vRouteElementNode,
+          vRouteElementNode:
+              _vRoute.vRouteElementNode.getChildVRouteElementNode(
+                    vRouteElement: _rootVRouter,
+                  ) ??
+                  _vRoute.vRouteElementNode,
         );
-        return;
       }
     }
 
-    if (!isUrlExternal) {
+    if (newVRoute != null) {
       /// 4. Call beforeEnter in the [VRouter]
       await _rootVRouter.beforeEnter(vRedirector);
       if (!vRedirector.shouldUpdate) {
-        await _abortUpdateUrl(
-          fromBrowser: fromBrowser,
-          serialCount: _serialCount,
-          newSerialCount: newSerialCount,
-        );
-        vRedirector.redirectFunction?.call(
+        onCancel();
+
+        return vRedirector.redirectFunction?.call(
           vRouterDelegate: this,
-          vRouteElementNode: _vRoute.vRouteElementNode,
+          vRouteElementNode:
+              _vRoute.vRouteElementNode.getChildVRouteElementNode(
+                    vRouteElement: _rootVRouter,
+                  ) ??
+                  _vRoute.vRouteElementNode,
         );
-        return;
       }
 
       /// 5. Call beforeEnter in all initialized [VRouteElement] of the new route
       for (var vRouteElement in initializedVRouteElements) {
         await vRouteElement.beforeEnter(vRedirector);
         if (!vRedirector.shouldUpdate) {
-          await _abortUpdateUrl(
-            fromBrowser: fromBrowser,
-            serialCount: _serialCount,
-            newSerialCount: newSerialCount,
-          );
-          vRedirector.redirectFunction?.call(
+          onCancel();
+
+          return vRedirector.redirectFunction?.call(
             vRouterDelegate: this,
-            vRouteElementNode: _vRoute.vRouteElementNode
-                    .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
-                _vRoute.vRouteElementNode,
+            vRouteElementNode:
+                _vRoute.vRouteElementNode.getChildVRouteElementNode(
+                      vRouteElement: vRouteElement,
+                    ) ??
+                    _vRoute.vRouteElementNode,
           );
-          return;
         }
       }
 
@@ -521,19 +492,16 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       for (var vWidgetGuardMessageRoot in reusedVWidgetGuardsMessagesRoot) {
         await vWidgetGuardMessageRoot.vWidgetGuard.beforeUpdate(vRedirector);
         if (!vRedirector.shouldUpdate) {
-          await _abortUpdateUrl(
-            fromBrowser: fromBrowser,
-            serialCount: _serialCount,
-            newSerialCount: newSerialCount,
-          );
+          onCancel();
 
-          vRedirector.redirectFunction?.call(
-            vRouterDelegate: this,
-            vRouteElementNode: _vRoute.vRouteElementNode.getChildVRouteElementNode(
-                    vRouteElement: vWidgetGuardMessageRoot.associatedVRouteElement) ??
-                _vRoute.vRouteElementNode,
-          );
-          return;
+          return vRedirector.redirectFunction?.call(
+              vRouterDelegate: this,
+              vRouteElementNode:
+                  _vRoute.vRouteElementNode.getChildVRouteElementNode(
+                        vRouteElement:
+                            vWidgetGuardMessageRoot.associatedVRouteElement,
+                      ) ??
+                      _vRoute.vRouteElementNode);
         }
       }
 
@@ -541,58 +509,32 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       for (var vRouteElement in reusedVRouteElements) {
         await vRouteElement.beforeUpdate(vRedirector);
         if (!vRedirector.shouldUpdate) {
-          await _abortUpdateUrl(
-            fromBrowser: fromBrowser,
-            serialCount: _serialCount,
-            newSerialCount: newSerialCount,
-          );
+          onCancel();
 
-          vRedirector.redirectFunction?.call(
+          return vRedirector.redirectFunction?.call(
             vRouterDelegate: this,
-            vRouteElementNode: _vRoute.vRouteElementNode
-                    .getChildVRouteElementNode(vRouteElement: vRouteElement) ??
-                _vRoute.vRouteElementNode,
+            vRouteElementNode:
+                _vRoute.vRouteElementNode.getChildVRouteElementNode(
+                      vRouteElement: vRouteElement,
+                    ) ??
+                    _vRoute.vRouteElementNode,
           );
-          return;
         }
       }
     }
 
-    final oldSerialCount = _serialCount;
-
-    if (historyStateToSave.isNotEmpty && path != null) {
-      if (!Platform.isWeb) {
-        log(
-          ' WARNING: Tried to store the state $historyStateToSave while not on the web. State saving/restoration only work on the web.\n'
-          'You can safely ignore this message if you just want this functionality on the web.',
-          name: 'VRouter',
-        );
-      } else {
-        ///   The historyStates got in beforeLeave are stored   ///
-        // If we come from the browser, chances are we already left the page
-        // So we need to:
-        //    1. Go back to where we were
-        //    2. Save the historyState
-        //    3. And go back again to the place
-        if (Platform.isWeb && fromBrowser && oldSerialCount != newSerialCount) {
-          _ignoreNextBrowserCalls = true;
-          BrowserHelpers.browserGo(oldSerialCount - newSerialCount!);
-          await BrowserHelpers.onBrowserPopState.firstWhere((element) {
-            return BrowserHelpers.getHistorySerialCount() == oldSerialCount;
-          });
-        }
-        BrowserHelpers.replaceHistoryState(jsonEncode({
-          'serialCount': oldSerialCount,
-          'historyState': jsonEncode(historyStateToSave),
-        }));
-
-        if (Platform.isWeb && fromBrowser && oldSerialCount != newSerialCount) {
-          BrowserHelpers.browserGo(newSerialCount! - oldSerialCount);
-          await BrowserHelpers.onBrowserPopState.firstWhere(
-              (element) => BrowserHelpers.getHistorySerialCount() == newSerialCount);
-          _ignoreNextBrowserCalls = false;
-        }
-      }
+    if (historyStateToSave.isNotEmpty && url != null) {
+      ///   The historyStates got in beforeLeave are stored   ///
+      // If we come from the browser, chances are we already left the page
+      // So we need to:
+      //    1. Go back to where we were
+      //    2. Save the historyState
+      //    3. And go back again to the place
+      _ignoreNextBrowserCalls = true;
+      await _vRouterScope.vHistory.replaceLocation(
+        VRouteInformation(location: newUrl, state: historyStateToSave),
+      );
+      _ignoreNextBrowserCalls = false;
     }
 
     /// Call afterLeave in all deactivated [VRouteElement]
@@ -600,78 +542,26 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       vRouteElement.afterLeave(
         _rootVRouterContext,
         url,
-        newUri.toString(),
+        newUrl,
       );
     }
 
     /// Remove any Navigator 1.0 push
     final navigator1PushCount = _vNavigatorObserver.navigator1PushCount;
-    for (var i = 0; i < navigator1PushCount; i++) navigatorKey.currentState?.pop();
-
-    /// Leave if the url is external
-    if (isUrlExternal) {
-      _ignoreNextBrowserCalls = true;
-      await BrowserHelpers.pushExternal(newUri.toString(), openNewTab: openNewTab);
-      return;
-    }
+    for (var i = 0; i < navigator1PushCount; i++)
+      navigatorKey.currentState?.pop();
 
     ///   The state of the VRouter changes            ///
-    final oldUrl = url;
+    final _oldUrl = url;
 
-    if (isReplacement && Platform.isWeb) {
-      _doReportBackUrlToBrowser = false;
-      _ignoreNextBrowserCalls = true;
-      if (BrowserHelpers.getPathAndQuery(routerMode: _vRouterScope.vRouterMode) !=
-          newUri.toString()) {
-        BrowserHelpers.pushReplacement(
-          newUri.toString(),
-          routerMode: _vRouterScope.vRouterMode,
-          state: jsonEncode({
-            'serialCount': _serialCount,
-            'historyState': jsonEncode(newHistoryState),
-          }),
-        );
-        if (BrowserHelpers.getPathAndQuery(routerMode: _vRouterScope.vRouterMode) !=
-            newUri.toString()) {
-          await BrowserHelpers.onBrowserPopState.firstWhere((element) =>
-              BrowserHelpers.getPathAndQuery(routerMode: _vRouterScope.vRouterMode) ==
-              newUri.toString());
-        }
-      }
-      // BrowserHelpers.replaceHistoryState(jsonEncode({
-      //   'serialCount': _serialCount,
-      //   'historyState': jsonEncode(newHistoryState),
-      // }));
-      _ignoreNextBrowserCalls = false;
-    } else if (fromBrowser) {
-      // If this comes from the browser, newSerialCount is not null
-      _doReportBackUrlToBrowser = false;
-      _serialCount = newSerialCount!;
-
-      // Reset the history state in case it as been overwritten
-      // This can happen when a url is typed manually
-      BrowserHelpers.replaceHistoryState(jsonEncode({
-        'serialCount': _serialCount,
-        'historyState': jsonEncode(newHistoryState),
-      }));
-    } else {
-      // If this comes from a user:
-      //    - If they push the same url+historyState, flutter does not create a new history entry so the serialCount remains the same
-      //    - Else the serialCount gets increased by 1
-      //
-      // Above is not true anymore since we don't use RouteInformationParser
-      // If you want to reuse it, read the comment above and put this line back to
-      // _serialCount = _serialCount + ((newUrl != url || newHistoryState != historyState) ? 1 : 0);
-      newSerialCount ??= (_serialCount + (isReplacement ? 0 : 1));
-      _serialCount = newSerialCount;
-    }
     _updateStateVariables(
       newVRoute!,
-      newUri.toString(),
+      newUri,
       historyState: newHistoryState,
-      queryParameters: queryParameters,
-      deactivatedVWidgetGuardsMessagesRoot: deactivatedVWidgetGuardsMessagesRoot,
+      deactivatedVWidgetGuardsMessagesRoot:
+          deactivatedVWidgetGuardsMessagesRoot,
     );
+    onUpdate();
     notifyListeners();
 
     // We need to do this after rebuild as completed so that the user can have access
@@ -685,20 +575,20 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
         vRouteElement.afterEnter(
           _rootVRouterContext,
           // TODO: Change this to local context? This might imply that we need a global key which is not ideal
-          oldUrl,
-          newUri.toString(),
+          _oldUrl,
+          newUrl,
         );
       }
 
       /// 10. Call afterEnter in the [VRouter]
-      _rootVRouter.afterEnter(_rootVRouterContext, oldUrl, newUri.toString());
+      _rootVRouter.afterEnter(_rootVRouterContext, _oldUrl, newUrl);
 
       /// 11. Call afterUpdate in all reused [VWidgetGuard]
       for (var vWidgetGuardMessageRoot in reusedVWidgetGuardsMessagesRoot) {
         vWidgetGuardMessageRoot.vWidgetGuard.afterUpdate(
           vWidgetGuardMessageRoot.localContext,
-          oldUrl,
-          newUri.toString(),
+          _oldUrl,
+          newUrl,
         );
       }
 
@@ -707,42 +597,11 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
         vRouteElement.afterUpdate(
           _rootVRouterContext,
           // TODO: Change this to local context? This might imply that we need a global key which is not ideal
-          oldUrl,
-          newUri.toString(),
+          _oldUrl,
+          newUrl,
         );
       }
     });
-  }
-
-  /// This function is used in [updateUrl] when the update should be canceled
-  /// This happens and vRedirector is used to stop the navigation
-  ///
-  /// On mobile nothing happens
-  /// On the web, if the browser already navigated away, we have to navigate back to where we were
-  ///
-  /// Note that this should be called before setState, otherwise it is useless and cannot prevent a state spread
-  ///
-  /// newSerialCount should not be null if the updateUrl came from the Browser
-  Future<void> _abortUpdateUrl({
-    required bool fromBrowser,
-    required int serialCount,
-    required int? newSerialCount,
-  }) async {
-    // If the url change comes from the browser, chances are the url is already changed
-    // So we have to navigate back to the old url (stored in _url)
-    // Note: in future version it would be better to delete the last url of the browser
-    //        but it is not yet possible
-    if (Platform.isWeb &&
-        fromBrowser &&
-        (BrowserHelpers.getHistorySerialCount() ?? 0) != serialCount) {
-      _ignoreNextBrowserCalls = true;
-      BrowserHelpers.browserGo(serialCount - newSerialCount!);
-      await BrowserHelpers.onBrowserPopState.firstWhere((element) {
-        return BrowserHelpers.getHistorySerialCount() == serialCount;
-      });
-      _ignoreNextBrowserCalls = false;
-    }
-    return;
   }
 
   /// Performs a systemPop cycle:
@@ -762,8 +621,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
 
     final List<VWidgetGuardMessageRoot> poppedVWidgetGuardsMessagesRoot =
         _vWidgetGuardMessagesRoot
-            .where((vWidgetGuardMessageRoot) =>
-                poppedVRouteElements.contains(vWidgetGuardMessageRoot.associatedVRouteElement))
+            .where((vWidgetGuardMessageRoot) => poppedVRouteElements
+                .contains(vWidgetGuardMessageRoot.associatedVRouteElement))
             .toList();
 
     /// 1. Call onPop in all popped [VWidgetGuards]
@@ -772,8 +631,10 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       if (!vRedirector.shouldUpdate) {
         vRedirector.redirectFunction?.call(
           vRouterDelegate: this,
-          vRouteElementNode: _vRoute.vRouteElementNode.getChildVRouteElementNode(
-                  vRouteElement: vWidgetGuardMessageRoot.associatedVRouteElement) ??
+          vRouteElementNode: _vRoute.vRouteElementNode
+                  .getChildVRouteElementNode(
+                      vRouteElement:
+                          vWidgetGuardMessageRoot.associatedVRouteElement) ??
               _vRoute.vRouteElementNode,
         );
         return;
@@ -799,9 +660,9 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     if (!vRedirector.shouldUpdate) {
       vRedirector.redirectFunction?.call(
         vRouterDelegate: this,
-        vRouteElementNode:
-            _vRoute.vRouteElementNode.getChildVRouteElementNode(vRouteElement: _rootVRouter) ??
-                _vRoute.vRouteElementNode,
+        vRouteElementNode: _vRoute.vRouteElementNode
+                .getChildVRouteElementNode(vRouteElement: _rootVRouter) ??
+            _vRoute.vRouteElementNode,
       );
       return;
     }
@@ -810,9 +671,37 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     if (defaultPopResult.error != null) {
       throw defaultPopResult.error!;
     } else if (vRedirector.newVRouterData != null) {
+      final newUri = Uri.parse(vRedirector.toUrl!);
+
       _updateUrl(
-        vRedirector.toUrl!,
+        newUri,
+        newVRoute: getNewVRoute(
+          uri: newUri,
+          historyState: vPopData.newHistoryState,
+        ),
         newHistoryState: vPopData.newHistoryState,
+        onCancel: () {
+          VLogPrinter.show(
+            VStoppedNavigationTo(
+              vNavigationMethod: VNavigationMethod.pop,
+              url: vRedirector.toUrl!,
+            ),
+          );
+        },
+        onUpdate: () {
+          _vRouterScope.vHistory.pushLocation(
+            VRouteInformation(
+              location: vRedirector.toUrl!,
+              state: vPopData.newHistoryState,
+            ),
+          );
+          VLogPrinter.show(
+            VSuccessfulNavigationTo(
+              vNavigationMethod: VNavigationMethod.pop,
+              url: vRedirector.toUrl!,
+            ),
+          );
+        },
       ); // We don't set query parameters because they are already in the url
     } else if (Platform.isAndroid || Platform.isIOS) {
       // If we didn't find a url to go to, we are at the start of the stack
@@ -838,8 +727,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
 
     final List<VWidgetGuardMessageRoot> poppedVWidgetGuardsMessagesRoot =
         _vWidgetGuardMessagesRoot
-            .where((vWidgetGuardMessageRoot) =>
-                poppedVRouteElements.contains(vWidgetGuardMessageRoot.associatedVRouteElement))
+            .where((vWidgetGuardMessageRoot) => poppedVRouteElements
+                .contains(vWidgetGuardMessageRoot.associatedVRouteElement))
             .toList();
 
     /// 1. Call onSystemPop in all popping [VWidgetGuards] if implemented, else onPop
@@ -853,8 +742,10 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       if (!vRedirector.shouldUpdate) {
         vRedirector.redirectFunction?.call(
           vRouterDelegate: this,
-          vRouteElementNode: _vRoute.vRouteElementNode.getChildVRouteElementNode(
-                  vRouteElement: vWidgetGuardMessageRoot.associatedVRouteElement) ??
+          vRouteElementNode: _vRoute.vRouteElementNode
+                  .getChildVRouteElementNode(
+                      vRouteElement:
+                          vWidgetGuardMessageRoot.associatedVRouteElement) ??
               _vRoute.vRouteElementNode,
         );
         return;
@@ -888,9 +779,9 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     if (!vRedirector.shouldUpdate) {
       vRedirector.redirectFunction?.call(
         vRouterDelegate: this,
-        vRouteElementNode:
-            _vRoute.vRouteElementNode.getChildVRouteElementNode(vRouteElement: _rootVRouter) ??
-                _vRoute.vRouteElementNode,
+        vRouteElementNode: _vRoute.vRouteElementNode
+                .getChildVRouteElementNode(vRouteElement: _rootVRouter) ??
+            _vRoute.vRouteElementNode,
       );
       return;
     }
@@ -899,9 +790,37 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     if (defaultPopResult.error != null) {
       throw defaultPopResult.error!;
     } else if (vRedirector.newVRouterData != null) {
+      final newUri = Uri.parse(vRedirector.toUrl!);
+
       _updateUrl(
-        vRedirector.toUrl!,
+        newUri,
+        newVRoute: getNewVRoute(
+          uri: newUri,
+          historyState: vPopData.newHistoryState,
+        ),
         newHistoryState: vPopData.newHistoryState,
+        onCancel: () {
+          VLogPrinter.show(
+            VStoppedNavigationTo(
+              vNavigationMethod: VNavigationMethod.systemPop,
+              url: vRedirector.toUrl!,
+            ),
+          );
+        },
+        onUpdate: () {
+          _vRouterScope.vHistory.pushLocation(
+            VRouteInformation(
+              location: vRedirector.toUrl!,
+              state: vPopData.newHistoryState,
+            ),
+          );
+          VLogPrinter.show(
+            VSuccessfulNavigationTo(
+              vNavigationMethod: VNavigationMethod.systemPop,
+              url: vRedirector.toUrl!,
+            ),
+          );
+        },
       ); // We don't set query parameters because they are already in the url
     } else if (Platform.isAndroid || Platform.isIOS) {
       // If we didn't find a url to go to, we are at the start of the stack
@@ -925,8 +844,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   DefaultPopResult _defaultPop(VPopData vPopData) {
     assert(url != null);
     // Encode the path parameters
-    final pathParameters =
-        vPopData.pathParameters.map((key, value) => MapEntry(key, Uri.encodeComponent(value)));
+    final pathParameters = vPopData.pathParameters
+        .map((key, value) => MapEntry(key, Uri.encodeComponent(value)));
 
     // We don't use widget.getPathFromPop because widget.routes might have changed with a setState
     final popResult = _vRoute.vRouteElementNode.vRouteElement.getPathFromPop(
@@ -943,38 +862,38 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     // If popResult is not ErrorPopResult, it is either
     // ValidPopResult or PoppingPopResult
     final newPath = (popResult is ValidPopResult) ? popResult.path : null;
-    final newNames = (popResult is ValidPopResult) ? popResult.names : <String>[];
+    final newNames =
+        (popResult is ValidPopResult) ? popResult.names : <String>[];
 
     // This url will be not null if we find a route to go to
     late final String? newUrl;
-    late final RootVRouterData? newVRouterData;
+    late final VRedirectorData? newVRouterData;
 
     // If newPath is empty then the app should be put in the background (for mobile)
     if (newPath != null) {
       // Integrate the given query parameters
       newUrl = Uri.tryParse(newPath)
           ?.replace(
-              queryParameters:
-                  (vPopData.queryParameters.isNotEmpty) ? vPopData.queryParameters : null)
+              queryParameters: (vPopData.queryParameters.isNotEmpty)
+                  ? vPopData.queryParameters
+                  : null)
           .toString();
 
-      newVRouterData = RootVRouterData(
-        child: Container(),
+      newVRouterData = VRedirectorData(
         historyState: vPopData.newHistoryState,
         pathParameters: vPopData.pathParameters,
         queryParameters: vPopData.queryParameters,
-        namesBuilder: () => newNames,
         url: newUrl,
         previousUrl: url,
-        state: this,
+        names: newNames,
       );
     } else {
       newUrl = null;
       newVRouterData = null;
     }
 
-    final vNodeToPop =
-        _vRoute.vRouteElementNode.getVRouteElementNodeFromVRouteElement(vPopData.elementToPop);
+    final vNodeToPop = _vRoute.vRouteElementNode
+        .getVRouteElementNodeFromVRouteElement(vPopData.elementToPop);
 
     assert(vNodeToPop != null);
 
@@ -987,29 +906,29 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     // in the nestedRoutes or stackedRoutes of [elementToPop] [VRouteElementNode]
     // We take the reversed because we when to call onPop in the deepest nested
     // [VRouteElement] first
-    final poppedVRouteElementsFromVNode = vNodeToPop!.getVRouteElements().reversed.toList();
+    final poppedVRouteElementsFromVNode =
+        vNodeToPop!.getVRouteElements().reversed.toList();
 
     // This is the list of every [VRouteElement] which should pop
     final poppedVRouteElements =
         poppedVRouteElementsFromVNode + poppedVRouteElementsFromPopResult;
 
     // elementToPop should have a duplicate so we remove it
-    poppedVRouteElements.removeAt(poppedVRouteElements.indexOf(vPopData.elementToPop));
+    poppedVRouteElements
+        .removeAt(poppedVRouteElements.indexOf(vPopData.elementToPop));
 
     return DefaultPopResult(
       vRedirector: VRedirector(
         vRouterDelegate: this,
         fromUrl: url,
         toUrl: newUrl,
-        previousVRouterData: RootVRouterData(
-          child: Container(),
+        previousVRouterData: VRedirectorData(
           historyState: historyState,
           pathParameters: _vRoute.pathParameters,
           queryParameters: queryParameters,
-          namesBuilder: () => names,
-          state: this,
           previousUrl: previousUrl,
           url: url,
+          names: names,
         ),
         newVRouterData: newVRouterData,
       ),
@@ -1044,22 +963,21 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       vRouterDelegate: this,
       fromUrl: url,
       toUrl: null,
-      previousVRouterData: RootVRouterData(
-        child: Container(),
+      previousVRouterData: VRedirectorData(
         historyState: historyState,
         pathParameters: _vRoute.pathParameters,
         queryParameters: this.queryParameters,
-        namesBuilder: () => names,
-        state: this,
         url: url,
         previousUrl: previousUrl,
+        names: names,
       ),
       newVRouterData: null,
     );
 
     ///   1. Call beforeLeave in all deactivated [VWidgetGuard]
     for (var vWidgetGuardMessageRoot in _vWidgetGuardMessagesRoot) {
-      await vWidgetGuardMessageRoot.vWidgetGuard.beforeLeave(vRedirector, saveHistoryState);
+      await vWidgetGuardMessageRoot.vWidgetGuard
+          .beforeLeave(vRedirector, saveHistoryState);
     }
 
     ///   2. Call beforeLeave in all deactivated [VRouteElement] and [VRouter]
@@ -1069,10 +987,12 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
 
     if (historyStateToSave.isNotEmpty) {
       ///   The historyStates got in beforeLeave are stored   ///
-      BrowserHelpers.replaceHistoryState(jsonEncode({
-        'serialCount': _serialCount,
-        'historyState': jsonEncode(historyStateToSave),
-      }));
+      _vRouterScope.vHistory.replaceLocation(
+        VRouteInformation(
+          location: url!,
+          state: historyStateToSave,
+        ),
+      );
     }
   }
 
@@ -1269,7 +1189,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   /// in a new tab
   @Deprecated('Use toExternal instead')
   void pushExternal(String newUrl, {bool openNewTab = false}) =>
-      _updateUrl(newUrl, isUrlExternal: true, openNewTab: openNewTab);
+      toExternal(newUrl, openNewTab: openNewTab);
 
   /// The main method to navigate to a new path
   ///
@@ -1293,7 +1213,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   ///
   /// [isReplacement] determines whether to overwrite the current
   /// history entry or create a new one. The is mainly useful
-  /// when using [back], [forward] or [go], or on the web to control
+  /// when using [back], [forward] or [historyGo], or on the web to control
   /// the browser history entries
   ///
   ///
@@ -1309,17 +1229,47 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   }) {
     if (!path.startsWith('/')) {
       if (url == null) {
-        throw InvalidPushVError(url: path);
+        throw InvalidUrlVError(url: path);
       }
       final currentPath = Uri.parse(url!).path;
       path = currentPath + (currentPath.endsWith('/') ? '' : '/') + path;
     }
 
+    final uri = Uri(
+      path: path,
+      queryParameters: queryParameters.isNotEmpty ? queryParameters : null,
+    );
+
     _updateUrl(
-      path,
-      queryParameters: queryParameters,
+      uri,
+      newVRoute: getNewVRoute(uri: uri, historyState: historyState),
       newHistoryState: historyState,
-      isReplacement: isReplacement,
+      onCancel: () {
+        VLogPrinter.show(
+          VStoppedNavigationTo(
+            vNavigationMethod: VNavigationMethod.to,
+            url: path,
+          ),
+        );
+      },
+      onUpdate: () {
+        final _updateLocation = isReplacement
+            ? _vRouterScope.vHistory.replaceLocation
+            : _vRouterScope.vHistory.pushLocation;
+
+        _updateLocation(
+          VRouteInformation(
+            location: path,
+            state: historyState,
+          ),
+        );
+        VLogPrinter.show(
+          VSuccessfulNavigationTo(
+            vNavigationMethod: VNavigationMethod.to,
+            url: path,
+          ),
+        );
+      },
     );
   }
 
@@ -1339,7 +1289,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   ///
   /// [isReplacement] determines whether to overwrite the current
   /// history entry or create a new one. The is mainly useful
-  /// when using [back], [forward] or [go], or on the web to control
+  /// when using [back], [forward] or [historyGo], or on the web to control
   /// the browser history entries
   ///
   ///
@@ -1354,7 +1304,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     isReplacement = false,
   }) {
     // Forming the new url by encoding each segment and placing "/" between them
-    final newUrl = segments.map((segment) => Uri.encodeComponent(segment)).join('/');
+    final newUrl =
+        segments.map((segment) => Uri.encodeComponent(segment)).join('/');
 
     // Calling push with this newly formed url
     return to(
@@ -1376,7 +1327,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   ///
   /// [isReplacement] determines whether to overwrite the current
   /// history entry or create a new one. The is mainly useful
-  /// when using [back], [forward] or [go], or on the web to control
+  /// when using [back], [forward] or [historyGo], or on the web to control
   /// the browser history entries
   ///
   ///
@@ -1391,16 +1342,46 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
     Map<String, String> historyState = const {},
     bool isReplacement = false,
   }) {
-    final path = _getUrlFromName(
-      name,
-      pathParameters: pathParameters,
+    final uri = Uri(
+      path: _getUrlFromName(
+        name,
+        pathParameters: pathParameters,
+      ),
+      queryParameters: queryParameters.isNotEmpty ? queryParameters : null,
     );
 
-    to(
-      path,
-      queryParameters: queryParameters,
-      historyState: historyState,
-      isReplacement: isReplacement,
+    _updateUrl(
+      uri,
+      newVRoute: getNewVRoute(uri: uri, historyState: historyState),
+      newHistoryState: historyState,
+      onCancel: () {
+        VLogPrinter.show(
+          VStoppedNavigationTo(
+            vNavigationMethod: VNavigationMethod.toNamed,
+            url: uri.toString(),
+          ),
+        );
+      },
+      onUpdate: () {
+        final _updateLocation = isReplacement
+            ? _vRouterScope.vHistory.replaceLocation
+            : _vRouterScope.vHistory.pushLocation;
+
+        // If the navigation is successful, sync the vHistory
+        // This also pushes to the browser if needed
+        _updateLocation(
+          VRouteInformation(
+            location: uri.toString(),
+            state: historyState,
+          ),
+        );
+        VLogPrinter.show(
+          VSuccessfulNavigationTo(
+            vNavigationMethod: VNavigationMethod.toNamed,
+            url: uri.toString(),
+          ),
+        );
+      },
     );
   }
 
@@ -1415,48 +1396,93 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   ///  - [to] if you don't need segment encoding
   ///  - [toSegments] if you need your path segments to be encoded
   ///  - [toNamed] if you want to navigate by name
-  void toExternal(String newUrl, {bool openNewTab = false}) =>
-      _updateUrl(newUrl, isUrlExternal: true, openNewTab: openNewTab);
+  void toExternal(String newUrl, {bool openNewTab = false}) => _updateUrl(
+        Uri.parse(newUrl),
+        newVRoute: null, // Since it's external, we have no new VRoute
+        onCancel: () {
+          VLogPrinter.show(
+            VStoppedNavigationTo(
+              vNavigationMethod: VNavigationMethod.toExternal,
+              url: newUrl,
+            ),
+          );
+        },
+        onUpdate: () {
+          VLogPrinter.show(
+            VSuccessfulNavigationTo(
+              vNavigationMethod: VNavigationMethod.toExternal,
+              url: newUrl,
+            ),
+          );
+
+          BrowserHelpers.pushExternal(newUrl, openNewTab: openNewTab);
+        },
+      );
 
   /// Goes forward 1 in the url history
   ///
   ///
   /// Throws an exception if this is not possible
-  /// Use [urlHistoryCanForward] to know if this is possible
-  void urlHistoryForward() => urlHistoryGo(1);
+  /// Use [historyCanForward] to know if this is possible
+  void historyForward() => historyGo(1);
 
   /// Goes back 1 in the url history
   ///
   ///
   /// Throws an exception if this is not possible
-  /// Use [urlHistoryCanBack] to know if this is possible
-  void urlHistoryBack() => urlHistoryGo(-1);
+  /// Use [historyCanBack] to know if this is possible
+  void historyBack() => historyGo(-1);
 
   /// Goes jumps of [delta] in the url history
   ///
   ///
   /// Throws an exception if this is not possible
-  /// Use [urlHistoryCanGo] to know if this is possible
-  void urlHistoryGo(int delta) {
-    final newUrl = _vRouterScope.vUrlHistory.go(delta);
+  /// Use [historyCanGo] to know if this is possible
+  void historyGo(int delta) {
+    final vRouteInformation = _vRouterScope.vHistory.vRouteInformationAt(delta);
 
-    if (newUrl != null) {
-      _updateUrl(newUrl, newSerialCount: _serialCount + delta);
+    if (!Platform.isWeb) {
+      assert(vRouteInformation != null);
+
+      final newUri = Uri.parse(vRouteInformation!.location);
+      _updateUrl(
+        newUri,
+        newHistoryState: vRouteInformation.state,
+        newVRoute:
+            getNewVRoute(uri: newUri, historyState: vRouteInformation.state),
+        onCancel: () {
+          VLogPrinter.show(
+            VStoppedNavigationTo(
+              vNavigationMethod: VNavigationMethod.vHistory,
+              url: newUri.toString(),
+            ),
+          );
+        },
+        onUpdate: () {
+          VLogPrinter.show(
+            VSuccessfulNavigationTo(
+              vNavigationMethod: VNavigationMethod.vHistory,
+              url: newUri.toString(),
+            ),
+          );
+
+          // If the navigation is successful, sync the vHistory
+          _vRouterScope.vHistory.go(delta);
+        },
+      );
     } else {
-      assert(Platform.isWeb,
-          'The url from [VUrlHistory.go] was null but the platform was not web. This should never happen.');
       BrowserHelpers.browserGo(delta);
     }
   }
 
   /// Check whether going forward 1 in the history url is possible
-  bool urlHistoryCanForward() => urlHistoryCanGo(1);
+  bool historyCanForward() => historyCanGo(1);
 
   /// Check whether going back 1 in the history url is possible
-  bool urlHistoryCanBack() => urlHistoryCanGo(-1);
+  bool historyCanBack() => historyCanGo(-1);
 
   /// Check whether jumping of [delta] in the history url is possible
-  bool urlHistoryCanGo(int delta) => _vRouterScope.vUrlHistory.canGo(delta);
+  bool historyCanGo(int delta) => _vRouterScope.vHistory.canGo(delta);
 
   /// handles systemPop
   @override
@@ -1471,19 +1497,17 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
         'VRouterDelegate has already been initialized, it should not be initialized multiple times.'
         'Please check VRouterDelegate._isInitialized');
 
-    final vLocations = _vRouterScope.vUrlHistory;
-    // When the app starts, get the serialCount. Default to 0.
-    _serialCount = vLocations.serialCount;
+    final vHistory = _vRouterScope.vHistory;
 
     // Check if this is the first route
-    if (_serialCount == 0) {
+    if (vHistory.historyIndex == 0) {
       // Check if this is the first route
 
-      if (vLocations.currentLocation.location != '' &&
-          vLocations.currentLocation.location != '/') {
+      if (vHistory.currentLocation.location != '' &&
+          vHistory.currentLocation.location != '/') {
         // Is this '' or '/' ? Both seem to appear from time to time
         // If we are deep-linking, just deep-link
-        to(vLocations.currentLocation.location, isReplacement: true);
+        to(vHistory.currentLocation.location, isReplacement: true);
       } else {
         // Else go to [initialUrl]
         to(initialUrl, isReplacement: true);
@@ -1493,8 +1517,9 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       //   - The entire app has been rebuilt
       //   - VRouter.navigatorKey has changed
       // In this case we use _vLocations to get the current location
-      final currentLocation = vLocations.currentLocation.location;
-      to(currentLocation, historyState: vLocations.currentLocation.state, isReplacement: true);
+      final currentLocation = vHistory.currentLocation.location;
+      to(currentLocation,
+          historyState: vHistory.currentLocation.state, isReplacement: true);
     }
 
     _isInitialized = true;
@@ -1509,41 +1534,85 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
   @override
   Future<void> setNewRoutePath(RouteInformation routeInformation) async {
     if (routeInformation.location != null && !_ignoreNextBrowserCalls) {
+      final newUrl = routeInformation.location!;
+
+      final routeState = routeInformation.state as Map<String, dynamic>?;
+
+      final newJsonState = routeState?['app'];
+
       // Get the new state
-      final newState = (Platform.isWeb)
-          ? Map<String, dynamic>.from(jsonDecode((routeInformation.state as String?) ??
-              (BrowserHelpers.getHistoryState() ?? '{}')))
-          : <String, dynamic>{};
+      final Map<String, String> newState = newJsonState != null
+          ? newJsonState.map<String, String>(
+              (key, value) => MapEntry(
+                key.toString(),
+                value.toString(),
+              ),
+            )
+          : <String, String>{};
 
-      // Get the new serial count
-      int? newSerialCount;
-      try {
-        newSerialCount = newState['serialCount'];
-        // ignore: empty_catches
-      } on FormatException {}
-
-      // Get the new history state
-      final newHistoryState =
-          Map<String, String>.from(jsonDecode(newState['historyState'] ?? '{}'));
+      int? newHistoryIndex = routeState?['historyIndex'];
 
       // Check if this is the first route
-      if (newSerialCount == null || newSerialCount == 0) {
+      if (newHistoryIndex == null || newHistoryIndex == 0) {
         // If so, check is the url reported by the browser is the same as the initial url
         // We check "routeInformation.location == '/'" to enable deep linking
-        if (routeInformation.location == '/' && routeInformation.location != initialUrl) {
+        if (routeInformation.location == '/' &&
+            routeInformation.location != initialUrl) {
           return;
         }
       }
 
-      // Call this at each browser update to be sure to allow path restoration on hot reload on flutter web
-      if (Platform.isWeb) BrowserHelpers.resetFlutterSerialCount();
+      // Whether we are visiting a previously visited url
+      // or a new one has been pushed
+      final bool isPush = newHistoryIndex == null;
+
+      final vNavigationMethod = isPush
+          ? VNavigationMethod.browserPush
+          : VNavigationMethod.browserHistory;
+
+      final newUri = Uri.parse(routeInformation.location!);
 
       // Update the app with the new url
       await _updateUrl(
-        routeInformation.location!,
-        newHistoryState: newHistoryState,
-        fromBrowser: true,
-        newSerialCount: newSerialCount ?? _serialCount + 1,
+        newUri,
+        newVRoute: getNewVRoute(uri: newUri, historyState: newState),
+        newHistoryState: newState,
+        onCancel: () {
+          VLogPrinter.show(
+            VStoppedNavigationTo(
+              vNavigationMethod: vNavigationMethod,
+              url: newUrl,
+            ),
+          );
+
+          // If the navigation is canceled and we are on the web, we need to sync the browser
+          if (Platform.isWeb) {
+            BrowserHelpers.browserGo(
+              isPush
+                  ? -1
+                  : _vRouterScope.vHistory.historyIndex - newHistoryIndex,
+            );
+          }
+        },
+        onUpdate: () {
+          VLogPrinter.show(
+            VSuccessfulNavigationTo(
+              vNavigationMethod: vNavigationMethod,
+              url: newUrl,
+            ),
+          );
+
+          // If the navigation is successful, sync the vHistory
+          if (isPush) {
+            _vRouterScope.vHistory.pushLocation(
+              VRouteInformation(location: newUrl, state: newState),
+            );
+          } else {
+            _vRouterScope.vHistory.go(
+              newHistoryIndex - _vRouterScope.vHistory.historyIndex,
+            );
+          }
+        },
       );
     }
   }
@@ -1555,29 +1624,15 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
 
     // We report manually and don't use RouteInformation because flutter
     // does not want to report twice the same RouteInformation
-    if (Platform.isWeb && _doReportBackUrlToBrowser) {
-      BrowserHelpers.push(
-        url!,
-        routerMode: _vRouterScope.vRouterMode,
-        state: jsonEncode({
-          'serialCount': _serialCount,
-          'historyState': jsonEncode(historyState),
-        }),
-      );
-
+    if (Platform.isWeb) {
       // Don't report to [RouteInformationParser], is this bad ?
       return null;
     }
 
-    return _doReportBackUrlToBrowser
-        ? RouteInformation(
-            location: url!,
-            state: jsonEncode({
-              'serialCount': _serialCount,
-              'historyState': jsonEncode(historyState),
-            }),
-          )
-        : null;
+    return RouteInformation(
+      location: url!,
+      state: historyState,
+    );
   }
 
   @override
@@ -1586,15 +1641,16 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       onNotification: (VWidgetGuardMessageRoot vWidgetGuardMessageRoot) {
         if (_vWidgetGuardMessagesRoot.indexWhere(
               (message) =>
-                  message.vWidgetGuard.key == vWidgetGuardMessageRoot.vWidgetGuard.key &&
+                  message.vWidgetGuard.key ==
+                      vWidgetGuardMessageRoot.vWidgetGuard.key &&
                   message.associatedVRouteElement ==
                       vWidgetGuardMessageRoot.associatedVRouteElement,
             ) ==
             -1) {
           _vWidgetGuardMessagesRoot.add(vWidgetGuardMessageRoot);
           WidgetsFlutterBinding.ensureInitialized().addPostFrameCallback((_) {
-            vWidgetGuardMessageRoot.vWidgetGuard
-                .afterEnter(vWidgetGuardMessageRoot.localContext, previousUrl, url!);
+            vWidgetGuardMessageRoot.vWidgetGuard.afterEnter(
+                vWidgetGuardMessageRoot.localContext, previousUrl, url!);
           });
         }
 
@@ -1603,7 +1659,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
       child: RootVRouterData(
         state: this,
         previousUrl: previousUrl,
-        url: url,
+        url: url ?? '',
         pathParameters: pathParameters,
         historyState: historyState,
         queryParameters: queryParameters,
@@ -1633,7 +1689,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
                   vPopData = data;
                 } else {
                   vPopData = VPopData(
-                    elementToPop: _vRoute.vRouteElementNode.getVRouteElementToPop(),
+                    elementToPop:
+                        _vRoute.vRouteElementNode.getVRouteElementToPop(),
                     pathParameters: pathParameters,
                     queryParameters: {},
                     newHistoryState: {},
@@ -1673,7 +1730,7 @@ class DefaultPopResult {
 /// An [InheritedWidget] which should not be accessed by end developers
 ///
 /// [RootVRouterData] holds methods and parameters from [VRouterState]
-class RootVRouterData extends InheritedWidget with VRouterData {
+class RootVRouterData extends InheritedWidget with InitializedVRouterSailor {
   final VRouterDelegate state;
 
   RootVRouterData({
@@ -1686,7 +1743,7 @@ class RootVRouterData extends InheritedWidget with VRouterData {
     required this.pathParameters,
     required this.queryParameters,
     required List<String> Function() namesBuilder,
-  })  : state = state,
+  })   : state = state,
         _namesBuilder = namesBuilder,
         super(
           key: key,
@@ -1702,23 +1759,11 @@ class RootVRouterData extends InheritedWidget with VRouterData {
         old.queryParameters != queryParameters);
   }
 
-  /// Url currently synced with the state
-  /// This url can differ from the once of the browser if
-  /// the state has been yet been updated
-  final String? url;
+  @override
+  final String url;
 
-  /// Previous url that was synced with the state
+  @override
   final String? previousUrl;
-
-  /// Path of [url]
-  ///
-  /// This is the same as the url WITHOUT the queryParameters
-  String? get path => url != null ? Uri.parse(url!).path : null;
-
-  /// Path of [previousUrl]
-  ///
-  /// This is the same as the url WITHOUT the queryParameters
-  String? get previousPath => url != null ? Uri.parse(url!).path : null;
 
   /// This state is saved in the browser history. This means that if the user presses
   /// the back or forward button on the navigator, this historyState will be the same
@@ -1752,14 +1797,16 @@ class RootVRouterData extends InheritedWidget with VRouterData {
   /// is removed from the widget tree
   ///
   /// This should be the default one, i.e. the one of [VRouter]
-  Duration? get defaultPageReverseTransitionDuration => state.reverseTransitionDuration;
+  Duration? get defaultPageReverseTransitionDuration =>
+      state.reverseTransitionDuration;
 
   /// A function to build the transition to or from this route
   ///
   /// This should be the default one, i.e. the one of [VRouter]git
   Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
-      get defaultPageBuildTransition => state.buildTransition;
+      Animation<double> animation,
+      Animation<double> secondaryAnimation,
+      Widget child)? get defaultPageBuildTransition => state.buildTransition;
 
   @override
   @Deprecated('Use to (vRouter.to) instead')
@@ -1888,22 +1935,22 @@ class RootVRouterData extends InheritedWidget with VRouterData {
       );
 
   @override
-  void urlHistoryForward() => state.urlHistoryForward();
+  void historyForward() => state.historyForward();
 
   @override
-  void urlHistoryBack() => state.urlHistoryBack();
+  void historyBack() => state.historyBack();
 
   @override
-  void urlHistoryGo(int delta) => state.urlHistoryGo(delta);
+  void historyGo(int delta) => state.historyGo(delta);
 
   @override
-  bool urlHistoryCanForward() => state.urlHistoryCanForward();
+  bool historyCanForward() => state.historyCanForward();
 
   @override
-  bool urlHistoryCanBack() => state.urlHistoryCanBack();
+  bool historyCanBack() => state.historyCanBack();
 
   @override
-  bool urlHistoryCanGo(int delta) => state.urlHistoryCanGo(delta);
+  bool historyCanGo(int delta) => state.historyCanGo(delta);
 
   @override
   void pop({
@@ -1943,7 +1990,8 @@ class RootVRouterData extends InheritedWidget with VRouterData {
         elementToPop: itemToPop,
         pathParameters: {
           ...pathParameters,
-          ...this.pathParameters, // Include the previous path parameters when popping
+          ...this
+              .pathParameters, // Include the previous path parameters when popping
         },
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
@@ -1963,7 +2011,8 @@ class RootVRouterData extends InheritedWidget with VRouterData {
           elementToPop: elementToPop,
           pathParameters: {
             ...pathParameters,
-            ...this.pathParameters, // Include the previous path parameters when poping
+            ...this
+                .pathParameters, // Include the previous path parameters when popping
           },
           queryParameters: queryParameters,
           newHistoryState: newHistoryState,
@@ -1974,13 +2023,14 @@ class RootVRouterData extends InheritedWidget with VRouterData {
   @Deprecated(
       'Use to(context.vRouter.url!, isReplacement: true, historyState: newHistoryState) instead')
   void replaceHistoryState(Map<String, String> historyState) => to(
-        url ?? '/',
+        url,
         historyState: historyState,
         isReplacement: true,
       );
 
   static RootVRouterData of(BuildContext context) {
-    final rootVRouterData = context.dependOnInheritedWidgetOfExactType<RootVRouterData>();
+    final rootVRouterData =
+        context.dependOnInheritedWidgetOfExactType<RootVRouterData>();
     if (rootVRouterData == null) {
       throw FlutterError(
           'RootVRouterData.of(context) was called with a context which does not contain a VRouter.\n'

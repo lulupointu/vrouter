@@ -38,7 +38,7 @@ main() {
 
       // Navigate to 'settings'
       // Tap the add button.
-      vRouterKey.currentState!.push('/settings');
+      vRouterKey.currentState!.to('/settings');
       await tester.pumpAndSettle();
 
       // Now, only VWidget2 should be visible
@@ -79,7 +79,7 @@ main() {
 
       // Navigate to 'settings'
       // Tap the add button.
-      vRouterKey.currentState!.pushSegments(['settings']);
+      vRouterKey.currentState!.toSegments(['settings']);
       await tester.pumpAndSettle();
 
       // Now, only VWidget2 should be visible
@@ -120,7 +120,7 @@ main() {
 
       // Navigate to 'settings'
       // Tap the add button.
-      vRouterKey.currentState!.push('settings');
+      vRouterKey.currentState!.to('settings');
       await tester.pumpAndSettle();
 
       // Now, only VWidget2 should be visible
@@ -162,7 +162,7 @@ main() {
 
       // Navigate to 'settings'
       // Tap the add button.
-      vRouterKey.currentState!.pushSegments(['bob marley']);
+      vRouterKey.currentState!.toSegments(['bob marley']);
       await tester.pumpAndSettle();
 
       // Now, only VWidget2 should be visible
@@ -293,7 +293,7 @@ main() {
 
       // Navigate to 'settings'
       // Tap the add button.
-      vRouterKey.currentState!.pushNamed('settings');
+      vRouterKey.currentState!.toNamed('settings');
       await tester.pumpAndSettle();
 
       // Now, only VWidget2 should be visible
@@ -336,8 +336,7 @@ main() {
 
       // Navigate to 'settings'
       // Tap the add button.
-      vRouterKey.currentState!
-          .pushNamed('settings', pathParameters: {'id': '1'});
+      vRouterKey.currentState!.toNamed('settings', pathParameters: {'id': '1'});
       await tester.pumpAndSettle();
 
       // Now, only VWidget2 should be visible
@@ -362,7 +361,7 @@ main() {
 
       // Navigate to 'settings'
       // Tap the add button.
-      vRouterKey.currentState!.push('/', queryParameters: {'id': '3'});
+      vRouterKey.currentState!.to('/', queryParameters: {'id': '3'});
       await tester.pumpAndSettle();
 
       expect(vRouterKey.currentState?.queryParameters['id'], '3');

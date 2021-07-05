@@ -49,7 +49,7 @@ main() {
               builder: (BuildContext context) {
                 return TextButton(
                   child: Text('VWidget1'),
-                  onPressed: () => VRouter.of(context).push('/home/settings'),
+                  onPressed: () => VRouter.of(context).to('/home/settings'),
                 );
               },
             ),
@@ -60,7 +60,7 @@ main() {
                   builder: (BuildContext context) {
                     return TextButton(
                       child: Text('VWidget2'),
-                      onPressed: () => VRouter.of(context).push('/home/other'),
+                      onPressed: () => VRouter.of(context).to('/home/other'),
                     );
                   },
                 ),

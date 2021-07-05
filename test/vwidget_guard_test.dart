@@ -16,7 +16,7 @@ main() {
                 afterEnter: (_, __, ___) => count = 1,
                 child: TextButton(
                   child: Text('VWidget1'),
-                  onPressed: () => VRouter.of(context).push('/settings'),
+                  onPressed: () => VRouter.of(context).to('/settings'),
                 ),
               ),
             ),
@@ -44,7 +44,7 @@ main() {
                 afterUpdate: (_, __, ___) => count = 2,
                 child: TextButton(
                   child: Text('VWidget1'),
-                  onPressed: () => VRouter.of(context).push('/settings'),
+                  onPressed: () => VRouter.of(context).to('/settings'),
                 ),
               ),
             ),
@@ -83,7 +83,7 @@ main() {
                     vRedirector.stopRedirection(),
                 child: TextButton(
                   child: Text('VWidget1'),
-                  onPressed: () => VRouter.of(context).push('/settings'),
+                  onPressed: () => VRouter.of(context).to('/settings'),
                 ),
               ),
             ),
@@ -152,7 +152,7 @@ main() {
 
     // Try to navigate to '/other'
     // Tap the add button.
-    vRouterKey.currentState!.push('/other');
+    vRouterKey.currentState!.to('/other');
     await tester.pumpAndSettle();
 
     // The navigation must have been stopped, so VWidget2 should be visible

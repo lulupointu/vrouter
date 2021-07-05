@@ -430,8 +430,7 @@ main() {
                   return Scaffold(
                     body: Text('VWidget1'),
                     floatingActionButton: FloatingActionButton(
-                      onPressed: () =>
-                          VRouter.of(context).toNamed('settings'),
+                      onPressed: () => VRouter.of(context).toNamed('settings'),
                     ),
                   );
                 },
@@ -496,8 +495,7 @@ main() {
                   return Scaffold(
                     body: Text('VWidget1'),
                     floatingActionButton: FloatingActionButton(
-                      onPressed: () =>
-                          VRouter.of(context).toNamed('settings'),
+                      onPressed: () => VRouter.of(context).toNamed('settings'),
                     ),
                   );
                 },

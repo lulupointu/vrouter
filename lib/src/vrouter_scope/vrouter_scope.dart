@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_strategy/url_strategy.dart';
 import 'package:vrouter/src/core/route.dart';
 import 'package:vrouter/src/core/vrouter_delegate.dart';
+import 'package:vrouter/src/vlogs.dart';
 import 'package:vrouter/src/vrouter_scope.dart';
 
 import 'vurl_history/vrouter_modes.dart';
@@ -21,24 +22,21 @@ class VRouterScope extends StatefulWidget {
   ///    - "history": This will display the url in the way we are used to, without
   ///       the #. However note that you will need to configure your server to make this work.
   ///       Follow the instructions here: [https://router.vuejs.org/guide/essentials/history-mode.html#example-server-configurations]
-  final VRouterModes vRouterMode;
+  final VRouterMode vRouterMode;
 
   final Widget child;
 
   VRouterScope({
     Key? key,
     required this.child,
-    this.vRouterMode = VRouterModes.hash,
+    this.vRouterMode = VRouterMode.hash,
   }) : super(key: key) {
     // Setup the url strategy (if hash, do nothing since it is the default)
-    if (!_isUrlStrategySet && vRouterMode == VRouterModes.history) {
+    if (!_isUrlStrategySet && vRouterMode == VRouterMode.history) {
       try {
         setPathUrlStrategy();
       } catch (e) {
-        print(
-          'WARNING: You tried to set the url strategy several time, this should never happen.\n'
-          'If a package that you use (other than VRouter) sets the url strategy, please use the other package.',
-        );
+        VLogPrinter.show(VMultiUrlStrategyLog());
       }
 
       _isUrlStrategySet = true;
@@ -65,8 +63,8 @@ class VRouterScope extends StatefulWidget {
 class _VRouterScopeState extends State<VRouterScope> {
   final vUrlStrategy;
 
-  _VRouterScopeState({required VRouterModes vRouterMode})
-      : vUrlStrategy = VUrlHistory.implementation(vRouterMode);
+  _VRouterScopeState({required VRouterMode vRouterMode})
+      : vUrlStrategy = VHistory.implementation(vRouterMode);
 
   @override
   Widget build(BuildContext context) {
@@ -76,7 +74,7 @@ class _VRouterScopeState extends State<VRouterScope> {
       return VRouterScopeData(
         child: widget.child,
         vRouterMode: widget.vRouterMode,
-        vUrlHistory: vUrlStrategy,
+        vHistory: vUrlStrategy,
         vRoute: vRoute,
         setLatestVRoute: setLatestVRoute,
       );
@@ -134,15 +132,15 @@ class VRouterScopeData extends InheritedWidget {
   ///    - "history": This will display the url in the way we are used to, without
   ///       the #. However note that you will need to configure your server to make this work.
   ///       Follow the instructions here: [https://router.vuejs.org/guide/essentials/history-mode.html#example-server-configurations]
-  final VRouterModes vRouterMode;
+  final VRouterMode vRouterMode;
 
   /// Stores the encountered location of the lifecycle of this app
-  final VUrlHistory vUrlHistory;
+  final VHistory vHistory;
 
   VRouterScopeData({
     required Widget child,
     required this.vRouterMode,
-    required this.vUrlHistory,
+    required this.vHistory,
     required this.vRoute,
     required this.setLatestVRoute,
   }) : super(child: child);
@@ -153,4 +151,14 @@ class VRouterScopeData extends InheritedWidget {
   final VRoute? vRoute;
 
   final void Function(VRoute newVRoute) setLatestVRoute;
+}
+
+class VMultiUrlStrategyLog extends VLog {
+  @override
+  VLogLevel get level => VLogLevel.warning;
+
+  @override
+  String get message =>
+      'You tried to set the url strategy several time, this should never happen.\n'
+      'If a package that you use (other than VRouter) sets the url strategy, please use the other package.';
 }
