@@ -1,4 +1,6 @@
-import 'package:flutter/widgets.dart';
+import 'dart:ui';
+
+import 'package:flutter/cupertino.dart';
 
 import 'vrouter_modes.dart';
 import 'vurl_history.dart';
@@ -14,7 +16,7 @@ class VHistoryNonWeb extends VHistory {
           initialHistoryIndex: 0,
           // Always 0 when the app is started
           initialHistoryLength: 0,
-          // We use [Navigator.defaultRouteName] to enable mobile deep-linking
+          // We use [PlatformDispatcher.instance.defaultRouteName] to enable mobile deep-linking
           initialLocations: [
             VRouteInformation(
               location: Navigator.defaultRouteName,
