@@ -4,6 +4,9 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.2.0+4\] - 07/07/2021.
+- 🛠️ : `toExternal` no longer yield an unexpected null value
+
 ## \[1.2.0+3\] - 06/07/2021.
 - 🛠️ : Fix deep-linking on android cold start
 

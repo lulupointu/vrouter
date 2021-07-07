@@ -554,13 +554,15 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     ///   The state of the VRouter changes            ///
     final _oldUrl = url;
 
-    _updateStateVariables(
-      newVRoute!,
-      newUri,
-      historyState: newHistoryState,
-      deactivatedVWidgetGuardsMessagesRoot:
-          deactivatedVWidgetGuardsMessagesRoot,
-    );
+    if (newVRoute != null) {
+      _updateStateVariables(
+        newVRoute,
+        newUri,
+        historyState: newHistoryState,
+        deactivatedVWidgetGuardsMessagesRoot:
+            deactivatedVWidgetGuardsMessagesRoot,
+      );
+    }
     onUpdate();
     notifyListeners();
 
