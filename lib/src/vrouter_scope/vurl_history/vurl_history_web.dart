@@ -15,7 +15,7 @@ class VHistoryWeb extends VHistory {
 
   VHistoryWeb({
     required VRouterMode vRouterMode,
-  })   : applicationInstanceId = _getInitialApplicationInstanceId(),
+  })  : applicationInstanceId = _getInitialApplicationInstanceId(),
         super(
           vRouterMode: vRouterMode,
           // The serial count might not be 0 (the page might be refreshed)

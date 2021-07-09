@@ -22,7 +22,7 @@ abstract class VHistory {
     required int initialHistoryIndex,
     required int initialHistoryLength,
     required List<VRouteInformation?> initialLocations,
-  })   : _historyIndex = initialHistoryIndex,
+  })  : _historyIndex = initialHistoryIndex,
         _locations = initialLocations {}
 
   int _historyIndex;

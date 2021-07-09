@@ -16,7 +16,6 @@ class UnknownUrlVError extends Error {
 @Deprecated('Use InvalidUrlVError instead')
 typedef InvalidPushVError = InvalidUrlVError;
 
-
 /// This exception is raised when a user tries to navigate to a path which is unspecified
 class InvalidUrlVError extends Error {
   final String url;
@@ -26,7 +25,7 @@ class InvalidUrlVError extends Error {
   @override
   String toString() =>
       "The current url is null but you are trying to access the path \"$url\" which does not start with '/'.\n"
-          "This is likely because you set a initialUrl which does not start with '/'.";
+      "This is likely because you set a initialUrl which does not start with '/'.";
 
   @override
   StackTrace? get stackTrace => StackTrace.current;

@@ -64,7 +64,7 @@ class VGuard extends VRouteElementBuilder with VoidVPopHandler {
     void Function(BuildContext context, String? from, String to) afterUpdate =
         VoidVGuard.voidAfterUpdate,
     required this.stackedRoutes,
-  })   : _beforeEnter = beforeEnter,
+  })  : _beforeEnter = beforeEnter,
         _beforeUpdate = beforeUpdate,
         _beforeLeave = beforeLeave,
         _afterEnter = afterEnter,

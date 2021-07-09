@@ -32,7 +32,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
     required this.queryParameters,
     required VRouteElementNode vRouteElementNode,
     required BuildContext context,
-  })   : _vRouteElementNode = vRouteElementNode,
+  })  : _vRouteElementNode = vRouteElementNode,
         _context = context,
         super(
           key: key,

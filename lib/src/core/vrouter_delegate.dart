@@ -1237,9 +1237,25 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       path = currentPath + (currentPath.endsWith('/') ? '' : '/') + path;
     }
 
+    // Extract query parameters if any was passed directly in [path]
+    final pathUri = Uri.parse(path);
+
+    final pathQueryParameters = pathUri.queryParameters;
+    path = pathUri.path; // Update the path if there where queryParameters
+
+    assert(
+      pathQueryParameters.isEmpty || queryParameters.isEmpty,
+      'Some path parameters where passed using [path] AND other using [queryParameters]\n'
+      'Use one or the other but not both',
+    );
+
     final uri = Uri(
       path: path,
-      queryParameters: queryParameters.isNotEmpty ? queryParameters : null,
+      queryParameters: queryParameters.isNotEmpty
+          ? queryParameters
+          : pathQueryParameters.isNotEmpty
+              ? pathQueryParameters
+              : null,
     );
 
     _updateUrl(
@@ -1250,7 +1266,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         VLogPrinter.show(
           VStoppedNavigationTo(
             vNavigationMethod: VNavigationMethod.to,
-            url: path,
+            url: uri.toString(),
           ),
         );
       },
@@ -1261,14 +1277,14 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
 
         _updateLocation(
           VRouteInformation(
-            location: path,
+            location: uri.toString(),
             state: historyState,
           ),
         );
         VLogPrinter.show(
           VSuccessfulNavigationTo(
             vNavigationMethod: VNavigationMethod.to,
-            url: path,
+            url: uri.toString(),
           ),
         );
       },
@@ -1558,8 +1574,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       if (newHistoryIndex == null || newHistoryIndex == 0) {
         // If so, check is the url reported by the browser is the same as the initial url
         // We check "routeInformation.location == '/'" to enable deep linking
-        if (routeInformation.location == '/' &&
-            routeInformation.location != initialUrl) {
+        if (newUrl == '/' && newUrl != initialUrl) {
           return;
         }
       }
@@ -1572,7 +1587,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
           ? VNavigationMethod.browserPush
           : VNavigationMethod.browserHistory;
 
-      final newUri = Uri.parse(routeInformation.location!);
+      final newUri = Uri.parse(newUrl);
 
       // Update the app with the new url
       await _updateUrl(
@@ -1745,7 +1760,7 @@ class RootVRouterData extends InheritedWidget with InitializedVRouterSailor {
     required this.pathParameters,
     required this.queryParameters,
     required List<String> Function() namesBuilder,
-  })   : state = state,
+  })  : state = state,
         _namesBuilder = namesBuilder,
         super(
           key: key,

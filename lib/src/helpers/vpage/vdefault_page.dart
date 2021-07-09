@@ -72,29 +72,29 @@ abstract class VDefaultPage<T> extends Page<T> {
     required Widget child,
     String? name,
     Widget Function(Animation<double> animation,
-        Animation<double> secondaryAnimation, Widget child)?
-    buildTransition,
+            Animation<double> secondaryAnimation, Widget child)?
+        buildTransition,
     Duration? transitionDuration,
     Duration? reverseTransitionDuration,
     bool fullscreenDialog = false,
   }) =>
       Platform.isIOS
           ? VCupertinoPage<T>(
-        key: key,
-        child: child,
-        name: name,
-        buildTransition: buildTransition,
-        transitionDuration: transitionDuration,
-        reverseTransitionDuration: reverseTransitionDuration,
-        fullscreenDialog: fullscreenDialog,
-      )
+              key: key,
+              child: child,
+              name: name,
+              buildTransition: buildTransition,
+              transitionDuration: transitionDuration,
+              reverseTransitionDuration: reverseTransitionDuration,
+              fullscreenDialog: fullscreenDialog,
+            )
           : VMaterialPage<T>(
-        key: key,
-        child: child,
-        name: name,
-        buildTransition: buildTransition,
-        transitionDuration: transitionDuration,
-        reverseTransitionDuration: reverseTransitionDuration,
-        fullscreenDialog: fullscreenDialog,
-      );
+              key: key,
+              child: child,
+              name: name,
+              buildTransition: buildTransition,
+              transitionDuration: transitionDuration,
+              reverseTransitionDuration: reverseTransitionDuration,
+              fullscreenDialog: fullscreenDialog,
+            );
 }

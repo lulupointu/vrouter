@@ -13,7 +13,7 @@ class VPopHandler extends VRouteElement
     Future<void> Function(VRedirector vRedirector) onSystemPop =
         VoidVPopHandler.voidOnSystemPop,
     required this.stackedRoutes,
-  })   : _onPop = onPop,
+  })  : _onPop = onPop,
         _onSystemPop = onSystemPop;
 
   /// See [VRouteElement.buildRoutes]

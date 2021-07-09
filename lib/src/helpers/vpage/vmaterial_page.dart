@@ -112,7 +112,7 @@ class _VPageBasedMaterialPageRoute<T> extends PageRoute<T>
     required MaterialPage<T> page,
     required Duration? transitionDuration,
     required Duration? reverseTransitionDuration,
-  })   : this.transitionDuration =
+  })  : this.transitionDuration =
             transitionDuration ?? const Duration(milliseconds: 400),
         this.reverseTransitionDuration =
             reverseTransitionDuration ?? const Duration(milliseconds: 400),
