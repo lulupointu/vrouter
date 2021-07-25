@@ -64,8 +64,8 @@ class VNesterPageBase extends VRouteElement
     this.name,
     GlobalKey<NavigatorState>? navigatorKey,
   })  : assert(nestedRoutes.isNotEmpty,
-            'The nestedRoutes of a VNester should not be null, otherwise it can\'t nest'),
-        _vNavigatorObserver = VNavigatorObserver() {
+            'The nestedRoutes of a VNester should not be empty, otherwise it can\'t nest'),
+        _vNavigatorObserverController = VNavigatorObserverController() {
     this.navigatorKey = navigatorKey ??
         GlobalKey<NavigatorState>(
           debugLabel: '$runtimeType of name $name and key $key navigatorKey',
@@ -78,7 +78,9 @@ class VNesterPageBase extends VRouteElement
 
   /// Observes push and pop event to keep track of changes
   /// linked to Navigator 1.0
-  final VNavigatorObserver _vNavigatorObserver;
+  VNavigatorObserver get _vNavigatorObserver =>
+      _vNavigatorObserverController.vNavigationObserver!;
+  final VNavigatorObserverController _vNavigatorObserverController;
 
   @override
   VRoute? buildRoute(
@@ -160,64 +162,70 @@ class VNesterPageBase extends VRouteElement
                   return true;
                 },
                 child: widgetBuilder(
-                  Builder(
-                    builder: (BuildContext context) {
-                      return VRouterHelper(
-                        pages: <Page>[if (parentCanPop) EmptyPage()] +
-                            (nestedRouteVRoute!.pages.isNotEmpty
-                                ? nestedRouteVRoute.pages
-                                : [EmptyPage()]),
-                        navigatorKey: navigatorKey,
-                        observers: <NavigatorObserver>[
-                          _vNavigatorObserver,
-                          VNestedObserverReporter(
-                            navigatorObserversToReportTo:
-                                vPathRequestData.navigatorObserversToReportTo,
-                          ),
-                          heroController
-                        ],
-                        backButtonDispatcher: ChildBackButtonDispatcher(
-                            Router.of(context).backButtonDispatcher!)
-                          ..takePriority(),
-                        onPopPage: (_, data) {
-                          // If something has been push be Navigator.push, pop it
-                          if (_vNavigatorObserver.hasNavigator1Pushed) {
-                            return true;
-                          }
+                  VNavigatorObserverBuilder(
+                    controller: _vNavigatorObserverController,
+                    navigatorKey: navigatorKey,
+                    child: Builder(
+                      builder: (BuildContext context) {
+                        return VRouterHelper(
+                          pages: <Page>[if (parentCanPop) EmptyPage()] +
+                              (nestedRouteVRoute!.pages.isNotEmpty
+                                  ? nestedRouteVRoute.pages
+                                  : [EmptyPage()]),
+                          navigatorKey: navigatorKey,
+                          observers: <NavigatorObserver>[
+                            VNavigatorObserverBuilder.of(context)
+                                .controller
+                                .vNavigationObserver!,
+                            VNestedObserverReporter(
+                              navigatorObserversToReportTo:
+                                  vPathRequestData.navigatorObserversToReportTo,
+                            ),
+                            heroController
+                          ],
+                          backButtonDispatcher: ChildBackButtonDispatcher(
+                            Router.of(context).backButtonDispatcher!,
+                          )..takePriority(),
+                          onPopPage: (_, data) {
+                            // If something has been push be Navigator.push, pop it
+                            if (_vNavigatorObserver.hasNavigator1Pushed) {
+                              return true;
+                            }
 
-                          // Else use [VRouterDelegate.pop]
-                          late final vPopData;
-                          if (data is VPopData) {
-                            vPopData = data;
-                          } else {
-                            vPopData = VPopData(
-                              elementToPop: nestedRouteVRoute!.vRouteElementNode
-                                  .getVRouteElementToPop(),
-                              pathParameters: pathParameters,
-                              queryParameters: {},
-                              newHistoryState: {},
+                            // Else use [VRouterDelegate.pop]
+                            late final vPopData;
+                            if (data is VPopData) {
+                              vPopData = data;
+                            } else {
+                              vPopData = VPopData(
+                                elementToPop: nestedRouteVRoute!.vRouteElementNode
+                                    .getVRouteElementToPop(),
+                                pathParameters: pathParameters,
+                                queryParameters: {},
+                                newHistoryState: {},
+                              );
+                            }
+
+                            RootVRouterData.of(context).popFromElement(
+                              vPopData.elementToPop,
+                              pathParameters: vPopData.pathParameters,
+                              queryParameters: vPopData.newHistoryState,
+                              newHistoryState: vPopData.newHistoryState,
                             );
-                          }
+                            return false;
+                          },
+                          onSystemPopPage: () async {
+                            if (_vNavigatorObserver.hasNavigator1Pushed) {
+                              navigatorKey.currentState!.pop();
+                              return true; // We handled it
+                            }
 
-                          RootVRouterData.of(context).popFromElement(
-                            vPopData.elementToPop,
-                            pathParameters: vPopData.pathParameters,
-                            queryParameters: vPopData.newHistoryState,
-                            newHistoryState: vPopData.newHistoryState,
-                          );
-                          return false;
-                        },
-                        onSystemPopPage: () async {
-                          if (_vNavigatorObserver.hasNavigator1Pushed) {
-                            navigatorKey.currentState!.pop();
-                            return true; // We handled it
-                          }
-
-                          // Return false because we handle it in VRouter
-                          return false;
-                        },
-                      );
-                    },
+                            // Return false because we handle it in VRouter
+                            return false;
+                          },
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
@@ -295,8 +303,7 @@ class VNesterPageBase extends VRouteElement
                 values: [
                   OverlyPathParamsError(
                     pathParams: pathParameters.keys.toList(),
-                    expectedPathParams:
-                        parentPathResult.pathParameters.keys.toList(),
+                    expectedPathParams: parentPathResult.pathParameters.keys.toList(),
                   ),
                 ],
               ),
@@ -315,8 +322,7 @@ class VNesterPageBase extends VRouteElement
               MissingPathParamsError(
                 pathParams: pathParameters.keys.toList(),
                 missingPathParams:
-                    (parentPathResult as PathParamsErrorNewParentPath)
-                        .pathParameters,
+                    (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
               ),
             ],
           ),
@@ -345,8 +351,8 @@ class VNesterPageBase extends VRouteElement
     }
 
     // Else try to find a NullPathError
-    if (childNameResults.indexWhere(
-            (childNameResult) => childNameResult is NullPathErrorNameResult) !=
+    if (childNameResults
+            .indexWhere((childNameResult) => childNameResult is NullPathErrorNameResult) !=
         -1) {
       return NullPathErrorNameResult(name: nameToMatch);
     }
@@ -405,8 +411,7 @@ class VNesterPageBase extends VRouteElement
             return ValidPopResult(
               path: childPopResult.path,
               poppedVRouteElements: childPopResult.poppedVRouteElements,
-              names:
-                  (name != null ? [name!] : <String>[]) + childPopResult.names,
+              names: (name != null ? [name!] : <String>[]) + childPopResult.names,
             );
           }
 
@@ -415,8 +420,7 @@ class VNesterPageBase extends VRouteElement
 
         // We should NOT pop with the VRouteElement to pop
 
-        final poppedVRouteElements =
-            childPopResult.poppedVRouteElements + [this];
+        final poppedVRouteElements = childPopResult.poppedVRouteElements + [this];
 
         // Check whether the parentPathResult is valid or not
         if (parentPathResult is ValidParentPathResult) {
@@ -437,8 +441,7 @@ class VNesterPageBase extends VRouteElement
             MissingPathParamsError(
               pathParams: pathParameters.keys.toList(),
               missingPathParams:
-                  (parentPathResult as PathParamsErrorNewParentPath)
-                      .pathParameters,
+                  (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
             ),
           ],
         );
@@ -461,8 +464,7 @@ class VNesterPageBase extends VRouteElement
 class VNestedObserverReporter extends NavigatorObserver {
   final List<NavigatorObserver> _navigatorObserversToReportTo;
 
-  VNestedObserverReporter(
-      {required List<NavigatorObserver> navigatorObserversToReportTo})
+  VNestedObserverReporter({required List<NavigatorObserver> navigatorObserversToReportTo})
       : _navigatorObserversToReportTo = navigatorObserversToReportTo;
 
   @override
