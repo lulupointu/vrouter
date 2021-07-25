@@ -198,7 +198,8 @@ class VNesterPageBase extends VRouteElement
                               vPopData = data;
                             } else {
                               vPopData = VPopData(
-                                elementToPop: nestedRouteVRoute!.vRouteElementNode
+                                elementToPop: nestedRouteVRoute!
+                                    .vRouteElementNode
                                     .getVRouteElementToPop(),
                                 pathParameters: pathParameters,
                                 queryParameters: {},
@@ -303,7 +304,8 @@ class VNesterPageBase extends VRouteElement
                 values: [
                   OverlyPathParamsError(
                     pathParams: pathParameters.keys.toList(),
-                    expectedPathParams: parentPathResult.pathParameters.keys.toList(),
+                    expectedPathParams:
+                        parentPathResult.pathParameters.keys.toList(),
                   ),
                 ],
               ),
@@ -322,7 +324,8 @@ class VNesterPageBase extends VRouteElement
               MissingPathParamsError(
                 pathParams: pathParameters.keys.toList(),
                 missingPathParams:
-                    (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
+                    (parentPathResult as PathParamsErrorNewParentPath)
+                        .pathParameters,
               ),
             ],
           ),
@@ -351,8 +354,8 @@ class VNesterPageBase extends VRouteElement
     }
 
     // Else try to find a NullPathError
-    if (childNameResults
-            .indexWhere((childNameResult) => childNameResult is NullPathErrorNameResult) !=
+    if (childNameResults.indexWhere(
+            (childNameResult) => childNameResult is NullPathErrorNameResult) !=
         -1) {
       return NullPathErrorNameResult(name: nameToMatch);
     }
@@ -411,7 +414,8 @@ class VNesterPageBase extends VRouteElement
             return ValidPopResult(
               path: childPopResult.path,
               poppedVRouteElements: childPopResult.poppedVRouteElements,
-              names: (name != null ? [name!] : <String>[]) + childPopResult.names,
+              names:
+                  (name != null ? [name!] : <String>[]) + childPopResult.names,
             );
           }
 
@@ -420,7 +424,8 @@ class VNesterPageBase extends VRouteElement
 
         // We should NOT pop with the VRouteElement to pop
 
-        final poppedVRouteElements = childPopResult.poppedVRouteElements + [this];
+        final poppedVRouteElements =
+            childPopResult.poppedVRouteElements + [this];
 
         // Check whether the parentPathResult is valid or not
         if (parentPathResult is ValidParentPathResult) {
@@ -441,7 +446,8 @@ class VNesterPageBase extends VRouteElement
             MissingPathParamsError(
               pathParams: pathParameters.keys.toList(),
               missingPathParams:
-                  (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
+                  (parentPathResult as PathParamsErrorNewParentPath)
+                      .pathParameters,
             ),
           ],
         );
@@ -464,7 +470,8 @@ class VNesterPageBase extends VRouteElement
 class VNestedObserverReporter extends NavigatorObserver {
   final List<NavigatorObserver> _navigatorObserversToReportTo;
 
-  VNestedObserverReporter({required List<NavigatorObserver> navigatorObserversToReportTo})
+  VNestedObserverReporter(
+      {required List<NavigatorObserver> navigatorObserversToReportTo})
       : _navigatorObserversToReportTo = navigatorObserversToReportTo;
 
   @override

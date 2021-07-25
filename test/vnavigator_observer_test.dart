@@ -19,7 +19,7 @@ main() {
 
       // Begin on home
       expect(find.widgetWithText(AppBar, 'Home'), findsOneWidget);
-      
+
       // Navigate to /item
       await tester.tap(find.text('Show Item'));
       await tester.pumpAndSettle();
@@ -66,7 +66,9 @@ class HomeRoute extends VRouteElementBuilder {
               action: (context) => context.vRouter.to(item),
             ),
           ),
-          stackedRoutes: [VWidget(path: item, widget: BasicScreen(title: 'Item'))],
+          stackedRoutes: [
+            VWidget(path: item, widget: BasicScreen(title: 'Item'))
+          ],
         ),
       ),
     ];
@@ -134,9 +136,10 @@ class MyScaffold extends StatelessWidget {
             label: 'Profile',
           ),
         ],
-        currentIndex: context.vRouter.path.startsWith(ProfileRoute.profile) ? 1 : 0,
-        onTap: (value) =>
-            context.vRouter.to(value == 0 ? HomeRoute.home : ProfileRoute.profile),
+        currentIndex:
+            context.vRouter.path.startsWith(ProfileRoute.profile) ? 1 : 0,
+        onTap: (value) => context.vRouter
+            .to(value == 0 ? HomeRoute.home : ProfileRoute.profile),
       ),
     );
   }

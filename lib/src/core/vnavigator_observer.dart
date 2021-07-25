@@ -11,7 +11,9 @@ class VNavigatorObserver extends NavigatorObserver {
   /// This is useful when calling pop or systemPop. Since when such a route exists,
   /// it should be popped and [VRouterDelegate.pop] should not.
   bool get hasNavigator1Pushed {
-    return (navigator == null) ? false : _navigatorEntriesCount != (navigator!.widget.pages.length);
+    return (navigator == null)
+        ? false
+        : _navigatorEntriesCount != (navigator!.widget.pages.length);
   }
 
   /// How much time Navigator.push was used in the context of this [navigator]
@@ -64,7 +66,8 @@ class VNavigatorObserverBuilder extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  VNavigatorObserverBuilderState createState() => VNavigatorObserverBuilderState();
+  VNavigatorObserverBuilderState createState() =>
+      VNavigatorObserverBuilderState();
 
   // This is not the most effective but good enough since this should be placed just
   // above a [Navigator]
