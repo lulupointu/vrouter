@@ -1658,38 +1658,41 @@ class VRouterDelegate extends RouterDelegate<RouteInformation> with ChangeNotifi
 
               if (!_isInitialized) _initialize(context);
 
-              final child = Navigator(
-                pages: _vRoute.pages.isNotEmpty
-                    ? _vRoute.pages
-                    : [
-                        EmptyPage(),
+              final child = _vRoute.pages.isEmpty
+                  ? Container()
+                  : Navigator(
+                      pages: _vRoute.pages.isNotEmpty
+                          ? _vRoute.pages
+                          : [
+                              EmptyPage(),
+                            ],
+                      key: navigatorKey,
+                      observers: [
+                        VNavigatorObserverBuilder.of(context).controller.vNavigationObserver!,
+                        ...navigatorObservers
                       ],
-                key: navigatorKey,
-                observers: [
-                  VNavigatorObserverBuilder.of(context).controller.vNavigationObserver!,
-                  ...navigatorObservers
-                ],
-                onPopPage: (_, data) {
-                  if (_vNavigatorObserverController.vNavigationObserver!.hasNavigator1Pushed) {
-                    return true;
-                  }
+                      onPopPage: (_, data) {
+                        if (_vNavigatorObserverController
+                            .vNavigationObserver!.hasNavigator1Pushed) {
+                          return true;
+                        }
 
-                  late final vPopData;
-                  if (data is VPopData) {
-                    vPopData = data;
-                  } else {
-                    vPopData = VPopData(
-                      elementToPop: _vRoute.vRouteElementNode.getVRouteElementToPop(),
-                      pathParameters: pathParameters,
-                      queryParameters: {},
-                      newHistoryState: {},
+                        late final vPopData;
+                        if (data is VPopData) {
+                          vPopData = data;
+                        } else {
+                          vPopData = VPopData(
+                            elementToPop: _vRoute.vRouteElementNode.getVRouteElementToPop(),
+                            pathParameters: pathParameters,
+                            queryParameters: {},
+                            newHistoryState: {},
+                          );
+                        }
+
+                        _pop(vPopData);
+                        return false;
+                      },
                     );
-                  }
-
-                  _pop(vPopData);
-                  return false;
-                },
-              );
 
               return builder?.call(context, child) ?? child;
             },
