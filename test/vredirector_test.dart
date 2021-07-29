@@ -321,13 +321,15 @@ main() {
       expect(vWidget3Finder, findsOneWidget);
     });
 
-    testWidgets('vRedirector.toNamed with path parameters', (WidgetTester tester) async {
+    testWidgets('vRedirector.toNamed with path parameters',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(
           initialUrl: '/settings',
-          beforeLeave: (vRedirector, _) async => (vRedirector.newVRouterData?.names.contains('other') ?? false)
-              ? null
-              : vRedirector.toNamed('other', pathParameters: {'id': '2'}),
+          beforeLeave: (vRedirector, _) async =>
+              (vRedirector.newVRouterData?.names.contains('other') ?? false)
+                  ? null
+                  : vRedirector.toNamed('other', pathParameters: {'id': '2'}),
           routes: [
             VWidget(
               path: '/',
@@ -343,7 +345,9 @@ main() {
                   ),
                 ),
                 VWidget(
-                    path: '/other/:id', widget: Text('VWidget3'), name: 'other'),
+                    path: '/other/:id',
+                    widget: Text('VWidget3'),
+                    name: 'other'),
               ],
             ),
           ],
