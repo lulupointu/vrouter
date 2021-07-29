@@ -4,6 +4,9 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.2.0+7\] - 19/07/2021.
+- 🛠️ : `VRedirector.toNamed` was not passing the `pathParameters` along, cause any such navigation to fail
+
 ## \[1.2.0+6\] - 25/07/2021.
 - 🛠️ : Fix bug when changing `VNester` instances while pages had been pushed (https://github.com/lulupointu/vrouter/issues/116)
 - 🛠️ : The page transition animation is no longer shown on app start

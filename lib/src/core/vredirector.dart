@@ -239,6 +239,7 @@ class VRedirector implements VRouterNavigator {
     }) =>
         vRouterDelegate.toNamed(
           name,
+          pathParameters: pathParameters,
           queryParameters: queryParameters,
           historyState: historyState,
           isReplacement: isReplacement,
