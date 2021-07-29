@@ -4,7 +4,10 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
-## \[1.2.0+7\] - 19/07/2021.
+## \[1.2.0+8\] - 29/07/2021.
+- 🛠️ : Update README from `push` to `to` API
+
+## \[1.2.0+7\] - 29/07/2021.
 - 🛠️ : `VRedirector.toNamed` was not passing the `pathParameters` along, cause any such navigation to fail
 
 ## \[1.2.0+6\] - 25/07/2021.

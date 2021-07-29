@@ -132,9 +132,9 @@ VPopHandler(
 Navigating is easy, just access `VRouter` with `context.vRouter` and navigate:
 
 ```dart
-context.vRouter.push('/home'); // Push the url '/home'
+context.vRouter.to('/home'); // Push the url '/home'
 
-context.vRouter.pushSegments(['home', 'settings']); // Push the url '/home/settings'
+context.vRouter.toSegments(['home', 'settings']); // Push the url '/home/settings'
 ```
 
 # Useful notions
@@ -150,7 +150,7 @@ To compose `VRouteElement`s, use the **stackedRoutes** attribute (or the **neste
 ```dart
 // Composing a VGuard and a VWidget
 VGuard(
- beforeEnter: (vRedirector) async => !isLoggedIn ? vRedirector.push('/login') : null,
+ beforeEnter: (vRedirector) async => !isLoggedIn ? vRedirector.to('/login') : null,
  stackedRoutes: [
    VWidget(path: '/home', widget: HomeScreen()),
  ],
@@ -170,7 +170,7 @@ class HomeRoute extends VRouteElementBuilder {
    return [
      VGuard(
        // LoginRoute.login = '/login' for example
-       beforeEnter: (vRedirector) async => !isLoggedIn ? vRedirector.push(LoginRoute.login) : null,
+       beforeEnter: (vRedirector) async => !isLoggedIn ? vRedirector.to(LoginRoute.login) : null,
        stackedRoutes: [
          VWidget(path: home, widget: HomeScreen()),
        ],
@@ -254,7 +254,7 @@ You often want to redirect or stop the current redirection in `VGuard` and `VPop
 
 ```dart
 VGuard(
- beforeEnter: (vRedirector) async => !isLoggedIn ? vRedirector.push('/login') : null,
+ beforeEnter: (vRedirector) async => !isLoggedIn ? vRedirector.to('/login') : null,
  stackedRoutes: [...],
 )
 ```
@@ -297,9 +297,9 @@ You might have to access a deeply nested VRouteElement and don’t want to have 
 VWidget(path: 'something', widget: SomeWidget(), name: 'deep')
 ```
 
-And navigate using `pushNamed`:
+And navigate using `toNamed`:
 ```dart
-context.vRouter.pushNamed('deep');
+context.vRouter.toNamed('deep');
 ```
 
 ## Transitions
