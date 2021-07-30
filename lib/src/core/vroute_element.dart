@@ -450,15 +450,19 @@ class InvalidVPathMatch extends VPathMatch implements Error {
 ///   _  * Or we return [InvalidGetNewParentPathResult(missingPathParameters: this missing path parameters)]
 abstract class GetNewParentPathResult {}
 
+/// Class to return when the parents have a valid path
 class ValidParentPathResult extends GetNewParentPathResult {
-  /// Null is a valid value, it just means that this path is null and the parent one was as well
+  /// Null is a valid value, it just means that this path is null
+  /// and the parent one was as well
   final String? path;
 
+  /// The path parameters of the parent paths
   final Map<String, String> pathParameters;
 
   ValidParentPathResult({required this.path, required this.pathParameters});
 }
 
+/// Return when the parent path does not match the current path
 class PathParamsErrorNewParentPath extends GetNewParentPathResult {
   /// The missing path parameters that prevents us from creating the path
   final List<String> pathParameters;
