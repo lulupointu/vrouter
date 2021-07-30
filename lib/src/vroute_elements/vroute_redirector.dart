@@ -28,6 +28,12 @@ class VRouteRedirector extends VRouteElementBuilder {
       ];
 }
 
+/// An empty node which is valid if the parent is valid
+///
+///
+/// This is needed because VPath asks its children if they
+/// are ok with being part of the route and at least one has
+/// to say ok for it to be a valid route
 class _VRouteElementNode extends VRouteElementBuilder {
   @override
   List<VRouteElement> buildRoutes() => [];

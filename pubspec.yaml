@@ -11,7 +11,6 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  path_to_regexp: ^0.4.0
   url_strategy: ^0.2.0
   url_launcher: ^6.0.2
   move_to_background: ^1.0.2

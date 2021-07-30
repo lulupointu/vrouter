@@ -44,6 +44,7 @@ Here are a few things that this package will make easy:
   - [Path](#path)
     - [Relative path](#relative-path)
     - [Path parameters](#path-parameters)
+    - [Wildcards](#wildcards)
     - [Path parameters regexp](#path-parameters-regexp)
     - [Aliases](#aliases)
   - [VRedirector](#vredirector)
@@ -227,13 +228,24 @@ And access it in your widgets using:
 context.vRouter.pathParameters['id'];
 ```
 
+### Wildcards
+
+Wildcards are noted * and there are of one of two types:
+  - Trailing wildcards (a path ending with *) will match everything
+  - an in-path wildcard (a wildcard between slashes) will match one word
+
+```dart
+// Redirects any path to '/unknown'
+VRouteRedirector(path: '*', redirectTo: '/unknown')
+```
+
 ### Path parameters regexp
 
 **Path parameters can use regex**, just put the regex in parentheses. This is often used in VRedirector to redirect any unknown route:
 
 ```dart
-// The path parameter name is “_” and it uses the regex “.+” to match every path
-VRouteRedirector(path: ':_(.+)', redirectTo: '/unknown')
+// The path parameter name is “bookId” and it uses the regex “\d+” to match only digits
+VWidget(path: r':bookId(\d+)', widget: BookScreen())
 ```
 
 Note that such a `VRedirector` should be used as your last `route` otherwise it will always be matched.

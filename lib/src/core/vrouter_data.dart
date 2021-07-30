@@ -166,7 +166,7 @@ abstract class VRouterNavigator {
   ///
   /// [isReplacement] determines whether to overwrite the current
   /// history entry or create a new one. The is mainly useful
-  /// when using [back], [forward] or [vRouteInformationAt], or on the web to control
+  /// when using [back] or [forward]. Or on the web to control
   /// the browser history entries
   ///
   ///

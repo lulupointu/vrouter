@@ -4,6 +4,9 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.2.0+9\] - 30/07/2021.
+- ✨ : Wildcard support
+
 ## \[1.2.0+8\] - 29/07/2021.
 - 🛠️ : Update README from `push` to `to` API
 

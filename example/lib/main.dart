@@ -18,7 +18,7 @@ void main() {
         // This redirect every unknown routes to /login
         VRouteRedirector(
           redirectTo: '/login',
-          path: r':_(.*)', // .* is a regexp which matching every paths
+          path: r'*',
         ),
       ],
     ),

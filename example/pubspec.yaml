@@ -23,7 +23,9 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  vrouter: ^1.2.0
+#  vrouter: ^1.2.0+7
+  vrouter:
+    path: ../
 
 dev_dependencies:
   flutter_test:

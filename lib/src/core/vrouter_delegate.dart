@@ -1,6 +1,5 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:path_to_regexp/path_to_regexp.dart';
 import 'package:vrouter/src/core/errors.dart';
 import 'package:vrouter/src/core/vlogs.dart';
 import 'package:vrouter/src/core/vnavigator_observer.dart';
@@ -13,6 +12,7 @@ import 'package:vrouter/src/core/vroute_element_node.dart';
 import 'package:vrouter/src/core/vrouter_data.dart';
 import 'package:vrouter/src/logs/vlog_printer.dart';
 import 'package:vrouter/src/logs/vlogs.dart';
+import 'package:vrouter/src/path_to_regexp/path_to_regexp.dart';
 import 'package:vrouter/src/vrouter_scope.dart';
 import 'package:vrouter/src/vrouter_scope/vrouter_scope.dart';
 import 'package:vrouter/src/helpers/empty_page.dart';
@@ -265,7 +265,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     );
 
     // Inject the encoded path parameters into the new path
-    newPath = pathToFunction(newPath)(encodedPathParameters);
+    newPath = replacePathParameters(replaceWildcards(newPath), encodedPathParameters);
 
     // Update the url with the found and completed path
     return newPath;

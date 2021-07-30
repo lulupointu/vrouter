@@ -21,12 +21,12 @@ class VPage extends VRouteElementBuilder {
   /// Note we use the package [path_to_regexp](https://pub.dev/packages/path_to_regexp)
   /// so you can use naming such as /user/:id to get the id (see [VRouteElementData.pathParameters]
   /// You can also use more advance technique using regexp directly in your path, for example
-  /// '.*' will match any route, '/user/:id(\d+)' will match any route starting with user
+  /// '*' will match any route, '/user/:id(\d+)' will match any route starting with user
   /// and followed by a digit. Here is a recap:
   /// |     pattern 	  | matched path | 	[VRouter.pathParameters]
   /// | /user/:username |  /user/evan  | 	 { username: 'evan' }
   /// | /user/:id(\d+)  |  /user/123   | 	     { id: '123' }
-  /// |     .*          |  every path  |             -
+  /// |     *           |  every path  |             -
   final String? path;
 
   /// A name for the route which will allow you to easily navigate to it

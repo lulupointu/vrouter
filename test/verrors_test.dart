@@ -56,7 +56,7 @@ main() {
         expect(
             error.toString(),
             "The url '/settings' has no matching route.\n"
-            "Consider using VWidget(path: r':_(.*)', widget: UnknownPathWidget()) at the bottom of your VRouter routes to catch any wrong route.");
+            "Consider using VWidget(path: '*', widget: UnknownPathWidget()) at the bottom of your VRouter routes to catch any wrong route.");
       });
     });
 
