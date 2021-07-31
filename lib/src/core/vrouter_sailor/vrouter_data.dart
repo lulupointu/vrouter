@@ -15,7 +15,8 @@ abstract class VRouterData {
   /// Path of [previousUrl]
   ///
   /// This is the same as the url WITHOUT the queryParameters
-  String? get previousPath => previousUrl != null ? Uri.parse(previousUrl!).path : null;
+  String? get previousPath =>
+      previousUrl != null ? Uri.parse(previousUrl!).path : null;
 
   /// This state is saved in the browser history. This means that if the user presses
   /// the back or forward button on the navigator, this historyState will be the same

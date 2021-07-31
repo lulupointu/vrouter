@@ -45,7 +45,8 @@ class VNesterPageBase extends VRouteElement
   /// Function which returns a page that will wrap [widget]
   ///   - key and name should be given to your [Page]
   ///   - child should be placed as the last child in [Route]
-  final Page Function(LocalKey key, Widget child, String? name, VRouterData state) pageBuilder;
+  final Page Function(
+      LocalKey key, Widget child, String? name, VRouterData state) pageBuilder;
 
   /// A key for the nested navigator
   /// It is created automatically
@@ -75,9 +76,11 @@ class VNesterPageBase extends VRouteElement
   /// Provides a [state] from which to access [VRouter] data in [widgetBuilder]
   VNesterPageBase.builder({
     required List<VRouteElement> nestedRoutes,
-    required Widget Function(BuildContext context, VRouterData state, Widget child)
+    required Widget Function(
+            BuildContext context, VRouterData state, Widget child)
         widgetBuilder,
-    required Page Function(LocalKey key, Widget child, String? name) pageBuilder,
+    required Page Function(LocalKey key, Widget child, String? name)
+        pageBuilder,
     List<VRouteElement> stackedRoutes = const [],
     LocalKey? key,
     String? name,
@@ -229,7 +232,8 @@ class VNesterPageBase extends VRouteElement
                               vPopData = data;
                             } else {
                               vPopData = VPopData(
-                                elementToPop: nestedRouteVRoute!.vRouteElementNode
+                                elementToPop: nestedRouteVRoute!
+                                    .vRouteElementNode
                                     .getVRouteElementToPop(),
                                 pathParameters: pathParameters,
                                 queryParameters: {},
@@ -343,7 +347,8 @@ class VNesterPageBase extends VRouteElement
                 values: [
                   OverlyPathParamsError(
                     pathParams: pathParameters.keys.toList(),
-                    expectedPathParams: parentPathResult.pathParameters.keys.toList(),
+                    expectedPathParams:
+                        parentPathResult.pathParameters.keys.toList(),
                   ),
                 ],
               ),
@@ -362,7 +367,8 @@ class VNesterPageBase extends VRouteElement
               MissingPathParamsError(
                 pathParams: pathParameters.keys.toList(),
                 missingPathParams:
-                    (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
+                    (parentPathResult as PathParamsErrorNewParentPath)
+                        .pathParameters,
               ),
             ],
           ),
@@ -391,8 +397,8 @@ class VNesterPageBase extends VRouteElement
     }
 
     // Else try to find a NullPathError
-    if (childNameResults
-            .indexWhere((childNameResult) => childNameResult is NullPathErrorNameResult) !=
+    if (childNameResults.indexWhere(
+            (childNameResult) => childNameResult is NullPathErrorNameResult) !=
         -1) {
       return NullPathErrorNameResult(name: nameToMatch);
     }
@@ -451,7 +457,8 @@ class VNesterPageBase extends VRouteElement
             return ValidPopResult(
               path: childPopResult.path,
               poppedVRouteElements: childPopResult.poppedVRouteElements,
-              names: (name != null ? [name!] : <String>[]) + childPopResult.names,
+              names:
+                  (name != null ? [name!] : <String>[]) + childPopResult.names,
             );
           }
 
@@ -460,7 +467,8 @@ class VNesterPageBase extends VRouteElement
 
         // We should NOT pop with the VRouteElement to pop
 
-        final poppedVRouteElements = childPopResult.poppedVRouteElements + [this];
+        final poppedVRouteElements =
+            childPopResult.poppedVRouteElements + [this];
 
         // Check whether the parentPathResult is valid or not
         if (parentPathResult is ValidParentPathResult) {
@@ -481,7 +489,8 @@ class VNesterPageBase extends VRouteElement
             MissingPathParamsError(
               pathParams: pathParameters.keys.toList(),
               missingPathParams:
-                  (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
+                  (parentPathResult as PathParamsErrorNewParentPath)
+                      .pathParameters,
             ),
           ],
         );
@@ -504,7 +513,8 @@ class VNesterPageBase extends VRouteElement
 class VNestedObserverReporter extends NavigatorObserver {
   final List<NavigatorObserver> _navigatorObserversToReportTo;
 
-  VNestedObserverReporter({required List<NavigatorObserver> navigatorObserversToReportTo})
+  VNestedObserverReporter(
+      {required List<NavigatorObserver> navigatorObserversToReportTo})
       : _navigatorObserversToReportTo = navigatorObserversToReportTo;
 
   @override

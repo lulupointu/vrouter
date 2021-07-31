@@ -101,9 +101,8 @@ class VNesterBase extends VRouteElementBuilder {
   ///
   /// Also see:
   ///   * [VRouter.buildTransition] for default transitions for all routes
-  final Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
-      buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child)? buildTransition;
 
   /// A key for the nested navigator
   /// It is created automatically
@@ -137,13 +136,14 @@ class VNesterBase extends VRouteElementBuilder {
 
   /// Provides a [state] from which to access [VRouter] data in [widgetBuilder]
   VNesterBase.builder({
-    required Widget Function(BuildContext context, VRouterData state, Widget child)
+    required Widget Function(
+            BuildContext context, VRouterData state, Widget child)
         widgetBuilder,
     required List<VRouteElement> nestedRoutes,
     Duration? transitionDuration,
     Duration? reverseTransitionDuration,
-    Widget Function(
-            Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
+    Widget Function(Animation<double> animation,
+            Animation<double> secondaryAnimation, Widget child)?
         buildTransition,
     LocalKey? key,
     String? name,
@@ -174,7 +174,9 @@ class VNesterBase extends VRouteElementBuilder {
           stackedRoutes: stackedRoutes,
           widgetBuilder: widgetBuilder,
           navigatorKey: navigatorKey,
-          pageBuilder: (LocalKey key, Widget child, String? name, VRouterData state) => VDefaultPage.fromPlatform(
+          pageBuilder:
+              (LocalKey key, Widget child, String? name, VRouterData state) =>
+                  VDefaultPage.fromPlatform(
             key: key,
             child: child,
             name: name,

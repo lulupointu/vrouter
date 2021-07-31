@@ -267,7 +267,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     );
 
     // Inject the encoded path parameters into the new path
-    newPath = replacePathParameters(replaceWildcards(newPath), encodedPathParameters);
+    newPath =
+        replacePathParameters(replaceWildcards(newPath), encodedPathParameters);
 
     // Update the url with the found and completed path
     return newPath;

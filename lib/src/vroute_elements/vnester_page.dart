@@ -22,7 +22,8 @@ class VNesterPage extends VRouteElementBuilder {
   /// You must use [child] as the child of your page (though you can wrap it in other widgets)
   ///
   /// [child] will basically be whatever you put in [_rootVRouter]
-  final Page Function(LocalKey key, Widget child, String? name, VRouterData state) pageBuilder;
+  final Page Function(
+      LocalKey key, Widget child, String? name, VRouterData state) pageBuilder;
 
   /// A function which creates the [VRouteElement._rootVRouter] associated to this [VRouteElement]
   ///
@@ -88,7 +89,8 @@ class VNesterPage extends VRouteElementBuilder {
 
   VNesterPage({
     required this.path,
-    required Page Function(LocalKey key, Widget child, String? name) pageBuilder,
+    required Page Function(LocalKey key, Widget child, String? name)
+        pageBuilder,
     required this.widgetBuilder,
     required this.nestedRoutes,
     this.key,
@@ -96,15 +98,18 @@ class VNesterPage extends VRouteElementBuilder {
     this.stackedRoutes = const [],
     this.aliases = const [],
     this.navigatorKey,
-  }) : this.pageBuilder = ((LocalKey key, Widget child, String? name, VRouterData state) =>
-            pageBuilder(key, child, name));
+  }) : this.pageBuilder =
+            ((LocalKey key, Widget child, String? name, VRouterData state) =>
+                pageBuilder(key, child, name));
 
   /// Provides a [state] from which to access [VRouter] data in [widgetBuilder]
   VNesterPage.builder({
     required String? path,
-    required Page Function(LocalKey key, Widget child, String? name, VRouterData state)
+    required Page Function(
+            LocalKey key, Widget child, String? name, VRouterData state)
         pageBuilder,
-    required Widget Function(BuildContext context, VRouterData state, Widget child)
+    required Widget Function(
+            BuildContext context, VRouterData state, Widget child)
         widgetBuilder,
     required List<VRouteElement> nestedRoutes,
     LocalKey? key,

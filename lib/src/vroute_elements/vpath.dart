@@ -57,9 +57,11 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
     required this.stackedRoutes,
   }) {
     pathParametersKeys = <String>[];
-    aliasesPathParametersKeys = List<List<String>>.generate(aliases.length, (_) => []);
-    pathRegExp =
-        (path != null) ? pathToRegExp(replaceWildcards(path!), pathParametersKeys) : null;
+    aliasesPathParametersKeys =
+        List<List<String>>.generate(aliases.length, (_) => []);
+    pathRegExp = (path != null)
+        ? pathToRegExp(replaceWildcards(path!), pathParametersKeys)
+        : null;
     aliasesRegExp = [
       for (var i = 0; i < aliases.length; i++)
         pathToRegExp(replaceWildcards(aliases[i]), aliasesPathParametersKeys[i])
@@ -139,7 +141,8 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
         ),
         pages: stackedRouteVRoute.pages,
         pathParameters: stackedRouteVRoute.pathParameters,
-        vRouteElements: <VRouteElement>[this] + stackedRouteVRoute.vRouteElements,
+        vRouteElements:
+            <VRouteElement>[this] + stackedRouteVRoute.vRouteElements,
         names: stackedRouteVRoute.names,
       );
     }
@@ -170,7 +173,8 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
           ),
           pages: stackedRouteVRoute.pages,
           pathParameters: stackedRouteVRoute.pathParameters,
-          vRouteElements: <VRouteElement>[this] + stackedRouteVRoute.vRouteElements,
+          vRouteElements:
+              <VRouteElement>[this] + stackedRouteVRoute.vRouteElements,
           names: stackedRouteVRoute.names,
         );
       }
@@ -279,7 +283,8 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
         ..updateAll((key, value) => Uri.decodeComponent(value));
 
       // Remove the trailing '/' in remainingPath if needed
-      if (remainingPath.startsWith('/')) remainingPath = remainingPath.replaceFirst('/', '');
+      if (remainingPath.startsWith('/'))
+        remainingPath = remainingPath.replaceFirst('/', '');
 
       return ValidVPathMatch(
         remainingPath: remainingPath,
@@ -304,7 +309,8 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
 
     if (parentVPathMatch is ValidVPathMatch) {
       // We try to remove this part of the path from the remainingPathFromParent
-      final match = selfPathRegExp!.matchAsPrefix(parentVPathMatch.remainingPath);
+      final match =
+          selfPathRegExp!.matchAsPrefix(parentVPathMatch.remainingPath);
 
       if (match == null) {
         return InvalidVPathMatch(
@@ -314,7 +320,8 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
       }
 
       var remainingPath = parentVPathMatch.remainingPath.substring(match.end);
-      final localPath = parentVPathMatch.remainingPath.substring(match.start, match.end);
+      final localPath =
+          parentVPathMatch.remainingPath.substring(match.start, match.end);
       final pathParameters = {
         ...parentVPathMatch.pathParameters,
         ...extract(selfPathParametersKeys, match)
@@ -322,7 +329,8 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
       };
 
       // Remove the trailing '/' in remainingPath if needed
-      if (remainingPath.startsWith('/')) remainingPath = remainingPath.replaceFirst('/', '');
+      if (remainingPath.startsWith('/'))
+        remainingPath = remainingPath.replaceFirst('/', '');
 
       return ValidVPathMatch(
         remainingPath: remainingPath,
@@ -378,7 +386,8 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
     );
 
     for (var vRouteElement in stackedRoutes) {
-      GetPathFromNameResult childPathFromNameResult = vRouteElement.getPathFromName(
+      GetPathFromNameResult childPathFromNameResult =
+          vRouteElement.getPathFromName(
         nameToMatch,
         pathParameters: pathParameters,
         parentPathResult: newParentPathResults.last,
@@ -405,10 +414,12 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
         (aliases[i].startsWith('/'))
             ? Map<String, String>.from(pathParameters)
             : Map<String, String>.from(remainingPathParameters)
-          ..removeWhere((key, value) => aliasesPathParametersKeys[i].contains(key)),
+          ..removeWhere(
+              (key, value) => aliasesPathParametersKeys[i].contains(key)),
       );
       for (var vRouteElement in stackedRoutes) {
-        GetPathFromNameResult childPathFromNameResult = vRouteElement.getPathFromName(
+        GetPathFromNameResult childPathFromNameResult =
+            vRouteElement.getPathFromName(
           nameToMatch,
           pathParameters: pathParameters,
           parentPathResult: newParentPathResults.last,
@@ -490,8 +501,8 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
     }
 
     // Else try to find a NullPathError
-    if (nameErrorResults
-            .indexWhere((childNameResult) => childNameResult is NullPathErrorNameResult) !=
+    if (nameErrorResults.indexWhere(
+            (childNameResult) => childNameResult is NullPathErrorNameResult) !=
         -1) {
       return NullPathErrorNameResult(name: nameToMatch);
     }
@@ -510,12 +521,14 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
     required Map<String, String> pathParameters,
   }) {
     // First check that we have the path parameters needed to have this path
-    final missingPathParameters =
-        thisPathParametersKeys.where((key) => !pathParameters.containsKey(key)).toList();
+    final missingPathParameters = thisPathParametersKeys
+        .where((key) => !pathParameters.containsKey(key))
+        .toList();
 
     if (missingPathParameters.isNotEmpty) {
       if (thisPath!.startsWith('/')) {
-        return PathParamsErrorNewParentPath(pathParameters: missingPathParameters);
+        return PathParamsErrorNewParentPath(
+            pathParameters: missingPathParameters);
       } else {
         return PathParamsErrorNewParentPath(
           pathParameters: [
@@ -532,7 +545,8 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
       return parentPathResult;
     }
 
-    final localPath = replacePathParameters(replaceWildcards(thisPath), pathParameters);
+    final localPath =
+        replacePathParameters(replaceWildcards(thisPath), pathParameters);
     final thisPathParameters = Map<String, String>.from(pathParameters)
       ..removeWhere((key, value) => !thisPathParametersKeys.contains(key));
 
@@ -552,10 +566,16 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
     }
 
     // Else this path is valid
-    final parentPathValue = (parentPathResult as ValidParentPathResult).path ?? '';
+    final parentPathValue =
+        (parentPathResult as ValidParentPathResult).path ?? '';
     return ValidParentPathResult(
-      path: parentPathValue + (!parentPathValue.endsWith('/') ? '/' : '') + localPath,
-      pathParameters: {...parentPathResult.pathParameters, ...thisPathParameters},
+      path: parentPathValue +
+          (!parentPathValue.endsWith('/') ? '/' : '') +
+          localPath,
+      pathParameters: {
+        ...parentPathResult.pathParameters,
+        ...thisPathParameters
+      },
     );
   }
 
@@ -602,7 +622,8 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
           if (childPopResult is PoppingPopResult) {
             // Add ourselves to the poppedVRouteElements in a PoppingPopResult
             return PoppingPopResult(
-              poppedVRouteElements: childPopResult.poppedVRouteElements + [this],
+              poppedVRouteElements:
+                  childPopResult.poppedVRouteElements + [this],
             );
           }
 

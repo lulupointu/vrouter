@@ -36,7 +36,9 @@ RegExp pathToRegExp(
       ),
     );
     final regExpPattern = match.group(2);
-    newPath.write(regExpPattern != null ? escapeGroup(regExpPattern) : _defaultOutputPattern);
+    newPath.write(regExpPattern != null
+        ? escapeGroup(regExpPattern)
+        : _defaultOutputPattern);
     previousMatch = match;
   }
   newPath.write(path.substring(previousMatch?.end ?? 0));
@@ -55,7 +57,8 @@ RegExp pathToRegExp(
 ///
 /// [parameters] can be obtained in place using [pathToRegExp]
 Map<String, String> extract(List<String> parameters, Match match) => {
-      for (var i = 0; i < parameters.length; ++i) parameters[i]: match.group(i + 1)!,
+      for (var i = 0; i < parameters.length; ++i)
+        parameters[i]: match.group(i + 1)!,
       // Offset by 1 since 0 is the entire match
     };
 
@@ -106,4 +109,5 @@ String _escape(Match match) => '\\${match[0]}';
 /// lookahead `(?=...)`, or a negative lookahead `(?!...)`. Allowing these
 /// patterns would break the assumption used to map parameter names to match
 /// groups.
-String escapeGroup(String group) => group.replaceFirstMapped(_groupRegExp, _escape);
+String escapeGroup(String group) =>
+    group.replaceFirstMapped(_groupRegExp, _escape);

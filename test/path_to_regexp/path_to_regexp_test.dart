@@ -19,8 +19,8 @@ void main() {
               // act
               final encodedBluePrint =
                   pathToRegExp(replaceWildcards(bluePrint), pathParameters);
-              final pathParametersValues =
-                  extract(pathParameters, encodedBluePrint.matchAsPrefix(path)!);
+              final pathParametersValues = extract(
+                  pathParameters, encodedBluePrint.matchAsPrefix(path)!);
 
               // assert
               expect(encodedBluePrint.hasMatch(path), true);
@@ -39,12 +39,13 @@ void main() {
               // act
               final encodedBluePrint =
                   pathToRegExp(replaceWildcards(bluePrint), pathParameters);
-              final pathParametersValues =
-                  extract(pathParameters, encodedBluePrint.matchAsPrefix(path)!);
+              final pathParametersValues = extract(
+                  pathParameters, encodedBluePrint.matchAsPrefix(path)!);
 
               // assert
               expect(encodedBluePrint.hasMatch(path), true);
-              expect(pathParametersValues, {'namedId': '2', '*': 'again/something'});
+              expect(pathParametersValues,
+                  {'namedId': '2', '*': 'again/something'});
             },
           );
 
@@ -59,8 +60,8 @@ void main() {
               // act
               final encodedBluePrint =
                   pathToRegExp(replaceWildcards(bluePrint), pathParameters);
-              final pathParametersValues =
-                  extract(pathParameters, encodedBluePrint.matchAsPrefix(path)!);
+              final pathParametersValues = extract(
+                  pathParameters, encodedBluePrint.matchAsPrefix(path)!);
 
               // assert
               expect(encodedBluePrint.hasMatch(path), true);
@@ -79,8 +80,8 @@ void main() {
               // act
               final encodedBluePrint =
                   pathToRegExp(replaceWildcards(bluePrint), pathParameters);
-              final pathParametersValues =
-                  extract(pathParameters, encodedBluePrint.matchAsPrefix(path)!);
+              final pathParametersValues = extract(
+                  pathParameters, encodedBluePrint.matchAsPrefix(path)!);
 
               // assert
               expect(encodedBluePrint.hasMatch(path), true);
@@ -115,7 +116,8 @@ void main() {
             () async {
               // arrange
               final bluePrint = r'/some/random/:namedId(\d*)/*/ok/*';
-              final path = '/some/random/a/value/ok/again/something'; // not digit
+              final path =
+                  '/some/random/a/value/ok/again/something'; // not digit
               final List<String> pathParameters = [];
 
               // act
@@ -132,7 +134,8 @@ void main() {
             () async {
               // arrange
               final bluePrint = r'/some/random/:namedId(\d*)/*/ok/*';
-              final path = '/some/random/2/ok/again/something'; // Missing first *
+              final path =
+                  '/some/random/2/ok/again/something'; // Missing first *
               final List<String> pathParameters = [];
 
               // act
@@ -182,8 +185,8 @@ void main() {
               // act
               final encodedBluePrint =
                   pathToRegExp(replaceWildcards(bluePrint), pathParameters);
-              final pathParametersValues =
-                  extract(pathParameters, encodedBluePrint.matchAsPrefix(path)!);
+              final pathParametersValues = extract(
+                  pathParameters, encodedBluePrint.matchAsPrefix(path)!);
 
               // assert
               expect(encodedBluePrint.hasMatch(path), true);
@@ -202,8 +205,8 @@ void main() {
               // act
               final encodedBluePrint =
                   pathToRegExp(replaceWildcards(bluePrint), pathParameters);
-              final pathParametersValues =
-                  extract(pathParameters, encodedBluePrint.matchAsPrefix(path)!);
+              final pathParametersValues = extract(
+                  pathParameters, encodedBluePrint.matchAsPrefix(path)!);
 
               // assert
               expect(encodedBluePrint.hasMatch(path), true);
@@ -240,10 +243,10 @@ void main() {
 
   group(
     'replacePathParameters',
-        () {
+    () {
       test(
         'replacePathParameters with trailing wildCard',
-            () async {
+        () async {
           // arrange
           final path = '/some/random/:namedId(\d*)/*';
           final pathParameters = {
@@ -252,7 +255,8 @@ void main() {
           };
 
           // act
-          final result = replacePathParameters(replaceWildcards(path), pathParameters);
+          final result =
+              replacePathParameters(replaceWildcards(path), pathParameters);
 
           // assert
           expect(result, '/some/random/12/something');
@@ -261,7 +265,7 @@ void main() {
 
       test(
         'replacePathParameters with in path wildCard',
-            () async {
+        () async {
           // arrange
           final path = '/some/random/:namedId(\d*)/*/value';
           final pathParameters = {
@@ -270,7 +274,8 @@ void main() {
           };
 
           // act
-          final result = replacePathParameters(replaceWildcards(path), pathParameters);
+          final result =
+              replacePathParameters(replaceWildcards(path), pathParameters);
 
           // assert
           expect(result, '/some/random/12/something/value');
@@ -279,7 +284,7 @@ void main() {
 
       test(
         'replacePathParameters with trailing :name',
-            () async {
+        () async {
           // arrange
           final path = '/some/random/:namedId(\d*)';
           final pathParameters = {
@@ -287,7 +292,8 @@ void main() {
           };
 
           // act
-          final result = replacePathParameters(replaceWildcards(path), pathParameters);
+          final result =
+              replacePathParameters(replaceWildcards(path), pathParameters);
 
           // assert
           expect(result, '/some/random/12');
@@ -296,7 +302,7 @@ void main() {
 
       test(
         'AssertionError when missing path parameters',
-            () async {
+        () async {
           // arrange
           final path = '/some/random/:namedId(\d*)';
           final pathParameters = <String, String>{};
@@ -305,7 +311,7 @@ void main() {
 
           // assert
           expect(
-                () => replacePathParameters(replaceWildcards(path), pathParameters),
+            () => replacePathParameters(replaceWildcards(path), pathParameters),
             throwsA(isA<AssertionError>()),
           );
         },
