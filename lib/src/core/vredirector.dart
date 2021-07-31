@@ -1,7 +1,9 @@
 import 'package:vrouter/src/core/vpop_data.dart';
 import 'package:vrouter/src/core/vroute_element_node.dart';
-import 'package:vrouter/src/core/vrouter_data.dart';
 import 'package:vrouter/src/core/vrouter_delegate.dart';
+
+import 'vrouter_sailor/vrouter_data.dart';
+import 'vrouter_sailor/vrouter_navigator.dart';
 
 /// A class which helps you in beforeLeave or beforeEnter functions
 /// This class contain 2 main functionality:

@@ -58,7 +58,8 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
   }) {
     pathParametersKeys = <String>[];
     aliasesPathParametersKeys = List<List<String>>.generate(aliases.length, (_) => []);
-    pathRegExp = (path != null) ? pathToRegExp(replaceWildcards(path!), pathParametersKeys) : null;
+    pathRegExp =
+        (path != null) ? pathToRegExp(replaceWildcards(path!), pathParametersKeys) : null;
     aliasesRegExp = [
       for (var i = 0; i < aliases.length; i++)
         pathToRegExp(replaceWildcards(aliases[i]), aliasesPathParametersKeys[i])
@@ -139,6 +140,7 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
         pages: stackedRouteVRoute.pages,
         pathParameters: stackedRouteVRoute.pathParameters,
         vRouteElements: <VRouteElement>[this] + stackedRouteVRoute.vRouteElements,
+        names: stackedRouteVRoute.names,
       );
     }
 
@@ -169,6 +171,7 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
           pages: stackedRouteVRoute.pages,
           pathParameters: stackedRouteVRoute.pathParameters,
           vRouteElements: <VRouteElement>[this] + stackedRouteVRoute.vRouteElements,
+          names: stackedRouteVRoute.names,
         );
       }
     }
@@ -216,25 +219,26 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
     }
   }
 
-  /// Try to form a [VRoute] where this [VRouteElement] is the last [VRouteElement]
-  /// This is possible is:
-  ///   - [mustMatchStackedRoute] is false
-  ///   - There is a match of the path and it is exact
-  VRoute? getVRouteFromSelf(
-    VPathRequestData vPathRequestData, {
-    required VPathMatch vPathMatch,
-  }) {
-    if (!mustMatchStackedRoute &&
-        vPathMatch is ValidVPathMatch &&
-        (vPathMatch.remainingPath.isEmpty)) {
-      return VRoute(
-        vRouteElementNode: VRouteElementNode(this, localPath: vPathMatch.localPath),
-        pages: [],
-        pathParameters: vPathMatch.pathParameters,
-        vRouteElements: <VRouteElement>[this],
-      );
-    }
-  }
+  // /// Try to form a [VRoute] where this [VRouteElement] is the last [VRouteElement]
+  // /// This is possible is:
+  // ///   - [mustMatchStackedRoute] is false
+  // ///   - There is a match of the path and it is exact
+  // VRoute? getVRouteFromSelf(
+  //   VPathRequestData vPathRequestData, {
+  //   required VPathMatch vPathMatch,
+  // }) {
+  //   if (!mustMatchStackedRoute &&
+  //       vPathMatch is ValidVPathMatch &&
+  //       (vPathMatch.remainingPath.isEmpty)) {
+  //     return VRoute(
+  //       vRouteElementNode: VRouteElementNode(this, localPath: vPathMatch.localPath),
+  //       pages: [],
+  //       pathParameters: vPathMatch.pathParameters,
+  //       vRouteElements: <VRouteElement>[this],
+  //       names: [],
+  //     );
+  //   }
+  // }
 
   /// Returns path information given a local path.
   ///
@@ -263,7 +267,10 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
       final match = selfPathRegExp!.matchAsPrefix(entirePath);
 
       if (match == null) {
-        return InvalidVPathMatch(localPath: getConstantLocalPath());
+        return InvalidVPathMatch(
+          localPath: getConstantLocalPath(),
+          names: parentVPathMatch.names,
+        );
       }
 
       var remainingPath = entirePath.substring(match.end);
@@ -278,6 +285,7 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
         remainingPath: remainingPath,
         pathParameters: pathParameters,
         localPath: localPath,
+        names: parentVPathMatch.names,
       );
     }
 
@@ -299,7 +307,10 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
       final match = selfPathRegExp!.matchAsPrefix(parentVPathMatch.remainingPath);
 
       if (match == null) {
-        return InvalidVPathMatch(localPath: constantLocalPath);
+        return InvalidVPathMatch(
+          localPath: constantLocalPath,
+          names: parentVPathMatch.names,
+        );
       }
 
       var remainingPath = parentVPathMatch.remainingPath.substring(match.end);
@@ -317,10 +328,14 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
         remainingPath: remainingPath,
         pathParameters: pathParameters,
         localPath: localPath,
+        names: parentVPathMatch.names,
       );
     }
 
-    return InvalidVPathMatch(localPath: constantLocalPath);
+    return InvalidVPathMatch(
+      localPath: constantLocalPath,
+      names: parentVPathMatch.names,
+    );
   }
 
   /// Tries to find a path from a name

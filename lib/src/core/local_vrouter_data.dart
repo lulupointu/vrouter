@@ -3,9 +3,10 @@ import 'package:vrouter/src/core/vnavigator_observer.dart';
 import 'package:vrouter/src/core/vpop_data.dart';
 import 'package:vrouter/src/core/vroute_element.dart';
 import 'package:vrouter/src/core/vroute_element_node.dart';
-import 'package:vrouter/src/core/vrouter_data.dart';
 import 'package:vrouter/src/core/vrouter_delegate.dart';
 import 'package:vrouter/src/vrouter_widgets.dart';
+
+import 'vrouter_sailor/vrouter_sailor.dart';
 
 /// An [InheritedWidget] accessible via [VRouter.of(context)]
 ///

@@ -5,7 +5,9 @@
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
 ## \[1.2.0+9\] - 30/07/2021.
+- ✨ : New .builder (VWidget.builder and VNester.builder) constructors gives easy access to VRouter data
 - ✨ : Wildcard support
+- Remove dependency of path_to_regexp
 
 ## \[1.2.0+8\] - 29/07/2021.
 - 🛠️ : Update README from `push` to `to` API

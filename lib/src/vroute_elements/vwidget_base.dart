@@ -42,8 +42,9 @@ class VWidgetBase extends VRouteElementBuilder {
   ///
   /// Also see:
   ///   * [VRouter.buildTransition] for default transitions for all routes
-  final Widget Function(Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child)? buildTransition;
+  final Widget Function(
+          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
+      buildTransition;
 
   /// Whether this page route is a full-screen dialog.
   ///
@@ -62,6 +63,28 @@ class VWidgetBase extends VRouteElementBuilder {
     this.buildTransition,
     this.fullscreenDialog = false,
   });
+
+  VWidgetBase.builder({
+    required Widget Function(BuildContext context, VRouterData state) builder,
+    List<VRouteElement> stackedRoutes = const [],
+    LocalKey? key,
+    String? name,
+    Duration? transitionDuration,
+    Duration? reverseTransitionDuration,
+    Widget Function(
+            Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
+        buildTransition,
+    bool fullscreenDialog = false,
+  }) : this(
+          widget: VRouterDataBuilder(builder: builder),
+          stackedRoutes: stackedRoutes,
+          key: key,
+          name: name,
+          transitionDuration: transitionDuration,
+          reverseTransitionDuration: reverseTransitionDuration,
+          buildTransition: buildTransition,
+          fullscreenDialog: fullscreenDialog,
+        );
 
   @override
   List<VRouteElement> buildRoutes() => [

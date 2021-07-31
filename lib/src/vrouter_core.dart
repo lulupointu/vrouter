@@ -7,11 +7,14 @@ export 'core/vback_button_dispatcher.dart';
 export 'core/vroute_element.dart';
 export 'core/vroute_element_node.dart';
 export 'core/vroute_information_parser.dart';
-export 'core/vrouter_data.dart';
 export 'core/vrouter_delegate.dart';
-export 'vrouter_scope/vrouter_scope.dart';
 export 'core/vlogs.dart';
 
 export 'core/route.dart';
-export 'core/vrouter_data.dart';
 export 'core/local_vrouter_data.dart';
+
+export 'core/vrouter_sailor/vrouter_data.dart';
+export 'core/vrouter_sailor/vrouter_data_builder.dart';
+export 'core/vrouter_sailor/vrouter_data_impl.dart';
+export 'core/vrouter_sailor/vrouter_navigator.dart';
+export 'core/vrouter_sailor/vrouter_sailor.dart';

@@ -275,8 +275,7 @@ class ValidNameResult extends GetPathFromNameResult {
   ValidNameResult({required this.path});
 }
 
-abstract class ErrorGetPathFromNameResult extends GetPathFromNameResult
-    implements Error {
+abstract class ErrorGetPathFromNameResult extends GetPathFromNameResult implements Error {
   String get error;
 
   @override
@@ -320,22 +319,18 @@ class MissingPathParamsError extends PathParamsError {
   final List<String> missingPathParams;
   final List<String> pathParams;
 
-  MissingPathParamsError(
-      {required this.pathParams, required this.missingPathParams});
+  MissingPathParamsError({required this.pathParams, required this.missingPathParams});
 
-  String get error =>
-      'Path parameters given: $pathParams, missing: $missingPathParams';
+  String get error => 'Path parameters given: $pathParams, missing: $missingPathParams';
 }
 
 class OverlyPathParamsError extends PathParamsError {
   final List<String> expectedPathParams;
   final List<String> pathParams;
 
-  OverlyPathParamsError(
-      {required this.pathParams, required this.expectedPathParams});
+  OverlyPathParamsError({required this.pathParams, required this.expectedPathParams});
 
-  String get error =>
-      'Path parameters given: $pathParams, expected: $expectedPathParams';
+  String get error => 'Path parameters given: $pathParams, expected: $expectedPathParams';
 }
 
 class PathParamsErrorsNameResult extends ErrorGetPathFromNameResult {
@@ -399,6 +394,9 @@ abstract class VPathMatch {
   /// The local path is the one of the current VRouteElement
   /// If the path has path parameters, those should be replaced
   String? get localPath;
+
+  /// The names of the [VRouteElement] in the path match
+  List<String> get names;
 }
 
 class ValidVPathMatch extends VPathMatch {
@@ -416,10 +414,14 @@ class ValidVPathMatch extends VPathMatch {
   /// If the path has path parameters, those should be replaced
   final String? localPath;
 
+  @override
+  final List<String> names;
+
   ValidVPathMatch({
     required this.remainingPath,
     required this.pathParameters,
     required this.localPath,
+    required this.names,
   });
 }
 
@@ -428,7 +430,10 @@ class InvalidVPathMatch extends VPathMatch implements Error {
   /// use a constant path (which the user is likely to pop on)
   final String? localPath;
 
-  InvalidVPathMatch({required this.localPath});
+  @override
+  final List<String> names;
+
+  InvalidVPathMatch({required this.localPath, required this.names});
 
   @override
   StackTrace? get stackTrace => StackTrace.current;
@@ -459,7 +464,10 @@ class ValidParentPathResult extends GetNewParentPathResult {
   /// The path parameters of the parent paths
   final Map<String, String> pathParameters;
 
-  ValidParentPathResult({required this.path, required this.pathParameters});
+  ValidParentPathResult({
+    required this.path,
+    required this.pathParameters,
+  });
 }
 
 /// Return when the parent path does not match the current path

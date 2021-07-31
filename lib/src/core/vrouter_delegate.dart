@@ -9,7 +9,6 @@ import 'package:vrouter/src/core/root_vrouter.dart';
 import 'package:vrouter/src/core/route.dart';
 import 'package:vrouter/src/core/vroute_element.dart';
 import 'package:vrouter/src/core/vroute_element_node.dart';
-import 'package:vrouter/src/core/vrouter_data.dart';
 import 'package:vrouter/src/logs/vlog_printer.dart';
 import 'package:vrouter/src/logs/vlogs.dart';
 import 'package:vrouter/src/path_to_regexp/path_to_regexp.dart';
@@ -21,6 +20,8 @@ import 'package:vrouter/src/vrouter_widgets.dart';
 import 'package:vrouter/src/wrappers/move_to_background.dart';
 import 'package:vrouter/src/wrappers/platform/platform.dart';
 import 'package:vrouter/src/wrappers/browser_helpers/browser_helpers.dart';
+
+import 'vrouter_sailor/vrouter_sailor.dart';
 
 class VRouterDelegate extends RouterDelegate<RouteInformation>
     with ChangeNotifier {
@@ -158,6 +159,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       VRoute(
         pages: [],
         pathParameters: {},
+        names: [],
         vRouteElementNode: VRouteElementNode(_rootVRouter, localPath: null),
         vRouteElements: [_rootVRouter],
       );
@@ -286,6 +288,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         remainingPath: uri.path,
         pathParameters: {},
         localPath: null,
+        names: [],
       ),
       parentCanPop: false,
     );

@@ -40,12 +40,6 @@ class VWidget extends VRouteElementBuilder {
   /// Note that path is match first, then every aliases in order
   final List<String> aliases;
 
-  /// A boolean to indicate whether this can be a valid [VRouteElement] of the [VRoute] if no
-  /// [VRouteElement] in its [stackedRoute] is matched
-  ///
-  /// This is mainly useful for [VRouteElement]s which are NOT [VRouteElementWithPage]
-  final bool mustMatchStackedRoute;
-
   /// A list of routes which:
   ///   - path NOT starting with '/' will be relative to [path]
   ///   - widget or page will be stacked on top of [widget]
@@ -77,8 +71,9 @@ class VWidget extends VRouteElementBuilder {
   ///
   /// Also see:
   ///   * [VRouter.buildTransition] for default transitions for all routes
-  final Widget Function(Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child)? buildTransition;
+  final Widget Function(
+          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
+      buildTransition;
 
   /// Whether this page route is a full-screen dialog.
   ///
@@ -94,12 +89,37 @@ class VWidget extends VRouteElementBuilder {
     this.key,
     this.name,
     this.aliases = const [],
-    this.mustMatchStackedRoute = false,
     this.transitionDuration,
     this.reverseTransitionDuration,
     this.buildTransition,
     this.fullscreenDialog = false,
   });
+
+  VWidget.builder({
+    required String? path,
+    required Widget Function(BuildContext context, VRouterData state) builder,
+    List<VRouteElement> stackedRoutes = const [],
+    LocalKey? key,
+    String? name,
+    List<String> aliases = const [],
+    Duration? transitionDuration,
+    Duration? reverseTransitionDuration,
+    Widget Function(
+            Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
+        buildTransition,
+    bool fullscreenDialog = false,
+  }) : this(
+          path: path,
+          widget: VRouterDataBuilder(builder: builder),
+          stackedRoutes: stackedRoutes,
+          key: key,
+          name: name,
+          aliases: aliases,
+          transitionDuration: transitionDuration,
+          reverseTransitionDuration: reverseTransitionDuration,
+          buildTransition: buildTransition,
+          fullscreenDialog: fullscreenDialog,
+        );
 
   @override
   List<VRouteElement> buildRoutes() => [
@@ -121,4 +141,10 @@ class VWidget extends VRouteElementBuilder {
           ],
         ),
       ];
+
+  /// A boolean to indicate whether this can be a valid [VRouteElement] of the [VRoute] if no
+  /// [VRouteElement] in its [stackedRoute] is matched
+  ///
+  /// This is mainly useful for [VRouteElement]s which are NOT [VRouteElementWithPage]
+  bool get mustMatchStackedRoute => false;
 }

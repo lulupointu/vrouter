@@ -40,17 +40,11 @@ class ConnectedRoutes extends VRouteElementBuilder {
   @override
   List<VRouteElement> buildRoutes() {
     return [
-      VNester(
-        path:
-            '/:username', // :username is a path parameter and can be any value
-        widgetBuilder: (child) => Builder(
-          // Simply use a Builder if you need the context
-          builder: (context) {
-            // We can use the names to get the index, this is sometimes preferred to parsing the url
-            final currentIndex =
-                context.vRouter.names.contains(profile) ? 0 : 1;
-            return MyScaffold(child, currentIndex: currentIndex);
-          },
+      VNester.builder( // .builder constructor gives you easy access to VRouter data
+        path: '/:username', // :username is a path parameter and can be any value
+        widgetBuilder: (_, state, child) => MyScaffold(
+          child,
+          currentIndex: state.names.contains(profile) ? 0 : 1,
         ),
         nestedRoutes: [
           VWidget(
@@ -150,10 +144,8 @@ class MyScaffold extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: currentIndex,
         items: [
-          BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline), label: 'Profile'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.info_outline), label: 'Info'),
+          BottomNavigationBarItem(icon: Icon(Icons.person_outline), label: 'Profile'),
+          BottomNavigationBarItem(icon: Icon(Icons.info_outline), label: 'Info'),
         ],
         onTap: (int index) {
           // We can access this username via the path parameters
@@ -213,28 +205,9 @@ class _ProfileWidgetState extends State<ProfileWidget> {
                     borderRadius: BorderRadius.circular(50),
                     color: Colors.blueAccent,
                   ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
                   child: Text(
                     'Your pressed this button $count times',
-                    style: buttonTextStyle,
-                  ),
-                ),
-              ),
-              SizedBox(height: 20),
-              TextButton(
-                onPressed: () {
-                  print('historyState: ${context.vRouter.historyState}');
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(50),
-                    color: Colors.blueAccent,
-                  ),
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-                  child: Text(
-                    'Press to print historyState',
                     style: buttonTextStyle,
                   ),
                 ),
@@ -253,8 +226,6 @@ class _ProfileWidgetState extends State<ProfileWidget> {
   }
 
   void getCountFromState(BuildContext context) {
-    print(
-        'AFTER UPDATE with historyState: ${VRouter.of(context).historyState}');
     setState(() {
       count = (VRouter.of(context).historyState['count'] == null)
           ? 0

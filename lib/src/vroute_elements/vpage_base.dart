@@ -8,11 +8,7 @@ import 'package:vrouter/src/vrouter_core.dart';
 /// A [VRouteElement] similar to [VWidgetBase] but which allows you to specify your own page
 /// thanks to [pageBuilder]
 class VPageBase extends VRouteElement
-    with
-        VRouteElementSingleSubRoute,
-        VRouteElementWithPage,
-        VoidVGuard,
-        VoidVPopHandler {
+    with VRouteElementSingleSubRoute, VRouteElementWithPage, VoidVGuard, VoidVPopHandler {
   /// A function which allows you to use your own custom page
   ///
   /// You must use [child] as the child of your page (though you can wrap it in other widgets)
@@ -41,6 +37,20 @@ class VPageBase extends VRouteElement
     this.name,
     this.stackedRoutes = const [],
   });
+
+  VPageBase.builder({
+    required Page Function(LocalKey key, Widget child, String? name) pageBuilder,
+    required Widget Function(BuildContext context, VRouterData state) builder,
+    LocalKey? key,
+    String? name,
+    List<VRouteElement> stackedRoutes = const [],
+  }) : this(
+          pageBuilder: pageBuilder,
+          widget: VRouterDataBuilder(builder: builder),
+          key: key,
+          name: name,
+          stackedRoutes: stackedRoutes,
+        );
 
   @override
   List<VRouteElement> buildRoutes() => stackedRoutes;

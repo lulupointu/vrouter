@@ -50,8 +50,12 @@ mixin VRouteElementWithPage on VRouteElement implements VRouteElementWithName {
             remainingPath: parentVPathMatch.remainingPath,
             pathParameters: parentVPathMatch.pathParameters,
             localPath: null,
+            names: parentVPathMatch.names + [if (name != null) name!],
           )
-        : InvalidVPathMatch(localPath: null);
+        : InvalidVPathMatch(
+            localPath: null,
+            names: parentVPathMatch.names + [if (name != null) name!],
+          );
 
     VRoute? childVRoute;
     for (var vRouteElement in stackedRoutes) {
@@ -77,8 +81,8 @@ mixin VRouteElementWithPage on VRouteElement implements VRouteElementWithName {
       stackedVRouteElementNode: childVRoute?.vRouteElementNode,
     );
 
-    Map<String, String> pathParameters = childVRoute?.pathParameters ??
-        (parentVPathMatch as ValidVPathMatch).pathParameters;
+    Map<String, String> pathParameters =
+        childVRoute?.pathParameters ?? (parentVPathMatch as ValidVPathMatch).pathParameters;
 
     return VRoute(
       vRouteElementNode: vRouteElementNode,
@@ -117,8 +121,8 @@ mixin VRouteElementWithPage on VRouteElement implements VRouteElementWithName {
         ...childVRoute?.pages ?? []
       ],
       pathParameters: pathParameters,
-      vRouteElements:
-          <VRouteElement>[this] + (childVRoute?.vRouteElements ?? []),
+      vRouteElements: <VRouteElement>[this] + (childVRoute?.vRouteElements ?? []),
+      names: (childVRoute?.names ?? []) + [if (name != null) name!],
     );
   }
 
@@ -169,8 +173,7 @@ mixin VRouteElementWithPage on VRouteElement implements VRouteElementWithName {
                 values: [
                   OverlyPathParamsError(
                     pathParams: pathParameters.keys.toList(),
-                    expectedPathParams:
-                        parentPathResult.pathParameters.keys.toList(),
+                    expectedPathParams: parentPathResult.pathParameters.keys.toList(),
                   ),
                 ],
               ),
@@ -189,8 +192,7 @@ mixin VRouteElementWithPage on VRouteElement implements VRouteElementWithName {
               MissingPathParamsError(
                 pathParams: pathParameters.keys.toList(),
                 missingPathParams:
-                    (parentPathResult as PathParamsErrorNewParentPath)
-                        .pathParameters,
+                    (parentPathResult as PathParamsErrorNewParentPath).pathParameters,
               ),
             ],
           ),
@@ -219,8 +221,8 @@ mixin VRouteElementWithPage on VRouteElement implements VRouteElementWithName {
     }
 
     // Else try to find a NullPathError
-    if (childNameResults.indexWhere(
-            (childNameResult) => childNameResult is NullPathErrorNameResult) !=
+    if (childNameResults
+            .indexWhere((childNameResult) => childNameResult is NullPathErrorNameResult) !=
         -1) {
       return NullPathErrorNameResult(name: nameToMatch);
     }

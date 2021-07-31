@@ -60,6 +60,7 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
           pages: childVRoute.pages,
           pathParameters: childVRoute.pathParameters,
           vRouteElements: <VRouteElement>[this] + childVRoute.vRouteElements,
+          names: parentVPathMatch.names,
         );
       }
     }
@@ -76,6 +77,7 @@ mixin VRouteElementSingleSubRoute on VRouteElement {
         pages: [],
         pathParameters: (parentVPathMatch as ValidVPathMatch).pathParameters,
         vRouteElements: <VRouteElement>[this],
+        names: parentVPathMatch.names,
       );
     }
 

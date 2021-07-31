@@ -103,12 +103,6 @@ class VNester extends VRouteElementBuilder {
   /// Note that path is match first, then every aliases in order
   final List<String> aliases;
 
-  /// A boolean to indicate whether this can be a valid [VRouteElement] of the [VRoute] if no
-  /// [VRouteElement] in its [stackedRoute] is matched
-  ///
-  /// This is mainly useful for [VRouteElement]s which are NOT [VRouteElementWithPage]
-  final bool mustMatchStackedRoute;
-
   /// A function which creates the [VRouteElement._rootVRouter] associated to this [VRouteElement]
   ///
   /// [child] will be the [VRouteElement._rootVRouter] of the matched [VRouteElement] in
@@ -138,8 +132,9 @@ class VNester extends VRouteElementBuilder {
   ///
   /// Also see:
   ///   * [VRouter.buildTransition] for default transitions for all routes
-  final Widget Function(Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child)? buildTransition;
+  final Widget Function(
+          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
+      buildTransition;
 
   /// A key for the nested navigator
   /// It is created automatically
@@ -169,10 +164,43 @@ class VNester extends VRouteElementBuilder {
     this.name,
     this.stackedRoutes = const [],
     this.aliases = const [],
-    this.mustMatchStackedRoute = false,
     this.navigatorKey,
     this.fullscreenDialog = false,
   });
+
+  /// Provides a [state] from which to access [VRouter] data in [widgetBuilder]
+  VNester.builder({
+    required String? path,
+    required Widget Function(BuildContext context, VRouterData state, Widget child)
+        widgetBuilder,
+    required List<VRouteElement> nestedRoutes,
+    Duration? transitionDuration,
+    Duration? reverseTransitionDuration,
+    Widget Function(
+            Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
+        buildTransition,
+    LocalKey? key,
+    String? name,
+    List<VRouteElement> stackedRoutes = const [],
+    List<String> aliases = const [],
+    GlobalKey<NavigatorState>? navigatorKey,
+    bool fullscreenDialog = false,
+  }) : this(
+          path: path,
+          widgetBuilder: (child) => VRouterDataBuilder(
+            builder: (context, state) => widgetBuilder(context, state, child),
+          ),
+          nestedRoutes: nestedRoutes,
+          transitionDuration: transitionDuration,
+          reverseTransitionDuration: reverseTransitionDuration,
+          buildTransition: buildTransition,
+          key: key,
+          name: name,
+          stackedRoutes: stackedRoutes,
+          aliases: aliases,
+          navigatorKey: navigatorKey,
+          fullscreenDialog: fullscreenDialog,
+        );
 
   @override
   List<VRouteElement> buildRoutes() => [
@@ -196,4 +224,10 @@ class VNester extends VRouteElementBuilder {
           ],
         ),
       ];
+
+  /// A boolean to indicate whether this can be a valid [VRouteElement] of the [VRoute] if no
+  /// [VRouteElement] in its [stackedRoute] is matched
+  ///
+  /// This is mainly useful for [VRouteElement]s which are NOT [VRouteElementWithPage]
+  bool get mustMatchStackedRoute => false;
 }

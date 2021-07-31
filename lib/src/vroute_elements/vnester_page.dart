@@ -22,7 +22,7 @@ class VNesterPage extends VRouteElementBuilder {
   /// You must use [child] as the child of your page (though you can wrap it in other widgets)
   ///
   /// [child] will basically be whatever you put in [_rootVRouter]
-  final Page Function(LocalKey key, Widget child, String? name) pageBuilder;
+  final Page Function(LocalKey key, Widget child, String? name, VRouterData state) pageBuilder;
 
   /// A function which creates the [VRouteElement._rootVRouter] associated to this [VRouteElement]
   ///
@@ -65,12 +65,6 @@ class VNesterPage extends VRouteElementBuilder {
   /// Note that path is match first, then every aliases in order
   final List<String> aliases;
 
-  /// A boolean to indicate whether this can be a valid [VRouteElement] of the [VRoute] if no
-  /// [VRouteElement] in its [stackedRoute] is matched
-  ///
-  /// This is mainly useful for [VRouteElement]s which are NOT [VRouteElementWithPage]
-  final bool mustMatchStackedRoute;
-
   /// A LocalKey that will be given to the page which contains the given [_rootVRouter]
   ///
   /// This key mostly controls the page animation. If a page remains the same but the key is changes,
@@ -94,16 +88,40 @@ class VNesterPage extends VRouteElementBuilder {
 
   VNesterPage({
     required this.path,
-    required this.pageBuilder,
+    required Page Function(LocalKey key, Widget child, String? name) pageBuilder,
     required this.widgetBuilder,
     required this.nestedRoutes,
     this.key,
     this.name,
     this.stackedRoutes = const [],
     this.aliases = const [],
-    this.mustMatchStackedRoute = false,
     this.navigatorKey,
-  });
+  }) : this.pageBuilder = ((LocalKey key, Widget child, String? name, VRouterData state) =>
+            pageBuilder(key, child, name));
+
+  /// Provides a [state] from which to access [VRouter] data in [widgetBuilder]
+  VNesterPage.builder({
+    required String? path,
+    required Page Function(LocalKey key, Widget child, String? name, VRouterData state)
+        pageBuilder,
+    required Widget Function(BuildContext context, VRouterData state, Widget child)
+        widgetBuilder,
+    required List<VRouteElement> nestedRoutes,
+    LocalKey? key,
+    String? name,
+    List<VRouteElement> stackedRoutes = const [],
+    List<String> aliases = const [],
+    GlobalKey<NavigatorState>? navigatorKey,
+  })  : this.path = path,
+        this.pageBuilder = pageBuilder,
+        this.widgetBuilder = ((child) => VRouterDataBuilder(
+            builder: (context, state) => widgetBuilder(context, state, child))),
+        this.nestedRoutes = nestedRoutes,
+        this.key = key,
+        this.name = name,
+        this.stackedRoutes = stackedRoutes,
+        this.aliases = aliases,
+        this.navigatorKey = navigatorKey;
 
   @override
   List<VRouteElement> buildRoutes() => [
@@ -124,4 +142,10 @@ class VNesterPage extends VRouteElementBuilder {
           ],
         ),
       ];
+
+  /// A boolean to indicate whether this can be a valid [VRouteElement] of the [VRoute] if no
+  /// [VRouteElement] in its [stackedRoute] is matched
+  ///
+  /// This is mainly useful for [VRouteElement]s which are NOT [VRouteElementWithPage]
+  bool get mustMatchStackedRoute => false;
 }

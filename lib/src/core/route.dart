@@ -22,10 +22,14 @@ class VRoute {
   /// The list of every pathParameters (and their associated current value) of the current route
   final Map<String, String> pathParameters;
 
+  /// The list of every names in the route
+  List<String> names;
+
   VRoute({
     required this.vRouteElementNode,
     required this.pages,
     required this.pathParameters,
+    required this.names,
     required this.vRouteElements,
   });
 }

@@ -48,6 +48,7 @@ Here are a few things that this package will make easy:
     - [Path parameters regexp](#path-parameters-regexp)
     - [Aliases](#aliases)
   - [VRedirector](#vredirector)
+  - [VRouterData](#vrouterdata)
 - [Go Beyond](#go-beyond)
   - [Initial url](#initial-url)
   - [Logs](#logs)
@@ -268,6 +269,21 @@ You often want to redirect or stop the current redirection in `VGuard` and `VPop
 VGuard(
  beforeEnter: (vRedirector) async => !isLoggedIn ? vRedirector.to('/login') : null,
  stackedRoutes: [...],
+)
+```
+
+## VRouterData
+
+VRouter contains data (such as the path or path parameters) that you might want to access in your widget tree. There are 2 ways of doing do:
+
+```dart
+// Use the context
+context.vRouter
+
+// Use the builder constructor of some VWidget or VNester
+VWidget.builder(
+  path: '/:id', 
+  builder: (context, state) => Book(id: state.pathParameters['id'] as int),
 )
 ```
 

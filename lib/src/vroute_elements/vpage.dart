@@ -79,6 +79,26 @@ class VPage extends VRouteElementBuilder {
     this.mustMatchStackedRoute = false,
   });
 
+  VPage.builder({
+    required String? path,
+    required Page<dynamic> Function(LocalKey, Widget, String?) pageBuilder,
+    required Widget Function(BuildContext context, VRouterData state) builder,
+    List<VRouteElement> stackedRoutes = const [],
+    LocalKey? key,
+    String? name,
+    List<String> aliases = const [],
+    bool mustMatchStackedRoute = false,
+  }) : this(
+          path: path,
+          pageBuilder: pageBuilder,
+          widget: VRouterDataBuilder(builder: builder),
+          stackedRoutes: stackedRoutes,
+          key: key,
+          name: name,
+          aliases: aliases,
+          mustMatchStackedRoute: mustMatchStackedRoute,
+        );
+
   @override
   List<VRouteElement> buildRoutes() => [
         VPath(
