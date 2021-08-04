@@ -4,6 +4,9 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.2.0+10\] - 04/08/2021.
+- 🛠️ : Redirection on the web now waits for the browser to update before redirecting
+
 ## \[1.2.0+9\] - 30/07/2021.
 - ✨ : New .builder (VWidget.builder and VNester.builder) constructors gives easy access to VRouter data
 - ✨ : Wildcard support

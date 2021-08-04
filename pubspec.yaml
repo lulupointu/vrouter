@@ -1,6 +1,6 @@
 name: vrouter
 description: A navigation package that makes navigation and routing easy on every platform. Built on top of Navigator 2.
-version: 1.2.0+9
+version: 1.2.0+10
 homepage: https://vrouter.dev
 repository: https://github.com/lulupointu/vrouter
 

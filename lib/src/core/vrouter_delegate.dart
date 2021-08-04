@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/core/errors.dart';
@@ -323,7 +325,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     Uri newUri, {
     required VRoute? newVRoute,
     Map<String, String> newHistoryState = const {},
-    required VoidCallback onCancel,
+    required FutureOr<void> Function() onCancel,
     required VoidCallback onUpdate,
   }) async {
     final newUrl = newUri.toString();
@@ -412,7 +414,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         await vWidgetGuardMessageRoot.vWidgetGuard
             .beforeLeave(vRedirector, saveHistoryState);
         if (!vRedirector.shouldUpdate) {
-          onCancel();
+          await onCancel();
 
           return vRedirector.redirectFunction?.call(
             vRouterDelegate: this,
@@ -430,7 +432,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       for (var vRouteElement in deactivatedVRouteElements) {
         await vRouteElement.beforeLeave(vRedirector, saveHistoryState);
         if (!vRedirector.shouldUpdate) {
-          onCancel();
+          await onCancel();
 
           return vRedirector.redirectFunction?.call(
             vRouterDelegate: this,
@@ -446,7 +448,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       /// 3. Call beforeLeave in the [VRouter]
       await _rootVRouter.beforeLeave(vRedirector, saveHistoryState);
       if (!vRedirector.shouldUpdate) {
-        onCancel();
+        await onCancel();
 
         return vRedirector.redirectFunction?.call(
           vRouterDelegate: this,
@@ -463,7 +465,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       /// 4. Call beforeEnter in the [VRouter]
       await _rootVRouter.beforeEnter(vRedirector);
       if (!vRedirector.shouldUpdate) {
-        onCancel();
+        await onCancel();
 
         return vRedirector.redirectFunction?.call(
           vRouterDelegate: this,
@@ -479,7 +481,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       for (var vRouteElement in initializedVRouteElements) {
         await vRouteElement.beforeEnter(vRedirector);
         if (!vRedirector.shouldUpdate) {
-          onCancel();
+          await onCancel();
 
           return vRedirector.redirectFunction?.call(
             vRouterDelegate: this,
@@ -496,7 +498,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       for (var vWidgetGuardMessageRoot in reusedVWidgetGuardsMessagesRoot) {
         await vWidgetGuardMessageRoot.vWidgetGuard.beforeUpdate(vRedirector);
         if (!vRedirector.shouldUpdate) {
-          onCancel();
+          await onCancel();
 
           return vRedirector.redirectFunction?.call(
               vRouterDelegate: this,
@@ -513,7 +515,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       for (var vRouteElement in reusedVRouteElements) {
         await vRouteElement.beforeUpdate(vRedirector);
         if (!vRedirector.shouldUpdate) {
-          onCancel();
+          await onCancel();
 
           return vRedirector.redirectFunction?.call(
             vRouterDelegate: this,
@@ -1601,7 +1603,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         newUri,
         newVRoute: getNewVRoute(uri: newUri, historyState: newState),
         newHistoryState: newState,
-        onCancel: () {
+        onCancel: () async {
           VLogPrinter.show(
             VStoppedNavigationTo(
               vNavigationMethod: vNavigationMethod,
@@ -1611,11 +1613,24 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
 
           // If the navigation is canceled and we are on the web, we need to sync the browser
           if (Platform.isWeb) {
-            BrowserHelpers.browserGo(
-              isPush
-                  ? -1
-                  : _vRouterScope.vHistory.historyIndex - newHistoryIndex,
-            );
+            // How much we need to jump in the url history to go back to the previous location
+            final historyDelta = isPush
+                ? -1
+                : _vRouterScope.vHistory.historyIndex - newHistoryIndex;
+
+            // If we can't go simply don't
+            if (!historyCanGo(historyDelta)) {
+              return;
+            }
+
+            // If delta is 0 just stay
+            if (historyDelta == 0) {
+              return;
+            }
+
+            // Else go and wait for the change to happen
+            BrowserHelpers.browserGo(historyDelta);
+            await BrowserHelpers.onBrowserPopState.first;
           }
         },
         onUpdate: () {
