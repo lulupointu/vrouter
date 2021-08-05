@@ -320,7 +320,8 @@ main() {
                   return Scaffold(
                     body: Text('VWidget1'),
                     floatingActionButton: FloatingActionButton(
-                      onPressed: () => VRouter.of(context).to('/settings/other'),
+                      onPressed: () =>
+                          VRouter.of(context).to('/settings/other'),
                     ),
                   );
                 },
@@ -482,7 +483,8 @@ main() {
       expect(vWidget2Finder, findsOneWidget);
     });
 
-    testWidgets('VNester named with alias default', (WidgetTester tester) async {
+    testWidgets('VNester named with alias default',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -676,7 +678,8 @@ main() {
       expect(vWidget3Finder, findsNothing);
     });
 
-    testWidgets('Pop on VNester from VNester.stackedRoutes', (WidgetTester tester) async {
+    testWidgets('Pop on VNester from VNester.stackedRoutes',
+        (WidgetTester tester) async {
       late final BuildContext context;
 
       await tester.pumpWidget(
@@ -730,7 +733,8 @@ main() {
       expect(vWidget2Finder, findsNothing);
     });
 
-    testWidgets('BackButton appears if VNester can pop', (WidgetTester tester) async {
+    testWidgets('BackButton appears if VNester can pop',
+        (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -796,7 +800,8 @@ main() {
     });
   });
 
-  testWidgets('Unused VNester child should not be an issue', (WidgetTester tester) async {
+  testWidgets('Unused VNester child should not be an issue',
+      (WidgetTester tester) async {
     final vRouterKey = GlobalKey<VRouterState>();
 
     await tester.pumpWidget(
