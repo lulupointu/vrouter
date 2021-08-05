@@ -320,8 +320,7 @@ main() {
                   return Scaffold(
                     body: Text('VWidget1'),
                     floatingActionButton: FloatingActionButton(
-                      onPressed: () =>
-                          VRouter.of(context).to('/settings/other'),
+                      onPressed: () => VRouter.of(context).to('/settings/other'),
                     ),
                   );
                 },
@@ -483,8 +482,7 @@ main() {
       expect(vWidget2Finder, findsOneWidget);
     });
 
-    testWidgets('VNester named with alias default',
-        (WidgetTester tester) async {
+    testWidgets('VNester named with alias default', (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -678,8 +676,7 @@ main() {
       expect(vWidget3Finder, findsNothing);
     });
 
-    testWidgets('Pop on VNester from VNester.stackedRoutes',
-        (WidgetTester tester) async {
+    testWidgets('Pop on VNester from VNester.stackedRoutes', (WidgetTester tester) async {
       late final BuildContext context;
 
       await tester.pumpWidget(
@@ -733,8 +730,7 @@ main() {
       expect(vWidget2Finder, findsNothing);
     });
 
-    testWidgets('BackButton appears if VNester can pop',
-        (WidgetTester tester) async {
+    testWidgets('BackButton appears if VNester can pop', (WidgetTester tester) async {
       await tester.pumpWidget(
         VRouter(
           routes: [
@@ -793,10 +789,59 @@ main() {
         ),
       );
 
-      final appBar = find.byType(BackButton);
+      final backButton = find.byType(BackButton);
 
       await tester.pumpAndSettle();
-      expect(appBar, findsNothing);
+      expect(backButton, findsNothing);
     });
+  });
+
+  testWidgets('Unused VNester child should not be an issue', (WidgetTester tester) async {
+    final vRouterKey = GlobalKey<VRouterState>();
+
+    await tester.pumpWidget(
+      VRouter(
+        key: vRouterKey,
+        routes: [
+          VWidget(path: '/settings', widget: Text('Settings')),
+          VNester(
+            path: null,
+            widgetBuilder: (child) => Scaffold(
+              appBar: AppBar(
+                title: Text('title'),
+              ),
+              body: Container(), // We don't use the child
+            ),
+            nestedRoutes: [
+              VWidget(
+                path: '/',
+                widget: Text('Home'),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+
+    final appBar = find.byType(AppBar);
+    final home = find.text('Home');
+    final settings = find.text('Settings');
+
+    await tester.pumpAndSettle();
+
+    // We should be on VNester but the body (home)
+    // should not be used
+    expect(appBar, findsOneWidget);
+    expect(home, findsNothing);
+    expect(settings, findsNothing);
+
+    // Navigate to '/settings', this should not be an issue
+    vRouterKey.currentState!.to('/settings');
+    await tester.pumpAndSettle();
+
+    // We should now be on settings
+    expect(appBar, findsNothing);
+    expect(home, findsNothing);
+    expect(settings, findsOneWidget);
   });
 }
