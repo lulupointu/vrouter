@@ -99,6 +99,9 @@ class VNavigatorObserverBuilderState extends State<VNavigatorObserverBuilder> {
     // Create the initial observer which might later change
     // in [didUpdateWidget]
     _vNavigatorObserver = VNavigatorObserver();
+
+    // Update the controller with the new observer
+    widget.controller.vNavigationObserver = _vNavigatorObserver;
   }
 
   @override
@@ -109,13 +112,14 @@ class VNavigatorObserverBuilderState extends State<VNavigatorObserverBuilder> {
     // a new observer
     if (oldWidget.navigatorKey != widget.navigatorKey) {
       _vNavigatorObserver = VNavigatorObserver();
+
+      // Update the controller with the new observer
+      widget.controller.vNavigationObserver = _vNavigatorObserver;
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Update the controller with the new observer
-    widget.controller.vNavigationObserver = _vNavigatorObserver;
 
     return widget.child;
   }
