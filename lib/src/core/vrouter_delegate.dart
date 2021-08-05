@@ -276,7 +276,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     return newPath;
   }
 
-  VRoute getNewVRoute(
+  VRoute _getNewVRoute(
       {required Uri uri, required Map<String, String> historyState}) {
     final newVRoute = _rootVRouter.buildRoute(
       VPathRequestData(
@@ -685,7 +685,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
 
       _updateUrl(
         newUri,
-        newVRoute: getNewVRoute(
+        newVRoute: _getNewVRoute(
           uri: newUri,
           historyState: vPopData.newHistoryState,
         ),
@@ -804,7 +804,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
 
       _updateUrl(
         newUri,
-        newVRoute: getNewVRoute(
+        newVRoute: _getNewVRoute(
           uri: newUri,
           historyState: vPopData.newHistoryState,
         ),
@@ -1269,7 +1269,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
 
     _updateUrl(
       uri,
-      newVRoute: getNewVRoute(uri: uri, historyState: historyState),
+      newVRoute: _getNewVRoute(uri: uri, historyState: historyState),
       newHistoryState: historyState,
       onCancel: () {
         VLogPrinter.show(
@@ -1379,7 +1379,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
 
     _updateUrl(
       uri,
-      newVRoute: getNewVRoute(uri: uri, historyState: historyState),
+      newVRoute: _getNewVRoute(uri: uri, historyState: historyState),
       newHistoryState: historyState,
       onCancel: () {
         VLogPrinter.show(
@@ -1476,7 +1476,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         newUri,
         newHistoryState: vRouteInformation.state,
         newVRoute:
-            getNewVRoute(uri: newUri, historyState: vRouteInformation.state),
+            _getNewVRoute(uri: newUri, historyState: vRouteInformation.state),
         onCancel: () {
           VLogPrinter.show(
             VStoppedNavigationTo(
@@ -1601,7 +1601,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
       // Update the app with the new url
       await _updateUrl(
         newUri,
-        newVRoute: getNewVRoute(uri: newUri, historyState: newState),
+        newVRoute: _getNewVRoute(uri: newUri, historyState: newState),
         newHistoryState: newState,
         onCancel: () async {
           VLogPrinter.show(
