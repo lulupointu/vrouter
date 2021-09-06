@@ -147,7 +147,7 @@ class VWidgetGuard extends StatefulWidget {
 class _VWidgetGuardState extends State<VWidgetGuard> {
   @override
   void didChangeDependencies() {
-    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context)
+    VWidgetGuardMessage(vWidgetGuardState: this, localContext: context)
         .dispatch(context);
     super.didChangeDependencies();
   }
@@ -157,7 +157,7 @@ class _VWidgetGuardState extends State<VWidgetGuard> {
   // are necessary when changes to VWidgetGuard are made
   @override
   void reassemble() {
-    VWidgetGuardMessage(vWidgetGuard: widget, localContext: context)
+    VWidgetGuardMessage(vWidgetGuardState: this, localContext: context)
         .dispatch(context);
     super.reassemble();
   }
@@ -174,20 +174,23 @@ class _VWidgetGuardState extends State<VWidgetGuard> {
 /// and received by their associated [VRouteElementWidget] which will in turn
 /// send a [VWidgetGuardRootMessage] for the [VRouter]
 class VWidgetGuardMessage extends Notification {
-  final VWidgetGuard vWidgetGuard;
+  final _VWidgetGuardState vWidgetGuardState;
   final BuildContext localContext;
 
-  VWidgetGuardMessage({required this.vWidgetGuard, required this.localContext});
+  VWidgetGuardMessage({required this.vWidgetGuardState, required this.localContext});
 }
 
 class VWidgetGuardMessageRoot extends Notification {
-  final VWidgetGuard vWidgetGuard;
+  final _VWidgetGuardState vWidgetGuardState;
   final BuildContext localContext;
   final VRouteElement associatedVRouteElement;
 
   VWidgetGuardMessageRoot({
-    required this.vWidgetGuard,
+    required this.vWidgetGuardState,
     required this.localContext,
     required this.associatedVRouteElement,
   });
+
+  /// The VWidgetGuard associated with the [_VWidgetGuardState]
+  VWidgetGuard get vWidgetGuard => vWidgetGuardState.widget;
 }

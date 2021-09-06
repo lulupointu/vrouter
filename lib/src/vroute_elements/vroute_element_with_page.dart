@@ -98,7 +98,7 @@ mixin VRouteElementWithPage on VRouteElement implements VRouteElementWithName {
                 // This will be used to call its afterUpdate and beforeLeave in particular.
                 onNotification: (VWidgetGuardMessage vWidgetGuardMessage) {
                   VWidgetGuardMessageRoot(
-                    vWidgetGuard: vWidgetGuardMessage.vWidgetGuard,
+                    vWidgetGuardState: vWidgetGuardMessage.vWidgetGuardState,
                     localContext: vWidgetGuardMessage.localContext,
                     associatedVRouteElement: this,
                   ).dispatch(vPathRequestData.rootVRouterContext);

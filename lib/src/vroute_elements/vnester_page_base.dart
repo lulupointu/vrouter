@@ -191,13 +191,13 @@ class VNesterPageBase extends VRouteElement
                 // When this happens, we store the VWidgetGuard and its context
                 // This will be used to call its afterUpdate and beforeLeave in particular.
                 onNotification: (VWidgetGuardMessage vWidgetGuardMessage) {
-                  VWidgetGuardMessageRoot(
-                    vWidgetGuard: vWidgetGuardMessage.vWidgetGuard,
-                    localContext: vWidgetGuardMessage.localContext,
-                    associatedVRouteElement: this,
-                  ).dispatch(vPathRequestData.rootVRouterContext);
+                  // VWidgetGuardMessageRoot(
+                  //   vWidgetGuardState: vWidgetGuardMessage.vWidgetGuardState,
+                  //   localContext: vWidgetGuardMessage.localContext,
+                  //   associatedVRouteElement: this,
+                  // ).dispatch(vPathRequestData.rootVRouterContext);
 
-                  return true;
+                  return false;
                 },
                 child: widgetBuilder(
                   VNavigatorObserverBuilder(
