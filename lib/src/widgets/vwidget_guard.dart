@@ -177,7 +177,8 @@ class VWidgetGuardMessage extends Notification {
   final _VWidgetGuardState vWidgetGuardState;
   final BuildContext localContext;
 
-  VWidgetGuardMessage({required this.vWidgetGuardState, required this.localContext});
+  VWidgetGuardMessage(
+      {required this.vWidgetGuardState, required this.localContext});
 }
 
 class VWidgetGuardMessageRoot extends Notification {

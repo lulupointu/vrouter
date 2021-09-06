@@ -4,6 +4,9 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.2.0+12\] - 06/09/2021.
+- 🛠️ : Fix VWidgetGuard.onSystemPop in Nav1 pushed routes
+
 ## \[1.2.0+11\] - 04/08/2021.
 - 🛠️ : Not putting VNester.widgetBuilder child in the widget tree is now possible
 
