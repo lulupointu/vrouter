@@ -64,7 +64,7 @@ class VNesterPageBase extends VRouteElement
     this.key,
     this.name,
     GlobalKey<NavigatorState>? navigatorKey,
-  })  : assert(nestedRoutes.isNotEmpty,
+  }) : assert(nestedRoutes.isNotEmpty,
             'The nestedRoutes of a VNester should not be empty, otherwise it can\'t nest') {
     this.navigatorKey = navigatorKey ??
         GlobalKey<NavigatorState>(
@@ -200,7 +200,7 @@ class VNesterPageBase extends VRouteElement
                         observers: <NavigatorObserver>[
                           VNestedObserverReporter(
                             navigatorObserversToReportTo:
-                            vPathRequestData.navigatorObserversToReportTo,
+                                vPathRequestData.navigatorObserversToReportTo,
                           ),
                           heroController
                         ],
@@ -220,8 +220,7 @@ class VNesterPageBase extends VRouteElement
                             vPopData = data;
                           } else {
                             vPopData = VPopData(
-                              elementToPop: nestedRouteVRoute!
-                                  .vRouteElementNode
+                              elementToPop: nestedRouteVRoute!.vRouteElementNode
                                   .getVRouteElementToPop(),
                               pathParameters: pathParameters,
                               queryParameters: {},

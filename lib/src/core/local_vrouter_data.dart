@@ -212,7 +212,8 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
   bool historyCanBack() => RootVRouterData.of(_context).historyCanBack();
 
   @override
-  bool historyCanGo(int delta) => RootVRouterData.of(_context).historyCanGo(delta);
+  bool historyCanGo(int delta) =>
+      RootVRouterData.of(_context).historyCanGo(delta);
 
   @override
   void pop({
@@ -225,7 +226,8 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
         elementToPop: _vRouteElementNode.getVRouteElementToPop(),
         pathParameters: {
           ...pathParameters,
-          ...this.pathParameters, // Include the previous path parameters when poping
+          ...this
+              .pathParameters, // Include the previous path parameters when poping
         },
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
@@ -260,7 +262,8 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
       );
 
   static LocalVRouterData of(BuildContext context) {
-    final localVRouterData = context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
+    final localVRouterData =
+        context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
     if (localVRouterData == null) {
       throw FlutterError(
           'LocalVRouter.of(context) was called with a context which does not contain a LocalVRouterData.\n'
