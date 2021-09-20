@@ -4,6 +4,9 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.2.0+13\] - 20/09/2021.
+- 🛠️ : Dynamically moving VNester.child around the widget tree could cause popping issues
+
 ## \[1.2.0+12\] - 06/09/2021.
 - 🛠️ : Fix VWidgetGuard.onSystemPop in Nav1 pushed routes
 

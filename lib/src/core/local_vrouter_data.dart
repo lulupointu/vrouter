@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:vrouter/src/core/vnavigator_observer.dart';
+import 'package:vrouter/src/core/navigator_extension.dart';
 import 'package:vrouter/src/core/vpop_data.dart';
 import 'package:vrouter/src/core/vroute_element.dart';
 import 'package:vrouter/src/core/vroute_element_node.dart';
@@ -212,8 +212,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
   bool historyCanBack() => RootVRouterData.of(_context).historyCanBack();
 
   @override
-  bool historyCanGo(int delta) =>
-      RootVRouterData.of(_context).historyCanGo(delta);
+  bool historyCanGo(int delta) => RootVRouterData.of(_context).historyCanGo(delta);
 
   @override
   void pop({
@@ -226,8 +225,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
         elementToPop: _vRouteElementNode.getVRouteElementToPop(),
         pathParameters: {
           ...pathParameters,
-          ...this
-              .pathParameters, // Include the previous path parameters when poping
+          ...this.pathParameters, // Include the previous path parameters when poping
         },
         queryParameters: queryParameters,
         newHistoryState: newHistoryState,
@@ -241,14 +239,10 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
     Map<String, String> queryParameters = const {},
     Map<String, String> newHistoryState = const {},
   }) async {
-    final _vNavigatorObserver = Navigator.of(_context)
-            .widget
-            .observers
-            .firstWhere(
-                (navigatorObserver) => navigatorObserver is VNavigatorObserver)
-        as VNavigatorObserver;
-    if (_vNavigatorObserver.hasNavigator1Pushed) {
-      return Navigator.of(_context).pop();
+    // Try to pop a Nav1 page, if successful return
+    if (Navigator.of(_context).isLastRouteNav1) {
+      Navigator.of(_context).pop();
+      return; // We handled it
     }
     return RootVRouterData.of(_context).systemPopFromElement(
       _vRouteElementNode.getVRouteElementToSystemPop(),
@@ -266,8 +260,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
       );
 
   static LocalVRouterData of(BuildContext context) {
-    final localVRouterData =
-        context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
+    final localVRouterData = context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
     if (localVRouterData == null) {
       throw FlutterError(
           'LocalVRouter.of(context) was called with a context which does not contain a LocalVRouterData.\n'

@@ -192,7 +192,7 @@ main() {
       await tester.tap(find.byType(OutlinedButton));
       await tester.pumpAndSettle();
 
-      // Now, only VWidget2 should be visible
+      // Now, only VWidget1 should be visible
       expect(vWidget1Finder, findsOneWidget);
       expect(vNesterFinder, findsNothing);
       expect(vWidget2Finder, findsNothing);

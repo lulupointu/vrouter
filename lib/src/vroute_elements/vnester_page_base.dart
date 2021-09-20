@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:vrouter/src/core/vnavigator_observer.dart';
+import 'package:vrouter/src/core/navigator_extension.dart';
 import 'package:vrouter/src/core/vpop_data.dart';
 import 'package:vrouter/src/helpers/empty_page.dart';
 import 'package:vrouter/src/helpers/vrouter_helper.dart';
@@ -65,8 +65,7 @@ class VNesterPageBase extends VRouteElement
     this.name,
     GlobalKey<NavigatorState>? navigatorKey,
   })  : assert(nestedRoutes.isNotEmpty,
-            'The nestedRoutes of a VNester should not be empty, otherwise it can\'t nest'),
-        _vNavigatorObserverController = VNavigatorObserverController() {
+            'The nestedRoutes of a VNester should not be empty, otherwise it can\'t nest') {
     this.navigatorKey = navigatorKey ??
         GlobalKey<NavigatorState>(
           debugLabel: '$runtimeType of name $name and key $key navigatorKey',
@@ -100,16 +99,6 @@ class VNesterPageBase extends VRouteElement
   /// A hero controller for the navigator
   /// It is created automatically
   final HeroController heroController = HeroController();
-
-  /// Observes push and pop event to keep track of changes
-  /// linked to Navigator 1.0
-  ///
-  ///
-  /// This can be null if VNesterBase.widgetBuilder child is not put in
-  /// the widget tree
-  VNavigatorObserver? get _vNavigatorObserver =>
-      _vNavigatorObserverController.vNavigationObserver;
-  final VNavigatorObserverController _vNavigatorObserverController;
 
   @override
   VRoute? buildRoute(
@@ -200,73 +189,66 @@ class VNesterPageBase extends VRouteElement
                   return false;
                 },
                 child: widgetBuilder(
-                  VNavigatorObserverBuilder(
-                    controller: _vNavigatorObserverController,
-                    navigatorKey: navigatorKey,
-                    child: Builder(
-                      builder: (BuildContext context) {
-                        return VRouterHelper(
-                          pages: <Page>[if (parentCanPop) EmptyPage()] +
-                              (nestedRouteVRoute!.pages.isNotEmpty
-                                  ? nestedRouteVRoute.pages
-                                  : [EmptyPage()]),
-                          navigatorKey: navigatorKey,
-                          observers: <NavigatorObserver>[
-                            VNavigatorObserverBuilder.of(context)
-                                .controller
-                                .vNavigationObserver!,
-                            VNestedObserverReporter(
-                              navigatorObserversToReportTo:
-                                  vPathRequestData.navigatorObserversToReportTo,
-                            ),
-                            heroController
-                          ],
-                          backButtonDispatcher: ChildBackButtonDispatcher(
-                            Router.of(context).backButtonDispatcher!,
-                          )..takePriority(),
-                          onPopPage: (_, data) {
-                            // If something has been push be Navigator.push, pop it
-                            if (_vNavigatorObserver?.hasNavigator1Pushed ??
-                                false) {
-                              return true;
-                            }
+                  Builder(
+                    builder: (BuildContext context) {
+                      return VRouterHelper(
+                        pages: <Page>[if (parentCanPop) EmptyPage()] +
+                            (nestedRouteVRoute!.pages.isNotEmpty
+                                ? nestedRouteVRoute.pages
+                                : [EmptyPage()]),
+                        navigatorKey: navigatorKey,
+                        observers: <NavigatorObserver>[
+                          VNestedObserverReporter(
+                            navigatorObserversToReportTo:
+                            vPathRequestData.navigatorObserversToReportTo,
+                          ),
+                          heroController
+                        ],
+                        backButtonDispatcher: ChildBackButtonDispatcher(
+                          Router.of(context).backButtonDispatcher!,
+                        )..takePriority(),
+                        onPopPage: (route, data) {
+                          // Try to pop a Nav1 page, if successful return false
+                          if (!(route.settings is Page)) {
+                            route.didPop(data);
+                            return true;
+                          }
 
-                            // Else use [VRouterDelegate.pop]
-                            late final vPopData;
-                            if (data is VPopData) {
-                              vPopData = data;
-                            } else {
-                              vPopData = VPopData(
-                                elementToPop: nestedRouteVRoute!
-                                    .vRouteElementNode
-                                    .getVRouteElementToPop(),
-                                pathParameters: pathParameters,
-                                queryParameters: {},
-                                newHistoryState: {},
-                              );
-                            }
-
-                            RootVRouterData.of(context).popFromElement(
-                              vPopData.elementToPop,
-                              pathParameters: vPopData.pathParameters,
-                              queryParameters: vPopData.newHistoryState,
-                              newHistoryState: vPopData.newHistoryState,
+                          // Else use [VRouterDelegate.pop]
+                          late final vPopData;
+                          if (data is VPopData) {
+                            vPopData = data;
+                          } else {
+                            vPopData = VPopData(
+                              elementToPop: nestedRouteVRoute!
+                                  .vRouteElementNode
+                                  .getVRouteElementToPop(),
+                              pathParameters: pathParameters,
+                              queryParameters: {},
+                              newHistoryState: {},
                             );
-                            return false;
-                          },
-                          onSystemPopPage: () async {
-                            if (_vNavigatorObserver?.hasNavigator1Pushed ??
-                                false) {
-                              navigatorKey.currentState!.pop();
-                              return true; // We handled it
-                            }
+                          }
 
-                            // Return false because we handle it in VRouter
-                            return false;
-                          },
-                        );
-                      },
-                    ),
+                          RootVRouterData.of(context).popFromElement(
+                            vPopData.elementToPop,
+                            pathParameters: vPopData.pathParameters,
+                            queryParameters: vPopData.newHistoryState,
+                            newHistoryState: vPopData.newHistoryState,
+                          );
+                          return false;
+                        },
+                        onSystemPopPage: () async {
+                          // Try to pop a Nav1 page, if successful return true
+                          if (navigatorKey.currentState!.isLastRouteNav1) {
+                            navigatorKey.currentState!.pop();
+                            return true; // We handled it
+                          }
+
+                          // Return false because we handle it in VRouter
+                          return false;
+                        },
+                      );
+                    },
                   ),
                 ),
               ),
@@ -510,8 +492,8 @@ class VNesterPageBase extends VRouteElement
 
   @override
   void afterLeave(BuildContext context, String? from, String to) {
-    for (var i = 0; i < (_vNavigatorObserver?.navigator1PushCount ?? 0); i++)
-      navigatorKey.currentState!.pop();
+    // Pop any navigator 1 route before navigating (dialog, modal sheet, ...)
+    navigatorKey.currentState?.popUntil((route) => route.settings is Page);
   }
 }
 
