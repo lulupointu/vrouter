@@ -85,16 +85,21 @@ class _HoveringOverlayState extends State<HoveringOverlay> {
   /// Returns the border radius based on the given alignment
   static _getBorderRadiusFromAlignment(Alignment alignment) {
     return BorderRadius.only(
-      topRight: alignment == Alignment.bottomLeft ? Radius.circular(4.0) : Radius.zero,
-      topLeft: alignment == Alignment.bottomRight ? Radius.circular(4.0) : Radius.zero,
-      bottomRight: alignment == Alignment.topLeft ? Radius.circular(4.0) : Radius.zero,
-      bottomLeft: alignment == Alignment.topRight ? Radius.circular(4.0) : Radius.zero,
+      topRight: alignment == Alignment.bottomLeft
+          ? Radius.circular(4.0)
+          : Radius.zero,
+      topLeft: alignment == Alignment.bottomRight
+          ? Radius.circular(4.0)
+          : Radius.zero,
+      bottomRight:
+          alignment == Alignment.topLeft ? Radius.circular(4.0) : Radius.zero,
+      bottomLeft:
+          alignment == Alignment.topRight ? Radius.circular(4.0) : Radius.zero,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-
     return Material(
       color: isDarkMode ? Color(0xFF2D2D2D) : Color(0xFFEEEEEE),
       borderRadius: _borderRadius,
@@ -103,7 +108,8 @@ class _HoveringOverlayState extends State<HoveringOverlay> {
         padding: EdgeInsets.all(4.0),
         child: Text(
           targetUrl,
-          style: TextStyle(color: isDarkMode ? Color(0xFFEEEEEE) : Color(0xFF2D2D2D)),
+          style: TextStyle(
+              color: isDarkMode ? Color(0xFFEEEEEE) : Color(0xFF2D2D2D)),
         ),
       ),
     );

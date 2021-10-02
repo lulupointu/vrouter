@@ -21,9 +21,8 @@ abstract class VRouterApp extends StatefulWidget
   /// Note that if this is not implemented, every route which does not implement
   /// its own buildTransition will be given a default transition: this of a
   /// [MaterialPage] or a [CupertinoPage] depending on the platform
-  Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
-      get buildTransition;
+  Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child)? get buildTransition;
 
   /// The duration of [VRouter.buildTransition]
   Duration? get transitionDuration;
@@ -52,7 +51,8 @@ abstract class VRouterApp extends StatefulWidget
   List<VLogLevel> get logs;
 
   @override
-  Future<void> beforeEnter(VRedirector vRedirector) => _beforeEnter(vRedirector);
+  Future<void> beforeEnter(VRedirector vRedirector) =>
+      _beforeEnter(vRedirector);
 
   Future<void> Function(VRedirector vRedirector) get _beforeEnter;
 
@@ -80,7 +80,8 @@ abstract class VRouterApp extends StatefulWidget
   Future<void> Function(VRedirector vRedirector) get _onPop;
 
   @override
-  Future<void> onSystemPop(VRedirector vRedirector) => _onSystemPop(vRedirector);
+  Future<void> onSystemPop(VRedirector vRedirector) =>
+      _onSystemPop(vRedirector);
 
   Future<void> Function(VRedirector vRedirector) get _onSystemPop;
 
@@ -120,7 +121,8 @@ abstract class VRouterApp extends StatefulWidget
 }
 
 /// A mixin to use on the [State]s which create the [VRouterDelegate]
-mixin VRouterAppStateMixin<T extends VRouterApp> on State<T> implements VRouterSailor {
+mixin VRouterAppStateMixin<T extends VRouterApp> on State<T>
+    implements VRouterSailor {
   late VRouterDelegate vRouterDelegate = VRouterDelegate(
     routes: widget.routes,
     builder: widget.builder,
@@ -184,7 +186,8 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T> implements VRouterS
   Map<String, String> get queryParameters => vRouterDelegate.queryParameters;
 
   @override
-  String? get hash => url != null ? Uri.decodeComponent(Uri.parse(url!).fragment) : null;
+  String? get hash =>
+      url != null ? Uri.decodeComponent(Uri.parse(url!).fragment) : null;
 
   @override
   List<String> get names => vRouterDelegate.names;
@@ -361,7 +364,8 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T> implements VRouterS
       );
 
   @override
-  void toExternal(String newUrl, {bool openNewTab = false}) => vRouterDelegate.toExternal(
+  void toExternal(String newUrl, {bool openNewTab = false}) =>
+      vRouterDelegate.toExternal(
         newUrl,
         openNewTab: openNewTab,
       );

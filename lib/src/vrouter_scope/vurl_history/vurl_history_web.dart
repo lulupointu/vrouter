@@ -41,8 +41,7 @@ class VHistoryWeb extends VHistory {
         ),
         (int i) => i == historyIndex
             ? VRouteInformation(
-                url:
-                    BrowserHelpers.getPathAndQuery(routerMode: vRouterMode),
+                url: BrowserHelpers.getPathAndQuery(routerMode: vRouterMode),
                 state: _getInitialHistoryState(),
               )
             : null);

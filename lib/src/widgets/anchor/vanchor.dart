@@ -155,7 +155,8 @@ class _VLinkState extends State<VAnchor> {
                   queryParameters: _vRouter.queryParameters,
                   hash: widget.hash,
                   historyState: _vRouter.historyState,
-                  isReplacement: widget.replaceUrlOnTap ?? (_vRouter.hash == widget.hash),
+                  isReplacement:
+                      widget.replaceUrlOnTap ?? (_vRouter.hash == widget.hash),
                 );
               }
             : null,
@@ -180,7 +181,9 @@ class _VLinkState extends State<VAnchor> {
         ),
       ),
     );
-    Navigator.of(context, rootNavigator: true).overlay!.insert(hoveringOverlay!);
+    Navigator.of(context, rootNavigator: true)
+        .overlay!
+        .insert(hoveringOverlay!);
   }
 
   /// Removes the hovering overlay if it is shown

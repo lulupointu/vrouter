@@ -33,13 +33,12 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
     required this.queryParameters,
     required VRouteElementNode vRouteElementNode,
     required BuildContext context,
-  })
-      : _vRouteElementNode = vRouteElementNode,
+  })  : _vRouteElementNode = vRouteElementNode,
         _context = context,
         super(
-        key: key,
-        child: child,
-      );
+          key: key,
+          child: child,
+        );
 
   @override
   bool updateShouldNotify(LocalVRouterData old) {
@@ -47,7 +46,8 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
         old.previousUrl != previousUrl ||
         old.historyState != historyState ||
         old.pathParameters != pathParameters ||
-        old.queryParameters != queryParameters || old.hash != hash);
+        old.queryParameters != queryParameters ||
+        old.hash != hash);
   }
 
   @override
@@ -66,14 +66,12 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
   final Map<String, String> queryParameters;
 
   @override
-  List<String> get names =>
-      VRouter
-          .of(_context)
-          .names;
+  List<String> get names => VRouter.of(_context).names;
 
   @override
   @Deprecated('Use to (vRouter.to) instead')
-  void push(String newUrl, {
+  void push(
+    String newUrl, {
     Map<String, String> queryParameters = const {},
     Map<String, String> historyState = const {},
   }) =>
@@ -85,7 +83,8 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
 
   @override
   @Deprecated('Use toSegments instead')
-  void pushSegments(List<String> segments, {
+  void pushSegments(
+    List<String> segments, {
     Map<String, String> queryParameters = const {},
     String hash = '',
     Map<String, String> historyState = const {},
@@ -99,7 +98,8 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
 
   @override
   @Deprecated('Use toNamed instead')
-  void pushNamed(String name, {
+  void pushNamed(
+    String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
     String hash = '',
@@ -115,7 +115,8 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
 
   @override
   @Deprecated('Use vRouter.to(..., isReplacement: true) instead')
-  void pushReplacement(String newUrl, {
+  void pushReplacement(
+    String newUrl, {
     Map<String, String> queryParameters = const {},
     String hash = '',
     Map<String, String> historyState = const {},
@@ -130,7 +131,8 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
 
   @override
   @Deprecated('Use vRouter.toNamed(..., isReplacement: true) instead')
-  void pushReplacementNamed(String name, {
+  void pushReplacementNamed(
+    String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
     String hash = '',
@@ -147,14 +149,14 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
 
   @override
   @Deprecated('Use toExternal instead')
-  void pushExternal(String newUrl, {bool openNewTab = false}) =>
-      toExternal(
+  void pushExternal(String newUrl, {bool openNewTab = false}) => toExternal(
         newUrl,
         openNewTab: openNewTab,
       );
 
   @override
-  void to(String path, {
+  void to(
+    String path, {
     Map<String, String> queryParameters = const {},
     String hash = '',
     Map<String, String> historyState = const {},
@@ -169,7 +171,8 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
       );
 
   @override
-  void toSegments(List<String> segments, {
+  void toSegments(
+    List<String> segments, {
     Map<String, String> queryParameters = const {},
     String hash = '',
     Map<String, String> historyState = const {},
@@ -184,7 +187,8 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
       );
 
   @override
-  void toNamed(String name, {
+  void toNamed(
+    String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
     String hash = '',
@@ -223,7 +227,8 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
   bool historyCanBack() => RootVRouterData.of(_context).historyCanBack();
 
   @override
-  bool historyCanGo(int delta) => RootVRouterData.of(_context).historyCanGo(delta);
+  bool historyCanGo(int delta) =>
+      RootVRouterData.of(_context).historyCanGo(delta);
 
   @override
   void pop({
@@ -237,7 +242,8 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
         elementToPop: _vRouteElementNode.getVRouteElementToPop(),
         pathParameters: {
           ...pathParameters,
-          ...this.pathParameters, // Include the previous path parameters when poping
+          ...this
+              .pathParameters, // Include the previous path parameters when poping
         },
         queryParameters: queryParameters,
         hash: hash,
@@ -254,9 +260,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
     Map<String, String> newHistoryState = const {},
   }) async {
     // Try to pop a Nav1 page, if successful return
-    if (Navigator
-        .of(_context)
-        .isLastRouteNav1) {
+    if (Navigator.of(_context).isLastRouteNav1) {
       Navigator.of(_context).pop();
       return; // We handled it
     }
@@ -270,20 +274,20 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
   }
 
   @override
-  void replaceHistoryState(Map<String, String> historyState) =>
-      to(
+  void replaceHistoryState(Map<String, String> historyState) => to(
         url,
         historyState: historyState,
         isReplacement: true,
       );
 
   static LocalVRouterData of(BuildContext context) {
-    final localVRouterData = context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
+    final localVRouterData =
+        context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
     if (localVRouterData == null) {
       throw FlutterError(
           'LocalVRouter.of(context) was called with a context which does not contain a LocalVRouterData.\n'
-              'The context used to retrieve LocalVRouterData must be that of a widget that '
-              'is a descendant of a LocalVRouterData widget.');
+          'The context used to retrieve LocalVRouterData must be that of a widget that '
+          'is a descendant of a LocalVRouterData widget.');
     }
     return localVRouterData;
   }

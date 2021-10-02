@@ -17,9 +17,8 @@ class WidgetsVRouter extends VRouterApp {
   final List<VRouteElement> routes;
 
   @override
-  final Widget Function(
-          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
-      buildTransition;
+  final Widget Function(Animation<double> animation,
+      Animation<double> secondaryAnimation, Widget child)? buildTransition;
 
   @override
   final Duration? transitionDuration;
@@ -34,7 +33,8 @@ class WidgetsVRouter extends VRouterApp {
   final List<VLogLevel> logs;
 
   @override
-  Future<void> beforeEnter(VRedirector vRedirector) => _beforeEnter(vRedirector);
+  Future<void> beforeEnter(VRedirector vRedirector) =>
+      _beforeEnter(vRedirector);
   final Future<void> Function(VRedirector vRedirector) _beforeEnter;
 
   @override
@@ -51,14 +51,16 @@ class WidgetsVRouter extends VRouterApp {
   @override
   void afterEnter(BuildContext context, String? from, String to) =>
       _afterEnter(context, from, to);
-  final void Function(BuildContext context, String? from, String to) _afterEnter;
+  final void Function(BuildContext context, String? from, String to)
+      _afterEnter;
 
   @override
   Future<void> onPop(VRedirector vRedirector) => _onPop(vRedirector);
   final Future<void> Function(VRedirector vRedirector) _onPop;
 
   @override
-  Future<void> onSystemPop(VRedirector vRedirector) => _onSystemPop(vRedirector);
+  Future<void> onSystemPop(VRedirector vRedirector) =>
+      _onSystemPop(vRedirector);
   final Future<void> Function(VRedirector vRedirector) _onSystemPop;
 
   @override
@@ -73,7 +75,8 @@ class WidgetsVRouter extends VRouterApp {
   WidgetsVRouter({
     Key? key,
     required this.routes,
-    Future<void> Function(VRedirector vRedirector) beforeEnter = VoidVGuard.voidBeforeEnter,
+    Future<void> Function(VRedirector vRedirector) beforeEnter =
+        VoidVGuard.voidBeforeEnter,
     Future<void> Function(
       VRedirector vRedirector,
       void Function(Map<String, String> historyState) saveHistoryState,
@@ -81,7 +84,8 @@ class WidgetsVRouter extends VRouterApp {
         beforeLeave = VoidVGuard.voidBeforeLeave,
     void Function(BuildContext context, String? from, String to) afterEnter =
         VoidVGuard.voidAfterEnter,
-    Future<void> Function(VRedirector vRedirector) onPop = VoidVPopHandler.voidOnPop,
+    Future<void> Function(VRedirector vRedirector) onPop =
+        VoidVPopHandler.voidOnPop,
     Future<void> Function(VRedirector vRedirector) onSystemPop =
         VoidVPopHandler.voidOnSystemPop,
     this.buildTransition,
@@ -421,7 +425,8 @@ class WidgetsVRouter extends VRouterApp {
     VRouterSailor? vRouterData;
 
     // First try to get a local MaterialVRouterData
-    vRouterData = context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
+    vRouterData =
+        context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
     if (vRouterData != null) {
       return vRouterData;
     }
