@@ -1,62 +1,40 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/vlogs.dart';
-
 import 'package:vrouter/src/vrouter_core.dart';
 import 'package:vrouter/src/vrouter_scope.dart';
 import 'package:vrouter/src/vrouter_vroute_elements.dart';
+
+import 'mixin/vrouter_app_mixin.dart';
 
 /// This widget handles most of the routing work
 /// It gives you access to the [routes] attribute where you can start
 /// building your routes using [VRouteElement]s
 ///
-/// Note that this widget also acts as a [CupertinoApp] so you can pass
-/// it every argument that you would expect in [CupertinoApp]
-class CupertinoVRouter extends StatefulWidget
-    with VRouteElement, VRouteElementSingleSubRoute {
-  /// This list holds every possible routes of your app
+/// Note that this widget also acts as a [WidgetsApp] so you can pass
+/// it every argument that you would expect in [WidgetsApp]
+class WidgetsVRouter extends VRouterApp {
+  @override
   final List<VRouteElement> routes;
 
-  /// If implemented, this becomes the default transition for every route transition
-  /// except those who implement there own buildTransition
-  /// Also see:
-  ///   * [VRouteElement.buildTransition] for custom local transitions
-  ///
-  /// Note that if this is not implemented, every route which does not implement
-  /// its own buildTransition will be given a default transition: this of a
-  /// [MaterialPage] or a [CupertinoPage] depending on the platform
-  final Widget Function(Animation<double> animation,
-      Animation<double> secondaryAnimation, Widget child)? buildTransition;
+  @override
+  final Widget Function(
+          Animation<double> animation, Animation<double> secondaryAnimation, Widget child)?
+      buildTransition;
 
-  /// The duration of [VRouter.buildTransition]
+  @override
   final Duration? transitionDuration;
 
-  /// The reverse duration of [VRouter.buildTransition]
+  @override
   final Duration? reverseTransitionDuration;
 
-  /// Two router mode are possible:
-  ///    - "hash": This is the default, the url will be serverAddress/#/localUrl
-  ///    - "history": This will display the url in the way we are used to, without
-  ///       the #. However note that you will need to configure your server to make this work.
-  ///       Follow the instructions here: [https://router.vuejs.org/guide/essentials/history-mode.html#example-server-configurations]
+  @override
   final VRouterMode mode;
 
-  /// The VRouter logs that are to be shown
-  ///
-  ///
-  /// Most of the logs are navigation event such as
-  /// successful navigation
-  ///
-  ///
-  /// Use VLogs to easily set the logs to show:
-  ///   - VLogs.none opts out of logs
-  ///   - VLogs.info (default) shows every logs
-  ///   - VLogs.warning shows only warning logs
+  @override
   final List<VLogLevel> logs;
 
   @override
-  Future<void> beforeEnter(VRedirector vRedirector) =>
-      _beforeEnter(vRedirector);
+  Future<void> beforeEnter(VRedirector vRedirector) => _beforeEnter(vRedirector);
   final Future<void> Function(VRedirector vRedirector) _beforeEnter;
 
   @override
@@ -73,47 +51,29 @@ class CupertinoVRouter extends StatefulWidget
   @override
   void afterEnter(BuildContext context, String? from, String to) =>
       _afterEnter(context, from, to);
-  final void Function(BuildContext context, String? from, String to)
-      _afterEnter;
+  final void Function(BuildContext context, String? from, String to) _afterEnter;
 
   @override
   Future<void> onPop(VRedirector vRedirector) => _onPop(vRedirector);
   final Future<void> Function(VRedirector vRedirector) _onPop;
 
   @override
-  Future<void> onSystemPop(VRedirector vRedirector) =>
-      _onSystemPop(vRedirector);
+  Future<void> onSystemPop(VRedirector vRedirector) => _onSystemPop(vRedirector);
   final Future<void> Function(VRedirector vRedirector) _onSystemPop;
 
-  /// This allows you to change the initial url
-  ///
-  /// The default is '/'
+  @override
   final String initialUrl;
 
-  /// Use this key to update the [routes]
-  ///
-  /// If your [routes] should change in a declarative fashion based on some variable,
-  /// you should change [appRouterKey] to update [routes]
-  /// Note that you should change [appRouterKey] as little as possible
-  ///
-  /// It will be used in [CupertinoApp] and NOT [CupertinoVRouter]
-  /// This is because [CupertinoVRouter] should never update
+  @override
   final Key? appRouterKey;
 
-  /// A key given to the root navigator
-  ///
-  ///
-  /// This can be used to access a context in which you can call [Navigator]
-  ///
-  /// This can also be used if you need your [routes] to update, in this case change this key
-  /// Note however that you should change [navigatorKey] as little as possible
+  @override
   final GlobalKey<NavigatorState>? navigatorKey;
 
-  CupertinoVRouter({
+  WidgetsVRouter({
     Key? key,
     required this.routes,
-    Future<void> Function(VRedirector vRedirector) beforeEnter =
-        VoidVGuard.voidBeforeEnter,
+    Future<void> Function(VRedirector vRedirector) beforeEnter = VoidVGuard.voidBeforeEnter,
     Future<void> Function(
       VRedirector vRedirector,
       void Function(Map<String, String> historyState) saveHistoryState,
@@ -121,8 +81,7 @@ class CupertinoVRouter extends StatefulWidget
         beforeLeave = VoidVGuard.voidBeforeLeave,
     void Function(BuildContext context, String? from, String to) afterEnter =
         VoidVGuard.voidAfterEnter,
-    Future<void> Function(VRedirector vRedirector) onPop =
-        VoidVPopHandler.voidOnPop,
+    Future<void> Function(VRedirector vRedirector) onPop = VoidVPopHandler.voidOnPop,
     Future<void> Function(VRedirector vRedirector) onSystemPop =
         VoidVPopHandler.voidOnSystemPop,
     this.buildTransition,
@@ -136,11 +95,11 @@ class CupertinoVRouter extends StatefulWidget
     @Deprecated('Please use navigatorKey instead.\n This has been removed because it is redundant with navigatorKey.')
         this.appRouterKey,
     this.navigatorKey,
-    // Bellow are the MaterialApp parameters
-    this.theme,
+    // Bellow are the WidgetsApp parameters
     this.title = '',
     this.onGenerateTitle,
-    this.color,
+    this.textStyle,
+    required this.color,
     this.locale,
     this.localizationsDelegates,
     this.localeListResolutionCallback,
@@ -150,11 +109,12 @@ class CupertinoVRouter extends StatefulWidget
     this.checkerboardRasterCacheImages = false,
     this.checkerboardOffscreenLayers = false,
     this.showSemanticsDebugger = false,
+    this.debugShowWidgetInspector = false,
     this.debugShowCheckedModeBanner = true,
+    this.inspectorSelectButtonBuilder,
     this.shortcuts,
     this.actions,
     this.restorationScopeId,
-    this.scrollBehavior,
   })  : _beforeEnter = beforeEnter,
         _beforeLeave = beforeLeave,
         _afterEnter = afterEnter,
@@ -163,16 +123,12 @@ class CupertinoVRouter extends StatefulWidget
         super(key: key);
 
   @override
-  CupertinoVRouterState createState() => CupertinoVRouterState();
+  WidgetsVRouterState createState() => WidgetsVRouterState();
 
-  /// {@macro flutter.widgets.widgetsApp.navigatorObservers}
+  @override
   final List<NavigatorObserver> navigatorObservers;
 
-  /// {@macro flutter.widgets.widgetsApp.builder}
-  ///
-  /// Material specific features such as [showDialog] and [showMenu], and widgets
-  /// such as [Tooltip], [PopupMenuButton], also require a [Navigator] to properly
-  /// function.
+  @override
   final Widget Function(BuildContext context, Widget child)? builder;
 
   /// {@macro flutter.widgets.widgetsApp.title}
@@ -185,29 +141,35 @@ class CupertinoVRouter extends StatefulWidget
   /// This value is passed unmodified to [WidgetsApp.onGenerateTitle].
   final GenerateAppTitle? onGenerateTitle;
 
-  /// Default visual properties, like colors fonts and shapes, for this app's
-  /// material widgets.
+  /// The default text style for [Text] in the application.
+  final TextStyle? textStyle;
+
+  /// {@template flutter.widgets.widgetsApp.color}
+  /// The primary color to use for the application in the operating system
+  /// interface.
   ///
-  /// A second [darkTheme] [ThemeData] value, which is used to provide a dark
-  /// version of the user interface can also be specified. [themeMode] will
-  /// control which theme will be used if a [darkTheme] is provided.
+  /// For example, on Android this is the color used for the application in the
+  /// application switcher.
+  /// {@endtemplate}
+  final Color color;
+
+  /// {@template flutter.widgets.widgetsApp.locale}
+  /// The initial locale for this app's [Localizations] widget is based
+  /// on this value.
   ///
-  /// The default value of this property is the value of [ThemeData.light()].
+  /// If the 'locale' is null then the system's locale value is used.
+  ///
+  /// The value of [Localizations.locale] will equal this locale if
+  /// it matches one of the [supportedLocales]. Otherwise it will be
+  /// the first element of [supportedLocales].
+  /// {@endtemplate}
   ///
   /// See also:
   ///
-  ///  * [themeMode], which controls which theme to use.
-  ///  * [MediaQueryData.platformBrightness], which indicates the platform's
-  ///    desired brightness and is used to automatically toggle between [theme]
-  ///    and [darkTheme] in [MaterialApp].
-  ///  * [ThemeData.brightness], which indicates the [Brightness] of a theme's
-  ///    colors.
-  final CupertinoThemeData? theme;
-
-  /// {@macro flutter.widgets.widgetsApp.color}
-  final Color? color;
-
-  /// {@macro flutter.widgets.widgetsApp.locale}
+  ///  * [localeResolutionCallback], which can override the default
+  ///    [supportedLocales] matching algorithm.
+  ///  * [localizationsDelegates], which collectively define all of the localized
+  ///    resources used by this app.
   final Locale? locale;
 
   /// {@macro flutter.widgets.widgetsApp.localizationsDelegates}
@@ -344,8 +306,37 @@ class CupertinoVRouter extends StatefulWidget
   /// reported by the framework.
   final bool showSemanticsDebugger;
 
-  /// {@macro flutter.widgets.widgetsApp.debugShowCheckedModeBanner}
+  /// Turns on an overlay that enables inspecting the widget tree.
+  ///
+  /// The inspector is only available in checked mode as it depends on
+  /// [RenderObject.debugDescribeChildren] which should not be called outside of
+  /// checked mode.
+  final bool debugShowWidgetInspector;
+
+  /// {@template flutter.widgets.widgetsApp.debugShowCheckedModeBanner}
+  /// Turns on a little "DEBUG" banner in checked mode to indicate
+  /// that the app is in checked mode. This is on by default (in
+  /// checked mode), to turn it off, set the constructor argument to
+  /// false. In release mode this has no effect.
+  ///
+  /// To get this banner in your application if you're not using
+  /// WidgetsApp, include a [CheckedModeBanner] widget in your app.
+  ///
+  /// This banner is intended to deter people from complaining that your
+  /// app is slow when it's in checked mode. In checked mode, Flutter
+  /// enables a large number of expensive diagnostics to aid in
+  /// development, and so performance in checked mode is not
+  /// representative of what will happen in release mode.
+  /// {@endtemplate}
   final bool debugShowCheckedModeBanner;
+
+  /// Builds the widget the [WidgetInspector] uses to switch between view and
+  /// inspect modes.
+  ///
+  /// This lets [MaterialApp] to use a material button to toggle the inspector
+  /// select mode without requiring [WidgetInspector] to depend on the
+  /// material package.
+  final InspectorSelectButtonBuilder? inspectorSelectButtonBuilder;
 
   /// {@macro flutter.widgets.widgetsApp.shortcuts}
   /// {@tool snippet}
@@ -408,25 +399,29 @@ class CupertinoVRouter extends StatefulWidget
   /// {@macro flutter.widgets.widgetsApp.actions.seeAlso}
   final Map<Type, Action<Intent>>? actions;
 
-  /// {@macro flutter.widgets.widgetsApp.restorationScopeId}
-  final String? restorationScopeId;
-
-  /// {@macro flutter.material.materialApp.scrollBehavior}
+  /// {@template flutter.widgets.widgetsApp.restorationScopeId}
+  /// The identifier to use for state restoration of this app.
   ///
-  /// When null, defaults to [CupertinoScrollBehavior].
+  /// Providing a restoration ID inserts a [RootRestorationScope] into the
+  /// widget hierarchy, which enables state restoration for descendant widgets.
+  ///
+  /// Providing a restoration ID also enables the [Navigator] built by the
+  /// [WidgetsApp] to restore its state (i.e. to restore the history stack of
+  /// active [Route]s). See the documentation on [Navigator] for more details
+  /// around state restoration of [Route]s.
   ///
   /// See also:
   ///
-  ///  * [ScrollConfiguration], which controls how [Scrollable] widgets behave
-  ///    in a subtree.
-  final ScrollBehavior? scrollBehavior;
+  ///  * [RestorationManager], which explains how state restoration works in
+  ///    Flutter.
+  /// {@endtemplate}
+  final String? restorationScopeId;
 
   static VRouterSailor of(BuildContext context) {
     VRouterSailor? vRouterData;
 
     // First try to get a local MaterialVRouterData
-    vRouterData =
-        context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
+    vRouterData = context.dependOnInheritedWidgetOfExactType<LocalVRouterData>();
     if (vRouterData != null) {
       return vRouterData;
     }
@@ -450,70 +445,30 @@ class CupertinoVRouter extends StatefulWidget
   List<VRouteElement> buildRoutes() => routes;
 
   @override
-  void afterLeave(BuildContext context, String? from, String to) {}
-
-  @override
   void afterUpdate(BuildContext context, String? from, String to) {}
 
   @override
   Future<void> beforeUpdate(VRedirector vRedirector) async {}
-}
-
-class CupertinoVRouterState extends State<CupertinoVRouter>
-    implements VRouterSailor {
-  late VRouterDelegate vRouterDelegate = VRouterDelegate(
-    routes: widget.routes,
-    builder: widget.builder,
-    navigatorObservers: widget.navigatorObservers,
-    beforeEnter: widget.beforeEnter,
-    beforeLeave: widget.beforeLeave,
-    afterEnter: widget.afterEnter,
-    onPop: widget.onPop,
-    onSystemPop: widget.onSystemPop,
-    buildTransition: widget.buildTransition,
-    transitionDuration: widget.transitionDuration,
-    reverseTransitionDuration: widget.reverseTransitionDuration,
-    initialUrl: widget.initialUrl,
-    navigatorKey: widget.navigatorKey,
-    logs: widget.logs,
-  );
 
   @override
-  void didUpdateWidget(covariant CupertinoVRouter oldWidget) {
-    if (oldWidget.appRouterKey != widget.appRouterKey ||
-        oldWidget.navigatorKey != widget.navigatorKey) {
-      vRouterDelegate = VRouterDelegate(
-        routes: widget.routes,
-        builder: widget.builder,
-        navigatorObservers: widget.navigatorObservers,
-        beforeEnter: widget.beforeEnter,
-        beforeLeave: widget.beforeLeave,
-        afterEnter: widget.afterEnter,
-        onPop: widget.onPop,
-        onSystemPop: widget.onSystemPop,
-        buildTransition: widget.buildTransition,
-        transitionDuration: widget.transitionDuration,
-        reverseTransitionDuration: widget.reverseTransitionDuration,
-        initialUrl: widget.initialUrl,
-        navigatorKey: widget.navigatorKey,
-        logs: widget.logs,
-      );
-    }
-    super.didUpdateWidget(oldWidget);
-  }
+  void afterLeave(BuildContext context, String? from, String to) {}
+}
 
+class WidgetsVRouterState extends State<WidgetsVRouter>
+    with VRouterAppStateMixin
+    implements VRouterSailor {
   @override
   Widget build(BuildContext context) {
     return VRouterScope(
       vRouterMode: widget.mode,
-      child: CupertinoApp.router(
+      child: WidgetsApp.router(
         backButtonDispatcher: VBackButtonDispatcher(),
         routeInformationParser: VRouteInformationParser(),
         routerDelegate: vRouterDelegate,
         key: widget.appRouterKey,
-        theme: widget.theme,
         title: widget.title,
         onGenerateTitle: widget.onGenerateTitle,
+        textStyle: widget.textStyle,
         color: widget.color,
         locale: widget.locale,
         localizationsDelegates: widget.localizationsDelegates,
@@ -524,214 +479,13 @@ class CupertinoVRouterState extends State<CupertinoVRouter>
         checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages,
         checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,
         showSemanticsDebugger: widget.showSemanticsDebugger,
+        debugShowWidgetInspector: widget.debugShowWidgetInspector,
         debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,
+        inspectorSelectButtonBuilder: widget.inspectorSelectButtonBuilder,
         shortcuts: widget.shortcuts,
         actions: widget.actions,
         restorationScopeId: widget.restorationScopeId,
-        scrollBehavior: widget.scrollBehavior,
       ),
     );
   }
-
-  @override
-  String? get url => vRouterDelegate.url;
-
-  @override
-  String? get previousUrl => vRouterDelegate.previousUrl;
-
-  @override
-  String? get path => url != null ? Uri.parse(url!).path : null;
-
-  @override
-  String? get previousPath => url != null ? Uri.parse(url!).path : null;
-
-  @override
-  Map<String, String> get historyState => vRouterDelegate.historyState;
-
-  @override
-  Map<String, String> get pathParameters => vRouterDelegate.pathParameters;
-
-  @override
-  Map<String, String> get queryParameters => vRouterDelegate.queryParameters;
-
-  @override
-  List<String> get names => vRouterDelegate.names;
-
-  @override
-  Future<void> pop({
-    Map<String, String> pathParameters = const {},
-    Map<String, String> queryParameters = const {},
-    Map<String, String> newHistoryState = const {},
-  }) async =>
-      vRouterDelegate.pop(
-        pathParameters: pathParameters,
-        queryParameters: queryParameters,
-        newHistoryState: newHistoryState,
-      );
-
-  @override
-  Future<void> systemPop({
-    Map<String, String> pathParameters = const {},
-    Map<String, String> queryParameters = const {},
-    Map<String, String> newHistoryState = const {},
-  }) async =>
-      vRouterDelegate.systemPop(
-        pathParameters: pathParameters,
-        queryParameters: queryParameters,
-        newHistoryState: newHistoryState,
-      );
-
-  @override
-  @Deprecated('Use to (vRouter.to) instead')
-  void push(
-    String newUrl, {
-    Map<String, String> queryParameters = const {},
-    Map<String, String> historyState = const {},
-  }) =>
-      to(
-        newUrl,
-        queryParameters: queryParameters,
-        historyState: historyState,
-      );
-
-  @override
-  @Deprecated('Use toSegments instead')
-  void pushSegments(
-    List<String> segments, {
-    Map<String, String> queryParameters = const {},
-    Map<String, String> historyState = const {},
-  }) =>
-      toSegments(
-        segments,
-        queryParameters: queryParameters,
-        historyState: historyState,
-      );
-
-  @override
-  @Deprecated('Use toNamed instead')
-  void pushNamed(
-    String name, {
-    Map<String, String> pathParameters = const {},
-    Map<String, String> queryParameters = const {},
-    Map<String, String> historyState = const {},
-  }) =>
-      toNamed(
-        name,
-        pathParameters: pathParameters,
-        queryParameters: queryParameters,
-        historyState: historyState,
-      );
-
-  @override
-  @Deprecated('Use vRouter.to(..., isReplacement: true) instead')
-  void pushReplacement(
-    String newUrl, {
-    Map<String, String> queryParameters = const {},
-    Map<String, String> historyState = const {},
-  }) =>
-      to(
-        newUrl,
-        queryParameters: queryParameters,
-        historyState: historyState,
-        isReplacement: true,
-      );
-
-  @override
-  @Deprecated('Use vRouter.toNamed(..., isReplacement: true) instead')
-  void pushReplacementNamed(
-    String name, {
-    Map<String, String> pathParameters = const {},
-    Map<String, String> queryParameters = const {},
-    Map<String, String> historyState = const {},
-  }) =>
-      toNamed(
-        name,
-        pathParameters: pathParameters,
-        queryParameters: queryParameters,
-        historyState: historyState,
-        isReplacement: true,
-      );
-
-  @override
-  @Deprecated('Use toExternal instead')
-  void pushExternal(String newUrl, {bool openNewTab = false}) =>
-      toExternal(newUrl, openNewTab: openNewTab);
-
-  @override
-  @Deprecated(
-      'Use to(context.vRouter.url!, isReplacement: true, historyState: newHistoryState) instead')
-  void replaceHistoryState(Map<String, String> historyState) => to(
-        url ?? '/',
-        historyState: historyState,
-        isReplacement: true,
-      );
-
-  @override
-  void to(
-    String path, {
-    Map<String, String> queryParameters = const {},
-    Map<String, String> historyState = const {},
-    isReplacement = false,
-  }) =>
-      vRouterDelegate.to(
-        path,
-        queryParameters: queryParameters,
-        historyState: historyState,
-        isReplacement: isReplacement,
-      );
-
-  @override
-  void toSegments(
-    List<String> segments, {
-    Map<String, String> queryParameters = const {},
-    Map<String, String> historyState = const {},
-    isReplacement = false,
-  }) =>
-      vRouterDelegate.toSegments(
-        segments,
-        queryParameters: queryParameters,
-        historyState: historyState,
-        isReplacement: isReplacement,
-      );
-
-  @override
-  void toNamed(
-    String name, {
-    Map<String, String> pathParameters = const {},
-    Map<String, String> queryParameters = const {},
-    Map<String, String> historyState = const {},
-    bool isReplacement = false,
-  }) =>
-      vRouterDelegate.toNamed(
-        name,
-        pathParameters: pathParameters,
-        queryParameters: queryParameters,
-        historyState: historyState,
-        isReplacement: isReplacement,
-      );
-
-  @override
-  void toExternal(String newUrl, {bool openNewTab = false}) =>
-      vRouterDelegate.toExternal(
-        newUrl,
-        openNewTab: openNewTab,
-      );
-
-  @override
-  void historyForward() => vRouterDelegate.historyForward();
-
-  @override
-  void historyBack() => vRouterDelegate.historyBack();
-
-  @override
-  void historyGo(int delta) => vRouterDelegate.historyGo(delta);
-
-  @override
-  bool historyCanForward() => vRouterDelegate.historyCanForward();
-
-  @override
-  bool historyCanBack() => vRouterDelegate.historyCanBack();
-
-  @override
-  bool historyCanGo(int delta) => vRouterDelegate.historyCanGo(delta);
 }

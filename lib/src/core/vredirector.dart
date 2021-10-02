@@ -112,11 +112,13 @@ class VRedirector implements VRouterNavigator {
   void pushSegments(
     List<String> segments, {
     Map<String, String> queryParameters = const {},
+        String hash = '',
     Map<String, String> historyState = const {},
   }) =>
       toSegments(
         segments,
         queryParameters: queryParameters,
+        hash: hash,
         historyState: historyState,
       );
 
@@ -128,12 +130,14 @@ class VRedirector implements VRouterNavigator {
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
+        String hash = '',
     Map<String, String> historyState = const {},
   }) =>
       toNamed(
         name,
         pathParameters: pathParameters,
         queryParameters: queryParameters,
+        hash: hash,
         historyState: historyState,
       );
 
@@ -144,11 +148,13 @@ class VRedirector implements VRouterNavigator {
   void pushReplacement(
     String newUrl, {
     Map<String, String> queryParameters = const {},
+        String hash = '',
     Map<String, String> historyState = const {},
   }) =>
       to(
         newUrl,
         queryParameters: queryParameters,
+        hash: hash,
         historyState: historyState,
       );
 
@@ -160,12 +166,14 @@ class VRedirector implements VRouterNavigator {
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
+        String hash = '',
     Map<String, String> historyState = const {},
   }) =>
       toNamed(
         name,
         pathParameters: pathParameters,
         queryParameters: queryParameters,
+        hash: hash,
         historyState: historyState,
         isReplacement: true,
       );
@@ -186,6 +194,7 @@ class VRedirector implements VRouterNavigator {
   void to(
     String path, {
     Map<String, String> queryParameters = const {},
+        String hash = '',
     Map<String, String> historyState = const {},
     isReplacement = false,
   }) {
@@ -197,6 +206,7 @@ class VRedirector implements VRouterNavigator {
         vRouterDelegate.to(
           path,
           queryParameters: queryParameters,
+          hash: hash,
           historyState: historyState,
           isReplacement: isReplacement,
         );
@@ -231,6 +241,7 @@ class VRedirector implements VRouterNavigator {
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
+        String hash = '',
     Map<String, String> historyState = const {},
     bool isReplacement = false,
   }) {
@@ -243,6 +254,7 @@ class VRedirector implements VRouterNavigator {
           name,
           pathParameters: pathParameters,
           queryParameters: queryParameters,
+          hash: hash,
           historyState: historyState,
           isReplacement: isReplacement,
         );
@@ -256,6 +268,7 @@ class VRedirector implements VRouterNavigator {
   void toSegments(
     List<String> segments, {
     Map<String, String> queryParameters = const {},
+        String hash = '',
     Map<String, String> historyState = const {},
     isReplacement = false,
   }) {
@@ -267,6 +280,7 @@ class VRedirector implements VRouterNavigator {
         vRouterDelegate.toSegments(
           segments,
           queryParameters: queryParameters,
+          hash: hash,
           historyState: historyState,
           isReplacement: isReplacement,
         );
@@ -317,6 +331,7 @@ class VRedirector implements VRouterNavigator {
   void pop({
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
+    String hash = '',
     Map<String, String> newHistoryState = const {},
   }) {
     stopRedirection();
@@ -333,6 +348,7 @@ class VRedirector implements VRouterNavigator {
                   .pathParameters, // Include the previous path parameters when popping
             },
             queryParameters: queryParameters,
+            hash: hash,
             newHistoryState: newHistoryState,
           ),
         );
@@ -344,6 +360,7 @@ class VRedirector implements VRouterNavigator {
   Future<void> systemPop({
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
+    String hash = '',
     Map<String, String> newHistoryState = const {},
   }) async {
     stopRedirection();
@@ -355,6 +372,7 @@ class VRedirector implements VRouterNavigator {
           // vRouteElementNode.getVRouteElementToPop(),
           pathParameters: pathParameters,
           queryParameters: queryParameters,
+          hash: hash,
           newHistoryState: newHistoryState,
         );
   }

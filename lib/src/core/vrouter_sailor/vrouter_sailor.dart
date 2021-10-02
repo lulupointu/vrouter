@@ -15,6 +15,8 @@ abstract class InitializedVRouterSailor implements VRouterSailor {
   String get path => Uri.parse(url).path;
 
   @override
-  String? get previousPath =>
-      previousUrl != null ? Uri.parse(previousUrl!).path : null;
+  String get hash => Uri.decodeComponent(Uri.parse(url).fragment);
+
+  @override
+  String? get previousPath => previousUrl != null ? Uri.parse(previousUrl!).path : null;
 }

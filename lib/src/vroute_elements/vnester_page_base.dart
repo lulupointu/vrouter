@@ -224,6 +224,7 @@ class VNesterPageBase extends VRouteElement
                                   .getVRouteElementToPop(),
                               pathParameters: pathParameters,
                               queryParameters: {},
+                              hash: '', // Pop to no hash be default
                               newHistoryState: {},
                             );
                           }

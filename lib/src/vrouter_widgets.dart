@@ -1,6 +1,7 @@
 library vrouter_widgets;
 
-export 'widgets/cupertino_vrouter.dart';
-export 'widgets/vrouter.dart';
-export 'widgets/widgets_vrouter.dart';
-export 'widgets/vwidget_guard.dart';
+export 'widgets/router_app/cupertino_vrouter.dart';
+export 'widgets/router_app/vrouter.dart';
+export 'widgets/router_app/widgets_vrouter.dart';
+export 'widgets/guard/vwidget_guard.dart';
+export 'widgets/anchor/vanchor.dart';

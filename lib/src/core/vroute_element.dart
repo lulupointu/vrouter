@@ -392,6 +392,9 @@ class VPathRequestData {
 
   /// The url corresponding to the uri
   String get url => uri.toString();
+
+  /// The hash contained in the uri
+  String get hash => Uri.decodeComponent(uri.fragment);
 }
 
 /// Part of [VRouteElement.buildRoute] that must be passed down but can be modified

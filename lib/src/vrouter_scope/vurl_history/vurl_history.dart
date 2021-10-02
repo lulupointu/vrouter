@@ -23,7 +23,7 @@ abstract class VHistory {
     required int initialHistoryLength,
     required List<VRouteInformation?> initialLocations,
   })  : _historyIndex = initialHistoryIndex,
-        _locations = initialLocations {}
+        _locations = initialLocations;
 
   int _historyIndex;
 
@@ -114,10 +114,10 @@ abstract class VHistory {
 }
 
 class VRouteInformation {
-  final String location;
+  final String url;
   final Map<String, String> state;
 
-  VRouteInformation({required this.location, required this.state});
+  VRouteInformation({required this.url, required this.state});
 }
 
 class HistoryNavigationError implements Exception {

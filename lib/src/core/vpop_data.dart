@@ -1,15 +1,17 @@
 import 'package:vrouter/src/core/vroute_element.dart';
 
 class VPopData {
-  VRouteElement elementToPop;
-  Map<String, String> pathParameters;
-  Map<String, String> queryParameters;
-  Map<String, String> newHistoryState;
+  final VRouteElement elementToPop;
+  final Map<String, String> pathParameters;
+  final Map<String, String> queryParameters;
+  final String hash;
+  final Map<String, String> newHistoryState;
 
   VPopData({
     required this.elementToPop,
     required this.pathParameters,
     required this.queryParameters,
+    required this.hash,
     required this.newHistoryState,
   });
 
@@ -19,6 +21,7 @@ class VPopData {
         ' itemToPop: $elementToPop,\n'
         ' pathParameters: $pathParameters,\n'
         ' queryParameters: $queryParameters,\n'
+        ' hash: $hash,\n'
         ' newHistoryState: $newHistoryState,\n'
         ')';
   }

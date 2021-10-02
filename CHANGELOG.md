@@ -4,6 +4,11 @@
 - 🚨 : **BREAKING** Some class/attribute/method changed and will break your code. Read comment to know how to migrate.
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
+## \[1.2.0+14\] - 02/10/2021.
+- ✨️ : A hash (or fragment) can now be set as part of the url
+- ✨ : VAnchor allows you to easily create anchor which change the current hash and scroll to the widget when clicked
+- 🛠️ : Small refactoring
+
 ## \[1.2.0+13\] - 20/09/2021.
 - 🛠️ : Dynamically moving VNester.child around the widget tree could cause popping issues
 

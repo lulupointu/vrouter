@@ -41,7 +41,7 @@ class VHistoryWeb extends VHistory {
         ),
         (int i) => i == historyIndex
             ? VRouteInformation(
-                location:
+                url:
                     BrowserHelpers.getPathAndQuery(routerMode: vRouterMode),
                 state: _getInitialHistoryState(),
               )
@@ -122,7 +122,7 @@ class VHistoryWeb extends VHistory {
 
     // Save the url
     BrowserHelpers.pushUrl(
-      vRouteInformation.location,
+      Uri.parse(vRouteInformation.url).toString(),
       routerMode: vRouterMode,
       isReplacement: isBrowserSynced,
     );
@@ -150,7 +150,7 @@ class VHistoryWeb extends VHistory {
     await _doWhileBrowserInSync(() {
       // Save the url
       BrowserHelpers.pushUrl(
-        vRouteInformation.location,
+        Uri.parse(vRouteInformation.url).toString(),
         routerMode: vRouterMode,
         isReplacement: true,
       );

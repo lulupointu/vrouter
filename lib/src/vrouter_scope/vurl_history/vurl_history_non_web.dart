@@ -17,7 +17,7 @@ class VHistoryNonWeb extends VHistory {
           // We use [PlatformDispatcher.instance.defaultRouteName] to enable mobile deep-linking
           initialLocations: [
             VRouteInformation(
-              location: PlatformDispatcher.instance.defaultRouteName,
+              url: PlatformDispatcher.instance.defaultRouteName,
               state: {},
             ),
           ],
