@@ -70,7 +70,7 @@ abstract class VRouterNavigator {
   ///   * stating with '/', in which case we just navigate
   ///     to the given path
   ///   * not starting with '/', in which case we append the
-  ///     current path to the given one
+  ///     given path to the current one
   ///
   /// [queryParameters] to add query parameters (you can also
   ///  add them manually)
