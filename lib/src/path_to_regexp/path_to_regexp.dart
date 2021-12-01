@@ -7,9 +7,8 @@
 /// in to enable wildcards (*), which path_to_regexp does not
 
 /// The pattern as defined by VRouter
-final _inputPattern =
-/* :anything or :* */ RegExp(r':(\w+|\*(?=\())'
-/* RegExp in (), optional */ r'(\((?:\\.|[^\\()])+\))?');
+final _inputPattern = /* :anything or :* */ RegExp(r':(\w+|\*(?=\())'
+    /* RegExp in (), optional */ r'(\((?:\\.|[^\\()])+\))?');
 
 /// The real regexp to replace a path parameter which does not specify
 /// its path parameter

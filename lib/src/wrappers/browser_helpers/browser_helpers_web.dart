@@ -162,15 +162,7 @@ class BrowserHelpers {
   /// We use a custom state entry called 'historyIndex'
   /// This is used by this plugin to keep track of where we are
   /// in the browser history
-  static int getHistoryIndex() {
-    final int? historyIndex = _getHistoryState()['historyIndex'];
-
-    if (historyIndex == null) {
-      throw Exception('Tried to get historyIndex but it has not been set');
-    }
-
-    return historyIndex;
-  }
+  static int getHistoryIndex() => _getHistoryState()['historyIndex'] ?? 0;
 
   static void setApplicationInstanceId(int applicationInstanceId) {
     final historyState = _getHistoryState();
