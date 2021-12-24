@@ -2,11 +2,13 @@ import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/vroute_elements/vnester_page_base.dart';
 import 'package:vrouter/src/vroute_elements/vpath.dart';
 import 'package:vrouter/src/vroute_elements/vroute_element_builder.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_with_custom_value.dart';
 import 'package:vrouter/src/vrouter_core.dart';
 
 /// A [VRouteElement] similar to [VNester] but which allows you to specify your own page
 /// thanks to [pageBuilder]
-class VNesterPage extends VRouteElementBuilder {
+class VNesterPage extends VRouteElementBuilder
+    with VRouteElementWithCustomValue {
   /// A list of routes which:
   ///   - path NOT starting with '/' will be relative to [path]
   ///   - widget or page will be nested inside [widgetBuilder]
@@ -26,10 +28,14 @@ class VNesterPage extends VRouteElementBuilder {
       LocalKey key, Widget child, String? name, VRouterData state) pageBuilder;
 
   /// A function which creates the [VRouteElement._rootVRouter] associated to this [VRouteElement]
+  /// Can have one of two types:
+  ///   - [Widget Function(Widget child)]
+  ///   - [Widget Function(Widget child, dynamic customValue)]
   ///
   /// [child] will be the [VRouteElement._rootVRouter] of the matched [VRouteElement] in
-  /// [nestedRoutes]
-  final Widget Function(Widget child) widgetBuilder;
+  /// [nestedRoutes]. [customValue] will be [VRouteElement.customValue] of the matched
+  /// [VRouteElement], if any.
+  final Function widgetBuilder;
 
   /// The path (relative or absolute) or this [VRouteElement]
   ///
@@ -87,6 +93,10 @@ class VNesterPage extends VRouteElementBuilder {
   /// and the animations will be as expected
   final GlobalKey<NavigatorState>? navigatorKey;
 
+  /// A custom value that can be passed to [widgetBuilder] in a [VNester] if we're a nested child.
+  @override
+  final dynamic customValue;
+
   VNesterPage({
     required this.path,
     required Page Function(LocalKey key, Widget child, String? name)
@@ -98,6 +108,7 @@ class VNesterPage extends VRouteElementBuilder {
     this.stackedRoutes = const [],
     this.aliases = const [],
     this.navigatorKey,
+    this.customValue,
   }) : this.pageBuilder =
             ((LocalKey key, Widget child, String? name, VRouterData state) =>
                 pageBuilder(key, child, name));
@@ -117,6 +128,7 @@ class VNesterPage extends VRouteElementBuilder {
     List<VRouteElement> stackedRoutes = const [],
     List<String> aliases = const [],
     GlobalKey<NavigatorState>? navigatorKey,
+    dynamic customValue,
   })  : this.path = path,
         this.pageBuilder = pageBuilder,
         this.widgetBuilder = ((child) => VRouterDataBuilder(
@@ -126,7 +138,8 @@ class VNesterPage extends VRouteElementBuilder {
         this.name = name,
         this.stackedRoutes = stackedRoutes,
         this.aliases = aliases,
-        this.navigatorKey = navigatorKey;
+        this.navigatorKey = navigatorKey,
+        this.customValue = customValue;
 
   @override
   List<VRouteElement> buildRoutes() => [
@@ -143,6 +156,7 @@ class VNesterPage extends VRouteElementBuilder {
               widgetBuilder: widgetBuilder,
               pageBuilder: pageBuilder,
               navigatorKey: navigatorKey,
+              customValue: customValue,
             ),
           ],
         ),

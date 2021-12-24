@@ -1,10 +1,12 @@
 import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/vroute_elements/vpage_base.dart';
 import 'package:vrouter/src/vroute_elements/vroute_element_builder.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_with_custom_value.dart';
 import 'package:vrouter/src/vrouter_core.dart';
 import 'package:vrouter/src/vrouter_helpers.dart';
 
-class VWidgetBase extends VRouteElementBuilder {
+class VWidgetBase extends VRouteElementBuilder
+    with VRouteElementWithCustomValue {
   /// A list of routes which:
   ///   - path NOT starting with '/' will be relative to [path]
   ///   - widget or page will be stacked on top of [widget]
@@ -29,6 +31,10 @@ class VWidgetBase extends VRouteElementBuilder {
   ///
   /// Note that [name] should be unique w.r.t every [VRouteElement]
   final String? name;
+
+  /// A custom value that can be passed to [widgetBuilder] in a [VNester] if we're a nested child.
+  @override
+  final dynamic customValue;
 
   /// The duration of [VWidgetBase.buildTransition]
   final Duration? transitionDuration;
@@ -61,6 +67,7 @@ class VWidgetBase extends VRouteElementBuilder {
     this.reverseTransitionDuration,
     this.buildTransition,
     this.fullscreenDialog = false,
+    this.customValue,
   });
 
   VWidgetBase.builder({
@@ -74,6 +81,7 @@ class VWidgetBase extends VRouteElementBuilder {
             Animation<double> secondaryAnimation, Widget child)?
         buildTransition,
     bool fullscreenDialog = false,
+    dynamic customValue,
   }) : this(
           widget: VRouterDataBuilder(builder: builder),
           stackedRoutes: stackedRoutes,
@@ -83,6 +91,7 @@ class VWidgetBase extends VRouteElementBuilder {
           reverseTransitionDuration: reverseTransitionDuration,
           buildTransition: buildTransition,
           fullscreenDialog: fullscreenDialog,
+          customValue: customValue,
         );
 
   @override
@@ -101,6 +110,7 @@ class VWidgetBase extends VRouteElementBuilder {
           key: key,
           name: name,
           stackedRoutes: stackedRoutes,
+          customValue: customValue,
         ),
       ];
 }
