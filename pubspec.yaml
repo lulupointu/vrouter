@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   url_strategy: ^0.2.0
-  url_launcher: ^6.0.2
+  url_launcher: ^6.0.18
   move_to_background: ^1.0.2
 
 dev_dependencies:
