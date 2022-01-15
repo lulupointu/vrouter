@@ -5,6 +5,9 @@
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
 
+## \[1.2.0+17\] - 15/01/2022.
+- 🛠️ : Don't add the `hash` if it is empty
+
 ## \[1.2.0+16\] - 15/01/2022.
 - 🛠️ : Hash passed directly to `VRedirector.to` `path` will be taken into account
 - 🛠️ : Specify `to` `isReplacement` type

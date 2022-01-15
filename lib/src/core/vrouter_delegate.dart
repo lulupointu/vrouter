@@ -15,7 +15,6 @@ import 'package:vrouter/src/logs/vlog_printer.dart';
 import 'package:vrouter/src/logs/vlogs.dart';
 import 'package:vrouter/src/path_to_regexp/path_to_regexp.dart';
 import 'package:vrouter/src/vrouter_scope.dart';
-import 'package:vrouter/src/vrouter_scope/vrouter_scope.dart';
 import 'package:vrouter/src/helpers/empty_page.dart';
 import 'package:vrouter/src/vrouter_vroute_elements.dart';
 import 'package:vrouter/src/vrouter_widgets.dart';
@@ -1295,6 +1294,9 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     Map<String, String> historyState = const {},
     isReplacement = false,
   }) {
+    // Don't display the hash if it is empty
+    final _hash = (hash?.isEmpty ?? true) ? null : hash;
+
     if (!path.startsWith('/')) {
       if (url == null) {
         throw InvalidUrlVError(url: path);
@@ -1323,7 +1325,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
           : pathQueryParameters.isNotEmpty
               ? pathQueryParameters
               : null,
-      fragment: hash ?? pathHash,
+      fragment: _hash ?? pathHash,
     );
 
     _updateUrl(
@@ -1617,7 +1619,9 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         to(
           initialUri.path,
           queryParameters: initialUri.queryParameters,
-          hash: initialUri.fragment.isEmpty ? null : Uri.decodeComponent(initialUri.fragment),
+          hash: initialUri.fragment.isEmpty
+              ? null
+              : Uri.decodeComponent(initialUri.fragment),
           isReplacement: true,
         );
       }
