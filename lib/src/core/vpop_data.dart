@@ -4,7 +4,7 @@ class VPopData {
   final VRouteElement elementToPop;
   final Map<String, String> pathParameters;
   final Map<String, String> queryParameters;
-  final String hash;
+  final String? hash;
   final Map<String, String> newHistoryState;
 
   VPopData({

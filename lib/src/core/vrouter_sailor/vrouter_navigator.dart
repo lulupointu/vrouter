@@ -20,7 +20,7 @@ abstract class VRouterNavigator {
   void pushSegments(
     List<String> segments, {
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
   });
 
@@ -29,7 +29,7 @@ abstract class VRouterNavigator {
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
   });
 
@@ -37,7 +37,7 @@ abstract class VRouterNavigator {
   void pushReplacement(
     String newUrl, {
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
   });
 
@@ -46,7 +46,7 @@ abstract class VRouterNavigator {
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
   });
 
@@ -91,7 +91,7 @@ abstract class VRouterNavigator {
   void to(
     String path, {
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
     isReplacement = false,
   });
@@ -123,7 +123,7 @@ abstract class VRouterNavigator {
   void toSegments(
     List<String> segments, {
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
     isReplacement = false,
   });
@@ -151,7 +151,7 @@ abstract class VRouterNavigator {
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
     bool isReplacement = false,
   });
@@ -213,7 +213,7 @@ abstract class VRouterNavigator {
   void pop({
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> newHistoryState = const {},
   });
 
@@ -231,7 +231,7 @@ abstract class VRouterNavigator {
   Future<void> systemPop({
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> newHistoryState = const {},
   });
 }

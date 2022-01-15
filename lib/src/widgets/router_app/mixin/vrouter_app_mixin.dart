@@ -196,7 +196,7 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T>
   Future<void> pop({
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> newHistoryState = const {},
   }) async =>
       vRouterDelegate.pop(
@@ -210,7 +210,7 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T>
   Future<void> systemPop({
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> newHistoryState = const {},
   }) async =>
       vRouterDelegate.systemPop(
@@ -238,7 +238,7 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T>
   void pushSegments(
     List<String> segments, {
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
   }) =>
       toSegments(
@@ -254,7 +254,7 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T>
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
   }) =>
       toNamed(
@@ -270,7 +270,7 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T>
   void pushReplacement(
     String newUrl, {
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
   }) =>
       to(
@@ -287,7 +287,7 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T>
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
   }) =>
       toNamed(
@@ -317,7 +317,7 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T>
   void to(
     String path, {
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
     isReplacement = false,
   }) =>
@@ -333,7 +333,7 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T>
   void toSegments(
     List<String> segments, {
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
     isReplacement = false,
   }) =>
@@ -350,7 +350,7 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T>
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
     bool isReplacement = false,
   }) =>

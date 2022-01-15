@@ -86,7 +86,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
   void pushSegments(
     List<String> segments, {
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
   }) =>
       toSegments(
@@ -102,7 +102,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
   }) =>
       toNamed(
@@ -118,7 +118,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
   void pushReplacement(
     String newUrl, {
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
   }) =>
       to(
@@ -135,7 +135,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
   }) =>
       toNamed(
@@ -158,7 +158,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
   void to(
     String path, {
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
     isReplacement = false,
   }) =>
@@ -174,7 +174,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
   void toSegments(
     List<String> segments, {
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
     isReplacement = false,
   }) =>
@@ -191,7 +191,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
     String name, {
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> historyState = const {},
     bool isReplacement = false,
   }) =>
@@ -234,7 +234,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
   void pop({
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> newHistoryState = const {},
   }) {
     Navigator.of(_context).pop(
@@ -256,7 +256,7 @@ class LocalVRouterData extends InheritedWidget with InitializedVRouterSailor {
   Future<void> systemPop({
     Map<String, String> pathParameters = const {},
     Map<String, String> queryParameters = const {},
-    String hash = '',
+    String? hash,
     Map<String, String> newHistoryState = const {},
   }) async {
     // Try to pop a Nav1 page, if successful return

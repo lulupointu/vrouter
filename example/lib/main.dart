@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
+import 'package:vrouter/src/logs/vlogs.dart';
 
 void main() {
   runApp(
     VRouter(
       debugShowCheckedModeBanner: false, // VRouter acts as a MaterialApp
       mode: VRouterMode.history, // Remove the '#' from the url
-      logs: VLogs.info, // Defines which logs to show, info is the default
+      // logs: [VLogLevel.info], // Defines which logs to show, info is the default
       routes: [
         VWidget(
           path: '/login',
