@@ -319,7 +319,7 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T>
     Map<String, String> queryParameters = const {},
     String? hash,
     Map<String, String> historyState = const {},
-    isReplacement = false,
+    bool isReplacement = false,
   }) =>
       vRouterDelegate.to(
         path,

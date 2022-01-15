@@ -6,7 +6,8 @@
 
 
 ## \[1.2.0+16\] - 15/01/2022.
-- 🛠️ : Hash passed directly to VRedirector.to path will be taken into account"
+- 🛠️ : Hash passed directly to `VRedirector.to` `path` will be taken into account
+- 🛠️ : Specify `to` `isReplacement` type
 
 ## \[1.2.0+15\] - 02/10/2021.
 - 🛠️ : The exception 'Tried to get applicationInstanceId but it has not been set' should no longer appear (Fixes https://github.com/lulupointu/vrouter/issues/163 and https://github.com/lulupointu/vrouter/issues/168)

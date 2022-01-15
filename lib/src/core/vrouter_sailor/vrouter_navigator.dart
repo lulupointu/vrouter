@@ -93,7 +93,7 @@ abstract class VRouterNavigator {
     Map<String, String> queryParameters = const {},
     String? hash,
     Map<String, String> historyState = const {},
-    isReplacement = false,
+    bool isReplacement = false,
   });
 
   /// Navigates to a new url based on path segments

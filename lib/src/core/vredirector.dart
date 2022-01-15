@@ -196,7 +196,7 @@ class VRedirector implements VRouterNavigator {
     Map<String, String> queryParameters = const {},
     String? hash,
     Map<String, String> historyState = const {},
-    isReplacement = false,
+    bool isReplacement = false,
   }) {
     stopRedirection();
     _redirectFunction = ({
