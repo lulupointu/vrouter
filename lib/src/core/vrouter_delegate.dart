@@ -1444,7 +1444,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
         pathParameters: pathParameters,
       ),
       queryParameters: queryParameters.isNotEmpty ? queryParameters : null,
-      fragment: hash,
+      fragment: (hash?.isNotEmpty ?? false) ? hash : null,
     );
 
     _updateUrl(
