@@ -5,6 +5,13 @@
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
 
+## \[1.2.0+21\] - 02/02/2022.
+- ✨ : Add `useInheritedMediaQuery` to `VRouter`, `WidgetsVRouter` and `CupertinoVRouter` (thanks @Mitsuroseba !)
+
+
+## \[1.2.0+20\] - 02/02/2022.
+- ✨ : `VRouteRedirector.parse` can now be used for complex redirections
+
 ## \[1.2.0+19\] - 02/02/2022.
 - 🛠️ : Fix a bug where logs broke hot reload, thanks @doldremus (Fixes https://github.com/lulupointu/vrouter/issues/169)
 

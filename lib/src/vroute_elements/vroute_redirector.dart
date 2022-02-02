@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:vrouter/src/vroute_elements/vpath.dart';
 import 'package:vrouter/src/vroute_elements/vroute_element_builder.dart';
 import 'package:vrouter/src/vrouter_core.dart';
@@ -10,17 +12,34 @@ class VRouteRedirector extends VRouteElementBuilder {
   /// The path that should be matched
   final String path;
 
-  /// The path where the user will be redirected
-  final String redirectTo;
+  // /// The path where the user will be redirected
+  // final String redirectTo;
 
+  /// [path] is the path to be matched
+  ///
+  /// [redirectTo] is where the user should be redirected
   VRouteRedirector({
+    required this.path,
+    required String redirectTo,
+  }) : redirectTo =
+            ((vRedirector) => vRedirector.to(redirectTo, isReplacement: true));
+
+  /// Redirect based on the given [path] through a [VRedirector]
+  VRouteRedirector.parse({
     required this.path,
     required this.redirectTo,
   });
 
+  final FutureOr<void> Function(VRedirector vRedirector) redirectTo;
+
   @override
-  Future<void> beforeEnter(VRedirector vRedirector) async =>
-      vRedirector.to(redirectTo, isReplacement: true);
+  Future<void> beforeEnter(VRedirector vRedirector) async {
+    await redirectTo(vRedirector);
+
+    // if (vRedirector.shouldUpdate) {
+    //   throw 'You used [VRouteRedirector.parse] on the path [$path] but did not use any [vRedirector] method to redirect ([vRedirector.to], [vRedirector.pop], ...)';
+    // }
+  }
 
   @override
   List<VRouteElement> buildRoutes() => [

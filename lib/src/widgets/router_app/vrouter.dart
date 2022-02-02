@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/vlogs.dart';
 import 'package:vrouter/src/vrouter_core.dart';
 import 'package:vrouter/src/vrouter_scope.dart';

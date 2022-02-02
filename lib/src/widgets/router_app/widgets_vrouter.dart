@@ -115,6 +115,7 @@ class WidgetsVRouter extends VRouterApp {
     this.showSemanticsDebugger = false,
     this.debugShowWidgetInspector = false,
     this.debugShowCheckedModeBanner = true,
+    this.useInheritedMediaQuery = false,
     this.inspectorSelectButtonBuilder,
     this.shortcuts,
     this.actions,
@@ -334,6 +335,9 @@ class WidgetsVRouter extends VRouterApp {
   /// {@endtemplate}
   final bool debugShowCheckedModeBanner;
 
+  /// {@macro flutter.widgets.widgetsApp.useInheritedMediaQuery}
+  final bool useInheritedMediaQuery;
+
   /// Builds the widget the [WidgetInspector] uses to switch between view and
   /// inspect modes.
   ///
@@ -486,6 +490,7 @@ class WidgetsVRouterState extends State<WidgetsVRouter>
         showSemanticsDebugger: widget.showSemanticsDebugger,
         debugShowWidgetInspector: widget.debugShowWidgetInspector,
         debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,
+        useInheritedMediaQuery: widget.useInheritedMediaQuery,
         inspectorSelectButtonBuilder: widget.inspectorSelectButtonBuilder,
         shortcuts: widget.shortcuts,
         actions: widget.actions,
