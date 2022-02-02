@@ -13,7 +13,7 @@ abstract class VLogPrinter {
   };
 
   /// A marker used to stop coloring
-  static final _endColorMarker = "o";
+  static final _endColorMarker = "\x1B[0m";
 
   static void show(VLog vLog) {
     if (!showLevels.contains(vLog.level)) return;
