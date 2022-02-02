@@ -5,6 +5,9 @@
 - 🔁 : **DEPRECIATED** Some class/attribute/method is depreciated. Read the documentation to know how to migrate.
 
 
+## \[1.2.0+19\] - 02/02/2022.
+- 🛠️ : Fix a bug where logs broke hot reload, thanks @doldremus (Fixes https://github.com/lulupointu/vrouter/issues/169)
+
 ## \[1.2.0+18\] - 19/01/2022.
 - 🛠️ : Don't add the `hash` if it is empty in `toNamed`
 
