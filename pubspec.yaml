@@ -1,6 +1,6 @@
 name: vrouter
 description: A navigation package that makes navigation and routing easy on every platform. Built on top of Navigator 2.
-version: 1.2.0+21
+version: 1.2.1
 homepage: https://vrouter.dev
 repository: https://github.com/lulupointu/vrouter
 
@@ -12,7 +12,7 @@ dependencies:
   flutter:
     sdk: flutter
   url_strategy: ^0.2.0
-  url_launcher: ^6.0.18
+  url_launcher: ^6.1.2
   move_to_background: ^1.0.2
 
 dev_dependencies:
