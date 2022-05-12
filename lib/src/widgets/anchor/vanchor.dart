@@ -118,9 +118,13 @@ class _VLinkState extends State<VAnchor> {
 
   @override
   void didChangeDependencies() {
+    // Needed to use WidgetsBinding.instance and support both Flutter 3.0 and
+    // Flutter <3
+    T? _ambiguate<T>(T? value) => value;
+
     // If the hash matches, scroll to this element
     if (widget.active && VRouter.of(context).hash == widget.hash) {
-      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      _ambiguate(WidgetsBinding.instance)!.addPostFrameCallback((timeStamp) {
         Scrollable.ensureVisible(
           context,
           alignment: widget.alignment,
