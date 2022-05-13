@@ -5,6 +5,7 @@ import 'package:vrouter/src/helpers/empty_page.dart';
 import 'package:vrouter/src/helpers/vrouter_helper.dart';
 import 'package:vrouter/src/vroute_elements/void_vguard.dart';
 import 'package:vrouter/src/vroute_elements/void_vpop_handler.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_with_custom_value.dart';
 import 'package:vrouter/src/vroute_elements/vroute_element_with_name.dart';
 import 'package:vrouter/src/vrouter_core.dart';
 import 'package:vrouter/src/vrouter_widgets.dart';
@@ -12,7 +13,11 @@ import 'package:vrouter/src/vrouter_widgets.dart';
 /// A [VRouteElement] similar to [VNester] but which allows you to specify your own page
 /// thanks to [pageBuilder]
 class VNesterPageBase extends VRouteElement
-    with VoidVGuard, VoidVPopHandler, VRouteElementWithName {
+    with
+        VoidVGuard,
+        VoidVPopHandler,
+        VRouteElementWithName,
+        VRouteElementWithCustomValue {
   /// A list of [VRouteElement] which widget will be accessible in [widgetBuilder]
   final List<VRouteElement> nestedRoutes;
 
@@ -20,10 +25,15 @@ class VNesterPageBase extends VRouteElement
   final List<VRouteElement> stackedRoutes;
 
   /// A function which creates the [VRouteElement._rootVRouter] associated to this [VRouteElement]
+  /// Can have one of two types:
+  ///   - [Widget Function(Widget child)]
+  ///   - [Widget Function(Widget child, dynamic customValue)]
   ///
   /// [child] will be the [VRouteElement._rootVRouter] of the matched [VRouteElement] in
-  /// [nestedRoutes]
-  final Widget Function(Widget child) widgetBuilder;
+  /// [nestedRoutes]. [customValue] will be [VRouteElement.customValue] of the matched
+  /// [VRouteElement], if any.
+  final Function widgetBuilder;
+  late final bool _widgetBuilderNeedsCustomValue;
 
   /// A LocalKey that will be given to the page which contains the given [_rootVRouter]
   ///
@@ -42,7 +52,11 @@ class VNesterPageBase extends VRouteElement
   /// Note that [name] should be unique w.r.t every [VRouteElement]
   final String? name;
 
-  /// Function which returns a page that will wrap [widget]
+  /// A custom value that can be passed to [widgetBuilder] in a [VNester] if we're a nested child.
+  @override
+  final dynamic customValue;
+
+  /// Function which returns a page that will wrap [widget].
   ///   - key and name should be given to your [Page]
   ///   - child should be placed as the last child in [Route]
   final Page Function(
@@ -63,13 +77,19 @@ class VNesterPageBase extends VRouteElement
     this.stackedRoutes = const [],
     this.key,
     this.name,
+    this.customValue,
     GlobalKey<NavigatorState>? navigatorKey,
-  }) : assert(nestedRoutes.isNotEmpty,
-            'The nestedRoutes of a VNester should not be empty, otherwise it can\'t nest') {
+  })  : assert(nestedRoutes.isNotEmpty,
+            'The nestedRoutes of a VNester should not be empty, otherwise it can\'t nest'),
+        assert((widgetBuilder is Widget Function(Widget child)) ||
+            (widgetBuilder is Widget Function(
+                Widget child, dynamic customValue))) {
     this.navigatorKey = navigatorKey ??
         GlobalKey<NavigatorState>(
           debugLabel: '$runtimeType of name $name and key $key navigatorKey',
         );
+    this._widgetBuilderNeedsCustomValue =
+        (widgetBuilder is Widget Function(Widget child, dynamic customValue));
   }
 
   /// Provides a [state] from which to access [VRouter] data in [widgetBuilder]
@@ -83,6 +103,7 @@ class VNesterPageBase extends VRouteElement
     List<VRouteElement> stackedRoutes = const [],
     LocalKey? key,
     String? name,
+    dynamic customValue,
     GlobalKey<NavigatorState>? navigatorKey,
   }) : this(
           nestedRoutes: nestedRoutes,
@@ -93,12 +114,22 @@ class VNesterPageBase extends VRouteElement
           stackedRoutes: stackedRoutes,
           key: key,
           name: name,
+          customValue: customValue,
           navigatorKey: navigatorKey,
         );
 
   /// A hero controller for the navigator
   /// It is created automatically
   final HeroController heroController = HeroController();
+
+  /// Dispatches the call to widgetBuilder function based on the two supported types
+  Widget _callWidgetBuilder(Widget child, dynamic customValue) {
+    if (widgetBuilder is Widget Function(Widget child)) {
+      return widgetBuilder(child);
+    } else {
+      return widgetBuilder(child, customValue);
+    }
+  }
 
   @override
   VRoute? buildRoute(
@@ -135,6 +166,18 @@ class VNesterPageBase extends VRouteElement
     // If no child route match, this is not a match
     if (nestedRouteVRoute == null) {
       return null;
+    }
+
+    // Search for the nearest child element that has a custom value.
+    // The nested route will only contain elements of children.
+    dynamic childCustomValue;
+    if (_widgetBuilderNeedsCustomValue) {
+      for (var vElement in nestedRouteVRoute.vRouteElements) {
+        if (vElement is VRouteElementWithCustomValue) {
+          childCustomValue = vElement.customValue;
+          break;
+        }
+      }
     }
 
     // Else also try to match stackedRoutes
@@ -188,7 +231,7 @@ class VNesterPageBase extends VRouteElement
 
                   return false;
                 },
-                child: widgetBuilder(
+                child: _callWidgetBuilder(
                   Builder(
                     builder: (BuildContext context) {
                       return VRouterHelper(
@@ -250,6 +293,7 @@ class VNesterPageBase extends VRouteElement
                       );
                     },
                   ),
+                  childCustomValue,
                 ),
               ),
               vRouteElementNode: vRouteElementNode,

@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/vroute_elements/void_vguard.dart';
 import 'package:vrouter/src/vroute_elements/void_vpop_handler.dart';
 import 'package:vrouter/src/vroute_elements/vroute_element_single_subroute.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_with_custom_value.dart';
 import 'package:vrouter/src/vroute_elements/vroute_element_with_page.dart';
 import 'package:vrouter/src/vrouter_core.dart';
 
@@ -11,6 +12,7 @@ class VPageBase extends VRouteElement
     with
         VRouteElementSingleSubRoute,
         VRouteElementWithPage,
+        VRouteElementWithCustomValue,
         VoidVGuard,
         VoidVPopHandler {
   /// A function which allows you to use your own custom page
@@ -32,6 +34,9 @@ class VPageBase extends VRouteElement
   final String? name;
 
   @override
+  final dynamic customValue;
+
+  @override
   final List<VRouteElement> stackedRoutes;
 
   VPageBase({
@@ -39,6 +44,7 @@ class VPageBase extends VRouteElement
     required this.widget,
     this.key,
     this.name,
+    this.customValue,
     this.stackedRoutes = const [],
   });
 
@@ -48,12 +54,14 @@ class VPageBase extends VRouteElement
     required Widget Function(BuildContext context, VRouterData state) builder,
     LocalKey? key,
     String? name,
+    dynamic customValue,
     List<VRouteElement> stackedRoutes = const [],
   }) : this(
           pageBuilder: pageBuilder,
           widget: VRouterDataBuilder(builder: builder),
           key: key,
           name: name,
+          customValue: customValue,
           stackedRoutes: stackedRoutes,
         );
 

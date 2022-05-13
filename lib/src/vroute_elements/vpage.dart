@@ -2,9 +2,10 @@ import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/vroute_elements/vpage_base.dart';
 import 'package:vrouter/src/vroute_elements/vpath.dart';
 import 'package:vrouter/src/vroute_elements/vroute_element_builder.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_with_custom_value.dart';
 import 'package:vrouter/src/vrouter_core.dart';
 
-class VPage extends VRouteElementBuilder {
+class VPage extends VRouteElementBuilder with VRouteElementWithCustomValue {
   /// The path (relative or absolute) or this [VRouteElement]
   ///
   /// If the path of a subroute is exactly matched, this will be used in
@@ -34,6 +35,10 @@ class VPage extends VRouteElementBuilder {
   ///
   /// Note that [name] should be unique w.r.t every [VRouteElement]
   final String? name;
+
+  /// A custom value that can be passed to [widgetBuilder] in a [VNester] if we're a nested child.
+  @override
+  final dynamic customValue;
 
   /// Alternative paths that will be matched to this route
   ///
@@ -75,6 +80,7 @@ class VPage extends VRouteElementBuilder {
     this.stackedRoutes = const [],
     this.key,
     this.name,
+    this.customValue,
     this.aliases = const [],
     this.mustMatchStackedRoute = false,
   });
@@ -86,6 +92,7 @@ class VPage extends VRouteElementBuilder {
     List<VRouteElement> stackedRoutes = const [],
     LocalKey? key,
     String? name,
+    dynamic customValue,
     List<String> aliases = const [],
     bool mustMatchStackedRoute = false,
   }) : this(
@@ -95,6 +102,7 @@ class VPage extends VRouteElementBuilder {
           stackedRoutes: stackedRoutes,
           key: key,
           name: name,
+          customValue: customValue,
           aliases: aliases,
           mustMatchStackedRoute: mustMatchStackedRoute,
         );
@@ -111,6 +119,7 @@ class VPage extends VRouteElementBuilder {
               widget: widget,
               key: key,
               name: name,
+              customValue: customValue,
               stackedRoutes: stackedRoutes,
             ),
           ],

@@ -1,6 +1,7 @@
 import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/vroute_elements/vnester_page_base.dart';
 import 'package:vrouter/src/vroute_elements/vroute_element_builder.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_with_custom_value.dart';
 import 'package:vrouter/src/vrouter_core.dart';
 import 'package:vrouter/src/vrouter_helpers.dart';
 
@@ -57,7 +58,8 @@ import 'package:vrouter/src/vrouter_helpers.dart';
 /// Also see:
 ///   * [VNester] for a [VRouteElement] similar to [VNesterBase] but which take path information
 /// {@end-tool}
-class VNesterBase extends VRouteElementBuilder {
+class VNesterBase extends VRouteElementBuilder
+    with VRouteElementWithCustomValue {
   /// A list of [VRouteElement] which widget will be accessible in [widgetBuilder]
   final List<VRouteElement> nestedRoutes;
 
@@ -67,10 +69,14 @@ class VNesterBase extends VRouteElementBuilder {
   final List<VRouteElement> stackedRoutes;
 
   /// A function which creates the [VRouteElement._rootVRouter] associated to this [VRouteElement]
+  /// Can have one of two types:
+  ///   - [Widget Function(Widget child)]
+  ///   - [Widget Function(Widget child, dynamic customValue)]
   ///
   /// [child] will be the [VRouteElement._rootVRouter] of the matched [VRouteElement] in
-  /// [nestedRoutes]
-  final Widget Function(Widget child) widgetBuilder;
+  /// [nestedRoutes]. [customValue] will be [VRouteElement.customValue] of the matched
+  /// [VRouteElement], if any.
+  final Function widgetBuilder;
 
   /// A LocalKey that will be given to the page which contains the given [widget]
   ///
@@ -121,6 +127,10 @@ class VNesterBase extends VRouteElementBuilder {
   /// differently and are also not closeable with the back swipe gesture.
   final bool fullscreenDialog;
 
+  /// A custom value that can be passed to [widgetBuilder] in a [VNester] if we're a nested child.
+  @override
+  final dynamic customValue;
+
   VNesterBase({
     required this.widgetBuilder,
     required this.nestedRoutes,
@@ -132,6 +142,7 @@ class VNesterBase extends VRouteElementBuilder {
     this.stackedRoutes = const [],
     this.navigatorKey,
     this.fullscreenDialog = false,
+    this.customValue,
   });
 
   /// Provides a [state] from which to access [VRouter] data in [widgetBuilder]
@@ -150,6 +161,7 @@ class VNesterBase extends VRouteElementBuilder {
     List<VRouteElement> stackedRoutes = const [],
     GlobalKey<NavigatorState>? navigatorKey,
     fullscreenDialog = false,
+    dynamic customValue,
   }) : this(
           widgetBuilder: (child) => VRouterDataBuilder(
             builder: (context, state) => widgetBuilder(context, state, child),
@@ -163,6 +175,7 @@ class VNesterBase extends VRouteElementBuilder {
           stackedRoutes: stackedRoutes,
           navigatorKey: navigatorKey,
           fullscreenDialog: fullscreenDialog,
+          customValue: customValue,
         );
 
   @override
@@ -185,6 +198,7 @@ class VNesterBase extends VRouteElementBuilder {
             reverseTransitionDuration: reverseTransitionDuration,
             fullscreenDialog: fullscreenDialog,
           ),
+          customValue: customValue,
         ),
       ];
 }

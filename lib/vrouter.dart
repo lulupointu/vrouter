@@ -9,7 +9,8 @@ export 'package:vrouter/src/vrouter_vroute_elements.dart'
         VRouteElementSingleSubRoute,
         VoidVGuard,
         VoidVPopHandler,
-        VRouteElementWithName;
+        VRouteElementWithName,
+        VRouteElementWithCustomValue;
 export 'package:vrouter/src/vrouter_scope.dart';
 
 export 'package:vrouter/src/vrouter_helpers.dart';

@@ -1,10 +1,11 @@
 import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/vroute_elements/vpath.dart';
 import 'package:vrouter/src/vroute_elements/vroute_element_builder.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_with_custom_value.dart';
 import 'package:vrouter/src/vroute_elements/vwidget_base.dart';
 import 'package:vrouter/src/vrouter_core.dart';
 
-class VWidget extends VRouteElementBuilder {
+class VWidget extends VRouteElementBuilder with VRouteElementWithCustomValue {
   /// The path (relative or absolute) or this [VRouteElement]
   ///
   /// If the path of a subroute is exactly matched, this will be used in
@@ -34,6 +35,10 @@ class VWidget extends VRouteElementBuilder {
   ///
   /// Note that [name] should be unique w.r.t every [VRouteElement]
   final String? name;
+
+  /// A custom value that can be passed to [widgetBuilder] in a [VNester] if we're a nested child.
+  @override
+  final dynamic customValue;
 
   /// Alternative paths that will be matched to this route
   ///
@@ -92,6 +97,7 @@ class VWidget extends VRouteElementBuilder {
     this.reverseTransitionDuration,
     this.buildTransition,
     this.fullscreenDialog = false,
+    this.customValue,
   });
 
   VWidget.builder({
@@ -107,6 +113,7 @@ class VWidget extends VRouteElementBuilder {
             Animation<double> secondaryAnimation, Widget child)?
         buildTransition,
     bool fullscreenDialog = false,
+    dynamic customValue,
   }) : this(
           path: path,
           widget: VRouterDataBuilder(builder: builder),
@@ -118,6 +125,7 @@ class VWidget extends VRouteElementBuilder {
           reverseTransitionDuration: reverseTransitionDuration,
           buildTransition: buildTransition,
           fullscreenDialog: fullscreenDialog,
+          customValue: customValue,
         );
 
   @override
@@ -136,6 +144,7 @@ class VWidget extends VRouteElementBuilder {
               transitionDuration: transitionDuration,
               reverseTransitionDuration: reverseTransitionDuration,
               fullscreenDialog: fullscreenDialog,
+              customValue: customValue,
             ),
           ],
         ),

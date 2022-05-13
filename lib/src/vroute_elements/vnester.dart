@@ -2,6 +2,7 @@ import 'package:flutter/widgets.dart';
 import 'package:vrouter/src/vroute_elements/vnester_base.dart';
 import 'package:vrouter/src/vroute_elements/vpath.dart';
 import 'package:vrouter/src/vroute_elements/vroute_element_builder.dart';
+import 'package:vrouter/src/vroute_elements/vroute_element_with_custom_value.dart';
 import 'package:vrouter/src/vrouter_core.dart';
 
 /// A [VRouteElement] which enable nesting
@@ -32,6 +33,32 @@ import 'package:vrouter/src/vrouter_core.dart';
 ///
 /// {@tool snippet}
 ///
+/// If you have a bottom nav bar or tab bar and you want to nest multiple widgets
+/// (e.g., HomeWidget for /, ProfileWidget for /profile), telling MyScaffold what
+/// is the current tab based on the child route, do this:
+///
+/// ```dart
+/// VNester(
+///   path: '/',
+///   widgetBuilder: (child, customValue) => MyScaffold(child: child, currentIndex: customValue as int),
+///   nestedRoutes: [
+///     VWidget(
+///       path: null,
+///       customValue: 0,
+///       widget: HomeWidget(),
+///     ),
+///     VWidget(
+///       path: 'profile',
+///       customValue: 1,
+///       widget: ProfileWidget(),
+///     ),
+///   ],
+/// )
+/// ```
+/// {@end-tool}
+///
+/// {@tool snippet}
+///
 /// Note that you can also use stackedRoutes if you want to nest AND stack by using nestedRoutes
 /// AND stackedRoutes:
 ///
@@ -59,7 +86,7 @@ import 'package:vrouter/src/vrouter_core.dart';
 ///   * [VNesterBase] for a [VRouteElement] similar to [VNester] but which does NOT take path information
 ///   * [VNesterPage] for a [VRouteElement] similar to [VNester] but with which you can create you own page
 /// {@end-tool}
-class VNester extends VRouteElementBuilder {
+class VNester extends VRouteElementBuilder with VRouteElementWithCustomValue {
   /// A list of [VRouteElement] which widget will be accessible in [widgetBuilder]
   final List<VRouteElement> nestedRoutes;
 
@@ -104,10 +131,14 @@ class VNester extends VRouteElementBuilder {
   final List<String> aliases;
 
   /// A function which creates the [VRouteElement._rootVRouter] associated to this [VRouteElement]
+  /// Can have one of two types:
+  ///   - [Widget Function(Widget child)]
+  ///   - [Widget Function(Widget child, dynamic customValue)]
   ///
   /// [child] will be the [VRouteElement._rootVRouter] of the matched [VRouteElement] in
-  /// [nestedRoutes]
-  final Widget Function(Widget child) widgetBuilder;
+  /// [nestedRoutes]. [customValue] will be [VRouteElement.customValue] of the matched
+  /// [VRouteElement], if any.
+  final Function widgetBuilder;
 
   /// A LocalKey that will be given to the page which contains the given [_rootVRouter]
   ///
@@ -152,6 +183,10 @@ class VNester extends VRouteElementBuilder {
   /// differently and are also not closeable with the back swipe gesture.
   final bool fullscreenDialog;
 
+  /// A custom value that can be passed to [widgetBuilder] in a [VNester] if we're a nested child.
+  @override
+  final dynamic customValue;
+
   VNester({
     required this.path,
     required this.widgetBuilder,
@@ -165,6 +200,7 @@ class VNester extends VRouteElementBuilder {
     this.aliases = const [],
     this.navigatorKey,
     this.fullscreenDialog = false,
+    this.customValue,
   });
 
   /// Provides a [state] from which to access [VRouter] data in [widgetBuilder]
@@ -185,6 +221,7 @@ class VNester extends VRouteElementBuilder {
     List<String> aliases = const [],
     GlobalKey<NavigatorState>? navigatorKey,
     bool fullscreenDialog = false,
+    dynamic customValue,
   }) : this(
           path: path,
           widgetBuilder: (child) => VRouterDataBuilder(
@@ -200,6 +237,7 @@ class VNester extends VRouteElementBuilder {
           aliases: aliases,
           navigatorKey: navigatorKey,
           fullscreenDialog: fullscreenDialog,
+          customValue: customValue,
         );
 
   @override
@@ -220,6 +258,7 @@ class VNester extends VRouteElementBuilder {
               reverseTransitionDuration: reverseTransitionDuration,
               navigatorKey: navigatorKey,
               fullscreenDialog: fullscreenDialog,
+              customValue: customValue,
             ),
           ],
         ),
