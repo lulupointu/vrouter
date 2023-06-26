@@ -95,6 +95,7 @@ class WidgetsVRouter extends VRouterApp {
     this.initialUrl = '/',
     this.logs = VLogs.info,
     this.navigatorObservers = const [],
+    this.transitionDelegate,
     this.builder,
     @Deprecated('Please use navigatorKey instead.\n This has been removed because it is redundant with navigatorKey.')
         this.appRouterKey,
@@ -132,6 +133,8 @@ class WidgetsVRouter extends VRouterApp {
 
   @override
   final List<NavigatorObserver> navigatorObservers;
+
+  final TransitionDelegate? transitionDelegate;
 
   @override
   final Widget Function(BuildContext context, Widget child)? builder;
