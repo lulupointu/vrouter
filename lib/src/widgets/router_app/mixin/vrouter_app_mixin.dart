@@ -118,6 +118,8 @@ abstract class VRouterApp extends StatefulWidget
 
   /// {@macro flutter.widgets.widgetsApp.navigatorObservers}
   List<NavigatorObserver> get navigatorObservers;
+
+  TransitionDelegate? get transitionDelegate;
 }
 
 /// A mixin to use on the [State]s which create the [VRouterDelegate]
@@ -127,6 +129,7 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T>
     routes: widget.routes,
     builder: widget.builder,
     navigatorObservers: widget.navigatorObservers,
+    transitionDelegate: widget.transitionDelegate,
     beforeEnter: widget.beforeEnter,
     beforeLeave: widget.beforeLeave,
     afterEnter: widget.afterEnter,
@@ -148,6 +151,7 @@ mixin VRouterAppStateMixin<T extends VRouterApp> on State<T>
         routes: widget.routes,
         builder: widget.builder,
         navigatorObservers: widget.navigatorObservers,
+        transitionDelegate: widget.transitionDelegate,
         beforeEnter: widget.beforeEnter,
         beforeLeave: widget.beforeLeave,
         afterEnter: widget.afterEnter,

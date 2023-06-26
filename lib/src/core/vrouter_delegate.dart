@@ -54,6 +54,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
   /// {@macro flutter.widgets.widgetsApp.navigatorObservers}
   final List<NavigatorObserver> navigatorObservers;
 
+  final TransitionDelegate? transitionDelegate;
+
   /// Build widget before the pages
   /// The context can be used to access VRouter.of
   final Widget Function(BuildContext context, Widget child)? builder;
@@ -79,6 +81,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     required this.routes,
     this.builder,
     this.navigatorObservers = const [],
+    this.transitionDelegate,
     Future<void> Function(VRedirector vRedirector) beforeEnter =
         VoidVGuard.voidBeforeEnter,
     Future<void> Function(
@@ -1878,6 +1881,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
                             ],
                       key: navigatorKey,
                       observers: [...navigatorObservers],
+                      transitionDelegate:
+                          transitionDelegate ?? DefaultTransitionDelegate(),
                       onPopPage: (_, data) {
                         // Try to pop a Nav1 page
                         if (navigatorKey.currentState!.isLastRouteNav1) {
