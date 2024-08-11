@@ -1,8 +1,9 @@
 import 'package:flutter/foundation.dart';
-import 'package:vrouter/src/path_to_regexp/path_to_regexp.dart';
-import 'package:vrouter/src/vroute_elements/void_vguard.dart';
-import 'package:vrouter/src/vroute_elements/void_vpop_handler.dart';
-import 'package:vrouter/src/vrouter_core.dart';
+
+import '../path_to_regexp/path_to_regexp.dart';
+import '../vrouter_core.dart';
+import 'void_vguard.dart';
+import 'void_vpop_handler.dart';
 
 /// If the [VRouteElement] contains a path, it should extend this class
 ///
@@ -221,6 +222,7 @@ class VPath extends VRouteElement with VoidVGuard, VoidVPopHandler {
       );
       if (childVRoute != null) return childVRoute;
     }
+    return null;
   }
 
   // /// Try to form a [VRoute] where this [VRouteElement] is the last [VRouteElement]

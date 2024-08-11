@@ -1,13 +1,10 @@
 import 'dart:async';
 
+import '../../vrouter_scope.dart';
+import '../../wrappers/platform/platform.dart';
+import 'vrouter_modes.dart';
 import 'vurl_history_non_web.dart';
 import 'vurl_history_web.dart';
-
-import 'package:vrouter/src/vrouter_scope.dart';
-import 'package:vrouter/src/vrouter_scope/vurl_history/vurl_history_web.dart';
-import 'package:vrouter/src/wrappers/platform/platform.dart';
-
-import 'vrouter_modes.dart';
 
 /// Contract which describes [VHistory]
 abstract class VHistory {

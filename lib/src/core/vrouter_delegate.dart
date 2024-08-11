@@ -2,26 +2,26 @@ import 'dart:async';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
-import 'package:vrouter/src/core/errors.dart';
-import 'package:vrouter/src/core/navigator_extension.dart';
-import 'package:vrouter/src/core/vlogs.dart';
-import 'package:vrouter/src/core/vpop_data.dart';
-import 'package:vrouter/src/core/vredirector.dart';
-import 'package:vrouter/src/core/root_vrouter.dart';
-import 'package:vrouter/src/core/route.dart';
-import 'package:vrouter/src/core/vroute_element.dart';
-import 'package:vrouter/src/core/vroute_element_node.dart';
-import 'package:vrouter/src/logs/vlog_printer.dart';
-import 'package:vrouter/src/logs/vlogs.dart';
-import 'package:vrouter/src/path_to_regexp/path_to_regexp.dart';
-import 'package:vrouter/src/vrouter_scope.dart';
-import 'package:vrouter/src/helpers/empty_page.dart';
-import 'package:vrouter/src/vrouter_vroute_elements.dart';
-import 'package:vrouter/src/vrouter_widgets.dart';
-import 'package:vrouter/src/wrappers/move_to_background.dart';
-import 'package:vrouter/src/wrappers/platform/platform.dart';
-import 'package:vrouter/src/wrappers/browser_helpers/browser_helpers.dart';
 
+import '../helpers/empty_page.dart';
+import '../logs/vlog_printer.dart';
+import '../logs/vlogs.dart';
+import '../path_to_regexp/path_to_regexp.dart';
+import '../vrouter_scope.dart';
+import '../vrouter_vroute_elements.dart';
+import '../vrouter_widgets.dart';
+import '../wrappers/browser_helpers/browser_helpers.dart';
+import '../wrappers/move_to_background.dart';
+import '../wrappers/platform/platform.dart';
+import 'errors.dart';
+import 'navigator_extension.dart';
+import 'root_vrouter.dart';
+import 'route.dart';
+import 'vlogs.dart';
+import 'vpop_data.dart';
+import 'vredirector.dart';
+import 'vroute_element.dart';
+import 'vroute_element_node.dart';
 import 'vrouter_sailor/vrouter_sailor.dart';
 
 class VRouterDelegate extends RouterDelegate<RouteInformation>
@@ -84,8 +84,7 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
     Future<void> Function(
       VRedirector vRedirector,
       void Function(Map<String, String> historyState) saveHistoryState,
-    )
-        beforeLeave = VoidVGuard.voidBeforeLeave,
+    ) beforeLeave = VoidVGuard.voidBeforeLeave,
     void Function(BuildContext context, String? from, String to) afterEnter =
         VoidVGuard.voidAfterEnter,
     Future<void> Function(VRedirector vRedirector) onPop =
@@ -1652,8 +1651,8 @@ class VRouterDelegate extends RouterDelegate<RouteInformation>
   /// Navigation state to app state
   @override
   Future<void> setNewRoutePath(RouteInformation routeInformation) async {
-    if (routeInformation.location != null && !_ignoreNextBrowserCalls) {
-      final newUrl = routeInformation.location!;
+    if (!_ignoreNextBrowserCalls) {
+      final newUrl = routeInformation.location;
 
       final routeState = routeInformation.state as Map<String, dynamic>?;
 

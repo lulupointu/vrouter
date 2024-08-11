@@ -1,9 +1,9 @@
 import 'package:flutter/widgets.dart';
-import 'package:vrouter/src/vlogs.dart';
-import 'package:vrouter/src/vrouter_core.dart';
-import 'package:vrouter/src/vrouter_scope.dart';
-import 'package:vrouter/src/vrouter_vroute_elements.dart';
 
+import '../../vlogs.dart';
+import '../../vrouter_core.dart';
+import '../../vrouter_scope.dart';
+import '../../vrouter_vroute_elements.dart';
 import 'mixin/vrouter_app_mixin.dart';
 
 /// This widget handles most of the routing work
@@ -80,8 +80,7 @@ class WidgetsVRouter extends VRouterApp {
     Future<void> Function(
       VRedirector vRedirector,
       void Function(Map<String, String> historyState) saveHistoryState,
-    )
-        beforeLeave = VoidVGuard.voidBeforeLeave,
+    ) beforeLeave = VoidVGuard.voidBeforeLeave,
     void Function(BuildContext context, String? from, String to) afterEnter =
         VoidVGuard.voidAfterEnter,
     Future<void> Function(VRedirector vRedirector) onPop =
@@ -96,8 +95,9 @@ class WidgetsVRouter extends VRouterApp {
     this.logs = VLogs.info,
     this.navigatorObservers = const [],
     this.builder,
-    @Deprecated('Please use navigatorKey instead.\n This has been removed because it is redundant with navigatorKey.')
-        this.appRouterKey,
+    @Deprecated(
+        'Please use navigatorKey instead.\n This has been removed because it is redundant with navigatorKey.')
+    this.appRouterKey,
     this.navigatorKey,
     // Bellow are the WidgetsApp parameters
     this.title = '',
@@ -485,12 +485,12 @@ class WidgetsVRouterState extends State<WidgetsVRouter>
         localeResolutionCallback: widget.localeResolutionCallback,
         supportedLocales: widget.supportedLocales,
         showPerformanceOverlay: widget.showPerformanceOverlay,
-        checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages,
-        checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,
+        // checkerboardRasterCacheImages: widget.checkerboardRasterCacheImages,
+        // checkerboardOffscreenLayers: widget.checkerboardOffscreenLayers,
         showSemanticsDebugger: widget.showSemanticsDebugger,
         debugShowWidgetInspector: widget.debugShowWidgetInspector,
         debugShowCheckedModeBanner: widget.debugShowCheckedModeBanner,
-        useInheritedMediaQuery: widget.useInheritedMediaQuery,
+        // useInheritedMediaQuery: widget.useInheritedMediaQuery,
         inspectorSelectButtonBuilder: widget.inspectorSelectButtonBuilder,
         shortcuts: widget.shortcuts,
         actions: widget.actions,

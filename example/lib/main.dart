@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:vrouter/vrouter.dart';
-import 'package:vrouter/src/logs/vlogs.dart';
 
 void main() {
   runApp(
